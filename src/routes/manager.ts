@@ -7,6 +7,7 @@ import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { ConfigsManager } from '../configs/manager';
 import { RoutesConstants } from './constants';
 import { Tools } from '../includes/tools';
 
@@ -19,11 +20,13 @@ export interface RouteOptions {
 export class RoutesManager {
     //
     // Protected properties.
+    protected _configs: ConfigsManager = null;
     protected _routesDirectory: string = null;
     protected _options: RouteOptions = null;
     //
     // Constructor.
-    constructor(app: any, routesDirectory: string, options: RouteOptions = {}) {
+    constructor(app: any, routesDirectory: string, options: RouteOptions = {}, configs: ConfigsManager) {
+        this._configs = configs;
         this._options = options;
         this.cleanOptions();
 

@@ -41,10 +41,10 @@ export class ExpressConnector {
         results.configs = this.attachConfigs(app, options);
         //
         // Attaching a middlewares manager.
-        results.middlewares = this.attachMiddlewares(app, options);
+        results.middlewares = this.attachMiddlewares(app, options, results.configs);
         //
         // Attaching a routes manager.
-        results.routes = this.attachRoutes(app, options);
+        results.routes = this.attachRoutes(app, options, results.configs);
 
         return results;
     }
@@ -68,7 +68,7 @@ export class ExpressConnector {
 
         return manager;
     }
-    protected attachMiddlewares(app: any, options: ExpressConnectorOptions): MiddlewaresManager {
+    protected attachMiddlewares(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): MiddlewaresManager {
         let manager: MiddlewaresManager = null;
 
         if (options.middlewaresDirectory) {
@@ -76,12 +76,12 @@ export class ExpressConnector {
                 options.middlewaresOptions.verbose = options.verbose;
             }
 
-            manager = new MiddlewaresManager(app, options.middlewaresDirectory, options.middlewaresOptions);
+            manager = new MiddlewaresManager(app, options.middlewaresDirectory, options.middlewaresOptions, configs);
         }
 
         return manager;
     }
-    protected attachRoutes(app: any, options: ExpressConnectorOptions): RoutesManager {
+    protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager {
         let manager: RoutesManager = null;
 
         if (options.routesDirectory) {
@@ -89,7 +89,7 @@ export class ExpressConnector {
                 options.routesOptions.verbose = options.verbose;
             }
 
-            manager = new RoutesManager(app, options.routesDirectory, options.routesOptions);
+            manager = new RoutesManager(app, options.routesDirectory, options.routesOptions, configs);
         }
 
         return manager;

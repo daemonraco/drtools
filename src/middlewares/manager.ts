@@ -7,6 +7,7 @@ import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { ConfigsManager } from '../configs/manager';
 import { MiddlewaresConstants } from './constants';
 import { Tools } from '../includes/tools';
 
@@ -19,11 +20,13 @@ export interface MiddlewareOptions {
 export class MiddlewaresManager {
     //
     // Protected properties.
+    protected _configs: ConfigsManager = null;
     protected _middlewaresDirectory: string = null;
     protected _options: MiddlewareOptions = null;
     //
     // Constructor.
-    constructor(app: any, middlewaresDirectory: string, options: MiddlewareOptions = {}) {
+    constructor(app: any, middlewaresDirectory: string, options: MiddlewareOptions = {}, configs: ConfigsManager) {
+        this._configs = configs;
         this._options = options;
         this.cleanOptions();
 

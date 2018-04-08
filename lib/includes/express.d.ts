@@ -7,7 +7,7 @@ export declare class ExpressConnector {
     private constructor();
     attach(app: any, options?: ExpressConnectorOptions): ExpressConnectorAttachResults;
     protected attachConfigs(app: any, options: ExpressConnectorOptions): ConfigsManager;
-    protected attachMiddlewares(app: any, options: ExpressConnectorOptions): MiddlewaresManager;
-    protected attachRoutes(app: any, options: ExpressConnectorOptions): RoutesManager;
+    protected attachMiddlewares(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): MiddlewaresManager;
+    protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager;
     static Instance(): ExpressConnector;
 }
