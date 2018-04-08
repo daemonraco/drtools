@@ -1,7 +1,7 @@
 {
     "name": "drtools",
     "version": "0.0.1",
-    "description": "",
+    "description": "Set of useful tools",
     "main": "lib/drtools",
     "types": "lib/drtools",
     "scripts": {
@@ -13,7 +13,11 @@
         "test": "./node_modules/mocha/bin/mocha || true",
         "posttest": "./test/assets/stop.sh"
     },
-    "keywords": [],
+    "keywords": [
+        "automatic loaders",
+        "express",
+        "loaders"
+    ],
     "author": {
         "name": "Alejandro Dario Simi",
         "url": "http://daemonraco.com/"

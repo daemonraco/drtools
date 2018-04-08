@@ -41,3 +41,23 @@ fs.readdirSync(originalsRoutesDirectory)
         fs.writeFileSync(o.to, fs.readFileSync(o.from).toString());
     });
 // @}
+
+//
+// Middlewares @{
+const originalsMiddlewaresDirectory = path.join(__dirname, './middlewares');
+const middlewaresDirectory = path.join(__dirname, '../tmp/middlewares');
+if (!fs.existsSync(middlewaresDirectory)) {
+    fs.mkdirSync(middlewaresDirectory);
+}
+fs.readdirSync(originalsMiddlewaresDirectory)
+    .map(p => {
+        return {
+            from: path.join(originalsMiddlewaresDirectory, p),
+            to: path.join(middlewaresDirectory, p)
+        }
+    })
+    .forEach(o => {
+        console.log(`Copying '${o.from}' to '${o.to}'`);
+        fs.writeFileSync(o.to, fs.readFileSync(o.from).toString());
+    });
+// @}

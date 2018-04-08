@@ -18,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const { ExpressConnector } = require('../..');
 const { configs } = ExpressConnector.attach(app, {
     configsDirectory: path.join(__dirname, '../tmp/configs'),
+    middlewaresDirectory: path.join(__dirname, '../tmp/middlewares'),
     routesDirectory: path.join(__dirname, '../tmp/routes')
 });
 // @}

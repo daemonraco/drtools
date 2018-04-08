@@ -14,6 +14,11 @@ export * from './configs/constants';
 export * from './configs/manager';
 
 //
+// MiddlewaressManager related exports.
+export * from './middlewares/constants';
+export * from './middlewares/manager';
+
+//
 // RoutesManager related exports.
 export * from './routes/constants';
 export * from './routes/manager';

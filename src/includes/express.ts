@@ -5,8 +5,9 @@
 
 import { ConfigsConstants } from '../configs/constants';
 import { ConfigsManager } from '../configs/manager';
-import { RoutesManager } from '../routes/manager';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions } from './express-types';
+import { MiddlewaresManager } from '../middlewares/manager';
+import { RoutesManager } from '../routes/manager';
 import { OptionsList } from './basic-types';
 import { Tools } from './tools';
 
@@ -32,11 +33,15 @@ export class ExpressConnector {
         // Default values.
         let results: ExpressConnectorAttachResults = {
             configs: null,
+            middlewares: null,
             routes: null
         };
         //
         // Attaching a configs manager.
         results.configs = this.attachConfigs(app, options);
+        //
+        // Attaching a middlewares manager.
+        results.middlewares = this.attachMiddlewares(app, options);
         //
         // Attaching a routes manager.
         results.routes = this.attachRoutes(app, options);
@@ -59,6 +64,19 @@ export class ExpressConnector {
                 const uri: string = typeof options.publishConfigs === 'string' ? options.publishConfigs : ConfigsConstants.PublishUri;
                 app.use(manager.publishExports(uri));
             }
+        }
+
+        return manager;
+    }
+    protected attachMiddlewares(app: any, options: ExpressConnectorOptions): MiddlewaresManager {
+        let manager: MiddlewaresManager = null;
+
+        if (options.middlewaresDirectory) {
+            if (typeof options.verbose !== 'undefined' && typeof options.middlewaresOptions.verbose === 'undefined') {
+                options.middlewaresOptions.verbose = options.verbose;
+            }
+
+            manager = new MiddlewaresManager(app, options.middlewaresDirectory, options.middlewaresOptions);
         }
 
         return manager;
