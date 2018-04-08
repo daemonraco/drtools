@@ -47,8 +47,23 @@ export class ConfigsManager {
     public get(name: string): any {
         return typeof this._configs[name] ? this._configs[name] : {};
     }
-    public publishExports(uri: string = '/public-configs'): ExpressMiddleware {
-        const pattern: RegExp = new RegExp(`^\/${uri}([\\/]?)(.*)$`);
+    public publishExports(uri: string = ConfigsConstants.PublishUri): ExpressMiddleware {
+        //
+        // Cleaning URI @{
+        uri = `/${uri}/`;
+        [
+            ['//', '/']
+        ].forEach((pair: any) => {
+            while (uri.indexOf(pair[0]) > -1) {
+                uri = uri.replace(pair[0], pair[1]);
+            }
+        });
+        uri = uri.substr(0, uri.length - 1);
+        uri = uri.replace(/\//g, '\\/').replace(/\./g, '\\.');
+        // @}
+
+        const pattern: RegExp = new RegExp(`^${uri}([\\/]?)(.*)$`);
+
         return (req: any, res: any, next: () => void) => {
             let responded: boolean = false;
 
