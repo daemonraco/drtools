@@ -6,6 +6,8 @@ export * from './includes/basic-types';
 export * from './includes/express';
 export * from './configs/constants';
 export * from './configs/manager';
+export * from './loaders/constants';
+export * from './loaders/manager';
 export * from './middlewares/constants';
 export * from './middlewares/manager';
 export * from './routes/constants';

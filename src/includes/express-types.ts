@@ -4,6 +4,7 @@
  */
 
 import { ConfigOptions, ConfigsManager } from '../configs/manager';
+import { LoaderOptions, LoadersManager } from '../loaders/manager';
 import { MiddlewareOptions, MiddlewaresManager } from '../middlewares/manager';
 import { RouteOptions, RoutesManager } from '../routes/manager';
 
@@ -13,6 +14,10 @@ export interface ExpressConnectorOptions {
     configsDirectory?: string;
     configsOptions?: ConfigOptions;
     publishConfigs?: boolean | string;
+    //
+    // Loaders
+    loadersDirectory?: string;
+    loadersOptions?: RouteOptions;
     //
     // Middlewares
     middlewaresDirectory?: string;
@@ -28,6 +33,7 @@ export interface ExpressConnectorOptions {
 
 export interface ExpressConnectorAttachResults {
     configs: ConfigsManager;
+    loaders: LoadersManager;
     middlewares: MiddlewaresManager;
     routes: RoutesManager;
 }

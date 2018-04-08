@@ -17,6 +17,8 @@ export interface RouteOptions {
     verbose?: boolean;
 }
 
+declare const global: any;
+
 export class RoutesManager {
     //
     // Protected properties.
@@ -92,7 +94,9 @@ export class RoutesManager {
                         console.log(`\t- '${chalk.green(routes[i].name)}'`);
                     }
 
+                    global.configs = this._configs;
                     app.use(routes[i].uri, require(routes[i].path));
+                    delete global.configs;
                 } catch (e) {
                     console.error(chalk.red(`Unable to load route '${routes[i].name}'.\n\t${e}`));
                 }

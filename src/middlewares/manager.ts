@@ -17,6 +17,8 @@ export interface MiddlewareOptions {
     verbose?: boolean;
 }
 
+declare const global: any;
+
 export class MiddlewaresManager {
     //
     // Protected properties.
@@ -89,7 +91,9 @@ export class MiddlewaresManager {
                         console.log(`\t- '${chalk.green(middlewares[i].name)}'`);
                     }
 
+                    global.configs = this._configs;
                     app.use(require(middlewares[i].path));
+                    delete global.configs;
                 } catch (e) {
                     console.error(chalk.red(`Unable to load middleware '${middlewares[i].name}'.\n\t${e}`));
                 }

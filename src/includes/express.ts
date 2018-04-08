@@ -6,6 +6,7 @@
 import { ConfigsConstants } from '../configs/constants';
 import { ConfigsManager } from '../configs/manager';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions } from './express-types';
+import { LoadersManager } from '../loaders/manager';
 import { MiddlewaresManager } from '../middlewares/manager';
 import { RoutesManager } from '../routes/manager';
 import { OptionsList } from './basic-types';
@@ -25,6 +26,8 @@ export class ExpressConnector {
         // Cleaning options.
         let defaultOptions: ExpressConnectorOptions = {
             configsOptions: {},
+            loadersOptions: {},
+            middlewaresOptions: {},
             routesOptions: {},
             publishConfigs: true
         };
@@ -33,12 +36,16 @@ export class ExpressConnector {
         // Default values.
         let results: ExpressConnectorAttachResults = {
             configs: null,
+            loaders: null,
             middlewares: null,
             routes: null
         };
         //
         // Attaching a configs manager.
         results.configs = this.attachConfigs(app, options);
+        //
+        // Attaching a middlewares manager.
+        results.loaders = this.attachLoaders(options, results.configs);
         //
         // Attaching a middlewares manager.
         results.middlewares = this.attachMiddlewares(app, options, results.configs);
@@ -64,6 +71,19 @@ export class ExpressConnector {
                 const uri: string = typeof options.publishConfigs === 'string' ? options.publishConfigs : ConfigsConstants.PublishUri;
                 app.use(manager.publishExports(uri));
             }
+        }
+
+        return manager;
+    }
+    protected attachLoaders(options: ExpressConnectorOptions, configs: ConfigsManager): LoadersManager {
+        let manager: LoadersManager = null;
+
+        if (options.loadersDirectory) {
+            if (typeof options.verbose !== 'undefined' && typeof options.loadersOptions.verbose === 'undefined') {
+                options.loadersOptions.verbose = options.verbose;
+            }
+
+            manager = new LoadersManager(options.loadersDirectory, options.loadersOptions, configs);
         }
 
         return manager;

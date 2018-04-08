@@ -61,3 +61,23 @@ fs.readdirSync(originalsMiddlewaresDirectory)
         fs.writeFileSync(o.to, fs.readFileSync(o.from).toString());
     });
 // @}
+
+//
+// Loaders @{
+const originalsLoadersDirectory = path.join(__dirname, './loaders');
+const loadersDirectory = path.join(__dirname, '../tmp/loaders');
+if (!fs.existsSync(loadersDirectory)) {
+    fs.mkdirSync(loadersDirectory);
+}
+fs.readdirSync(originalsLoadersDirectory)
+    .map(p => {
+        return {
+            from: path.join(originalsLoadersDirectory, p),
+            to: path.join(loadersDirectory, p)
+        }
+    })
+    .forEach(o => {
+        console.log(`Copying '${o.from}' to '${o.to}'`);
+        fs.writeFileSync(o.to, fs.readFileSync(o.from).toString());
+    });
+// @}
