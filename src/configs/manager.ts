@@ -97,8 +97,8 @@ export class ConfigsManager {
     protected cleanOptions(): void {
         let defaultOptions: ConfigOptions = {
             suffix: ConfigsConstants.Suffix,
-            verbose: false,
-        }
+            verbose: false
+        };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
@@ -124,7 +124,7 @@ export class ConfigsManager {
             }
         }
 
-        let files: any = null;
+        let files: any[] = [];
         if (!error) {
             //
             // Basic paths and patterns.
@@ -164,32 +164,30 @@ export class ConfigsManager {
         }
 
         this._configs = {};
-        // this._exports = {};
-        for (let i in files) {
-            try {
-                if (this._options.verbose) {
-                    console.log(`\tLoading config '${chalk.green(files[i].name)}'${files[i].specific ? ` (has specific configuration)` : ''}`);
-                }
-                //
-                // Loading basic configuration.
-                this._configs[files[i].name] = require(files[i].path);
-                //
-                // Merging with the environment specific configuration.
-                if (files[i].specific) {
-                    this._configs[files[i].name] = Tools.DeepMergeObjects(this._configs[files[i].name], require(files[i].specific.path));
-                }
+        this._exports = {};
+        if (!error) {
+            for (let i in files) {
+                try {
+                    if (this._options.verbose) {
+                        console.log(`\t- '${chalk.green(files[i].name)}'${files[i].specific ? ` (has specific configuration)` : ''}`);
+                    }
+                    //
+                    // Loading basic configuration.
+                    this._configs[files[i].name] = require(files[i].path);
+                    //
+                    // Merging with the environment specific configuration.
+                    if (files[i].specific) {
+                        this._configs[files[i].name] = Tools.DeepMergeObjects(this._configs[files[i].name], require(files[i].specific.path));
+                    }
 
-                this._loadExports(files[i].name);
-            } catch (e) {
-                console.error(`Unable to load config '${files[i].name}'.\n\t${e}`);
+                    this.loadExports(files[i].name);
+                } catch (e) {
+                    console.error(`Unable to load config '${files[i].name}'.\n\t${e}`);
+                }
             }
         }
-
-        if (this._options.verbose) {
-            console.log(``);
-        }
     }
-    protected _loadExports(name: string): void {
+    protected loadExports(name: string): void {
         const config: any = this._configs[name];
 
         if (typeof config.$exports !== 'undefined' || typeof config.$pathExports !== 'undefined') {

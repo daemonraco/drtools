@@ -19,5 +19,5 @@ export declare class ConfigsManager {
     publishExports(uri?: string): ExpressMiddleware;
     protected cleanOptions(): void;
     protected load(configsDirectory: string): void;
-    protected _loadExports(name: string): void;
+    protected loadExports(name: string): void;
 }

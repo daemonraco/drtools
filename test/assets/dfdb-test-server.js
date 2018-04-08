@@ -17,11 +17,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Section to be tested @{
 const { ExpressConnector } = require('../..');
 const { configs } = ExpressConnector.attach(app, {
+    //
+    // Configs.
     configsDirectory: path.join(__dirname, '../tmp/configs'),
-    configsOptions: {
-        verbose: true
-    },
-    publishConfigs: true
+    configsOptions: { verbose: true },
+    publishConfigs: true,
+    //
+    // Routes.
+    routesDirectory: path.join(__dirname, '../tmp/routes'),
+    routesOptions: { verbose: true },
 });
 // @}
 

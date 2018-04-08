@@ -10,7 +10,13 @@ export * from './includes/express';
 
 //
 // ConfigsManager related exports.
+export * from './configs/constants';
 export * from './configs/manager';
+
+//
+// RoutesManager related exports.
+export * from './routes/constants';
+export * from './routes/manager';
 
 //
 // Exporting ExpressJS Connector singleton.

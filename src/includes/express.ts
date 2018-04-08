@@ -5,6 +5,7 @@
 
 import { ConfigsConstants } from '../configs/constants';
 import { ConfigsManager } from '../configs/manager';
+import { RoutesManager } from '../routes/manager';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions } from './express-types';
 import { OptionsList } from './basic-types';
 import { Tools } from './tools';
@@ -23,15 +24,22 @@ export class ExpressConnector {
         // Cleaning options.
         let defaultOptions: ExpressConnectorOptions = {
             configsOptions: {},
+            routesOptions: {},
             publishConfigs: false
         };
         options = Tools.DeepMergeObjects(defaultOptions, options);
         //
         // Default values.
-        let results: ExpressConnectorAttachResults = {};
+        let results: ExpressConnectorAttachResults = {
+            configs: null,
+            routes: null
+        };
         //
         // Attaching a configs manager.
         results.configs = this.attachConfigs(app, options);
+        //
+        // Attaching a routes manager.
+        results.routes = this.attachRoutes(app, options);
 
         return results;
     }
@@ -47,6 +55,15 @@ export class ExpressConnector {
                 const uri: string = typeof options.publishConfigs === 'string' ? options.publishConfigs : ConfigsConstants.PublishUri;
                 app.use(manager.publishExports(uri));
             }
+        }
+
+        return manager;
+    }
+    protected attachRoutes(app: any, options: ExpressConnectorOptions): RoutesManager {
+        let manager: RoutesManager = null;
+
+        if (options.routesDirectory) {
+            manager = new RoutesManager(app, options.routesDirectory, options.routesOptions);
         }
 
         return manager;
