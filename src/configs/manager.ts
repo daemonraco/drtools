@@ -97,7 +97,7 @@ export class ConfigsManager {
     protected cleanOptions(): void {
         let defaultOptions: ConfigOptions = {
             suffix: ConfigsConstants.Suffix,
-            verbose: false
+            verbose: true
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);

@@ -37,7 +37,7 @@ export class RoutesManager {
     protected cleanOptions(): void {
         let defaultOptions: RouteOptions = {
             suffix: RoutesConstants.Suffix,
-            verbose: false
+            verbose: true
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);

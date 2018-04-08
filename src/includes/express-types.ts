@@ -12,6 +12,7 @@ export interface ExpressConnectorOptions {
     publishConfigs?: boolean | string;
     routesDirectory?: string;
     routesOptions?: RouteOptions;
+    verbose?: boolean;
 }
 export interface ExpressConnectorAttachResults {
     configs: ConfigsManager;

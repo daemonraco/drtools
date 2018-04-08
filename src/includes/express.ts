@@ -25,7 +25,7 @@ export class ExpressConnector {
         let defaultOptions: ExpressConnectorOptions = {
             configsOptions: {},
             routesOptions: {},
-            publishConfigs: false
+            publishConfigs: true
         };
         options = Tools.DeepMergeObjects(defaultOptions, options);
         //
@@ -49,6 +49,10 @@ export class ExpressConnector {
         let manager: ConfigsManager = null;
 
         if (options.configsDirectory) {
+            if (typeof options.verbose !== 'undefined' && typeof options.configsOptions.verbose === 'undefined') {
+                options.configsOptions.verbose = options.verbose;
+            }
+
             manager = new ConfigsManager(options.configsDirectory, options.configsOptions);
 
             if (options.publishConfigs) {
@@ -63,6 +67,10 @@ export class ExpressConnector {
         let manager: RoutesManager = null;
 
         if (options.routesDirectory) {
+            if (typeof options.verbose !== 'undefined' && typeof options.routesOptions.verbose === 'undefined') {
+                options.routesOptions.verbose = options.verbose;
+            }
+
             manager = new RoutesManager(app, options.routesDirectory, options.routesOptions);
         }
 
