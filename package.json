@@ -1,0 +1,32 @@
+{
+    "name": "drtools",
+    "version": "0.0.1",
+    "description": "",
+    "main": "lib/drtools",
+    "types": "lib/drtools",
+    "scripts": {
+        "start": "npm run build:live",
+        "build": "./node_modules/.bin/tsc",
+        "build:live": "./node_modules/.bin/tsc -w"
+    },
+    "keywords": [],
+    "author": {
+        "name": "Alejandro Dario Simi",
+        "url": "http://daemonraco.com/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/daemonraco/drtools.git"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^8.5.9",
+        "chai": "^4.1.1",
+        "mocha": "^3.5.0",
+        "typescript": "^2.4.1"
+    },
+    "dependencies": {
+        "chalk": "^2.3.2",
+        "jsonpath-plus": "^0.16.0"
+    }
+}
