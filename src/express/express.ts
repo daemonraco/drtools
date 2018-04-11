@@ -76,7 +76,7 @@ export class ExpressConnector {
 
             manager = new ConfigsManager(options.configsDirectory, options.configsOptions);
 
-            if (options.publishConfigs) {
+            if (manager.valid() && options.publishConfigs) {
                 const uri: string = typeof options.publishConfigs === 'string' ? options.publishConfigs : ConfigsConstants.PublishUri;
                 app.use(manager.publishExports(uri));
             }

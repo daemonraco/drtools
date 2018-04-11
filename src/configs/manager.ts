@@ -18,6 +18,7 @@ export interface ConfigOptions {
     verbose?: boolean;
 }
 
+declare const global: any;
 declare const process: any;
 
 export class ConfigsManager {
@@ -27,7 +28,9 @@ export class ConfigsManager {
     protected _configsDirectory: string = null;
     protected _environmentName: string = null;
     protected _exports: ConfigsList = {};
+    protected _lastError: string = null;
     protected _options: ConfigOptions = null;
+    protected _valid: boolean = false;
     //
     // Constructor.
     public constructor(configsDirectory: string, options: ConfigOptions = {}) {
@@ -46,6 +49,9 @@ export class ConfigsManager {
     }
     public get(name: string): any {
         return typeof this._configs[name] ? this._configs[name] : {};
+    }
+    public lastError(): string {
+        return this._lastError;
     }
     public publishExports(uri: string = ConfigsConstants.PublishUri): ExpressMiddleware {
         //
@@ -92,6 +98,9 @@ export class ConfigsManager {
             }
         };
     }
+    public valid(): boolean {
+        return this._valid;
+    }
     //
     // Protected methods.
     protected cleanOptions(): void {
@@ -103,29 +112,29 @@ export class ConfigsManager {
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
     protected load(configsDirectory: string): void {
-        let error: boolean = false;
+        this._lastError = null;
         //
         // Loading environment names.
-        this._environmentName = process.env.ENV_NAME || process.env.NODE_ENV || 'default';
+        this._environmentName = process.env.ENV_NAME || process.env.NODE_ENV || global.ENV_NAME || global.NODE_ENV || 'default';
         if (this._options.verbose) {
             console.log(`Loading configs (environment: ${chalk.green(this._environmentName)}):`);
         }
         //
         // Checking given directory path.
-        if (!error) {
+        if (!this._lastError) {
             let stat: any = null;
             try { stat = fs.statSync(configsDirectory); } catch (e) { }
             if (!stat) {
-                console.error(`'${configsDirectory}' does not exist.`);
-                error = true;
+                this._lastError = `'${configsDirectory}' does not exist.`;
+                console.error(this._lastError);
             } else if (!stat.isDirectory()) {
-                console.error(`'${configsDirectory}' is not a directory.`);
-                error = true;
+                this._lastError = `'${configsDirectory}' is not a directory.`;
+                console.error(this._lastError);
             }
         }
 
         let files: any[] = [];
-        if (!error) {
+        if (!this._lastError) {
             //
             // Basic paths and patterns.
             this._configsDirectory = configsDirectory;
@@ -165,7 +174,7 @@ export class ConfigsManager {
 
         this._configs = {};
         this._exports = {};
-        if (!error) {
+        if (!this._lastError) {
             for (let i in files) {
                 try {
                     if (this._options.verbose) {
@@ -186,6 +195,8 @@ export class ConfigsManager {
                 }
             }
         }
+
+        this._valid = !this._lastError;
     }
     protected loadExports(name: string): void {
         const config: any = this._configs[name];
