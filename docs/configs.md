@@ -109,6 +109,7 @@ If none of these is used, then the value is assume to be `default`.
 
 ## Options
 When you create a new manager you may pass these options:
+
 | Option    |    Type   |  Default | Description                                                    |
 |-----------|:---------:|:--------:|----------------------------------------------------------------|
 | `suffix`  |  `string` | `config` | Suffix to be expected on each configuration file to be loaded. |
