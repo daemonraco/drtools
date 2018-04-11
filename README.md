@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/daemonraco/drtools.svg?branch=master)](https://travis-ci.org/daemonraco/drtools)
+
 # DAEMonRaco's Tools (drtools)
 ... no, it's not _Doctor Tools_ :)
 
@@ -26,6 +28,7 @@ _Long answer?_ Well, if you want, you can give it a try, but it's up to you.
 # Provided tools
 * [Organized Configuration Files](docs/configs.md)
 * [Organized Initializers](docs/loaders.md)
+* [ExpressJS Tools Attacher](docs/express.md)
 
 # Licence
 MIT &copy; 2018 [Alejandro Dario Simi](http://daemonraco.com)

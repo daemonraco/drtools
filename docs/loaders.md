@@ -6,6 +6,7 @@
 - [What is a loader?](#what-is-a-loader)
 - [How to invoke it](#how-to-invoke-it)
     - [How does it look](#how-does-it-look)
+- [Options](#options)
 
 <!-- /TOC -->
 
@@ -27,6 +28,16 @@ If you wonder how a _loader_ looks like, this is a simple example:
 'use strict';
 console.log('Loaded');
 ```
+Its name should be something like `my-init.loader.js` where `.loader` is a suffix
+required to be accepted.
+
+## Options
+When you create a new manager you may pass these options:
+
+| Option    |    Type   |  Default | Description                                             |
+|-----------|:---------:|:--------:|---------------------------------------------------------|
+| `suffix`  |  `string` | `loader` | Suffix to be expected on each loader file to be loaded. |
+| `verbose` | `boolean` |  `true`  | Whether to display loading log information or not.      |
 
 ----
 [Back to README](../README.md)

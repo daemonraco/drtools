@@ -4,8 +4,8 @@
  */
 import { ConfigOptions, ConfigsManager } from '../configs';
 import { EndpointsManagerOptions, EndpointsManager } from '../mock-endpoints';
-import { LoadersManager } from '../loaders';
-import { MiddlewaresManager } from '../middlewares';
+import { LoaderOptions, LoadersManager } from '../loaders';
+import { MiddlewareOptions, MiddlewaresManager } from '../middlewares';
 import { RouteOptions, RoutesManager } from '../routes';
 export declare type ExpressMiddleware = (res: any, req: any, next: () => void) => void;
 export interface ExpressConnectorOptions {
@@ -13,9 +13,9 @@ export interface ExpressConnectorOptions {
     configsOptions?: ConfigOptions;
     publishConfigs?: boolean | string;
     loadersDirectory?: string;
-    loadersOptions?: RouteOptions;
+    loadersOptions?: LoaderOptions;
     middlewaresDirectory?: string;
-    middlewaresOptions?: RouteOptions;
+    middlewaresOptions?: MiddlewareOptions;
     routesDirectory?: string;
     routesOptions?: RouteOptions;
     endpoints: EndpointsManagerOptions | EndpointsManagerOptions[];

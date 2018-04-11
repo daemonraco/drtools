@@ -20,11 +20,11 @@ export interface ExpressConnectorOptions {
     //
     // Loaders.
     loadersDirectory?: string;
-    loadersOptions?: RouteOptions;
+    loadersOptions?: LoaderOptions;
     //
     // Middlewares.
     middlewaresDirectory?: string;
-    middlewaresOptions?: RouteOptions;
+    middlewaresOptions?: MiddlewareOptions;
     //
     // Routes.
     routesDirectory?: string;
