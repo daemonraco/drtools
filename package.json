@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Set of useful tools",
     "main": "lib/drtools",
     "types": "lib/drtools",
@@ -38,6 +38,7 @@
     },
     "dependencies": {
         "chalk": "^2.3.2",
-        "jsonpath-plus": "^0.16.0"
+        "jsonpath-plus": "^0.16.0",
+        "lorem-ipsum": "^1.0.4"
     }
 }

@@ -19,6 +19,10 @@ const { ExpressConnector } = require('../..');
 const { configs } = ExpressConnector.attach(app, {
     configsDirectory: path.join(__dirname, '../tmp/configs'),
     loadersDirectory: path.join(__dirname, '../tmp/loaders'),
+    endpoints: {
+        directory: path.join(__dirname, '../tmp/endpoints'),
+        uri: 'api/v1.0'
+    },
     middlewaresDirectory: path.join(__dirname, '../tmp/middlewares'),
     routesDirectory: path.join(__dirname, '../tmp/routes')
 });

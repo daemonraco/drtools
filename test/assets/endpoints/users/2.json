@@ -1,0 +1,6 @@
+{
+    "id": 2,
+    "name": "Jone Doe",
+    "age": 27,
+    "data": "@@lorem:{\"count\":100}"
+}

@@ -5,6 +5,9 @@
 
 import { ConfigsConstants } from '../configs/constants';
 import { ConfigsManager } from '../configs/manager';
+import { Endpoint } from '../mock-endpoints/endpoint';
+import { EndpointsManager } from '../mock-endpoints/manager';
+import { EndpointsManagerOptions } from '../mock-endpoints/endpoint-types';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions } from './express-types';
 import { LoadersManager } from '../loaders/manager';
 import { MiddlewaresManager } from '../middlewares/manager';
@@ -21,11 +24,17 @@ export class ExpressConnector {
     private constructor() { }
     //
     // Public methods.
-    public attach(app: any, options: ExpressConnectorOptions = {}): ExpressConnectorAttachResults {
+    public attach(app: any, options: ExpressConnectorOptions = { endpoints: [] }): ExpressConnectorAttachResults {
+        //
+        // Pre-fixing options.
+        if (!Array.isArray(options.endpoints)) {
+            options.endpoints = [options.endpoints];
+        }
         //
         // Cleaning options.
         let defaultOptions: ExpressConnectorOptions = {
             configsOptions: {},
+            endpoints: [],
             loadersOptions: {},
             middlewaresOptions: {},
             routesOptions: {},
@@ -36,6 +45,7 @@ export class ExpressConnector {
         // Default values.
         let results: ExpressConnectorAttachResults = {
             configs: null,
+            endpoints: [],
             loaders: null,
             middlewares: null,
             routes: null
@@ -52,6 +62,9 @@ export class ExpressConnector {
         //
         // Attaching a routes manager.
         results.routes = this.attachRoutes(app, options, results.configs);
+        //
+        // Attaching a routes manager.
+        results.endpoints = this.attachMockEndpoints(app, options, results.configs);
 
         return results;
     }
@@ -100,6 +113,17 @@ export class ExpressConnector {
         }
 
         return manager;
+    }
+    protected attachMockEndpoints(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): EndpointsManager[] {
+        let managers: EndpointsManager[] = [];
+
+        (<EndpointsManagerOptions[]>options.endpoints).forEach(endpointOptions => {
+            let manager: EndpointsManager = new EndpointsManager(endpointOptions, configs);
+            app.use(manager.provide());
+            managers.push(manager);
+        });
+
+        return managers;
     }
     protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager {
         let manager: RoutesManager = null;

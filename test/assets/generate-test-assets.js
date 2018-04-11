@@ -3,81 +3,33 @@
 const fs = require('fs');
 const path = require('path');
 
-//
-// Configs @{
-const configsDirectory = path.join(__dirname, '../tmp/configs');
-if (!fs.existsSync(configsDirectory)) {
-    fs.mkdirSync(configsDirectory);
-}
-const dbConfigPath = path.join(configsDirectory, 'db.config.json');
-fs.writeFileSync(dbConfigPath, JSON.stringify({
-    x: 1, y: 2, z: 3,
-    $exports: {
-        e: 'exported value'
-    },
-    $pathExports: {
-        exportedX: '$.x',
-        exportedY: '$.y'
+const pairs = [
+    [path.join(__dirname, 'configs'), path.join(__dirname, '../tmp/configs')],
+    [path.join(__dirname, 'endpoints'), path.join(__dirname, '../tmp/endpoints')],
+    [path.join(__dirname, 'endpoints/users'), path.join(__dirname, '../tmp/endpoints/users')],
+    [path.join(__dirname, 'loaders'), path.join(__dirname, '../tmp/loaders')],
+    [path.join(__dirname, 'middlewares'), path.join(__dirname, '../tmp/middlewares')],
+    [path.join(__dirname, 'routes'), path.join(__dirname, '../tmp/routes')]
+];
+
+pairs.forEach(pair => {
+    if (!fs.existsSync(pair[1])) {
+        console.log(`Creating directory '${pair[1]}'`);
+        fs.mkdirSync(pair[1]);
     }
-}, null, 2));
-// @}
+});
 
-//
-// Routes @{
-const originalsRoutesDirectory = path.join(__dirname, './routes');
-const routesDirectory = path.join(__dirname, '../tmp/routes');
-if (!fs.existsSync(routesDirectory)) {
-    fs.mkdirSync(routesDirectory);
-}
-fs.readdirSync(originalsRoutesDirectory)
-    .map(p => {
-        return {
-            from: path.join(originalsRoutesDirectory, p),
-            to: path.join(routesDirectory, p)
-        }
-    })
-    .forEach(o => {
-        console.log(`Copying '${o.from}' to '${o.to}'`);
-        fs.writeFileSync(o.to, fs.readFileSync(o.from).toString());
-    });
-// @}
-
-//
-// Middlewares @{
-const originalsMiddlewaresDirectory = path.join(__dirname, './middlewares');
-const middlewaresDirectory = path.join(__dirname, '../tmp/middlewares');
-if (!fs.existsSync(middlewaresDirectory)) {
-    fs.mkdirSync(middlewaresDirectory);
-}
-fs.readdirSync(originalsMiddlewaresDirectory)
-    .map(p => {
-        return {
-            from: path.join(originalsMiddlewaresDirectory, p),
-            to: path.join(middlewaresDirectory, p)
-        }
-    })
-    .forEach(o => {
-        console.log(`Copying '${o.from}' to '${o.to}'`);
-        fs.writeFileSync(o.to, fs.readFileSync(o.from).toString());
-    });
-// @}
-
-//
-// Loaders @{
-const originalsLoadersDirectory = path.join(__dirname, './loaders');
-const loadersDirectory = path.join(__dirname, '../tmp/loaders');
-if (!fs.existsSync(loadersDirectory)) {
-    fs.mkdirSync(loadersDirectory);
-}
-fs.readdirSync(originalsLoadersDirectory)
-    .map(p => {
-        return {
-            from: path.join(originalsLoadersDirectory, p),
-            to: path.join(loadersDirectory, p)
-        }
-    })
-    .forEach(o => {
-        console.log(`Copying '${o.from}' to '${o.to}'`);
-        fs.writeFileSync(o.to, fs.readFileSync(o.from).toString());
-    });
-// @}
+pairs.forEach(pair => {
+    fs.readdirSync(pair[0])
+        .filter(p => p.match(/^.*\.(js|json)$/i))
+        .map(p => {
+            return {
+                from: path.join(pair[0], p),
+                to: path.join(pair[1], p)
+            }
+        })
+        .forEach(o => {
+            console.log(`Copying '${o.from}' to '${o.to}'`);
+            fs.writeFileSync(o.to, fs.readFileSync(o.from).toString());
+        });
+});

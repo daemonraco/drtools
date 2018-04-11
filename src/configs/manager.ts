@@ -9,7 +9,8 @@ import * as jsonpath from 'jsonpath-plus';
 import * as path from 'path';
 
 import { ConfigsConstants } from './constants';
-import { ExpressMiddleware, OptionsList } from '../includes/basic-types';
+import { ExpressMiddleware } from '../includes/express-types';
+import { OptionsList } from '../includes/basic-types';
 import { Tools } from '../includes/tools';
 
 export type ConfigsList = { [name: string]: any };

@@ -4,9 +4,13 @@
  */
 
 import { ConfigOptions, ConfigsManager } from '../configs/manager';
+import { EndpointsManagerOptions } from '../mock-endpoints/endpoint-types';
+import { EndpointsManager } from '../mock-endpoints/manager';
 import { LoaderOptions, LoadersManager } from '../loaders/manager';
 import { MiddlewareOptions, MiddlewaresManager } from '../middlewares/manager';
 import { RouteOptions, RoutesManager } from '../routes/manager';
+
+export type ExpressMiddleware = (res: any, req: any, next: () => void) => void;
 
 export interface ExpressConnectorOptions {
     //
@@ -15,11 +19,11 @@ export interface ExpressConnectorOptions {
     configsOptions?: ConfigOptions;
     publishConfigs?: boolean | string;
     //
-    // Loaders
+    // Loaders.
     loadersDirectory?: string;
     loadersOptions?: RouteOptions;
     //
-    // Middlewares
+    // Middlewares.
     middlewaresDirectory?: string;
     middlewaresOptions?: RouteOptions;
     //
@@ -27,12 +31,16 @@ export interface ExpressConnectorOptions {
     routesDirectory?: string;
     routesOptions?: RouteOptions;
     //
-    // General
+    // Endpoints.
+    endpoints: EndpointsManagerOptions | EndpointsManagerOptions[];
+    //
+    // General.
     verbose?: boolean;
 }
 
 export interface ExpressConnectorAttachResults {
     configs: ConfigsManager;
+    endpoints: EndpointsManager[];
     loaders: LoadersManager;
     middlewares: MiddlewaresManager;
     routes: RoutesManager;

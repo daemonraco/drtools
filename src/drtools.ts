@@ -29,6 +29,13 @@ export * from './routes/constants';
 export * from './routes/manager';
 
 //
+// Endpoint related exports.
+export * from './mock-endpoints/manager';
+export * from './mock-endpoints/endpoint';
+export * from './mock-endpoints/endpoint-data';
+export * from './mock-endpoints/endpoint-behaviors';
+
+//
 // Exporting ExpressJS Connector singleton.
 import { ExpressConnector as ExpressConnectorClass } from './includes/express';
 export const ExpressConnector: ExpressConnectorClass = ExpressConnectorClass.Instance();
