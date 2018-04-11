@@ -25,6 +25,7 @@ _Long answer?_ Well, if you want, you can give it a try, but it's up to you.
 
 # Provided tools
 * [Organized Configuration Files](docs/configs.md)
+* [Organized Initializers](docs/loaders.md)
 
 # Licence
 MIT &copy; 2018 [Alejandro Dario Simi](http://daemonraco.com)

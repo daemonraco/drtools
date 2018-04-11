@@ -23,8 +23,10 @@ export class LoadersManager {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
+    protected _lastError: string = null;
     protected _loadersDirectory: string = null;
     protected _options: LoaderOptions = null;
+    protected _valid: boolean = false;
     //
     // Constructor.
     constructor(loadersDirectory: string, options: LoaderOptions = {}, configs: ConfigsManager) {
@@ -36,7 +38,12 @@ export class LoadersManager {
     }
     //
     // Public methods.
-
+    public lastError(): string {
+        return this._lastError;
+    }
+    public valid(): boolean {
+        return this._valid;
+    }
     //
     // Protected methods.
     protected cleanOptions(): void {
@@ -48,23 +55,23 @@ export class LoadersManager {
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
     protected load(loadersDirectory: string) {
-        let error: boolean = false;
+        this._lastError = null;
         //
         // Checking given directory path.
-        if (!error) {
+        if (!this._lastError) {
             let stat: any = null;
             try { stat = fs.statSync(loadersDirectory); } catch (e) { }
             if (!stat) {
-                console.error(`'${loadersDirectory}' does not exist.`);
-                error = true;
+                this._lastError = `'${loadersDirectory}' does not exist.`;
+                console.error(this._lastError);
             } else if (!stat.isDirectory()) {
-                console.error(`'${loadersDirectory}' is not a directory.`);
-                error = true;
+                this._lastError = `'${loadersDirectory}' is not a directory.`;
+                console.error(this._lastError);
             }
         }
 
         let loaders: any[] = [];
-        if (!error) {
+        if (!this._lastError) {
             //
             // Basic paths and patterns.
             this._loadersDirectory = loadersDirectory;
@@ -80,7 +87,7 @@ export class LoadersManager {
                 });
         }
 
-        if (!error && loaders.length > 0) {
+        if (!this._lastError && loaders.length > 0) {
             if (this._options.verbose) {
                 console.log(`Loading loaders:`);
             }
@@ -99,5 +106,7 @@ export class LoadersManager {
                 }
             }
         }
+
+        this._valid = !this._lastError;
     }
 }
