@@ -3,12 +3,11 @@
  * @author Alejandro D. Simi
  */
 
-import { ConfigOptions, ConfigsManager } from '../configs/manager';
-import { EndpointsManagerOptions } from '../mock-endpoints/endpoint-types';
-import { EndpointsManager } from '../mock-endpoints/manager';
-import { LoaderOptions, LoadersManager } from '../loaders/manager';
-import { MiddlewareOptions, MiddlewaresManager } from '../middlewares/manager';
-import { RouteOptions, RoutesManager } from '../routes/manager';
+import { ConfigOptions, ConfigsManager } from '../configs';
+import { EndpointsManagerOptions, EndpointsManager } from '../mock-endpoints';
+import { LoaderOptions, LoadersManager } from '../loaders';
+import { MiddlewareOptions, MiddlewaresManager } from '../middlewares';
+import { RouteOptions, RoutesManager } from '../routes';
 
 export type ExpressMiddleware = (res: any, req: any, next: () => void) => void;
 

@@ -2,12 +2,11 @@
  * @file express-types.ts
  * @author Alejandro D. Simi
  */
-import { ConfigOptions, ConfigsManager } from '../configs/manager';
-import { EndpointsManagerOptions } from '../mock-endpoints/endpoint-types';
-import { EndpointsManager } from '../mock-endpoints/manager';
-import { LoadersManager } from '../loaders/manager';
-import { MiddlewaresManager } from '../middlewares/manager';
-import { RouteOptions, RoutesManager } from '../routes/manager';
+import { ConfigOptions, ConfigsManager } from '../configs';
+import { EndpointsManagerOptions, EndpointsManager } from '../mock-endpoints';
+import { LoadersManager } from '../loaders';
+import { MiddlewaresManager } from '../middlewares';
+import { RouteOptions, RoutesManager } from '../routes';
 export declare type ExpressMiddleware = (res: any, req: any, next: () => void) => void;
 export interface ExpressConnectorOptions {
     configsDirectory?: string;

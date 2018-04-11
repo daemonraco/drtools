@@ -3,17 +3,13 @@
  * @author Alejandro D. Simi
  */
 
-import { ConfigsConstants } from '../configs/constants';
-import { ConfigsManager } from '../configs/manager';
-import { Endpoint } from '../mock-endpoints/endpoint';
-import { EndpointsManager } from '../mock-endpoints/manager';
-import { EndpointsManagerOptions } from '../mock-endpoints/endpoint-types';
-import { ExpressConnectorAttachResults, ExpressConnectorOptions } from './express-types';
-import { LoadersManager } from '../loaders/manager';
-import { MiddlewaresManager } from '../middlewares/manager';
-import { RoutesManager } from '../routes/manager';
-import { OptionsList } from './basic-types';
-import { Tools } from './tools';
+import { ConfigsConstants, ConfigsManager } from '../configs';
+import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-endpoints';
+import { ExpressConnectorAttachResults, ExpressConnectorOptions } from '.';
+import { LoadersManager } from '../loaders';
+import { MiddlewaresManager } from '../middlewares';
+import { RoutesManager } from '../routes';
+import { OptionsList, Tools } from '../includes';
 
 export class ExpressConnector {
     //

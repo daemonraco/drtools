@@ -6,10 +6,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { EndpointData } from './endpoint-data';
-import { ExpressMiddleware } from '../includes/express-types';
-import { OptionsList } from '../includes/basic-types';
-import { Tools } from '../includes/tools';
+import { EndpointData } from '.';
+import { ExpressMiddleware } from '../express';
+import { OptionsList, Tools } from '../includes';
 
 export class Endpoint {
     //

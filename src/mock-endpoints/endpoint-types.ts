@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import { OptionsList } from '../includes/basic-types';
+import { OptionsList } from '../includes';
 
 export interface EndpointsManagerOptions {
     directory: string;

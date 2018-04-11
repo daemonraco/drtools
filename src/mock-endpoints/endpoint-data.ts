@@ -3,9 +3,8 @@
  * @author Alejandro D. Simi
  */
 
-import { EndpointBehaviors } from './endpoint-behaviors';
-import { OptionsList } from '../includes/basic-types';
-import { Tools } from '../includes/tools';
+import { EndpointBehaviors } from '.';
+import { OptionsList, Tools } from '../includes';
 
 export class EndpointData {
     //

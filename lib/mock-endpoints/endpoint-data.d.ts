@@ -2,8 +2,8 @@
  * @file endpoint-data.ts
  * @author Alejandro D. Simi
  */
-import { EndpointBehaviors } from './endpoint-behaviors';
-import { OptionsList } from '../includes/basic-types';
+import { EndpointBehaviors } from '.';
+import { OptionsList } from '../includes';
 export declare class EndpointData {
     readonly BehaviorPattern: RegExp;
     protected _behaviors: EndpointBehaviors;

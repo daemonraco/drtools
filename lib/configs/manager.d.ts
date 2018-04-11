@@ -1,4 +1,4 @@
-import { ExpressMiddleware } from '../includes/express-types';
+import { ExpressMiddleware } from '../express';
 export declare type ConfigsList = {
     [name: string]: any;
 };

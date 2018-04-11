@@ -1,7 +1,6 @@
-import { ConfigsManager } from '../configs/manager';
-import { Endpoint } from '../mock-endpoints/endpoint';
-import { EndpointsManagerOptions } from './endpoint-types';
-import { ExpressMiddleware } from '../includes/express-types';
+import { ConfigsManager } from '../configs';
+import { Endpoint, EndpointsManagerOptions } from '.';
+import { ExpressMiddleware } from '../express';
 export declare class EndpointsManager {
     protected _configs: ConfigsManager;
     protected _provider: Endpoint;

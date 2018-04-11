@@ -8,10 +8,9 @@ import * as fs from 'fs';
 import * as jsonpath from 'jsonpath-plus';
 import * as path from 'path';
 
-import { ConfigsConstants } from './constants';
-import { ExpressMiddleware } from '../includes/express-types';
-import { OptionsList } from '../includes/basic-types';
-import { Tools } from '../includes/tools';
+import { ConfigsConstants } from '.';
+import { ExpressMiddleware } from '../express';
+import { OptionsList, Tools } from '../includes';
 
 export type ConfigsList = { [name: string]: any };
 export interface ConfigOptions {

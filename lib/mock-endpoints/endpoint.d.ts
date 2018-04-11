@@ -1,6 +1,6 @@
-import { EndpointData } from './endpoint-data';
-import { ExpressMiddleware } from '../includes/express-types';
-import { OptionsList } from '../includes/basic-types';
+import { EndpointData } from '.';
+import { ExpressMiddleware } from '../express';
+import { OptionsList } from '../includes';
 export declare class Endpoint {
     protected _dirPath: string;
     protected _loaded: boolean;

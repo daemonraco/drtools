@@ -7,9 +7,9 @@ import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { ConfigsManager } from '../configs/manager';
-import { LoadersConstants } from './constants';
-import { Tools } from '../includes/tools';
+import { ConfigsManager } from '../configs';
+import { LoadersConstants } from '.';
+import { Tools } from '../includes';
 
 export type LoadersList = { [name: string]: any };
 export interface LoaderOptions {

@@ -35,6 +35,4 @@ export class EndpointBehaviors extends Object {
             });
         }
     }
-    //
-    // Protected methods.
 }

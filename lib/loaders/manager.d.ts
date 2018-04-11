@@ -1,4 +1,4 @@
-import { ConfigsManager } from '../configs/manager';
+import { ConfigsManager } from '../configs';
 export declare type LoadersList = {
     [name: string]: any;
 };

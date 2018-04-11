@@ -7,9 +7,9 @@ import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { ConfigsManager } from '../configs/manager';
+import { ConfigsManager } from '../configs';
 import { MiddlewaresConstants } from './constants';
-import { Tools } from '../includes/tools';
+import { Tools } from '../includes';
 
 export type MiddlewaresList = { [name: string]: any };
 export interface MiddlewareOptions {

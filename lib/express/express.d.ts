@@ -1,9 +1,13 @@
-import { ConfigsManager } from '../configs/manager';
-import { EndpointsManager } from '../mock-endpoints/manager';
-import { ExpressConnectorAttachResults, ExpressConnectorOptions } from './express-types';
-import { LoadersManager } from '../loaders/manager';
-import { MiddlewaresManager } from '../middlewares/manager';
-import { RoutesManager } from '../routes/manager';
+/**
+ * @file express.ts
+ * @author Alejandro D. Simi
+ */
+import { ConfigsManager } from '../configs';
+import { EndpointsManager } from '../mock-endpoints';
+import { ExpressConnectorAttachResults, ExpressConnectorOptions } from '.';
+import { LoadersManager } from '../loaders';
+import { MiddlewaresManager } from '../middlewares';
+import { RoutesManager } from '../routes';
 export declare class ExpressConnector {
     private static _Instance;
     private constructor();

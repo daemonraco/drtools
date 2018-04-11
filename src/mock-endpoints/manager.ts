@@ -3,17 +3,13 @@
  * @author Alejandro D. Simi
  */
 
-// import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { ConfigsManager } from '../configs/manager';
-import { Endpoint } from '../mock-endpoints/endpoint';
-import { EndpointsManagerOptions } from './endpoint-types';
-import { ExpressMiddleware } from '../includes/express-types';
-import { Tools } from '../includes/tools';
-
-// declare const global: any;
+import { ConfigsManager } from '../configs';
+import { Endpoint, EndpointsManagerOptions } from '.';
+import { ExpressMiddleware } from '../express';
+import { Tools } from '../includes';
 
 export class EndpointsManager {
     //
