@@ -39,20 +39,14 @@ describe('drtools: Configs manager', () => {
         const dbConf = manager.get('db');
         assert.isObject(dbConf);
         assert.notProperty(dbConf, 'w');
-        assert.isNumber(dbConf.x);
-        assert.equal(dbConf.x, 1);
-        assert.isNumber(dbConf.y);
-        assert.equal(dbConf.y, 2);
-        assert.isNumber(dbConf.z);
-        assert.equal(dbConf.z, 3);
+        assert.strictEqual(dbConf.x, 1);
+        assert.strictEqual(dbConf.y, 2);
+        assert.strictEqual(dbConf.z, 3);
         assert.isObject(dbConf.$exports);
-        assert.isString(dbConf.$exports.e);
-        assert.equal(dbConf.$exports.e, 'exported value');
+        assert.strictEqual(dbConf.$exports.e, 'exported value');
         assert.isObject(dbConf.$pathExports);
-        assert.isString(dbConf.$pathExports.exportedX);
-        assert.equal(dbConf.$pathExports.exportedX, '$.x');
-        assert.isString(dbConf.$pathExports.exportedY);
-        assert.equal(dbConf.$pathExports.exportedY, '$.y');
+        assert.strictEqual(dbConf.$pathExports.exportedX, '$.x');
+        assert.strictEqual(dbConf.$pathExports.exportedY, '$.y');
     });
 
     it(`tries to load valid configs on a different environment (ENV_NAME)`, () => {
@@ -66,22 +60,15 @@ describe('drtools: Configs manager', () => {
 
         const dbConf = manager.get('db');
         assert.isObject(dbConf);
-        assert.isNumber(dbConf.w);
-        assert.equal(dbConf.w, 0);
-        assert.isNumber(dbConf.x);
-        assert.equal(dbConf.x, 11);
-        assert.isNumber(dbConf.y);
-        assert.equal(dbConf.y, 2);
-        assert.isNumber(dbConf.z);
-        assert.equal(dbConf.z, 3);
+        assert.strictEqual(dbConf.w, 0);
+        assert.strictEqual(dbConf.x, 11);
+        assert.strictEqual(dbConf.y, 2);
+        assert.strictEqual(dbConf.z, 3);
         assert.isObject(dbConf.$exports);
-        assert.isString(dbConf.$exports.e);
-        assert.equal(dbConf.$exports.e, 'exported value');
+        assert.strictEqual(dbConf.$exports.e, 'exported value');
         assert.isObject(dbConf.$pathExports);
-        assert.isString(dbConf.$pathExports.exportedX);
-        assert.equal(dbConf.$pathExports.exportedX, '$.x');
-        assert.isString(dbConf.$pathExports.exportedY);
-        assert.equal(dbConf.$pathExports.exportedY, '$.y');
+        assert.strictEqual(dbConf.$pathExports.exportedX, '$.x');
+        assert.strictEqual(dbConf.$pathExports.exportedY, '$.y');
 
         delete global.ENV_NAME;
     });
@@ -97,23 +84,32 @@ describe('drtools: Configs manager', () => {
 
         const dbConf = manager.get('db');
         assert.isObject(dbConf);
-        assert.isNumber(dbConf.w);
-        assert.equal(dbConf.w, 0);
-        assert.isNumber(dbConf.x);
-        assert.equal(dbConf.x, 11);
-        assert.isNumber(dbConf.y);
-        assert.equal(dbConf.y, 2);
-        assert.isNumber(dbConf.z);
-        assert.equal(dbConf.z, 3);
+        assert.strictEqual(dbConf.w, 0);
+        assert.strictEqual(dbConf.x, 11);
+        assert.strictEqual(dbConf.y, 2);
+        assert.strictEqual(dbConf.z, 3);
         assert.isObject(dbConf.$exports);
-        assert.isString(dbConf.$exports.e);
-        assert.equal(dbConf.$exports.e, 'exported value');
+        assert.strictEqual(dbConf.$exports.e, 'exported value');
         assert.isObject(dbConf.$pathExports);
-        assert.isString(dbConf.$pathExports.exportedX);
-        assert.equal(dbConf.$pathExports.exportedX, '$.x');
-        assert.isString(dbConf.$pathExports.exportedY);
-        assert.equal(dbConf.$pathExports.exportedY, '$.y');
+        assert.strictEqual(dbConf.$pathExports.exportedX, '$.x');
+        assert.strictEqual(dbConf.$pathExports.exportedY, '$.y');
 
         delete global.NODE_ENV;
+    });
+
+    it(`tries use a config based on a JavaScript file`, () => {
+        const dir = path.join(__dirname, 'tmp/configs');
+        assert.isTrue(fs.existsSync(dir));
+
+        const manager = new ConfigsManager(dir, {});
+        assert.isTrue(manager.valid());
+
+        const sizesConf = manager.get('sizes');
+        assert.isObject(sizesConf);
+        assert.isObject(sizesConf.min);
+        assert.strictEqual(sizesConf.min.height, 768);
+        assert.strictEqual(sizesConf.min.width, 1024);
+        assert.isFunction(sizesConf.minGeometry);
+        assert.strictEqual(sizesConf.minGeometry(), '1024x768');
     });
 });
