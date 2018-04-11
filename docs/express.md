@@ -36,7 +36,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-const { ExpressConnector } = require('../..');
+const { ExpressConnector } = require('drtools');
 ExpressConnector.attach(app, {
     configsDirectory: `/path/to/configs`,
     loadersDirectory: `/path/to/loaders`,
