@@ -62,6 +62,7 @@ typings/
 /*.txt
 /.codebeatignore
 /.codeclimate.yml
+/.tools
 /.travis.yml
 /src
 /test

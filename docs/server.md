@@ -27,7 +27,12 @@ ExpressJS server).
     -m, --middlewares [path]         directory where middleware files are stored.
     -p, --port [port-number]         port number (default is 3005).
     -r, --routes [path]              directory where route files are stored.
+    --configs-suffix [suffix]        expected extension on configuration files.
     --endpoint-behaviors [path]      path to a behavior script for endpoint mock-up.
+    --loaders-suffix [suffix]        expected extension on initialization files.
+    --middlewares-suffix [suffix]    expected extension on middleware files.
+    --routes-suffix [suffix]         expected extension on route files.
+    --test-run                       does almost everything except start the server and listen its port.
     -h, --help                       output usage information
 ```
 <!-- /AUTO -->

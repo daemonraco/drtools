@@ -33,8 +33,18 @@ commander
         'port number (default is 3005).')
     .option('-r, --routes [path]',
         'directory where route files are stored.')
+    .option('--configs-suffix [suffix]',
+        'expected extension on configuration files.')
     .option('--endpoint-behaviors [path]',
         'path to a behavior script for endpoint mock-up.')
+    .option('--loaders-suffix [suffix]',
+        'expected extension on initialization files.')
+    .option('--middlewares-suffix [suffix]',
+        'expected extension on middleware files.')
+    .option('--routes-suffix [suffix]',
+        'expected extension on route files.')
+    .option('--test-run',
+        'does almost everything except start the server and listen its port.')
     .parse(process.argv);
 
 console.log(`DRTools Server (v${tools.version()}):\n`);
@@ -49,16 +59,44 @@ const connectorOptions = {
 if (commander.configs) {
     connectorOptions.configsDirectory = path.join(process.cwd(), commander.configs);
     availableUrls.push(ConfigsConstants.PublishUri);
+
+    if (commander.configsSuffix) {
+        connectorOptions.configsOptions = { suffix: commander.configsSuffix };
+    }
+} else if (commander.configsSuffix) {
+    error = `Parameter '--configs-suffix' should be used along with option '--configs'.`;
 }
+
 if (commander.loaders) {
     connectorOptions.loadersDirectory = path.join(process.cwd(), commander.loaders);
+
+    if (commander.loadersSuffix) {
+        connectorOptions.loadersOptions = { suffix: commander.loadersSuffix };
+    }
+} else if (commander.loadersSuffix) {
+    error = `Parameter '--loaders-suffix' should be used along with option '--loaders'.`;
 }
+
 if (commander.middlewares) {
     connectorOptions.middlewaresDirectory = path.join(process.cwd(), commander.middlewares);
+
+    if (commander.middlewaresSuffix) {
+        connectorOptions.middlewaresOptions = { suffix: commander.middlewaresSuffix };
+    }
+} else if (commander.middlewaresSuffix) {
+    error = `Parameter '--middlewares-suffix' should be used along with option '--middlewares'.`;
 }
+
 if (commander.routes) {
     connectorOptions.routesDirectory = path.join(process.cwd(), commander.routes);
+
+    if (commander.routesSuffix) {
+        connectorOptions.routesOptions = { suffix: commander.routesSuffix };
+    }
+} else if (commander.routesSuffix) {
+    error = `Parameter '--routes-suffix' should be used along with option '--routes'.`;
 }
+
 if (commander.endpoint && commander.endpointDirectory) {
     const uri = commander.endpoint[0] === '/' ? commander.endpoint : `/${commander.endpoint}`;
     connectorOptions.endpoints = {
@@ -78,14 +116,14 @@ if (commander.endpoint && commander.endpointDirectory) {
 
     availableUrls.push(uri);
 } else if (commander.endpoint) {
-    error = `Parameter '--endpoint' should be used along with option'--endpoint-directory'.`;
+    error = `Parameter '--endpoint' should be used along with option '--endpoint-directory'.`;
 } else if (commander.endpointDirectory) {
-    error = `Parameter '--endpoint-directory' should be used along with option'--endpoint'.`;
+    error = `Parameter '--endpoint-directory' should be used along with option '--endpoint'.`;
 } else if (commander.endpointBehaviors && !commander.endpoint) {
-    error = `Parameter '--endpoint-behaviors' should be used along with option'--endpoint'.`;
+    error = `Parameter '--endpoint-behaviors' should be used along with option '--endpoint'.`;
 }
 
-if (Object.keys(connectorOptions).length === 1) {
+if (!error && Object.keys(connectorOptions).length === 1) {
     error = `There's nothing to serve.`;
 }
 
@@ -135,21 +173,29 @@ if (!error) {
         res.status(404).json(result);
     });
 
-    http.createServer(app).listen(port, () => {
+    const listingInfo = () => {
         console.log(`\nListening at '${chalk.green(`http://localhost:${port}`)}'`);
 
         if (connectorOptions.configsDirectory) {
-            console.log(`\t- Configuration files at '${chalk.green(connectorOptions.configsDirectory)}'`);
+            const suffix = connectorOptions.configsOptions && connectorOptions.configsOptions.suffix ? ` (suffix: '.${connectorOptions.configsOptions.suffix}')` : '';
+            console.log(`\t- Configuration files at '${chalk.green(connectorOptions.configsDirectory)}'${suffix}`);
         }
+
         if (connectorOptions.loadersDirectory) {
-            console.log(`\t- Initialization files at '${chalk.green(connectorOptions.loadersDirectory)}'`);
+            const suffix = connectorOptions.loadersOptions && connectorOptions.loadersOptions.suffix ? ` (suffix: '.${connectorOptions.loadersOptions.suffix}')` : '';
+            console.log(`\t- Initialization files at '${chalk.green(connectorOptions.loadersDirectory)}'${suffix}`);
         }
+
         if (connectorOptions.middlewaresDirectory) {
-            console.log(`\t- Middleware files at '${chalk.green(connectorOptions.middlewaresDirectory)}'`);
+            const suffix = connectorOptions.middlewaresOptions && connectorOptions.middlewaresOptions.suffix ? ` (suffix: '.${connectorOptions.middlewaresOptions.suffix}')` : '';
+            console.log(`\t- Middleware files at '${chalk.green(connectorOptions.middlewaresDirectory)}'${suffix}`);
         }
+
         if (connectorOptions.routesDirectory) {
-            console.log(`\t- Route files at '${chalk.green(connectorOptions.routesDirectory)}'`);
+            const suffix = connectorOptions.routesOptions && connectorOptions.routesOptions.suffix ? ` (suffix: '.${connectorOptions.routesOptions.suffix}')` : '';
+            console.log(`\t- Route files at '${chalk.green(connectorOptions.routesDirectory)}'${suffix}`);
         }
+
         if (connectorOptions.endpoints) {
             connectorOptions.endpoints.forEach(endpoint => {
                 console.log(`\t- Mock-up Endpoint`);
@@ -161,7 +207,13 @@ if (!error) {
                 }
             });
         }
-    });
+    };
+
+    if (commander.testRun) {
+        listingInfo();
+    } else {
+        http.createServer(app).listen(port, listingInfo);
+    }
 
     const exitHandler = (options, err) => {
         process.exit();
