@@ -64,7 +64,7 @@ export class EndpointsManager {
         if (!error) {
             this._endpointsDirectory = this._options.directory;
             this._endpointsUri = this._options.uri;
-            this._provider = new Endpoint(this._endpointsDirectory, this._endpointsUri, this._options);
+            this._provider = new Endpoint(this._endpointsDirectory, this._endpointsUri, this._options.options);
         }
     }
 }

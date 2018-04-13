@@ -1,6 +1,5 @@
-import { EndpointData } from '.';
+import { EndpointData, EndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
-import { OptionsList } from '../includes';
 export declare class Endpoint {
     protected _dirPath: string;
     protected _loaded: boolean;
@@ -9,10 +8,10 @@ export declare class Endpoint {
     };
     protected _restPath: string;
     protected _restPattern: RegExp;
-    protected _options: OptionsList;
-    constructor(dirPath: string, restPath: string, options?: OptionsList);
+    protected _options: EndpointOptions;
+    constructor(dirPath: string, restPath: string, options?: EndpointOptions);
     expressMiddleware(): ExpressMiddleware;
-    protected fixOptions(): void;
+    protected fixConstructorParams(): void;
     protected genResponseFor(endpoint: string): {
         [name: string]: any;
     };

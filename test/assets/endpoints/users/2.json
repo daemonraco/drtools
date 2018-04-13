@@ -2,5 +2,15 @@
     "id": 2,
     "name": "Jone Doe",
     "age": 27,
-    "data": "@@lorem:{\"count\":100}"
+    "city": "@@city",
+    "brief": "@@randString:100",
+    "position": "@@randNumber",
+    "positionT": "@@randNumber:[10,5]",
+    "positionU": "@@randNumber:{\"min\":5,\"max\":10}",
+    "positionV": "@@randNumber:10",
+    "positionW": "@@randNumber:[10]",
+    "positionX": "@@randNumber:{\"max\":10}",
+    "positionY": "@@randNumber:[5,10]",
+    "positionZ": "@@randNumber:{\"min\":10,\"max\":5}",
+    "data": "@@lorem:{\"count\":50}"
 }

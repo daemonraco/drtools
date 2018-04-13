@@ -32,10 +32,21 @@ to a ExpressJS server (visit [this](routes.md) for more information).
 
 Then you can invoke the connector in this way:
 ```js
+'use strict';
+
+const port = process.env.PORT || 3000;
+
+const bodyParser = require('body-parser');
 const express = require('express');
-const path = require('path');
+const http = require('http');
+
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+//
+// Setting up DRTools-Express connector. @{
 const { ExpressConnector } = require('drtools');
 ExpressConnector.attach(app, {
     configsDirectory: `/path/to/configs`,
@@ -48,6 +59,16 @@ ExpressConnector.attach(app, {
     routesDirectory: `/path/to/routes`
 });
 // @}
+
+app.all('*', (req, res) => {
+    res.status(404).json({
+        message: `Path '${req.url}' was not found.`
+    });
+});
+
+http.createServer(app).listen(port, () => {
+    console.log(`listening on port ${port}`);
+});
 ```
 This will run an load all managers at once.
 

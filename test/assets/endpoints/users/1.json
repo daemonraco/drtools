@@ -2,5 +2,8 @@
     "id": 1,
     "name": "John Doe",
     "age": 36,
+    "city": "@@city",
+    "brief": "@@randString",
+    "position": "@@randNumber",
     "data": "@@data"
 }

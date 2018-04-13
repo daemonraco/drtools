@@ -3,12 +3,14 @@
         "id": 1,
         "name": "John Doe",
         "age": 36,
+        "city": "@@city",
         "data": "@@data"
     },
     {
         "id": 2,
         "name": "Jone Doe",
         "age": 27,
+        "city": "@@city",
         "data": "@@lorem"
     }
 ]

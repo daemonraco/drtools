@@ -21,7 +21,10 @@ const { configs } = ExpressConnector.attach(app, {
     loadersDirectory: path.join(__dirname, '../tmp/loaders'),
     endpoints: {
         directory: path.join(__dirname, '../tmp/endpoints'),
-        uri: 'api/v1.0'
+        uri: 'api/v1.0',
+        options: {
+            globalBehaviors: path.join(__dirname, '../tmp/endpoints/.globals.js')
+        },
     },
     middlewaresDirectory: path.join(__dirname, '../tmp/middlewares'),
     routesDirectory: path.join(__dirname, '../tmp/routes')

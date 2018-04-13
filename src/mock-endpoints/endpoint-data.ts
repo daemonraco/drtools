@@ -3,8 +3,8 @@
  * @author Alejandro D. Simi
  */
 
-import { EndpointBehaviors } from '.';
-import { OptionsList, Tools } from '../includes';
+import { EndpointBehaviors, EndpointOptions } from '.';
+import { Tools } from '../includes';
 
 export class EndpointData {
     //
@@ -13,13 +13,11 @@ export class EndpointData {
     //
     // Protected properties.
     protected _behaviors: EndpointBehaviors = new EndpointBehaviors();
-    protected _options: OptionsList = {
-        globalBehaviors: []
-    };
+    protected _options: EndpointOptions = {};
     protected _raw: any = '';
     //
     // Constructor.
-    constructor(dummyDataPath: string, options: object = {}) {
+    constructor(dummyDataPath: string, options: EndpointOptions = {}) {
         this._options = Tools.DeepMergeObjects(this._options, options);
         this.fixOptions();
 
@@ -49,11 +47,12 @@ export class EndpointData {
             const match = out.match(this.BehaviorPattern);
             if (match) {
                 const behavior = match[1];
-                const params = typeof match[3] !== 'undefined' ? JSON.parse(match[3]) : null;
+                let params = typeof match[3] !== 'undefined' ? match[3] : null;
+                try { params = JSON.parse(match[3]); } catch (e) { }
 
                 const func = this._behaviors[behavior];
                 if (typeof func === 'function') {
-                    out = func(params);
+                    out = func.apply(null, Array.isArray(params) ? params : [params]);
                 } else {
                     throw `Unknown behavior '${behavior}'.`;
                 }
@@ -65,6 +64,8 @@ export class EndpointData {
     protected fixOptions(): void {
         if (typeof this._options.globalBehaviors === 'string') {
             this._options.globalBehaviors = [this._options.globalBehaviors];
+        } else if (!Array.isArray(this._options.globalBehaviors)) {
+            this._options.globalBehaviors = [];
         }
     }
     protected loadBehaviors(dummyDataPath: string): void {
@@ -78,11 +79,12 @@ export class EndpointData {
         this.loadGlobalBehaviors();
     }
     protected loadGlobalBehaviors(): void {
-        this._options.globalBehaviors.forEach((globalBehaviorsPath: string): void => {
+        (<string[]>this._options.globalBehaviors).forEach((globalBehaviorsPath: string): void => {
             try {
                 const globalBehaviors = require(globalBehaviorsPath);
                 this._behaviors.importBehaviors(globalBehaviors);
-            } catch (e) { }
+            } catch (e) {
+            }
         });
     }
     protected loadRaw(dummyDataPath: string): void {

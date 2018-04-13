@@ -21,8 +21,63 @@ export class EndpointBehaviors extends Object {
     }
     //
     // Basic behaviors.
-    lorem(params: any): any {
+    public lorem(params: any): any {
         return params === null ? loremIpsum() : loremIpsum(params);
+    }
+    public randNumber(...args: any[]): number {
+        let max: number = 100;
+        let min: number = 0;
+        let out: number = 0;
+
+        if (args[0] === null) {
+            args = [];
+        }
+
+        if (Array.isArray(args[0])) {
+            if (args[0].length > 0) {
+                max = parseInt(args[0][0]);
+            }
+            if (args[0].length > 1) {
+                min = parseInt(args[0][1]);
+            }
+        } else if (typeof args[0] === 'object') {
+            if (typeof args[0].max !== 'undefined') {
+                max = parseInt(args[0].max);
+            }
+            if (typeof args[0].min !== 'undefined') {
+                min = parseInt(args[0].min);
+            }
+        } else {
+            if (typeof args[0] !== 'undefined') {
+                max = parseInt(args[0]);
+            }
+            if (typeof args[1] !== 'undefined') {
+                min = parseInt(args[1]);
+            }
+        }
+
+        if (min > max) {
+            let aux: number = max;
+            max = min;
+            min = aux;
+        }
+
+        out = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        return out;
+    }
+    public randString(length: number = null): string {
+        if (length === null) {
+            length = 10;
+        }
+
+        let out: string = '';
+
+        while (out.length < length) {
+            out += Math.random().toString(36).substring(7);
+        }
+
+        return out.substr(0, length);
     }
     //
     // Public methods.

@@ -6,9 +6,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { EndpointData } from '.';
+import { EndpointData, EndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
-import { OptionsList, Tools } from '../includes';
+import { Tools } from '../includes';
 
 export class Endpoint {
     //
@@ -18,15 +18,15 @@ export class Endpoint {
     protected _loadedEndpoints: { [name: string]: EndpointData } = {};
     protected _restPath: string = '';
     protected _restPattern: RegExp = null;
-    protected _options: OptionsList = null;
+    protected _options: EndpointOptions = null;
     //
     // Constructor.
-    public constructor(dirPath: string, restPath: string, options: OptionsList = {}) {
+    public constructor(dirPath: string, restPath: string, options: EndpointOptions = {}) {
         this._dirPath = dirPath;
         this._restPath = restPath;
         this._options = options;
 
-        this.fixOptions();
+        this.fixConstructorParams();
         this.load();
     }
     //
@@ -53,7 +53,7 @@ export class Endpoint {
     }
     //
     // Protected methods.
-    protected fixOptions(): void {
+    protected fixConstructorParams(): void {
         //
         // Cleaning URI @{
         this._restPath = `/${this._restPath}/`;
@@ -69,6 +69,13 @@ export class Endpoint {
         // @}
 
         this._restPattern = new RegExp(`^${this._restPath}([\\/]?)(.*)$`);
+        //
+        // Fixing options.
+        if (typeof this._options.globalBehaviors === 'string') {
+            this._options.globalBehaviors = [this._options.globalBehaviors];
+        } else if (!Array.isArray(this._options.globalBehaviors)) {
+            this._options.globalBehaviors = [];
+        }
     }
     protected genResponseFor(endpoint: string): { [name: string]: any } {
         let out: { [name: string]: any } = {
@@ -80,7 +87,7 @@ export class Endpoint {
         const endpointPath = path.join(this._dirPath, `${endpoint}.json`);
         if (typeof this._loadedEndpoints[endpointPath] === 'undefined') {
             let stat = null;
-            try { stat = fs.statSync(endpointPath); } catch (e) { };
+            try { stat = fs.statSync(endpointPath); } catch (e) { }
 
             if (stat && stat.isFile()) {
                 try {
@@ -89,7 +96,7 @@ export class Endpoint {
                 } catch (e) {
                     out.status = 500;
                     out.message = `Error loading specs. ${e}`;
-                };
+                }
             } else {
                 out.status = 404;
                 out.message = `Endpoint '${endpoint}' was not found.`;
