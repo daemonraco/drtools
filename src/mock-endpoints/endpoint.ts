@@ -35,7 +35,7 @@ export class Endpoint {
         return (req: any, res: any, next: any) => {
             const match = req.url.match(this._restPattern);
             if (match) {
-                const result = this.genResponseFor(match[2]);
+                const result = this.responseFor(match[2]);
 
                 if (result.status === 200) {
                     res.status(result.status).json(result.data);
@@ -50,6 +50,37 @@ export class Endpoint {
                 next();
             }
         };
+    }
+    public responseFor(endpoint: string): { [name: string]: any } {
+        let out: { [name: string]: any } = {
+            status: 200,
+            message: null,
+            data: {}
+        };
+
+        const endpointPath = path.join(this._dirPath, `${endpoint}.json`);
+        if (typeof this._loadedEndpoints[endpointPath] === 'undefined') {
+            let stat = null;
+            try { stat = fs.statSync(endpointPath); } catch (e) { }
+
+            if (stat && stat.isFile()) {
+                try {
+                    this._loadedEndpoints[endpointPath] = new EndpointData(this, endpointPath, this._options);
+                    out.data = this._loadedEndpoints[endpointPath].data();
+                } catch (e) {
+                    out.status = 500;
+                    out.message = `Error loading specs. ${e}`;
+                }
+            } else {
+                out.status = 404;
+                out.message = `Endpoint '${endpoint}' was not found.`;
+                out.data = {};
+            }
+        } else {
+            out.data = this._loadedEndpoints[endpointPath].data();
+        }
+
+        return out;
     }
     //
     // Protected methods.
@@ -76,37 +107,6 @@ export class Endpoint {
         } else if (!Array.isArray(this._options.globalBehaviors)) {
             this._options.globalBehaviors = [];
         }
-    }
-    protected genResponseFor(endpoint: string): { [name: string]: any } {
-        let out: { [name: string]: any } = {
-            status: 200,
-            message: null,
-            data: {}
-        };
-
-        const endpointPath = path.join(this._dirPath, `${endpoint}.json`);
-        if (typeof this._loadedEndpoints[endpointPath] === 'undefined') {
-            let stat = null;
-            try { stat = fs.statSync(endpointPath); } catch (e) { }
-
-            if (stat && stat.isFile()) {
-                try {
-                    this._loadedEndpoints[endpointPath] = new EndpointData(endpointPath, this._options);
-                    out.data = this._loadedEndpoints[endpointPath].data();
-                } catch (e) {
-                    out.status = 500;
-                    out.message = `Error loading specs. ${e}`;
-                }
-            } else {
-                out.status = 404;
-                out.message = `Endpoint '${endpoint}' was not found.`;
-                out.data = {};
-            }
-        } else {
-            out.data = this._loadedEndpoints[endpointPath].data();
-        }
-
-        return out;
     }
     protected load(): void {
         if (!this._loaded) {

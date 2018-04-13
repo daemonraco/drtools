@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import { EndpointBehaviors, EndpointOptions } from '.';
+import { Endpoint, EndpointBehaviors, EndpointOptions } from '.';
 import { Tools } from '../includes';
 
 export class EndpointData {
@@ -12,14 +12,18 @@ export class EndpointData {
     readonly BehaviorPattern = /^@@([a-z_0-9]+)(|:(.*))$/i;
     //
     // Protected properties.
-    protected _behaviors: EndpointBehaviors = new EndpointBehaviors();
+    protected _behaviors: EndpointBehaviors = null;
+    protected _endpoint: Endpoint = null;
     protected _options: EndpointOptions = {};
     protected _raw: any = '';
     //
     // Constructor.
-    constructor(dummyDataPath: string, options: EndpointOptions = {}) {
+    constructor(endpoint: Endpoint, dummyDataPath: string, options: EndpointOptions = {}) {
+        this._endpoint = endpoint;
         this._options = Tools.DeepMergeObjects(this._options, options);
         this.fixOptions();
+
+        this._behaviors = new EndpointBehaviors(this._endpoint);
 
         this.loadRaw(dummyDataPath);
         this.loadBehaviors(dummyDataPath);
@@ -52,7 +56,7 @@ export class EndpointData {
 
                 const func = this._behaviors[behavior];
                 if (typeof func === 'function') {
-                    out = func.apply(null, Array.isArray(params) ? params : [params]);
+                    out = func.apply(this._behaviors, Array.isArray(params) ? params : [params]);
                 } else {
                     throw `Unknown behavior '${behavior}'.`;
                 }

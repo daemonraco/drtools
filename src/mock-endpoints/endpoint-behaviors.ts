@@ -7,6 +7,8 @@ import * as fs from 'fs';
 import * as loremIpsum from 'lorem-ipsum';
 import * as path from 'path';
 
+import { Endpoint } from '.';
+
 export class EndpointBehaviors extends Object {
     [key: string]: any;
     //
@@ -15,9 +17,14 @@ export class EndpointBehaviors extends Object {
         'importBehaviors'
     ]
     //
+    // Protected properties.
+    protected _endpoint: Endpoint = null;
+    //
     // Constructor.
-    constructor() {
+    constructor(endpoint: Endpoint) {
         super();
+
+        this._endpoint = endpoint;
     }
     //
     // Basic behaviors.
