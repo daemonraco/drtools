@@ -10,10 +10,12 @@ export declare class Endpoint {
     protected _restPattern: RegExp;
     protected _options: EndpointOptions;
     constructor(dirPath: string, restPath: string, options?: EndpointOptions);
+    directory(): string;
     expressMiddleware(): ExpressMiddleware;
-    responseFor(endpoint: string): {
+    responseFor(endpoint: string, simple?: boolean): {
         [name: string]: any;
     };
+    uri(): string;
     protected fixConstructorParams(): void;
     protected load(): void;
 }

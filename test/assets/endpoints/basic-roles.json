@@ -1,0 +1,6 @@
+{
+    "roles": [
+        "@@endpoint:roles/anon",
+        "@@endpoint:roles/user"
+    ]
+}

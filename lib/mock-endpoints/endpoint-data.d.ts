@@ -1,7 +1,3 @@
-/**
- * @file endpoint-data.ts
- * @author Alejandro D. Simi
- */
 import { Endpoint, EndpointBehaviors, EndpointOptions } from '.';
 export declare class EndpointData {
     readonly BehaviorPattern: RegExp;

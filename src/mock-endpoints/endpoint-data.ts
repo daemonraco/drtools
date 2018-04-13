@@ -3,6 +3,8 @@
  * @author Alejandro D. Simi
  */
 
+import * as fs from 'fs';
+
 import { Endpoint, EndpointBehaviors, EndpointOptions } from '.';
 import { Tools } from '../includes';
 
@@ -92,7 +94,9 @@ export class EndpointData {
         });
     }
     protected loadRaw(dummyDataPath: string): void {
-        const reqData = require(dummyDataPath);
-        this._raw = JSON.parse(JSON.stringify(reqData));
+        this._raw = fs.readFileSync(dummyDataPath).toString();
+        try {
+            this._raw = JSON.parse(this._raw);
+        } catch (e) { }
     }
 }

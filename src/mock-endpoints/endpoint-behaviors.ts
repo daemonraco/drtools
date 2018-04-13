@@ -4,6 +4,7 @@
  */
 
 import * as fs from 'fs';
+import * as glob from 'glob';
 import * as loremIpsum from 'lorem-ipsum';
 import * as path from 'path';
 
@@ -28,6 +29,29 @@ export class EndpointBehaviors extends Object {
     }
     //
     // Basic behaviors.
+    public endpoint(endpointPath: string): any {
+        let out: any = undefined;
+
+        const fullPath: string = path.join(this._endpoint.directory(), `${endpointPath}.json`);
+        if (fs.existsSync(fullPath)) {
+            out = this._endpoint.responseFor(endpointPath, true);
+        } else {
+            const rootPath = this._endpoint.directory();
+            const filter = /^(.*)\.json$/i;
+            out = glob.sync(fullPath)
+                .filter((p: string) => p.match(filter))
+                .filter((p: string) => p.indexOf(rootPath) === 0)
+                .map((p: string) => p.substr(rootPath.length + 1))
+                .map((p: string) => p.replace(filter, '$1'))
+                .map((ep: string) => this._endpoint.responseFor(ep, true));
+
+            if (out.length === 0) {
+                out = this._endpoint.responseFor(endpointPath);
+            }
+        }
+
+        return out;
+    }
     public lorem(params: any): any {
         return params === null ? loremIpsum() : loremIpsum(params);
     }

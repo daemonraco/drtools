@@ -7,6 +7,10 @@
 - [Example structure](#example-structure)
 - [Setting it up](#setting-it-up)
 - [Behaviors](#behaviors)
+- [Default behaviors](#default-behaviors)
+    - [randString](#randstring)
+    - [randNumber](#randnumber)
+    - [endpoint](#endpoint)
 - [Custom behaviors](#custom-behaviors)
 - [Global custom behaviors](#global-custom-behaviors)
 
@@ -117,6 +121,45 @@ field with some random text:
 
 This behavior is based on the NPM package
 [lorem-ipsum](https://www.npmjs.com/package/lorem-ipsum).
+
+## Default behaviors
+Besides `lorem`, you have some more useful behaviors at your disposal.
+
+### randString
+It provides a _string_ of random letter and it can be used in this way:
+```json
+{
+    "string_with_10_charaters": "@@randString",
+    "string_with_30_charaters": "@@randString:30"
+}
+```
+
+### randNumber
+It provides a random _integer_ and it can be used in this way:
+```json
+{
+    "between_0_and_100": "@@randNumber",
+    "between_0_and_15": {
+        "simple": "@@randNumber:15",
+        "complex": "@@randNumber:{\"max\":15}"
+    },
+    "between_40_and_80": {
+        "asArray": "@@randNumber:[40,80]",
+        "complex": "@@randNumber:{\"max\":80,\"min\":40}"
+    }
+}
+```
+
+### endpoint
+If one of your mock-up has to incorporate another route as a field, you can
+automatically do so with something like this (assuming that `sub/route.json` is a
+valid file inside your provided directory):
+```json
+{
+    "subRoute": "@@endpoint:sub/route",
+    "subMultipleRoutes": "@@endpoint:sub/multi/*"
+}
+```
 
 ## Custom behaviors
 if you want, in the same place where `1.json` is, you can create a file called

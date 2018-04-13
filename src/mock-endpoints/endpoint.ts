@@ -31,6 +31,9 @@ export class Endpoint {
     }
     //
     // Public methods.
+    public directory(): string {
+        return this._dirPath;
+    }
     public expressMiddleware(): ExpressMiddleware {
         return (req: any, res: any, next: any) => {
             const match = req.url.match(this._restPattern);
@@ -51,7 +54,7 @@ export class Endpoint {
             }
         };
     }
-    public responseFor(endpoint: string): { [name: string]: any } {
+    public responseFor(endpoint: string, simple: boolean = false): { [name: string]: any } {
         let out: { [name: string]: any } = {
             status: 200,
             message: null,
@@ -80,7 +83,10 @@ export class Endpoint {
             out.data = this._loadedEndpoints[endpointPath].data();
         }
 
-        return out;
+        return simple ? out.data : out;
+    }
+    public uri(): string {
+        return this._restPath;
     }
     //
     // Protected methods.
