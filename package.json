@@ -1,9 +1,12 @@
 {
     "name": "drtools",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Set of useful tools",
     "main": "lib/drtools",
     "types": "lib/drtools",
+    "bin": {
+        "drtools-server": "./commands/server.js"
+    },
     "scripts": {
         "start": "npm run build:live",
         "build": "./node_modules/.bin/tsc",
@@ -29,16 +32,17 @@
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^8.5.9",
-        "body-parser": "^1.18.2",
         "chai": "^4.1.2",
         "chai-http": "^4.0.0",
-        "express": "^4.16.3",
         "mocha": "^3.5.3",
         "nodemon": "^1.17.3",
         "typescript": "^2.4.1"
     },
     "dependencies": {
+        "body-parser": "^1.18.2",
         "chalk": "^2.3.2",
+        "commander": "^2.15.1",
+        "express": "^4.16.3",
         "glob": "^7.1.2",
         "jsonpath-plus": "^0.16.0",
         "lorem-ipsum": "^1.0.4"

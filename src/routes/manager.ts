@@ -23,6 +23,7 @@ export class RoutesManager {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
+    protected _routes: any[] = [];
     protected _routesDirectory: string = null;
     protected _options: RouteOptions = null;
     //
@@ -36,7 +37,9 @@ export class RoutesManager {
     }
     //
     // Public methods.
-
+    public routes(): string[] {
+        return this._routes.map((r: any) => r.name);
+    }
     //
     // Protected methods.
     protected cleanOptions(): void {
@@ -63,14 +66,13 @@ export class RoutesManager {
             }
         }
 
-        let routes: any[] = [];
         if (!error) {
             //
             // Basic paths and patterns.
             this._routesDirectory = routesDirectory;
             const routesPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.(json|js)$`);
 
-            routes = fs.readdirSync(this._routesDirectory)
+            this._routes = fs.readdirSync(this._routesDirectory)
                 .filter(x => x.match(routesPattern))
                 .map(x => {
                     const o: any = {
@@ -83,22 +85,22 @@ export class RoutesManager {
                 });
         }
 
-        if (!error && routes.length > 0) {
+        if (!error && this._routes.length > 0) {
             if (this._options.verbose) {
                 console.log(`Loading routes:`);
             }
 
-            for (let i in routes) {
+            for (let i in this._routes) {
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(routes[i].name)}'`);
+                        console.log(`\t- '${chalk.green(this._routes[i].name)}'`);
                     }
 
                     global.configs = this._configs;
-                    app.use(routes[i].uri, require(routes[i].path));
+                    app.use(this._routes[i].uri, require(this._routes[i].path));
                     delete global.configs;
                 } catch (e) {
-                    console.error(chalk.red(`Unable to load route '${routes[i].name}'.\n\t${e}`));
+                    console.error(chalk.red(`Unable to load route '${this._routes[i].name}'.\n\t${e}`));
                 }
             }
         }

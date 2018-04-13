@@ -23,7 +23,9 @@ export class ExpressConnector {
     public attach(app: any, options: ExpressConnectorOptions = { endpoints: [] }): ExpressConnectorAttachResults {
         //
         // Pre-fixing options.
-        if (!Array.isArray(options.endpoints)) {
+        if (typeof options.endpoints === 'undefined') {
+            options.endpoints = [];
+        } else if (!Array.isArray(options.endpoints)) {
             options.endpoints = [options.endpoints];
         }
         //
