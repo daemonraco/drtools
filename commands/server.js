@@ -19,14 +19,22 @@ let error = null;
 
 commander
     .version(tools.version(), '-v, --version')
-    .option('-c, --configs [path]', 'Directory where configuration files are stored.')
-    .option('-e, --endpoint [uri]', 'URL where to provide an endpoint mock-up.')
-    .option('-E, --endpoint-directory [path]', 'Directory where endpoint mock-up files are stored.')
-    .option('-l, --loaders [path]', 'Directory where initialization files are stored.')
-    .option('-m, --middlewares [path]', 'Directory where middleware files are stored.')
-    .option('-p, --port [port-number]', 'Port number (default is 3005).')
-    .option('-r, --routes [path]', 'Directory where route files are stored.')
-    .option('--endpoint-behaviors [path]', 'Path to a behavior script for endpoint mock-up.')
+    .option('-c, --configs [path]',
+        'directory where configuration files are stored.')
+    .option('-e, --endpoint [uri]',
+        'URL where to provide an endpoint mock-up.')
+    .option('-E, --endpoint-directory [path]',
+        'directory where endpoint mock-up files are stored.')
+    .option('-l, --loaders [path]',
+        'directory where initialization files are stored.')
+    .option('-m, --middlewares [path]',
+        'directory where middleware files are stored.')
+    .option('-p, --port [port-number]',
+        'port number (default is 3005).')
+    .option('-r, --routes [path]',
+        'directory where route files are stored.')
+    .option('--endpoint-behaviors [path]',
+        'path to a behavior script for endpoint mock-up.')
     .parse(process.argv);
 
 console.log(`DRTools Server (v${tools.version()}):\n`);

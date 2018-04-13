@@ -30,6 +30,8 @@ _Long answer?_ Well, if you want, you can give it a try, but it's up to you.
 * [Organized Initializers](docs/loaders.md)
 * [Endpoint Mock-ups](docs/endpoints.md)
 * [ExpressJS Tools Attacher](docs/express.md)
+* Commands:
+    * [Server](docs/server.md)
 
 # Licence
 MIT &copy; 2018 [Alejandro Dario Simi](http://daemonraco.com)
