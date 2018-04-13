@@ -11,9 +11,9 @@ export declare class Endpoint {
     protected _options: EndpointOptions;
     constructor(dirPath: string, restPath: string, options?: EndpointOptions);
     expressMiddleware(): ExpressMiddleware;
-    protected fixConstructorParams(): void;
-    protected genResponseFor(endpoint: string): {
+    responseFor(endpoint: string): {
         [name: string]: any;
     };
+    protected fixConstructorParams(): void;
     protected load(): void;
 }

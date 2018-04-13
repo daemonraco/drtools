@@ -2,13 +2,14 @@
  * @file endpoint-data.ts
  * @author Alejandro D. Simi
  */
-import { EndpointBehaviors, EndpointOptions } from '.';
+import { Endpoint, EndpointBehaviors, EndpointOptions } from '.';
 export declare class EndpointData {
     readonly BehaviorPattern: RegExp;
     protected _behaviors: EndpointBehaviors;
+    protected _endpoint: Endpoint;
     protected _options: EndpointOptions;
     protected _raw: any;
-    constructor(dummyDataPath: string, options?: EndpointOptions);
+    constructor(endpoint: Endpoint, dummyDataPath: string, options?: EndpointOptions);
     data(): any;
     protected expanded(out: any): any;
     protected fixOptions(): void;
