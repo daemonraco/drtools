@@ -177,33 +177,40 @@ if (!error) {
         console.log(`\nListening at '${chalk.green(`http://localhost:${port}`)}'`);
 
         if (connectorOptions.configsDirectory) {
+            const error = configs.valid() ? '' : chalk.yellow(` (Error: ${configs.lastError()})`);
             const suffix = connectorOptions.configsOptions && connectorOptions.configsOptions.suffix ? ` (suffix: '.${connectorOptions.configsOptions.suffix}')` : '';
-            console.log(`\t- Configuration files at '${chalk.green(connectorOptions.configsDirectory)}'${suffix}`);
+            console.log(`\t- Configuration files at '${chalk.green(connectorOptions.configsDirectory)}'${suffix}${error}`);
         }
 
         if (connectorOptions.loadersDirectory) {
+            const error = loaders.valid() ? '' : chalk.yellow(` (Error: ${loaders.lastError()})`);
             const suffix = connectorOptions.loadersOptions && connectorOptions.loadersOptions.suffix ? ` (suffix: '.${connectorOptions.loadersOptions.suffix}')` : '';
-            console.log(`\t- Initialization files at '${chalk.green(connectorOptions.loadersDirectory)}'${suffix}`);
+            console.log(`\t- Initialization files at '${chalk.green(connectorOptions.loadersDirectory)}'${suffix}${error}`);
         }
 
         if (connectorOptions.middlewaresDirectory) {
+            const error = middlewares.valid() ? '' : chalk.yellow(` (Error: ${middlewares.lastError()})`);
             const suffix = connectorOptions.middlewaresOptions && connectorOptions.middlewaresOptions.suffix ? ` (suffix: '.${connectorOptions.middlewaresOptions.suffix}')` : '';
-            console.log(`\t- Middleware files at '${chalk.green(connectorOptions.middlewaresDirectory)}'${suffix}`);
+            console.log(`\t- Middleware files at '${chalk.green(connectorOptions.middlewaresDirectory)}'${suffix}${error}`);
         }
 
         if (connectorOptions.routesDirectory) {
+            const error = routes.valid() ? '' : chalk.yellow(` (Error: ${routes.lastError()})`);
             const suffix = connectorOptions.routesOptions && connectorOptions.routesOptions.suffix ? ` (suffix: '.${connectorOptions.routesOptions.suffix}')` : '';
-            console.log(`\t- Route files at '${chalk.green(connectorOptions.routesDirectory)}'${suffix}`);
+            console.log(`\t- Route files at '${chalk.green(connectorOptions.routesDirectory)}'${suffix}${error}`);
         }
 
         if (connectorOptions.endpoints) {
-            connectorOptions.endpoints.forEach(endpoint => {
-                console.log(`\t- Mock-up Endpoint`);
-                console.log(`\t\tURI:       '${chalk.green(endpoint.uri)}'`);
-                console.log(`\t\tDirectory: '${chalk.green(endpoint.directory)}'`);
-                if (endpoint.options.globalBehaviors.length > 0) {
+            endpoints.forEach(endpoint => {
+                const error = endpoint.valid() ? '' : chalk.yellow(` (Error: ${endpoint.lastError()})`);
+
+                console.log(`\t- Mock-up Endpoint${error}`);
+                console.log(`\t\tURI:       '${chalk.green(endpoint.uri())}'`);
+                console.log(`\t\tDirectory: '${chalk.green(endpoint.directory())}'`);
+                const options = endpoint.options();
+                if (options.globalBehaviors.length > 0) {
                     console.log(`\t\tBehaviors:`);
-                    endpoint.options.globalBehaviors.forEach(b => console.log(`\t\t\t'${chalk.green(b)}'`));
+                    options.globalBehaviors.forEach(b => console.log(`\t\t\t'${chalk.green(b)}'`));
                 }
             });
         }

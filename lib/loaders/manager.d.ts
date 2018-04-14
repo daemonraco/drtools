@@ -8,13 +8,14 @@ export interface LoaderOptions {
 }
 export declare class LoadersManager {
     protected _configs: ConfigsManager;
+    protected _directory: string;
     protected _lastError: string;
-    protected _loadersDirectory: string;
     protected _options: LoaderOptions;
     protected _valid: boolean;
-    constructor(loadersDirectory: string, options: LoaderOptions, configs: ConfigsManager);
+    constructor(directory: string, options: LoaderOptions, configs: ConfigsManager);
+    directory(): string;
     lastError(): string;
     valid(): boolean;
     protected cleanOptions(): void;
-    protected load(loadersDirectory: string): void;
+    protected load(directory: string): void;
 }

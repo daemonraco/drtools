@@ -23,22 +23,33 @@ export class RoutesManager {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
-    protected _routes: any[] = [];
-    protected _routesDirectory: string = null;
+    protected _directory: string = null;
+    protected _lastError: string = null;
     protected _options: RouteOptions = null;
+    protected _routes: any[] = [];
+    protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(app: any, routesDirectory: string, options: RouteOptions = {}, configs: ConfigsManager) {
+    constructor(app: any, directory: string, options: RouteOptions = {}, configs: ConfigsManager) {
         this._configs = configs;
         this._options = options;
         this.cleanOptions();
 
-        this.load(app, routesDirectory);
+        this.load(app, directory);
     }
     //
     // Public methods.
+    public directory(): string {
+        return this._directory;
+    }
+    public lastError(): string {
+        return this._lastError;
+    }
     public routes(): string[] {
         return this._routes.map((r: any) => r.name);
+    }
+    public valid(): boolean {
+        return this._valid;
     }
     //
     // Protected methods.
@@ -50,34 +61,34 @@ export class RoutesManager {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
-    protected load(app: any, routesDirectory: string) {
-        let error: boolean = false;
+    protected load(app: any, directory: string) {
+        if (this._options.verbose) {
+            console.log(`Loading routes:`);
+        }
         //
         // Checking given directory path.
-        if (!error) {
-            let stat: any = null;
-            try { stat = fs.statSync(routesDirectory); } catch (e) { }
-            if (!stat) {
-                console.error(`'${routesDirectory}' does not exist.`);
-                error = true;
-            } else if (!stat.isDirectory()) {
-                console.error(`'${routesDirectory}' is not a directory.`);
-                error = true;
-            }
+        let stat: any = null;
+        try { stat = fs.statSync(directory); } catch (e) { }
+        if (!stat) {
+            this._lastError = `'${directory}' does not exist.`;
+            console.error(chalk.red(this._lastError));
+        } else if (!stat.isDirectory()) {
+            this._lastError = `'${directory}' is not a directory.`;
+            console.error(chalk.red(this._lastError));
         }
 
-        if (!error) {
+        if (!this._lastError) {
             //
             // Basic paths and patterns.
-            this._routesDirectory = routesDirectory;
+            this._directory = directory;
             const routesPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.(json|js)$`);
 
-            this._routes = fs.readdirSync(this._routesDirectory)
+            this._routes = fs.readdirSync(this._directory)
                 .filter(x => x.match(routesPattern))
                 .map(x => {
                     const o: any = {
                         name: x.replace(routesPattern, '$1'),
-                        path: path.join(this._routesDirectory, x)
+                        path: path.join(this._directory, x)
                     };
                     o.uri = `/${o.name}`;
 
@@ -85,11 +96,7 @@ export class RoutesManager {
                 });
         }
 
-        if (!error && this._routes.length > 0) {
-            if (this._options.verbose) {
-                console.log(`Loading routes:`);
-            }
-
+        if (!this._lastError && this._routes.length > 0) {
             for (let i in this._routes) {
                 try {
                     if (this._options.verbose) {

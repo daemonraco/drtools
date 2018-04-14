@@ -23,21 +23,24 @@ export class LoadersManager {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
+    protected _directory: string = null;
     protected _lastError: string = null;
-    protected _loadersDirectory: string = null;
     protected _options: LoaderOptions = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(loadersDirectory: string, options: LoaderOptions = {}, configs: ConfigsManager) {
+    constructor(directory: string, options: LoaderOptions = {}, configs: ConfigsManager) {
         this._configs = configs;
         this._options = options;
         this.cleanOptions();
 
-        this.load(loadersDirectory);
+        this.load(directory);
     }
     //
     // Public methods.
+    public directory(): string {
+        return this._directory;
+    }
     public lastError(): string {
         return this._lastError;
     }
@@ -54,19 +57,21 @@ export class LoadersManager {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
-    protected load(loadersDirectory: string) {
-        this._lastError = null;
+    protected load(directory: string) {
+        if (this._options.verbose) {
+            console.log(`Loading loaders:`);
+        }
         //
         // Checking given directory path.
         if (!this._lastError) {
             let stat: any = null;
-            try { stat = fs.statSync(loadersDirectory); } catch (e) { }
+            try { stat = fs.statSync(directory); } catch (e) { }
             if (!stat) {
-                this._lastError = `'${loadersDirectory}' does not exist.`;
-                console.error(this._lastError);
+                this._lastError = `'${directory}' does not exist.`;
+                console.error(chalk.red(this._lastError));
             } else if (!stat.isDirectory()) {
-                this._lastError = `'${loadersDirectory}' is not a directory.`;
-                console.error(this._lastError);
+                this._lastError = `'${directory}' is not a directory.`;
+                console.error(chalk.red(this._lastError));
             }
         }
 
@@ -74,24 +79,20 @@ export class LoadersManager {
         if (!this._lastError) {
             //
             // Basic paths and patterns.
-            this._loadersDirectory = loadersDirectory;
+            this._directory = directory;
             const loadersPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.(json|js)$`);
 
-            loaders = fs.readdirSync(this._loadersDirectory)
+            loaders = fs.readdirSync(this._directory)
                 .filter(x => x.match(loadersPattern))
                 .map(x => {
                     return {
                         name: x.replace(loadersPattern, '$1'),
-                        path: path.join(this._loadersDirectory, x)
+                        path: path.join(this._directory, x)
                     };
                 });
         }
 
         if (!this._lastError && loaders.length > 0) {
-            if (this._options.verbose) {
-                console.log(`Loading loaders:`);
-            }
-
             for (let i in loaders) {
                 try {
                     if (this._options.verbose) {

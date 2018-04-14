@@ -126,10 +126,10 @@ export class ConfigsManager {
             try { stat = fs.statSync(configsDirectory); } catch (e) { }
             if (!stat) {
                 this._lastError = `'${configsDirectory}' does not exist.`;
-                console.error(this._lastError);
+                console.error(chalk.red(this._lastError));
             } else if (!stat.isDirectory()) {
                 this._lastError = `'${configsDirectory}' is not a directory.`;
-                console.error(this._lastError);
+                console.error(chalk.red(this._lastError));
             }
         }
 

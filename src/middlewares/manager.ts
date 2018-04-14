@@ -23,20 +23,30 @@ export class MiddlewaresManager {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
-    protected _middlewaresDirectory: string = null;
+    protected _directory: string = null;
+    protected _lastError: string = null;
     protected _options: MiddlewareOptions = null;
+    protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(app: any, middlewaresDirectory: string, options: MiddlewareOptions = {}, configs: ConfigsManager) {
+    constructor(app: any, directory: string, options: MiddlewareOptions = {}, configs: ConfigsManager) {
         this._configs = configs;
         this._options = options;
         this.cleanOptions();
 
-        this.load(app, middlewaresDirectory);
+        this.load(app, directory);
     }
     //
     // Public methods.
-
+    public directory(): string {
+        return this._directory;
+    }
+    public lastError(): string {
+        return this._lastError;
+    }
+    public valid(): boolean {
+        return this._valid;
+    }
     //
     // Protected methods.
     protected cleanOptions(): void {
@@ -47,44 +57,40 @@ export class MiddlewaresManager {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
-    protected load(app: any, middlewaresDirectory: string) {
-        let error: boolean = false;
+    protected load(app: any, directory: string) {
+        if (this._options.verbose) {
+            console.log(`Loading middlewares:`);
+        }
         //
         // Checking given directory path.
-        if (!error) {
-            let stat: any = null;
-            try { stat = fs.statSync(middlewaresDirectory); } catch (e) { }
-            if (!stat) {
-                console.error(`'${middlewaresDirectory}' does not exist.`);
-                error = true;
-            } else if (!stat.isDirectory()) {
-                console.error(`'${middlewaresDirectory}' is not a directory.`);
-                error = true;
-            }
+        let stat: any = null;
+        try { stat = fs.statSync(directory); } catch (e) { }
+        if (!stat) {
+            this._lastError = `'${directory}' does not exist.`;
+            console.error(chalk.red(this._lastError));
+        } else if (!stat.isDirectory()) {
+            this._lastError = `'${directory}' is not a directory.`;
+            console.error(chalk.red(this._lastError));
         }
 
         let middlewares: any[] = [];
-        if (!error) {
+        if (!this._lastError) {
             //
             // Basic paths and patterns.
-            this._middlewaresDirectory = middlewaresDirectory;
+            this._directory = directory;
             const middlewaresPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.(json|js)$`);
 
-            middlewares = fs.readdirSync(this._middlewaresDirectory)
+            middlewares = fs.readdirSync(this._directory)
                 .filter(x => x.match(middlewaresPattern))
                 .map(x => {
                     return {
                         name: x.replace(middlewaresPattern, '$1'),
-                        path: path.join(this._middlewaresDirectory, x)
+                        path: path.join(this._directory, x)
                     };
                 });
         }
 
-        if (!error && middlewares.length > 0) {
-            if (this._options.verbose) {
-                console.log(`Loading middlewares:`);
-            }
-
+        if (!this._lastError && middlewares.length > 0) {
             for (let i in middlewares) {
                 try {
                     if (this._options.verbose) {

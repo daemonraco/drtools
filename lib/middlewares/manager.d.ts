@@ -8,9 +8,14 @@ export interface MiddlewareOptions {
 }
 export declare class MiddlewaresManager {
     protected _configs: ConfigsManager;
-    protected _middlewaresDirectory: string;
+    protected _directory: string;
+    protected _lastError: string;
     protected _options: MiddlewareOptions;
-    constructor(app: any, middlewaresDirectory: string, options: MiddlewareOptions, configs: ConfigsManager);
+    protected _valid: boolean;
+    constructor(app: any, directory: string, options: MiddlewareOptions, configs: ConfigsManager);
+    directory(): string;
+    lastError(): string;
+    valid(): boolean;
     protected cleanOptions(): void;
-    protected load(app: any, middlewaresDirectory: string): void;
+    protected load(app: any, directory: string): void;
 }
