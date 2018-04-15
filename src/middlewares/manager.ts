@@ -14,7 +14,7 @@ declare const global: any;
 export class MiddlewaresManager extends GenericManager<MiddlewareOptions>  {
     //
     // Protected properties.
-    protected _hasSpecialLoad: boolean = true;
+
     //
     // Constructor.
     constructor(app: any, directory: string, options: MiddlewareOptions = null, configs: ConfigsManager = null) {

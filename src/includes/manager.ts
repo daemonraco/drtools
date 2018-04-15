@@ -17,7 +17,6 @@ export abstract class GenericManager<TOptions> {
     // Protected properties.
     protected _configs: ConfigsManager = null;
     protected _directory: string = null;
-    protected _hasSpecialLoad: boolean = false;
     protected _itemSpecs: ItemSpec[] = [];
     protected _lastError: string = null;
     protected _options: TOptions = null;
@@ -32,12 +31,6 @@ export abstract class GenericManager<TOptions> {
         this.cleanOptions();
         this.checkDirectory();
         this.loadItemPaths();
-
-        if (!this._hasSpecialLoad) {
-            this.load();
-        }
-
-        this._valid = !this._lastError;
     }
     //
     // Public methods.

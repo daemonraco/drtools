@@ -14,7 +14,6 @@ declare const global: any;
 export class TasksManager extends GenericManager<TasksManagerOptions> {
     //
     // Protected properties.
-    protected _hasSpecialLoad: boolean = true;
     protected _intervals: any[] = [];
     protected _items: TasksList = null;
     //

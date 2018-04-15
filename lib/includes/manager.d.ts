@@ -3,7 +3,6 @@ import { ItemSpec } from '.';
 export declare abstract class GenericManager<TOptions> {
     protected _configs: ConfigsManager;
     protected _directory: string;
-    protected _hasSpecialLoad: boolean;
     protected _itemSpecs: ItemSpec[];
     protected _lastError: string;
     protected _options: TOptions;

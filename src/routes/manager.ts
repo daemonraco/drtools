@@ -14,7 +14,7 @@ declare const global: any;
 export class RoutesManager extends GenericManager<RouteOptions> {
     //
     // Protected properties.
-    protected _hasSpecialLoad: boolean = true;
+
     //
     // Constructor.
     constructor(app: any, directory: string, options: RouteOptions = {}, configs: ConfigsManager) {
