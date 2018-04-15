@@ -33,6 +33,8 @@ commander
         'port number (default is 3005).')
     .option('-r, --routes [path]',
         'directory where route files are stored.')
+    .option('-t, --tasks [path]',
+        'directory where task files are stored.')
     .option('--configs-suffix [suffix]',
         'expected extension on configuration files.')
     .option('--endpoint-behaviors [path]',
@@ -43,6 +45,8 @@ commander
         'expected extension on middleware files.')
     .option('--routes-suffix [suffix]',
         'expected extension on route files.')
+    .option('--tasks-suffix [suffix]',
+        'expected extension on task files.')
     .option('--test-run',
         'does almost everything except start the server and listen its port.')
     .parse(process.argv);
@@ -95,6 +99,16 @@ if (commander.routes) {
     }
 } else if (commander.routesSuffix) {
     error = `Parameter '--routes-suffix' should be used along with option '--routes'.`;
+}
+
+if (commander.tasks) {
+    connectorOptions.tasksDirectory = path.join(process.cwd(), commander.tasks);
+
+    if (commander.tasksSuffix) {
+        connectorOptions.tasksOptions = { suffix: commander.tasksSuffix };
+    }
+} else if (commander.tasksSuffix) {
+    error = `Parameter '--tasks-suffix' should be used along with option '--tasks'.`;
 }
 
 if (commander.endpoint && commander.endpointDirectory) {
@@ -155,6 +169,7 @@ if (!error) {
         loaders,
         middlewares,
         routes,
+        tasks,
         endpoints
     } = ExpressConnector.attach(app, connectorOptions);
     if (routes) {
@@ -198,6 +213,12 @@ if (!error) {
             const error = routes.valid() ? '' : chalk.yellow(` (Error: ${routes.lastError()})`);
             const suffix = connectorOptions.routesOptions && connectorOptions.routesOptions.suffix ? ` (suffix: '.${connectorOptions.routesOptions.suffix}')` : '';
             console.log(`\t- Route files at '${chalk.green(connectorOptions.routesDirectory)}'${suffix}${error}`);
+        }
+
+        if (connectorOptions.tasksDirectory) {
+            const error = tasks.valid() ? '' : chalk.yellow(` (Error: ${tasks.lastError()})`);
+            const suffix = connectorOptions.tasksOptions && connectorOptions.tasksOptions.suffix ? ` (suffix: '.${connectorOptions.tasksOptions.suffix}')` : '';
+            console.log(`\t- Task files at '${chalk.green(connectorOptions.tasksDirectory)}'${suffix}${error}`);
         }
 
         if (connectorOptions.endpoints) {

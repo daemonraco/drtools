@@ -8,8 +8,9 @@ import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-end
 import { ExpressConnectorAttachResults, ExpressConnectorOptions } from '.';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
-import { RoutesManager } from '../routes';
 import { OptionsList, Tools } from '../includes';
+import { RoutesManager } from '../routes';
+import { TasksManager } from '../tasks';
 
 export class ExpressConnector {
     //
@@ -36,6 +37,7 @@ export class ExpressConnector {
             loadersOptions: {},
             middlewaresOptions: {},
             routesOptions: {},
+            tasksOptions: {},
             publishConfigs: true
         };
         options = Tools.DeepMergeObjects(defaultOptions, options);
@@ -46,7 +48,8 @@ export class ExpressConnector {
             endpoints: [],
             loaders: null,
             middlewares: null,
-            routes: null
+            routes: null,
+            tasks: null
         };
         //
         // Attaching a configs manager.
@@ -60,6 +63,9 @@ export class ExpressConnector {
         //
         // Attaching a routes manager.
         results.routes = this.attachRoutes(app, options, results.configs);
+        //
+        // Attaching a routes manager.
+        results.tasks = this.attachTasks(options, results.configs);
         //
         // Attaching a routes manager.
         results.endpoints = this.attachMockEndpoints(app, options, results.configs);
@@ -132,6 +138,19 @@ export class ExpressConnector {
             }
 
             manager = new RoutesManager(app, options.routesDirectory, options.routesOptions, configs);
+        }
+
+        return manager;
+    }
+    protected attachTasks(options: ExpressConnectorOptions, configs: ConfigsManager): TasksManager {
+        let manager: TasksManager = null;
+
+        if (options.tasksDirectory) {
+            if (typeof options.verbose !== 'undefined' && typeof options.tasksOptions.verbose === 'undefined') {
+                options.tasksOptions.verbose = options.verbose;
+            }
+
+            manager = new TasksManager(options.tasksDirectory, options.tasksOptions, configs);
         }
 
         return manager;

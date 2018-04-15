@@ -8,7 +8,7 @@ const path = require('path');
 
 // ---------------------------------------------------------------------------- //
 // Testing.
-describe('drtools: Loaders manager', () => {
+describe('drtools: Loaders manager:', () => {
     const { ConfigsManager, LoadersManager } = require('..');
     const configs = new ConfigsManager(path.join(__dirname, 'tmp/configs'));
 

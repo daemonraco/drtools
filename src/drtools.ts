@@ -24,6 +24,10 @@ export * from './middlewares';
 export * from './routes';
 
 //
+// TasksManager related exports.
+export * from './tasks';
+
+//
 // Endpoint related exports.
 export * from './mock-endpoints';
 

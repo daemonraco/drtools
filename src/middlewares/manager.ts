@@ -4,49 +4,27 @@
  */
 
 import * as chalk from 'chalk';
-import * as fs from 'fs';
-import * as path from 'path';
 
 import { ConfigsManager } from '../configs';
-import { MiddlewaresConstants } from './constants';
-import { Tools } from '../includes';
-
-export type MiddlewaresList = { [name: string]: any };
-export interface MiddlewareOptions {
-    suffix?: string;
-    verbose?: boolean;
-}
+import { GenericManager, Tools } from '../includes';
+import { MiddlewaresConstants, MiddlewareOptions } from '.';
 
 declare const global: any;
 
-export class MiddlewaresManager {
+export class MiddlewaresManager extends GenericManager<MiddlewareOptions>  {
     //
     // Protected properties.
-    protected _configs: ConfigsManager = null;
-    protected _directory: string = null;
-    protected _lastError: string = null;
-    protected _options: MiddlewareOptions = null;
-    protected _valid: boolean = false;
+    protected _hasSpecialLoad: boolean = true;
     //
     // Constructor.
-    constructor(app: any, directory: string, options: MiddlewareOptions = {}, configs: ConfigsManager) {
-        this._configs = configs;
-        this._options = options;
-        this.cleanOptions();
-
-        this.load(app, directory);
+    constructor(app: any, directory: string, options: MiddlewareOptions = null, configs: ConfigsManager = null) {
+        super(directory, options, configs);
+        this.loadAndAttach(app);
+        this._valid = !this._lastError;
     }
     //
     // Public methods.
-    public directory(): string {
-        return this._directory;
-    }
-    public lastError(): string {
-        return this._lastError;
-    }
-    public valid(): boolean {
-        return this._valid;
-    }
+
     //
     // Protected methods.
     protected cleanOptions(): void {
@@ -55,53 +33,28 @@ export class MiddlewaresManager {
             verbose: true
         };
 
-        this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
+        this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
-    protected load(app: any, directory: string) {
+    protected load(): void {
+        // Nothing to do here.
+    }
+    protected loadAndAttach(app: any): void {
         if (this._options.verbose) {
             console.log(`Loading middlewares:`);
         }
-        //
-        // Checking given directory path.
-        let stat: any = null;
-        try { stat = fs.statSync(directory); } catch (e) { }
-        if (!stat) {
-            this._lastError = `'${directory}' does not exist.`;
-            console.error(chalk.red(this._lastError));
-        } else if (!stat.isDirectory()) {
-            this._lastError = `'${directory}' is not a directory.`;
-            console.error(chalk.red(this._lastError));
-        }
 
-        let middlewares: any[] = [];
-        if (!this._lastError) {
-            //
-            // Basic paths and patterns.
-            this._directory = directory;
-            const middlewaresPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.(json|js)$`);
-
-            middlewares = fs.readdirSync(this._directory)
-                .filter(x => x.match(middlewaresPattern))
-                .map(x => {
-                    return {
-                        name: x.replace(middlewaresPattern, '$1'),
-                        path: path.join(this._directory, x)
-                    };
-                });
-        }
-
-        if (!this._lastError && middlewares.length > 0) {
-            for (let i in middlewares) {
+        if (!this._lastError && this._itemSpecs.length > 0) {
+            for (let i in this._itemSpecs) {
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(middlewares[i].name)}'`);
+                        console.log(`\t- '${chalk.green(this._itemSpecs[i].name)}'`);
                     }
 
                     global.configs = this._configs;
-                    app.use(require(middlewares[i].path));
+                    app.use(require(this._itemSpecs[i].path));
                     delete global.configs;
                 } catch (e) {
-                    console.error(chalk.red(`Unable to load middleware '${middlewares[i].name}'.\n\t${e}`));
+                    console.error(chalk.red(`Unable to load middleware '${this._itemSpecs[i].name}'.\n\t${e}`));
                 }
             }
         }

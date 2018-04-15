@@ -6,7 +6,7 @@ const assert = require('chai').assert;
 
 // ---------------------------------------------------------------------------- //
 // Testing.
-describe('drtools: Require', () => {
+describe('drtools: Require:', () => {
     const drtools = require('..');
 
     //
@@ -24,6 +24,8 @@ describe('drtools: Require', () => {
     it(`provides a type called 'MiddlewaresManager'`, () => assert.typeOf(drtools.MiddlewaresManager, "function"));
     it(`provides a type called 'RoutesConstants'`, () => assert.typeOf(drtools.RoutesConstants, "function"));
     it(`provides a type called 'RoutesManager'`, () => assert.typeOf(drtools.RoutesManager, "function"));
+    it(`provides a type called 'TasksConstants'`, () => assert.typeOf(drtools.TasksConstants, "function"));
+    it(`provides a type called 'TasksManager'`, () => assert.typeOf(drtools.TasksManager, "function"));
     it(`provides a type called 'Tools'`, () => assert.typeOf(drtools.Tools, "function"));
     // @}
 

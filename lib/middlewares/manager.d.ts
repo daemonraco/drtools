@@ -1,21 +1,10 @@
 import { ConfigsManager } from '../configs';
-export declare type MiddlewaresList = {
-    [name: string]: any;
-};
-export interface MiddlewareOptions {
-    suffix?: string;
-    verbose?: boolean;
-}
-export declare class MiddlewaresManager {
-    protected _configs: ConfigsManager;
-    protected _directory: string;
-    protected _lastError: string;
-    protected _options: MiddlewareOptions;
-    protected _valid: boolean;
-    constructor(app: any, directory: string, options: MiddlewareOptions, configs: ConfigsManager);
-    directory(): string;
-    lastError(): string;
-    valid(): boolean;
+import { GenericManager } from '../includes';
+import { MiddlewareOptions } from '.';
+export declare class MiddlewaresManager extends GenericManager<MiddlewareOptions> {
+    protected _hasSpecialLoad: boolean;
+    constructor(app: any, directory: string, options?: MiddlewareOptions, configs?: ConfigsManager);
     protected cleanOptions(): void;
-    protected load(app: any, directory: string): void;
+    protected load(): void;
+    protected loadAndAttach(app: any): void;
 }

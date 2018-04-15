@@ -14,7 +14,7 @@ chai.use(chaiHttp);
 
 // ---------------------------------------------------------------------------- //
 // Testing.
-describe('drtools: Configs on the ExpressJS connector', () => {
+describe('drtools: Configs on the ExpressJS connector:', () => {
     it(`requesting known public configs`, done => {
         chai.request(`http://localhost:${port}`)
             .get(`/public-configs`)

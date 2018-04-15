@@ -5,4 +5,5 @@
 
 export * from './basic-types';
 export * from './constants';
+export * from './manager';
 export * from './tools';

@@ -8,7 +8,7 @@ const path = require('path');
 
 // ---------------------------------------------------------------------------- //
 // Testing.
-describe('drtools: Configs manager', () => {
+describe('drtools: Configs manager:', () => {
     const { ConfigsManager } = require('..');
 
     it(`tries to load configs from a non-existent directory`, () => {

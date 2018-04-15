@@ -3,4 +3,4 @@
  * @author Alejandro D. Simi
  */
 export * from './express';
-export * from './express-types';
+export * from './types';

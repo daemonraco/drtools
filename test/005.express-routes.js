@@ -14,7 +14,7 @@ chai.use(chaiHttp);
 
 // ---------------------------------------------------------------------------- //
 // Testing.
-describe('drtools: Routes on the ExpressJS connector', () => {
+describe('drtools: Routes on the ExpressJS connector:', () => {
     it(`requesting an exposed route`, done => {
         chai.request(`http://localhost:${port}`)
             .get(`/users`)

@@ -10,7 +10,8 @@ const pairs = [
     [path.join(__dirname, 'endpoints/users'), path.join(__dirname, '../tmp/endpoints/users')],
     [path.join(__dirname, 'loaders'), path.join(__dirname, '../tmp/loaders')],
     [path.join(__dirname, 'middlewares'), path.join(__dirname, '../tmp/middlewares')],
-    [path.join(__dirname, 'routes'), path.join(__dirname, '../tmp/routes')]
+    [path.join(__dirname, 'routes'), path.join(__dirname, '../tmp/routes')],
+    [path.join(__dirname, 'tasks'), path.join(__dirname, '../tmp/tasks')]
 ];
 
 pairs.forEach(pair => {

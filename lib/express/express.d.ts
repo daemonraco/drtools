@@ -8,6 +8,7 @@ import { ExpressConnectorAttachResults, ExpressConnectorOptions } from '.';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { RoutesManager } from '../routes';
+import { TasksManager } from '../tasks';
 export declare class ExpressConnector {
     private static _Instance;
     private constructor();
@@ -17,5 +18,6 @@ export declare class ExpressConnector {
     protected attachMiddlewares(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): MiddlewaresManager;
     protected attachMockEndpoints(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): EndpointsManager[];
     protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager;
+    protected attachTasks(options: ExpressConnectorOptions, configs: ConfigsManager): TasksManager;
     static Instance(): ExpressConnector;
 }
