@@ -18,8 +18,14 @@ export abstract class Task {
     }
     //
     // Public methods.
+    public description(): string {
+        return null;
+    }
     public interval(): number {
         return this._interval;
+    }
+    public name(): string {
+        throw `Subclass responsibility`;
     }
     public run(): void {
         throw `Subclass responsibility`;

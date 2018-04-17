@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "description": "Set of useful tools",
     "main": "lib/drtools",
     "types": "lib/drtools",

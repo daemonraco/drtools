@@ -169,12 +169,20 @@ export class ExpressConnector {
 
             app.all('*', (req: any, res: any, next: () => void) => {
                 if (req.originalUrl.match(/\/\.drtools/)) {
-                    if (req.originalUrl === '/.drtools.json') {
+                    if (req._parsedUrl.pathname === '/.drtools.json') {
+                        let result: any = null;
+
                         if (req.hostname.match(/^(localhost|192\.168\..*|10\..*)$/)) {
                             res.header("Access-Control-Allow-Origin", `http://${req.hostname}:4200`);
                         }
 
-                        res.status(200).json(this.buildInfoResponse(connectorResults));
+                        if (req.query.config) {
+                            result = connectorResults.configs ? connectorResults.configs.get(req.query.config) : {};
+                        } else {
+                            result = this.buildInfoResponse(connectorResults);
+                        }
+
+                        res.status(200).json(result);
                     } else {
                         res.sendFile(path.join(__dirname, '../../web-ui/ui/.drtools/index.html'));
                     }
@@ -188,14 +196,20 @@ export class ExpressConnector {
         const { configs, endpoints, loaders, middlewares, routes, tasks } = connectorResults;
         let results: any = {};
 
-        results.configs = configs ? {
-            names: configs.itemNames(),
-            publicNames: configs.publicItemNames()
-        } : null;
+        const publicConfigs: string[] = configs.publicItemNames();
+        results.configs = !configs ? null : {
+            environment: configs.environmentName(),
+            items: configs.itemNames().map((name: string) => {
+                return {
+                    name,
+                    public: publicConfigs.indexOf(name) > -1
+                };
+            })
+        };
         results.loaders = loaders ? loaders.itemNames() : null;
         results.middlewares = middlewares ? middlewares.itemNames() : null;
         results.routes = routes ? routes.itemNames() : null;
-        results.tasks = tasks ? tasks.itemNames() : null;
+        results.tasks = tasks ? tasks.tasks() : null;
         if (endpoints) {
             results.endpoints = [];
 

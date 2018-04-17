@@ -1,37 +1,37 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+import { DRToolsService } from '../../services/drtools.service';
+
+declare var $: any;
 
 @Component({
     selector: 'ui-home-configs',
     templateUrl: './configs.component.html',
-    styles: []
+    styles: [],
+    providers: [DRToolsService]
 })
-export class PageHomeConfigsComponent implements OnChanges, OnInit {
+export class PageHomeConfigsComponent implements OnInit {
     @Input('configs') public configs: any = null;
     @Input('server') public server: string = '';
 
     public configsAsLinks: any[] = [];
+    public displayData: any = {};
 
-    constructor() {
+    constructor(private drtSrv: DRToolsService) {
     }
 
+    public display(config: any): void {
+        this.displayData.name = config.name;
+        this.displayData.data = `loading...`;
+        this.displayData.public = null;
+
+        this.drtSrv.config(config.name).subscribe((data: any) => this.displayData.data = JSON.stringify(data, null, 2));
+
+        $('#ConfigModal').modal('show');
+    }
     public rejectLink(reject: boolean, event: any): void {
         if (reject) {
             event.preventDefault();
-        }
-    }
-
-    ngOnChanges() {
-        if (this.configs) {
-            const aux: any[] = [];
-
-            this.configs.names.sort().forEach(name => {
-                aux.push({
-                    name,
-                    link: this.configs.publicNames.indexOf(name) > -1 ? `/public-configs/${name}` : null
-                });
-            });
-
-            this.configsAsLinks = aux;
         }
     }
 

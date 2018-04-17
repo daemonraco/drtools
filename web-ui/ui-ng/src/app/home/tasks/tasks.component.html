@@ -5,10 +5,24 @@
         <i class="fa fa-clock"></i> Tasks:
     </h4>
 
-    <div class="list-group">
-        <a *ngFor="let task of tasks" href="#" target="_blank" class="list-group-item list-group-item-action border-info" (click)="$event.preventDefault()">
-            <i class="fa fa-clock text-info"></i>
-            <code>{{task}}</code>
-        </a>
-    </div>
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Interval</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let task of tasks">
+                <td>
+                    <i class="fa fa-clock text-info"></i>
+                </td>
+                <td>{{task.name}}</td>
+                <td>{{task.description}}</td>
+                <td>{{task.interval | milliseconds}} (sec)</td>
+            </tr>
+        </tbody>
+    </table>
 </div>

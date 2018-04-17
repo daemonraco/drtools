@@ -29,7 +29,16 @@ export class TasksManager extends GenericManager<TasksManagerOptions> {
     }
     //
     // Public methods.
-
+    public tasks(): any[] {
+        return Object.keys(this._items).map((key: string) => {
+            const task: Task = this._items[key];
+            return {
+                name: task.name(),
+                description: task.description(),
+                interval: task.interval()
+            }
+        });
+    }
     //
     // Protected methods.
     protected cleanOptions(): void {

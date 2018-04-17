@@ -8,8 +8,6 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { PageHomeComponent } from './home/home.component';
-
-import { LocationService } from './services/location.service';
 import { PageHomeConfigsComponent } from './home/configs/configs.component';
 import { PageHomeEndpointsComponent } from './home/endpoints/endpoints.component';
 import { PageHomeLoadersComponent } from './home/loaders/loaders.component';
@@ -17,10 +15,15 @@ import { PageHomeMiddlewaresComponent } from './home/middlewares/middlewares.com
 import { PageHomeRoutesComponent } from './home/routes/routes.component';
 import { PageHomeTasksComponent } from './home/tasks/tasks.component';
 
+import { LocationService } from './services/location.service';
+
+import { MillisecondsPipe } from './pipes/milliseconds.pipe';
+
 @NgModule({
     declarations: [
         AppComponent,
         FooterComponent,
+        MillisecondsPipe,
         NavbarComponent,
         PageHomeComponent,
         PageHomeConfigsComponent,

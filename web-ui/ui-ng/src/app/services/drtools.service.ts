@@ -13,7 +13,13 @@ export class DRToolsService {
     }
     //
     // Public methods.
+    public config(name: string): Observable<any> {
+        return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json?config=${name}`).map(data => data.json());
+    }
     public info(): Observable<any> {
         return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json`).map(data => data.json());
+    }
+    public publicConfig(name: string): string {
+        return `${this.lSrv.serverUrl()}/public-configs/${name}`;
     }
 }

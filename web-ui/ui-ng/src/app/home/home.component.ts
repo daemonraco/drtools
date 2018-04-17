@@ -20,9 +20,6 @@ export class PageHomeComponent implements OnInit {
 
     ngOnInit() {
         this.serverUrl = this.lSrv.serverUrl();
-        this.drtSrv.info().subscribe(data => {
-            console.log(`DEBUG`, JSON.stringify(data, null, 2));
-            this.drtools = data
-        });
+        this.drtSrv.info().subscribe((data: any) => this.drtools = data);
     }
 }
