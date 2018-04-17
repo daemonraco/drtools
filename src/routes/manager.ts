@@ -24,9 +24,7 @@ export class RoutesManager extends GenericManager<RouteOptions> {
     }
     //
     // Public methods.
-    public routes(): string[] {
-        return this._itemSpecs.map((r: any) => r.name);
-    }
+
     //
     // Protected methods.
     protected cleanOptions(): void {

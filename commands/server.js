@@ -6,6 +6,7 @@ const chalk = require('chalk');
 const commander = require('commander');
 const express = require('express');
 const fs = require('fs');
+const glob = require('glob');
 const http = require('http');
 const path = require('path');
 const tools = require('./tools');
@@ -15,132 +16,9 @@ const {
     ExpressConnector
 } = require('..');
 
-let error = null;
-
-commander
-    .version(tools.version(), '-v, --version')
-    .option('-c, --configs [path]',
-        'directory where configuration files are stored.')
-    .option('-e, --endpoint [uri]',
-        'URL where to provide an endpoint mock-up.')
-    .option('-E, --endpoint-directory [path]',
-        'directory where endpoint mock-up files are stored.')
-    .option('-l, --loaders [path]',
-        'directory where initialization files are stored.')
-    .option('-m, --middlewares [path]',
-        'directory where middleware files are stored.')
-    .option('-p, --port [port-number]',
-        'port number (default is 3005).')
-    .option('-r, --routes [path]',
-        'directory where route files are stored.')
-    .option('-t, --tasks [path]',
-        'directory where task files are stored.')
-    .option('--configs-suffix [suffix]',
-        'expected extension on configuration files.')
-    .option('--endpoint-behaviors [path]',
-        'path to a behavior script for endpoint mock-up.')
-    .option('--loaders-suffix [suffix]',
-        'expected extension on initialization files.')
-    .option('--middlewares-suffix [suffix]',
-        'expected extension on middleware files.')
-    .option('--routes-suffix [suffix]',
-        'expected extension on route files.')
-    .option('--tasks-suffix [suffix]',
-        'expected extension on task files.')
-    .option('--test-run',
-        'does almost everything except start the server and listen its port.')
-    .parse(process.argv);
-
-console.log(`DRTools Server (v${tools.version()}):\n`);
-
-const port = commander.port || 3005;
-
-const availableUrls = [];
-const connectorOptions = {
-    verbose: true
-};
-
-if (commander.configs) {
-    connectorOptions.configsDirectory = path.join(process.cwd(), commander.configs);
-    availableUrls.push(ConfigsConstants.PublishUri);
-
-    if (commander.configsSuffix) {
-        connectorOptions.configsOptions = { suffix: commander.configsSuffix };
-    }
-} else if (commander.configsSuffix) {
-    error = `Parameter '--configs-suffix' should be used along with option '--configs'.`;
-}
-
-if (commander.loaders) {
-    connectorOptions.loadersDirectory = path.join(process.cwd(), commander.loaders);
-
-    if (commander.loadersSuffix) {
-        connectorOptions.loadersOptions = { suffix: commander.loadersSuffix };
-    }
-} else if (commander.loadersSuffix) {
-    error = `Parameter '--loaders-suffix' should be used along with option '--loaders'.`;
-}
-
-if (commander.middlewares) {
-    connectorOptions.middlewaresDirectory = path.join(process.cwd(), commander.middlewares);
-
-    if (commander.middlewaresSuffix) {
-        connectorOptions.middlewaresOptions = { suffix: commander.middlewaresSuffix };
-    }
-} else if (commander.middlewaresSuffix) {
-    error = `Parameter '--middlewares-suffix' should be used along with option '--middlewares'.`;
-}
-
-if (commander.routes) {
-    connectorOptions.routesDirectory = path.join(process.cwd(), commander.routes);
-
-    if (commander.routesSuffix) {
-        connectorOptions.routesOptions = { suffix: commander.routesSuffix };
-    }
-} else if (commander.routesSuffix) {
-    error = `Parameter '--routes-suffix' should be used along with option '--routes'.`;
-}
-
-if (commander.tasks) {
-    connectorOptions.tasksDirectory = path.join(process.cwd(), commander.tasks);
-
-    if (commander.tasksSuffix) {
-        connectorOptions.tasksOptions = { suffix: commander.tasksSuffix };
-    }
-} else if (commander.tasksSuffix) {
-    error = `Parameter '--tasks-suffix' should be used along with option '--tasks'.`;
-}
-
-if (commander.endpoint && commander.endpointDirectory) {
-    const uri = commander.endpoint[0] === '/' ? commander.endpoint : `/${commander.endpoint}`;
-    connectorOptions.endpoints = {
-        uri,
-        directory: path.join(process.cwd(), commander.endpointDirectory),
-        options: {
-            globalBehaviors: []
-        }
-    };
-
-    if (commander.endpointBehaviors) {
-        commander.endpointBehaviors.split(',')
-            .forEach(b => {
-                connectorOptions.endpoints.options.globalBehaviors.push(path.join(process.cwd(), b));
-            });
-    }
-
-    availableUrls.push(uri);
-} else if (commander.endpoint) {
-    error = `Parameter '--endpoint' should be used along with option '--endpoint-directory'.`;
-} else if (commander.endpointDirectory) {
-    error = `Parameter '--endpoint-directory' should be used along with option '--endpoint'.`;
-} else if (commander.endpointBehaviors && !commander.endpoint) {
-    error = `Parameter '--endpoint-behaviors' should be used along with option '--endpoint'.`;
-}
-
-if (!error && Object.keys(connectorOptions).length === 1) {
-    error = `There's nothing to serve.`;
-}
-
+//
+// Default values @{
+let availableUrls = [];
 const chalkForMethods = {
     DELETE: chalk.red,
     GET: chalk.green,
@@ -148,8 +26,174 @@ const chalkForMethods = {
     PUT: chalk.yellow,
     PATCH: chalk.yellow
 };
+let error = null;
+let connectorOptions = {
+    verbose: true
+};
+let webUI = true;
+let port = false;
+// @}
 
-if (!error) {
+console.log(`DRTools Server (v${tools.version()}):\n`);
+
+const setAndLoadArguments = () => {
+    commander
+        .version(tools.version(), '-v, --version')
+        .option('-c, --configs [path]',
+            'directory where configuration files are stored.')
+        .option('-e, --endpoint [uri]',
+            'URL where to provide an endpoint mock-up.')
+        .option('-E, --endpoint-directory [path]',
+            'directory where endpoint mock-up files are stored.')
+        .option('-l, --loaders [path]',
+            'directory where initialization files are stored.')
+        .option('-m, --middlewares [path]',
+            'directory where middleware files are stored.')
+        .option('-p, --port [port-number]',
+            'port number (default is 3005).')
+        .option('-r, --routes [path]',
+            'directory where route files are stored.')
+        .option('-t, --tasks [path]',
+            'directory where task files are stored.')
+        .option('--configs-suffix [suffix]',
+            'expected extension on configuration files.')
+        .option('--endpoint-behaviors [path]',
+            'path to a behavior script for endpoint mock-up.')
+        .option('--loaders-suffix [suffix]',
+            'expected extension on initialization files.')
+        .option('--middlewares-suffix [suffix]',
+            'expected extension on middleware files.')
+        .option('--no-ui',
+            'do not load internal WebUI.')
+        .option('--routes-suffix [suffix]',
+            'expected extension on route files.')
+        .option('--tasks-suffix [suffix]',
+            'expected extension on task files.')
+        .option('--test-run',
+            'does almost everything except start the server and listen its port.')
+        .parse(process.argv);
+}
+const parseArguments = () => {
+    port = commander.port || 3005;
+
+    if (commander.configs) {
+        connectorOptions.configsDirectory = path.join(process.cwd(), commander.configs);
+        availableUrls.push(ConfigsConstants.PublishUri);
+
+        if (commander.configsSuffix) {
+            connectorOptions.configsOptions = { suffix: commander.configsSuffix };
+        }
+    } else if (commander.configsSuffix) {
+        error = `Parameter '--configs-suffix' should be used along with option '--configs'.`;
+    }
+
+    if (commander.loaders) {
+        connectorOptions.loadersDirectory = path.join(process.cwd(), commander.loaders);
+
+        if (commander.loadersSuffix) {
+            connectorOptions.loadersOptions = { suffix: commander.loadersSuffix };
+        }
+    } else if (commander.loadersSuffix) {
+        error = `Parameter '--loaders-suffix' should be used along with option '--loaders'.`;
+    }
+
+    if (commander.middlewares) {
+        connectorOptions.middlewaresDirectory = path.join(process.cwd(), commander.middlewares);
+
+        if (commander.middlewaresSuffix) {
+            connectorOptions.middlewaresOptions = { suffix: commander.middlewaresSuffix };
+        }
+    } else if (commander.middlewaresSuffix) {
+        error = `Parameter '--middlewares-suffix' should be used along with option '--middlewares'.`;
+    }
+
+    if (commander.routes) {
+        connectorOptions.routesDirectory = path.join(process.cwd(), commander.routes);
+
+        if (commander.routesSuffix) {
+            connectorOptions.routesOptions = { suffix: commander.routesSuffix };
+        }
+    } else if (commander.routesSuffix) {
+        error = `Parameter '--routes-suffix' should be used along with option '--routes'.`;
+    }
+
+    if (commander.tasks) {
+        connectorOptions.tasksDirectory = path.join(process.cwd(), commander.tasks);
+
+        if (commander.tasksSuffix) {
+            connectorOptions.tasksOptions = { suffix: commander.tasksSuffix };
+        }
+    } else if (commander.tasksSuffix) {
+        error = `Parameter '--tasks-suffix' should be used along with option '--tasks'.`;
+    }
+
+    if (commander.endpoint && commander.endpointDirectory) {
+        const uri = commander.endpoint[0] === '/' ? commander.endpoint : `/${commander.endpoint}`;
+        connectorOptions.endpoints = {
+            uri,
+            directory: path.join(process.cwd(), commander.endpointDirectory),
+            options: {
+                globalBehaviors: []
+            }
+        };
+
+        if (commander.endpointBehaviors) {
+            commander.endpointBehaviors.split(',')
+                .forEach(b => {
+                    connectorOptions.endpoints.options.globalBehaviors.push(path.join(process.cwd(), b));
+                });
+        }
+
+        availableUrls.push(uri);
+    } else if (commander.endpoint) {
+        error = `Parameter '--endpoint' should be used along with option '--endpoint-directory'.`;
+    } else if (commander.endpointDirectory) {
+        error = `Parameter '--endpoint-directory' should be used along with option '--endpoint'.`;
+    } else if (commander.endpointBehaviors && !commander.endpoint) {
+        error = `Parameter '--endpoint-behaviors' should be used along with option '--endpoint'.`;
+    }
+
+    webUI = commander.ui;
+    // @}
+
+    if (!error && Object.keys(connectorOptions).length === 1) {
+        error = `There's nothing to serve.`;
+    }
+}
+const buildInfoResponse = ({ configs, endpoints, loaders, middlewares, routes, tasks }) => {
+    let results = {};
+
+    results.configs = configs ? {
+        names: configs.itemNames(),
+        publicNames: configs.publicItemNames()
+    } : null;
+    results.loaders = loaders ? loaders.itemNames() : null;
+    results.middlewares = middlewares ? middlewares.itemNames() : null;
+    results.routes = routes ? routes.itemNames() : null;
+    results.tasks = tasks ? tasks.itemNames() : null;
+    if (endpoints) {
+        results.endpoints = [];
+
+        endpoints.forEach(endpoint => {
+            const directory = endpoint.directory();
+            const directoryLength = directory.length;
+            const mockups = glob.sync(`${directory}/**/*.json`)
+                .map(p => p.substr(directoryLength))
+                .map(p => p.replace(/\.json$/, ''));
+
+            results.endpoints.push({
+                uri: endpoint.uri(),
+                directory, mockups,
+                options: endpoint.options()
+            });
+        });
+    } else {
+        results.endpoints = null;
+    }
+
+    return results;
+}
+const startServer = () => {
     const app = express();
 
     app.use(bodyParser.json());
@@ -164,28 +208,38 @@ if (!error) {
         next();
     });
 
-    const {
-        configs,
-        loaders,
-        middlewares,
-        routes,
-        tasks,
-        endpoints
-    } = ExpressConnector.attach(app, connectorOptions);
+    const connecterResults = ExpressConnector.attach(app, connectorOptions);
+    const { configs, endpoints, loaders, middlewares, routes, tasks } = connecterResults;
     if (routes) {
-        routes.routes().forEach(r => availableUrls.push(`/${r}`));
+        routes.itemNames().forEach(r => availableUrls.push(`/${r}`));
+    }
+
+    if (webUI) {
+        app.use(express.static(path.join(__dirname, 'ui')));
     }
 
     app.all('*', (req, res) => {
-        const result = {
-            message: `Path '${req.url}' was not found.`
-        };
+        if (webUI && req.originalUrl.match(/\/\.drtools/)) {
+            if (req.originalUrl === '/.drtools.json') {
+                if (req.hostname.match(/^(localhost|192\.168\..*|10\..*)$/)) {
+                    res.header("Access-Control-Allow-Origin", `http://${req.hostname}:4200`);
+                }
 
-        if (req.originalUrl === '/') {
-            result.availableUrls = availableUrls.sort();
+                res.status(200).json(buildInfoResponse(connecterResults));
+            } else {
+                res.sendFile(path.join(__dirname, '/ui/.drtools/index.html'));
+            }
+        } else {
+            const result = {
+                message: `Path '${req.url}' was not found.`
+            };
+
+            if (req.originalUrl === '/') {
+                result.availableUrls = availableUrls.sort();
+            }
+
+            res.status(404).json(result);
         }
-
-        res.status(404).json(result);
     });
 
     const listingInfo = () => {
@@ -235,6 +289,12 @@ if (!error) {
                 }
             });
         }
+
+        if (webUI) {
+            console.log(`WebUI at '${chalk.green(`http://localhost:${port}/.drtools`)}'`);
+        }
+
+        console.log();
     };
 
     if (commander.testRun) {
@@ -259,6 +319,15 @@ if (!error) {
     //
     // Catches uncaught exceptions.
     process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
+}
+
+//
+// Running @{
+setAndLoadArguments();
+parseArguments();
+if (!error) {
+    startServer();
 } else {
     console.error(chalk.red(error));
 }
+// @}

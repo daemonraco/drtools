@@ -1,0 +1,14 @@
+<div *ngIf="loaders">
+    <hr/>
+
+    <h4>
+        <i class="fa fa-spinner"></i> Loaders:
+    </h4>
+
+    <div class="list-group">
+        <a *ngFor="let loader of loaders" href="#" target="_blank" class="list-group-item list-group-item-action border-info" (click)="$event.preventDefault()">
+            <i class="fa fa-spinner text-info"></i>
+            <code>{{loader}}</code>
+        </a>
+    </div>
+</div>

@@ -9,6 +9,7 @@ export declare abstract class GenericManager<TOptions> {
     protected _valid: boolean;
     constructor(directory: string, options?: TOptions, configs?: ConfigsManager);
     directory(): string;
+    itemNames(): string[];
     lastError(): string;
     valid(): boolean;
     protected checkDirectory(): void;

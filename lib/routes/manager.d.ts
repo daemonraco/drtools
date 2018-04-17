@@ -3,7 +3,6 @@ import { GenericManager } from '../includes';
 import { RouteOptions } from '.';
 export declare class RoutesManager extends GenericManager<RouteOptions> {
     constructor(app: any, directory: string, options: RouteOptions, configs: ConfigsManager);
-    routes(): string[];
     protected cleanOptions(): void;
     protected load(): void;
     protected loadAndAttach(app: any): void;

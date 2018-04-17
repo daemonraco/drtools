@@ -1,0 +1,19 @@
+<div *ngIf="configs">
+    <hr/>
+
+    <h4>
+        <i class="fa fa-cogs"></i> Configs:
+    </h4>
+
+    <div class="list-group">
+        <a *ngIf="configs.publicNames.length > 0" [href]="server + '/public-configs'" target="_blank" class="list-group-item list-group-item-action border-info">
+            <i class="fa fa-cogs text-success"></i>
+            <code>list of public configs</code>
+        </a>
+        <a *ngFor="let config of configsAsLinks" [href]="config.link ? server + config.link : '#'" target="_blank" class="list-group-item list-group-item-action border-info"
+            (click)="rejectLink(config.link ? false : true, $event)" [class.disabled]="!config.link">
+            <i class="fa fa-cogs text-success" [class.text-info]="!config.link"></i>
+            <code>{{config.name}}</code>
+        </a>
+    </div>
+</div>

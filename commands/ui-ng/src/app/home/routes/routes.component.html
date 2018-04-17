@@ -1,0 +1,14 @@
+<div *ngIf="routes">
+    <hr/>
+
+    <h4>
+        <i class="fa fa-map-signs"></i> Routes:
+    </h4>
+
+    <div class="list-group">
+        <a *ngFor="let route of routes" [href]="server + '/' + route" target="_blank" class="list-group-item list-group-item-action border-info">
+            <i class="fa fa-map-signs text-info"></i>
+            <code>{{server}}/{{route}}</code>
+        </a>
+    </div>
+</div>

@@ -18,7 +18,9 @@ export declare class ConfigsManager {
     configsDirectory(): string;
     environmentName(): string;
     get(name: string): any;
+    itemNames(): string[];
     lastError(): string;
+    publicItemNames(): string[];
     publishExports(uri?: string): ExpressMiddleware;
     valid(): boolean;
     protected cleanOptions(): void;

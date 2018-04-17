@@ -37,6 +37,9 @@ export abstract class GenericManager<TOptions> {
     public directory(): string {
         return this._directory;
     }
+    public itemNames(): string[] {
+        return this._itemSpecs.map(i => i.name);
+    }
     public lastError(): string {
         return this._lastError;
     }

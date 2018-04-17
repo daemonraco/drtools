@@ -1,0 +1,12 @@
+<div class="container pt-3 pb-5">
+    <p class="text-right">
+        These are the tools you have loaded.
+    </p>
+
+    <ui-home-configs [server]="serverUrl" [configs]="drtools.configs"></ui-home-configs>
+    <ui-home-endpoints [server]="serverUrl" [endpoints]="drtools.endpoints"></ui-home-endpoints>
+    <ui-home-loaders [server]="serverUrl" [loaders]="drtools.loaders"></ui-home-loaders>
+    <ui-home-middlewares [server]="serverUrl" [middlewares]="drtools.middlewares"></ui-home-middlewares>
+    <ui-home-routes [server]="serverUrl" [routes]="drtools.routes"></ui-home-routes>
+    <ui-home-tasks [server]="serverUrl" [tasks]="drtools.tasks"></ui-home-tasks>
+</div>

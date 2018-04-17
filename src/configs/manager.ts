@@ -50,8 +50,14 @@ export class ConfigsManager {
     public get(name: string): any {
         return typeof this._configs[name] ? this._configs[name] : {};
     }
+    public itemNames(): string[] {
+        return Object.keys(this._configs);
+    }
     public lastError(): string {
         return this._lastError;
+    }
+    public publicItemNames(): string[] {
+        return Object.keys(this._exports);
     }
     public publishExports(uri: string = ConfigsConstants.PublishUri): ExpressMiddleware {
         //

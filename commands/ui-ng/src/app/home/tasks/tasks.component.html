@@ -1,0 +1,14 @@
+<div *ngIf="tasks">
+    <hr/>
+
+    <h4>
+        <i class="fa fa-clock"></i> Tasks:
+    </h4>
+
+    <div class="list-group">
+        <a *ngFor="let task of tasks" href="#" target="_blank" class="list-group-item list-group-item-action border-info" (click)="$event.preventDefault()">
+            <i class="fa fa-clock text-info"></i>
+            <code>{{task}}</code>
+        </a>
+    </div>
+</div>
