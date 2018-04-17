@@ -1,12 +1,12 @@
 #!/bin/bash
 #
 P_MOD_FOLDER="${PWD}";
-P_DEV_FOLDER="${P_MOD_FOLDER}/commands/ui-ng";
-P_PUBLIC_FOLDER="${P_MOD_FOLDER}/commands/ui/.drtools";
+P_DEV_FOLDER="${P_MOD_FOLDER}/web-ui/ui-ng";
+P_PUBLIC_FOLDER="${P_MOD_FOLDER}/web-ui/ui/.drtools";
 #
 P_NG="ng";
 #
-echo -e "\e[32mAccessing angular folder:\e[0m";
+echo -e "\e[32mAccessing Web-UI angular folder:\e[0m";
 cd "${P_DEV_FOLDER}";
 #
 echo -e "\e[32mBuilding UI:\e[0m";

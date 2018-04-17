@@ -153,45 +153,12 @@ const parseArguments = () => {
         error = `Parameter '--endpoint-behaviors' should be used along with option '--endpoint'.`;
     }
 
-    webUI = commander.ui;
+    connectorOptions.webUi = webUI = commander.ui;
     // @}
 
     if (!error && Object.keys(connectorOptions).length === 1) {
         error = `There's nothing to serve.`;
     }
-}
-const buildInfoResponse = ({ configs, endpoints, loaders, middlewares, routes, tasks }) => {
-    let results = {};
-
-    results.configs = configs ? {
-        names: configs.itemNames(),
-        publicNames: configs.publicItemNames()
-    } : null;
-    results.loaders = loaders ? loaders.itemNames() : null;
-    results.middlewares = middlewares ? middlewares.itemNames() : null;
-    results.routes = routes ? routes.itemNames() : null;
-    results.tasks = tasks ? tasks.itemNames() : null;
-    if (endpoints) {
-        results.endpoints = [];
-
-        endpoints.forEach(endpoint => {
-            const directory = endpoint.directory();
-            const directoryLength = directory.length;
-            const mockups = glob.sync(`${directory}/**/*.json`)
-                .map(p => p.substr(directoryLength))
-                .map(p => p.replace(/\.json$/, ''));
-
-            results.endpoints.push({
-                uri: endpoint.uri(),
-                directory, mockups,
-                options: endpoint.options()
-            });
-        });
-    } else {
-        results.endpoints = null;
-    }
-
-    return results;
 }
 const startServer = () => {
     const app = express();
@@ -214,32 +181,16 @@ const startServer = () => {
         routes.itemNames().forEach(r => availableUrls.push(`/${r}`));
     }
 
-    if (webUI) {
-        app.use(express.static(path.join(__dirname, 'ui')));
-    }
-
     app.all('*', (req, res) => {
-        if (webUI && req.originalUrl.match(/\/\.drtools/)) {
-            if (req.originalUrl === '/.drtools.json') {
-                if (req.hostname.match(/^(localhost|192\.168\..*|10\..*)$/)) {
-                    res.header("Access-Control-Allow-Origin", `http://${req.hostname}:4200`);
-                }
+        const result = {
+            message: `Path '${req.url}' was not found.`
+        };
 
-                res.status(200).json(buildInfoResponse(connecterResults));
-            } else {
-                res.sendFile(path.join(__dirname, '/ui/.drtools/index.html'));
-            }
-        } else {
-            const result = {
-                message: `Path '${req.url}' was not found.`
-            };
-
-            if (req.originalUrl === '/') {
-                result.availableUrls = availableUrls.sort();
-            }
-
-            res.status(404).json(result);
+        if (req.originalUrl === '/') {
+            result.availableUrls = availableUrls.sort();
         }
+
+        res.status(404).json(result);
     });
 
     const listingInfo = () => {

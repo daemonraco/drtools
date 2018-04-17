@@ -17,6 +17,7 @@ ExpressJS server).
 ## Command options
 <!-- AUTO:server-options -->
 ```
+DRTools Server (v0.0.13):
   Usage: drtools-server [options]
   Options:
     -v, --version                    output the version number
@@ -27,11 +28,14 @@ ExpressJS server).
     -m, --middlewares [path]         directory where middleware files are stored.
     -p, --port [port-number]         port number (default is 3005).
     -r, --routes [path]              directory where route files are stored.
+    -t, --tasks [path]               directory where task files are stored.
     --configs-suffix [suffix]        expected extension on configuration files.
     --endpoint-behaviors [path]      path to a behavior script for endpoint mock-up.
     --loaders-suffix [suffix]        expected extension on initialization files.
     --middlewares-suffix [suffix]    expected extension on middleware files.
+    --no-ui                          do not load internal WebUI.
     --routes-suffix [suffix]         expected extension on route files.
+    --tasks-suffix [suffix]          expected extension on task files.
     --test-run                       does almost everything except start the server and listen its port.
     -h, --help                       output usage information
 ```

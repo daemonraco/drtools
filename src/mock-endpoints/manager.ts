@@ -16,11 +16,11 @@ export class EndpointsManager {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
-    protected _provider: Endpoint = null;
     protected _endpointsDirectory: string = null;
     protected _endpointsUri: string = null;
     protected _lastError: string = null;
     protected _options: EndpointsManagerOptions = null;
+    protected _provider: Endpoint = null;
     protected _valid: boolean = false;
     //
     // Constructor.
@@ -34,7 +34,7 @@ export class EndpointsManager {
     //
     // Public methods.
     public directory(): string {
-        return this._options.directory;
+        return this._endpointsDirectory;
     }
     public lastError(): string {
         return this._lastError;
@@ -49,7 +49,7 @@ export class EndpointsManager {
         return this._valid;
     }
     public uri(): string {
-        return this._options.uri;
+        return this._endpointsUri;
     }
     //
     // Protected methods.
@@ -77,9 +77,9 @@ export class EndpointsManager {
         //
         // Basic paths.
         if (!this._lastError) {
-            this._endpointsDirectory = this._options.directory;
-            this._endpointsUri = this._options.uri;
-            this._provider = new Endpoint(this._endpointsDirectory, this._endpointsUri, this._options.options);
+            this._provider = new Endpoint(this._options.directory, this._options.uri, this._options.options);
+            this._endpointsDirectory = this._provider.directory();
+            this._endpointsUri = this._provider.uri();
         }
 
         this._valid = !this._lastError;

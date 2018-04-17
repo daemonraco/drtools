@@ -28,7 +28,8 @@ const { configs } = ExpressConnector.attach(app, {
     },
     middlewaresDirectory: path.join(__dirname, '../tmp/middlewares'),
     routesDirectory: path.join(__dirname, '../tmp/routes'),
-    tasksDirectory: path.join(__dirname, '../tmp/tasks')
+    tasksDirectory: path.join(__dirname, '../tmp/tasks'),
+    webUi: true
 });
 // @}
 

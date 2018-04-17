@@ -40,6 +40,7 @@ export interface ExpressConnectorOptions {
     //
     // General.
     verbose?: boolean;
+    webUi?: boolean;
 }
 
 export interface ExpressConnectorAttachResults {

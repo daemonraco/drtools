@@ -23,6 +23,7 @@ export interface ExpressConnectorOptions {
     tasksOptions?: TasksManagerOptions;
     endpoints: EndpointsManagerOptions | EndpointsManagerOptions[];
     verbose?: boolean;
+    webUi?: boolean;
 }
 export interface ExpressConnectorAttachResults {
     configs: ConfigsManager;

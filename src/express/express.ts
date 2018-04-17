@@ -3,6 +3,10 @@
  * @author Alejandro D. Simi
  */
 
+import * as express from 'express';
+import * as glob from 'glob';
+import * as path from 'path';
+
 import { ConfigsConstants, ConfigsManager } from '../configs';
 import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-endpoints';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions } from '.';
@@ -38,7 +42,8 @@ export class ExpressConnector {
             middlewaresOptions: {},
             routesOptions: {},
             tasksOptions: {},
-            publishConfigs: true
+            publishConfigs: true,
+            webUi: false
         };
         options = Tools.DeepMergeObjects(defaultOptions, options);
         //
@@ -69,6 +74,9 @@ export class ExpressConnector {
         //
         // Attaching a routes manager.
         results.endpoints = this.attachMockEndpoints(app, options, results.configs);
+        //
+        // Load Web-UI.
+        this.attachWebUI(app, options, results);
 
         return results;
     }
@@ -154,6 +162,61 @@ export class ExpressConnector {
         }
 
         return manager;
+    }
+    protected attachWebUI(app: any, options: ExpressConnectorOptions, connectorResults: ExpressConnectorAttachResults): void {
+        if (options.webUi) {
+            app.use(express.static(path.join(__dirname, '../../web-ui/ui')));
+
+            app.all('*', (req: any, res: any, next: () => void) => {
+                if (req.originalUrl.match(/\/\.drtools/)) {
+                    if (req.originalUrl === '/.drtools.json') {
+                        if (req.hostname.match(/^(localhost|192\.168\..*|10\..*)$/)) {
+                            res.header("Access-Control-Allow-Origin", `http://${req.hostname}:4200`);
+                        }
+
+                        res.status(200).json(this.buildInfoResponse(connectorResults));
+                    } else {
+                        res.sendFile(path.join(__dirname, '../../web-ui/ui/.drtools/index.html'));
+                    }
+                } else {
+                    next();
+                }
+            });
+        }
+    }
+    protected buildInfoResponse(connectorResults: ExpressConnectorAttachResults): any {
+        const { configs, endpoints, loaders, middlewares, routes, tasks } = connectorResults;
+        let results: any = {};
+
+        results.configs = configs ? {
+            names: configs.itemNames(),
+            publicNames: configs.publicItemNames()
+        } : null;
+        results.loaders = loaders ? loaders.itemNames() : null;
+        results.middlewares = middlewares ? middlewares.itemNames() : null;
+        results.routes = routes ? routes.itemNames() : null;
+        results.tasks = tasks ? tasks.itemNames() : null;
+        if (endpoints) {
+            results.endpoints = [];
+
+            endpoints.forEach((endpoint: EndpointsManager) => {
+                const directory = endpoint.directory();
+                const directoryLength = directory.length;
+                const mockups = glob.sync(`${directory}/**/*.json`)
+                    .map((p: any) => p.substr(directoryLength))
+                    .map((p: any) => p.replace(/\.json$/, ''));
+
+                results.endpoints.push({
+                    uri: endpoint.uri(),
+                    directory, mockups,
+                    options: endpoint.options()
+                });
+            });
+        } else {
+            results.endpoints = null;
+        }
+
+        return results;
     }
     //
     // Public class methods.

@@ -1,7 +1,3 @@
-/**
- * @file express.ts
- * @author Alejandro D. Simi
- */
 import { ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions } from '.';
@@ -19,5 +15,7 @@ export declare class ExpressConnector {
     protected attachMockEndpoints(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): EndpointsManager[];
     protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager;
     protected attachTasks(options: ExpressConnectorOptions, configs: ConfigsManager): TasksManager;
+    protected attachWebUI(app: any, options: ExpressConnectorOptions, connectorResults: ExpressConnectorAttachResults): void;
+    protected buildInfoResponse(connectorResults: ExpressConnectorAttachResults): any;
     static Instance(): ExpressConnector;
 }
