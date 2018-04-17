@@ -14,7 +14,7 @@ declare const global: any;
 export class RoutesManager extends GenericManager<RouteOptions> {
     //
     // Protected properties.
-
+    protected _routes: any[] = [];
     //
     // Constructor.
     constructor(app: any, directory: string, options: RouteOptions = {}, configs: ConfigsManager) {
@@ -24,7 +24,9 @@ export class RoutesManager extends GenericManager<RouteOptions> {
     }
     //
     // Public methods.
-
+    public routes(): any[] {
+        return this._routes;
+    }
     //
     // Protected methods.
     protected cleanOptions(): void {
@@ -51,7 +53,22 @@ export class RoutesManager extends GenericManager<RouteOptions> {
                     }
 
                     global.configs = this._configs;
-                    app.use(`/${this._itemSpecs[i].name}`, require(this._itemSpecs[i].path));
+
+                    const router: any = require(this._itemSpecs[i].path);
+                    this._routes.push({
+                        name: this._itemSpecs[i].name,
+                        path: this._itemSpecs[i].path,
+                        routes: router.stack
+                            .filter((r: any) => r.route.path !== '*')
+                            .map((r: any) => {
+                                return {
+                                    uri: `/${this._itemSpecs[i].name}${r.route.path}`,
+                                    methods: r.route.methods
+                                };
+                            })
+                    });
+                    app.use(`/${this._itemSpecs[i].name}`, router);
+
                     delete global.configs;
                 } catch (e) {
                     console.error(chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.\n\t${e}`));

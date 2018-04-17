@@ -168,7 +168,7 @@ export class ExpressConnector {
             app.use(express.static(path.join(__dirname, '../../web-ui/ui')));
 
             app.all('*', (req: any, res: any, next: () => void) => {
-                if (req.originalUrl.match(/\/\.drtools/)) {
+                if (req.originalUrl.match(/^\/\.drtools/)) {
                     if (req._parsedUrl.pathname === '/.drtools.json') {
                         let result: any = null;
 
@@ -208,7 +208,7 @@ export class ExpressConnector {
         };
         results.loaders = loaders ? loaders.itemNames() : null;
         results.middlewares = middlewares ? middlewares.itemNames() : null;
-        results.routes = routes ? routes.itemNames() : null;
+        results.routes = routes ? routes.routes() : null;
         results.tasks = tasks ? tasks.tasks() : null;
         if (endpoints) {
             results.endpoints = [];

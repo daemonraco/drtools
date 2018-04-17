@@ -5,10 +5,34 @@
         <i class="fa fa-map-signs"></i> Routes:
     </h4>
 
-    <div class="list-group">
-        <a *ngFor="let route of routes" [href]="server + '/' + route" target="_blank" class="list-group-item list-group-item-action border-info">
-            <i class="fa fa-map-signs text-info"></i>
-            <code>{{server}}/{{route}}</code>
-        </a>
-    </div>
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+                <th scope="col">Paths</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let route of routes">
+                <td>
+                    <i class="fa fa-map-signs text-info"></i>
+                </td>
+                <td>{{route.name}}</td>
+                <td>
+                    <ul>
+                        <li *ngFor="let r of route.routes">
+                            <code>[{{r.methods | keys}}]</code>
+                            <a *ngIf="r.methods.get" [href]="server + r.uri" target="_blank" class="border-info">
+                                <code>{{server}}{{r.uri}}</code>
+                            </a>
+                            <span *ngIf="!r.methods.get" class="border-info">
+                                <code>{{server}}{{r.uri}}</code>
+                            </span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

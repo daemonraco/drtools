@@ -1,3 +1,5 @@
+const chalk = require('chalk');
+
 const { Task } = require('../../..');
 
 class ByTheSecondTask extends Task {
@@ -10,7 +12,7 @@ class ByTheSecondTask extends Task {
         return 'By the Second';
     }
     run() {
-        console.log(`Running 'ByTheSecondTask': ${new Date()}`);
+        console.log(chalk.magenta(`Running 'ByTheSecondTask': ${new Date()}`));
     }
     //
     // Protected methods.
