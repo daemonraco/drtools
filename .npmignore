@@ -64,6 +64,7 @@ typings/
 /.codeclimate.yml
 /.tools
 /.travis.yml
+/commands/ui-ng
 /src
 /test
 /tsconfig.json
