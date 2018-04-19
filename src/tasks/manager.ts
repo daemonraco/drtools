@@ -6,7 +6,7 @@
 import * as chalk from 'chalk';
 
 import { ConfigsManager } from '../configs';
-import { GenericManager, Tools } from '../includes';
+import { GenericManager, ItemSpec, Tools } from '../includes';
 import { Task, TasksConstants, TasksList, TasksManagerOptions } from '.';
 
 declare const global: any;
@@ -30,12 +30,13 @@ export class TasksManager extends GenericManager<TasksManagerOptions> {
     //
     // Public methods.
     public tasks(): any[] {
-        return Object.keys(this._items).map((key: string) => {
-            const task: Task = this._items[key];
+        return this._itemSpecs.map((item: ItemSpec) => {
+            const task: Task = this._items[item.name];
             return {
                 name: task.name(),
                 description: task.description(),
-                interval: task.interval()
+                interval: task.interval(),
+                path: item.path
             }
         });
     }

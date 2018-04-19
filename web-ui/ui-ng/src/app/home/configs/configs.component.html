@@ -8,7 +8,7 @@
     </div>
 
     <div class="row">
-        <ul class="list-unstyled col">
+        <ul class="list-unstyled col small">
             <li>
                 <strong>Environment</strong>:
                 <code>{{configs.environment}}</code>
@@ -16,6 +16,10 @@
             <li>
                 <strong>Directory</strong>:
                 <code>{{configs.directory}}</code>
+            </li>
+            <li>
+                <strong>Suffix</strong>:
+                <code>.{{configs.suffix}}</code>
             </li>
             <li *ngIf="configs.publicUri">
                 <strong>Public URI</strong>:
@@ -36,7 +40,7 @@
                         <th scope="col"></th>
                         <th scope="col">Name</th>
                         <th scope="col">Path</th>
-                        <th scope="col">Public URL</th>
+                        <th scope="col">Public URI</th>
                         <th scope="col text-center">Env Specific</th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
@@ -55,7 +59,7 @@
                                 <code>{{configs.publicUri}}/{{config.name}}</code>
                             </a>
                         </td>
-                        <td class="text-center">{{config.specific | boolean}}</td>
+                        <td class="text-center" [innerHTML]="config.specific | boolean:'icon'"></td>
                         <td class="text-center">
                             <div class="btn-group btn-group-sm" role="group">
                                 <button type="button" class="btn btn-outline-secondary" (click)="display(config)" title="Display">

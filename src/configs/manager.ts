@@ -117,6 +117,9 @@ export class ConfigsManager {
     public specsDirectory(): string {
         return this._specsDirectory;
     }
+    public suffix(): string {
+        return this._options.suffix;
+    }
     public valid(): boolean {
         return this._valid;
     }

@@ -12,6 +12,7 @@ export declare abstract class GenericManager<TOptions> {
     items(): ItemSpec[];
     itemNames(): string[];
     lastError(): string;
+    suffix(): string;
     valid(): boolean;
     protected checkDirectory(): void;
     protected abstract cleanOptions(): void;

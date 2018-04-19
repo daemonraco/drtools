@@ -24,6 +24,7 @@ export declare class ConfigsManager {
     publishExports(uri?: string): ExpressMiddleware;
     publicUri(): string;
     specsDirectory(): string;
+    suffix(): string;
     valid(): boolean;
     protected cleanOptions(): void;
     protected load(): void;

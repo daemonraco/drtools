@@ -47,6 +47,9 @@ export abstract class GenericManager<TOptions> {
     public lastError(): string {
         return this._lastError;
     }
+    public suffix(): string {
+        return typeof (<any>this._options).suffix !== 'undefined' ? (<any>this._options).suffix : '';
+    }
     public valid(): boolean {
         return this._valid;
     }
@@ -74,7 +77,8 @@ export abstract class GenericManager<TOptions> {
             this._itemSpecs = [];
             //
             // Basic patterns.
-            const suffix: string = typeof (<any>this._options).suffix !== 'undefined' ? `\\.${(<any>this._options).suffix}` : '';
+            let suffix: string = this.suffix();
+            suffix = suffix ? `\\.${suffix}` : '';
             const itemsPattern: RegExp = new RegExp(`^(.*)${suffix}\\.(json|js)$`);
 
             this._itemSpecs = fs.readdirSync(this._directory)
