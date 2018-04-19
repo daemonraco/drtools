@@ -1,14 +1,35 @@
 <div *ngIf="loaders">
     <hr/>
 
-    <h4>
-        <i class="fa fa-spinner"></i> Loaders:
-    </h4>
-
-    <div class="list-group">
-        <a *ngFor="let loader of loaders" href="#" target="_blank" class="list-group-item list-group-item-action border-info" (click)="$event.preventDefault()">
-            <i class="fa fa-spinner text-info"></i>
-            <code>{{loader}}</code>
-        </a>
+    <div class="row">
+        <h4 class="col">
+            <i class="fa fa-spinner"></i> Loaders:
+        </h4>
     </div>
+
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let loader of loaders">
+                        <td>
+                            <i class="fa fa-spinner text-info"></i>
+                        </td>
+                        <td>{{loader.name}}</td>
+                        <td>
+                            <code>{{loader.path}}</code>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>

@@ -21,22 +21,33 @@ export class PageHomeConfigsComponent implements OnInit {
     }
 
     public display(config: any): void {
-        this.displayData.name = config.name;
-        this.displayData.specsName = null;
-        this.displayData.data = `loading...`;
-        this.displayData.public = null;
+        this.displayData = {};
 
-        this.drtSrv.config(config.name).subscribe((data: any) => this.displayData.data = JSON.stringify(data, null, 2));
+        this.displayData.name = config.name;
+        this.displayData.contents = `loading...`;
+        this.displayData.path = `loading...`;
+
+        this.drtSrv.config(config.name)
+            .subscribe((data: any) => {
+                this.displayData.contents = JSON.stringify(data.contents, null, 2)
+                this.displayData.public = data.public;
+                this.displayData.path = data.path;
+            });
 
         $('#ConfigModal').modal('show');
     }
     public displaySpecs(config: any): void {
-        this.displayData.name = null;
-        this.displayData.specsName = config.name;
-        this.displayData.data = `loading...`;
-        this.displayData.public = null;
+        this.displayData = {};
 
-        this.drtSrv.configSpecs(config.name).subscribe((data: any) => this.displayData.data = JSON.stringify(data, null, 2));
+        this.displayData.specsName = config.name;
+        this.displayData.contents = `loading...`;
+        this.displayData.path = `loading...`;
+
+        this.drtSrv.configSpecs(config.name)
+            .subscribe((data: any) => {
+                this.displayData.contents = JSON.stringify(data.contents, null, 2)
+                this.displayData.path = data.specsPath;
+            });
 
         $('#ConfigModal').modal('show');
     }

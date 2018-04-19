@@ -9,6 +9,7 @@ import * as path from 'path';
 
 import { ConfigsManager } from '../configs';
 import { ItemSpec } from '.';
+import { Tools } from '../includes';
 
 declare const global: any;
 
@@ -36,6 +37,9 @@ export abstract class GenericManager<TOptions> {
     // Public methods.
     public directory(): string {
         return this._directory;
+    }
+    public items(): ItemSpec[] {
+        return Tools.DeepCopy(this._itemSpecs);
     }
     public itemNames(): string[] {
         return this._itemSpecs.map(i => i.name);

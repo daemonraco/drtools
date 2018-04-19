@@ -7,7 +7,7 @@ import * as express from 'express';
 import * as glob from 'glob';
 import * as path from 'path';
 
-import { ConfigsConstants, ConfigsManager } from '../configs';
+import { ConfigItemSpec, ConfigsConstants, ConfigsManager } from '../configs';
 import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-endpoints';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions } from '.';
 import { LoadersManager } from '../loaders';
@@ -177,10 +177,33 @@ export class ExpressConnector {
                         }
 
                         if (req.query.config) {
-                            result = connectorResults.configs ? connectorResults.configs.get(req.query.config) : {};
+                            result = {}
+                            if (connectorResults.configs) {
+                                let item: ConfigItemSpec = null;
+                                connectorResults.configs.items().forEach((auxItem: ConfigItemSpec) => {
+                                    if (auxItem.name === req.query.config) {
+                                        item = auxItem;
+                                    }
+                                });
+                                if (item) {
+                                    result = Tools.DeepCopy(item);
+                                    result.contents = connectorResults.configs.get(item.name);
+                                }
+                            }
                         } else if (req.query.configSpecs) {
-                            result = connectorResults.configs ? connectorResults.configs.getSpecs(req.query.configSpecs) : null;
-                            result = result !== null ? result : {};
+                            result = {}
+                            if (connectorResults.configs) {
+                                let item: ConfigItemSpec = null;
+                                connectorResults.configs.items().forEach((auxItem: ConfigItemSpec) => {
+                                    if (auxItem.name === req.query.configSpecs) {
+                                        item = auxItem;
+                                    }
+                                });
+                                if (item && item.specsPath) {
+                                    result = Tools.DeepCopy(item);
+                                    result.contents = connectorResults.configs.getSpecs(item.name);
+                                }
+                            }
                         } else {
                             result = this.buildInfoResponse(connectorResults);
                         }
@@ -201,16 +224,14 @@ export class ExpressConnector {
 
         const publicConfigs: string[] = configs.publicItemNames();
         results.configs = !configs ? null : {
+            directory: configs.directory(),
             environment: configs.environmentName(),
-            items: configs.itemNames().map((name: string) => {
-                return {
-                    name,
-                    public: publicConfigs.indexOf(name) > -1,
-                    specs: configs.getSpecs(name) !== null
-                };
-            })
+            items: configs.items(),
+            publicUri: configs.publicUri(),
+            specsDirectory: configs.specsDirectory()
         };
-        results.loaders = loaders ? loaders.itemNames() : null;
+
+        results.loaders = loaders ? loaders.items() : null;
         results.middlewares = middlewares ? middlewares.itemNames() : null;
         results.routes = routes ? routes.routes() : null;
         results.tasks = tasks ? tasks.tasks() : null;

@@ -4,6 +4,7 @@
  */
 export declare class ConfigsConstants {
     static readonly PublishUri: string;
+    static readonly SpecsDirectory: string;
     static readonly Suffix: string;
     private constructor();
 }

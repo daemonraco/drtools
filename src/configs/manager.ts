@@ -9,9 +9,9 @@ import * as fs from 'fs';
 import * as jsonpath from 'jsonpath-plus';
 import * as path from 'path';
 
-import { ConfigsConstants, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
+import { ConfigItemSpec, ConfigsConstants, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
 import { ExpressMiddleware } from '../express';
-import { OptionsList, Tools } from '../includes';
+import { ItemSpec, OptionsList, Tools } from '../includes';
 
 declare const global: any;
 declare const process: any;
@@ -22,17 +22,19 @@ export class ConfigsManager {
     protected _configs: ConfigsList = {};
     protected _directory: string = null;
     protected _environmentName: string = null;
+    protected _items: ConfigItemSpec[] = [];
     protected _exports: ConfigsList = {};
     protected _lastError: string = null;
     protected _options: ConfigOptions = null;
     protected _specs: ConfigSpecsList = {};
     protected _specsDirectory: string = null;
+    protected _publicUri: string = null;
     protected _valid: boolean = false;
     //
     // Constructor.
     public constructor(directory: string, options: ConfigOptions = {}) {
         this._directory = directory;
-        this._specsDirectory = path.join(directory, 'specs');
+        this._specsDirectory = path.join(directory, ConfigsConstants.SpecsDirectory);
         this._options = options;
         this.cleanOptions();
 
@@ -52,8 +54,11 @@ export class ConfigsManager {
     public getSpecs(name: string): any {
         return typeof this._specs[name] !== 'undefined' ? this._specs[name] : null;
     }
+    public items(): ConfigItemSpec[] {
+        return this._items;
+    }
     public itemNames(): string[] {
-        return Object.keys(this._configs);
+        return this._items.map((i: ConfigItemSpec) => i.name);
     }
     public lastError(): string {
         return this._lastError;
@@ -64,19 +69,19 @@ export class ConfigsManager {
     public publishExports(uri: string = ConfigsConstants.PublishUri): ExpressMiddleware {
         //
         // Cleaning URI @{
-        uri = `/${uri}/`;
+        this._publicUri = `/${uri}/`;
         [
             ['//', '/']
         ].forEach((pair: any) => {
-            while (uri.indexOf(pair[0]) > -1) {
-                uri = uri.replace(pair[0], pair[1]);
+            while (this._publicUri.indexOf(pair[0]) > -1) {
+                this._publicUri = this._publicUri.replace(pair[0], pair[1]);
             }
         });
-        uri = uri.substr(0, uri.length - 1);
-        uri = uri.replace(/\//g, '\\/').replace(/\./g, '\\.');
+        this._publicUri = this._publicUri.substr(0, this._publicUri.length - 1);
+        const uriForPattern: string = this._publicUri.replace(/\//g, '\\/').replace(/\./g, '\\.');
         // @}
 
-        const pattern: RegExp = new RegExp(`^${uri}([\\/]?)(.*)$`);
+        const pattern: RegExp = new RegExp(`^${uriForPattern}([\\/]?)(.*)$`);
 
         return (req: any, res: any, next: () => void) => {
             let responded: boolean = false;
@@ -105,6 +110,12 @@ export class ConfigsManager {
                 next();
             }
         };
+    }
+    public publicUri(): string {
+        return this._publicUri;
+    }
+    public specsDirectory(): string {
+        return this._specsDirectory;
     }
     public valid(): boolean {
         return this._valid;
@@ -140,7 +151,8 @@ export class ConfigsManager {
                 console.error(chalk.red(this._lastError));
             }
         }
-
+        //
+        // Checking specs directory.
         if (!this._lastError) {
             let stat: any = null;
             try { stat = fs.statSync(this._specsDirectory); } catch (e) { }
@@ -152,7 +164,6 @@ export class ConfigsManager {
             }
         }
 
-        let files: any[] = [];
         if (!this._lastError) {
             //
             // Basic patterns.
@@ -160,7 +171,7 @@ export class ConfigsManager {
             const envPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.${this._environmentName}\\.(json|js)$`);
             //
             // Loading basic configuration files.
-            files = fs.readdirSync(this._directory)
+            this._items = fs.readdirSync(this._directory)
                 .filter(x => x.match(configPattern))
                 .map(x => {
                     return {
@@ -170,7 +181,7 @@ export class ConfigsManager {
                 });
             //
             // Loading evironment specific configuration files.
-            const envFiles = fs.readdirSync(this._directory)
+            const envFiles: ItemSpec[] = fs.readdirSync(this._directory)
                 .filter(x => x.match(envPattern))
                 .map(x => {
                     return {
@@ -180,10 +191,10 @@ export class ConfigsManager {
                 });
             //
             // Merging lists.
-            for (let i in files) {
+            for (let i in this._items) {
                 for (let j in envFiles) {
-                    if (files[i].name === envFiles[j].name) {
-                        files[i].specific = envFiles[j];
+                    if (this._items[i].name === envFiles[j].name) {
+                        this._items[i].specific = envFiles[j];
                         break;
                     }
                 }
@@ -193,43 +204,49 @@ export class ConfigsManager {
         this._configs = {};
         this._exports = {};
         if (!this._lastError) {
-            for (let i in files) {
+            for (let i in this._items) {
                 let valid: boolean = true;
 
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(files[i].name)}'${files[i].specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`\t- '${chalk.green(this._items[i].name)}'${this._items[i].specific ? ` (has specific configuration)` : ''}`);
                     }
                     //
                     // Loading basic configuration.
-                    this._configs[files[i].name] = require(files[i].path);
+                    this._configs[this._items[i].name] = require(this._items[i].path);
                     //
                     // Merging with the environment specific configuration.
-                    if (files[i].specific) {
-                        this._configs[files[i].name] = Tools.DeepMergeObjects(this._configs[files[i].name], require(files[i].specific.path));
+                    if (this._items[i].specific) {
+                        this._configs[this._items[i].name] = Tools.DeepMergeObjects(this._configs[this._items[i].name], require(this._items[i].specific.path));
                     }
                     //
                     // Does it have specs?
-                    if (this._specsDirectory && this.loadSpecsOf(files[i].name)) {
-                        valid = this.validateSpecsOf(files[i].name);
+                    this._items[i].specsPath = null;
+                    if (this._specsDirectory) {
+                        this._items[i].specsPath = this.loadSpecsOf(this._items[i].name);
+                        if (this._items[i].specsPath !== null) {
+                            valid = this.validateSpecsOf(this._items[i].name, this._items[i].specsPath);
+                        }
                     }
                     //
                     // If there were no errors validating the config file, it can
                     // expose exports.
                     if (valid) {
-                        this.loadExportsOf(files[i].name);
+                        this._items[i].public = this.loadExportsOf(this._items[i].name);
                     } else {
-                        this._configs[files[i].name] = {};
+                        this._configs[this._items[i].name] = {};
                     }
                 } catch (e) {
-                    console.error(chalk.red(`Unable to load config '${files[i].name}'.\n\t${e}`));
+                    console.error(chalk.red(`Unable to load config '${this._items[i].name}'.\n\t${e}`));
                 }
             }
         }
 
         this._valid = !this._lastError;
     }
-    protected loadExportsOf(name: string): void {
+    protected loadExportsOf(name: string): boolean {
+        let hasExports: boolean = false;
+
         const config: any = this._configs[name];
 
         if (typeof config.$exports !== 'undefined' || typeof config.$pathExports !== 'undefined') {
@@ -238,6 +255,7 @@ export class ConfigsManager {
 
         if (typeof config.$exports !== 'undefined') {
             this._exports[name] = Tools.DeepMergeObjects(this._exports[name], config.$exports);
+            hasExports = true;
         }
 
         if (typeof config.$pathExports !== 'undefined') {
@@ -253,30 +271,31 @@ export class ConfigsManager {
                 } else if (results.length > 1) {
                     this._exports[name][k] = results;
                 }
+
+                hasExports = true;
             }
         }
-    }
-    protected loadSpecsOf(name: string): boolean {
-        let hasSpecs: boolean = false;
 
-        const specsPath: string = path.join(this._specsDirectory, `${name}.json`);
+        return hasExports;
+    }
+    protected loadSpecsOf(name: string): string {
+        let specsPath: string = path.join(this._specsDirectory, `${name}.json`);
+
         let stat: any = null;
         try { stat = fs.statSync(specsPath); } catch (e) { }
         if (!stat) {
-            // Nothing not to do.
+            specsPath = null;
         } else if (!stat.isFile()) {
             this._lastError = `'${this._directory}' is not a file.`;
             console.error(chalk.red(this._lastError));
-        } else {
-            hasSpecs = true;
+            specsPath = null;
         }
 
-        return hasSpecs;
+        return specsPath;
     }
-    protected validateSpecsOf(name: string): boolean {
+    protected validateSpecsOf(name: string, specsPath: string): boolean {
         let valid: boolean = false;
 
-        const specsPath: string = path.join(this._specsDirectory, `${name}.json`);
         this._specs[name] = null;
         try {
             this._specs[name] = require(specsPath);

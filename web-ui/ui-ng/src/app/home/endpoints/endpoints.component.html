@@ -1,24 +1,31 @@
 <div *ngIf="endpoints">
     <hr/>
 
-    <h4>
-        <i class="fa fa-asterisk"></i> Endpoints:
-    </h4>
+    <div class="row">
+        <h4 class="col">
+            <i class="fa fa-asterisk"></i> Mock-up Endpoints:
+        </h4>
+    </div>
 
-    <div *ngFor="let endpoint of endpoints" class="card">
-        <div class="card-header" data-toggle="collapse" [attr.data-target]="'#Endpoint_' + $index" style="cursor:pointer;">
-            <i class="fa fa-asterisk text-info"></i> {{endpoint.uri}}
+    <div class="row">
+        <div class="col">
+            <div *ngFor="let endpoint of endpoints" class="card">
+                <div class="card-header" data-toggle="collapse" [attr.data-target]="'#Endpoint_' + $index" style="cursor:pointer;">
+                    <div class="float-right font-italic text-muted small">click to toggle</div>
+                    <i class="fa fa-asterisk text-info"></i> {{endpoint.uri}}
+                </div>
+                <ul [id]="'Endpoint_' + $index" class="list-group list-group-flush collapse">
+                    <a [href]="server + endpoint.uri" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="fa fa-asterisk text-success"></i>
+                        <code>{{server}}{{endpoint.uri}}</code>
+                    </a>
+                    <a *ngFor="let mockup of endpoint.mockups" [href]="server + endpoint.uri + mockup" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="fa fa-link text-info"></i>
+                        <code>{{server}}{{endpoint.uri}}{{mockup}}</code>
+                    </a>
+                </ul>
+            </div>
         </div>
-        <ul [id]="'Endpoint_' + $index" class="list-group list-group-flush collapse">
-            <a [href]="server + endpoint.uri" target="_blank" class="list-group-item list-group-item-action">
-                <i class="fa fa-asterisk text-success"></i>
-                <code>{{server}}{{endpoint.uri}}</code>
-            </a>
-            <a *ngFor="let mockup of endpoint.mockups" [href]="server + endpoint.uri + mockup" target="_blank" class="list-group-item list-group-item-action">
-                <i class="fa fa-link text-info"></i>
-                <code>{{server}}{{endpoint.uri}}{{mockup}}</code>
-            </a>
-        </ul>
     </div>
 
 </div>

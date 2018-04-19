@@ -1,54 +1,85 @@
 <div *ngIf="configs">
     <hr/>
 
-    <h4>
-        <i class="fa fa-cogs"></i> Configs:
-    </h4>
-    <p>
-        <strong>Environment</strong>:
-        <code>{{configs.environment}}</code>
-    </p>
+    <div class="row">
+        <h4 class="col">
+            <i class="fa fa-cogs"></i> Configs:
+        </h4>
+    </div>
 
-    <table class="table table-striped table-sm">
-        <thead>
-            <tr>
-                <th scope="col"></th>
-                <th scope="col">Name</th>
-                <th scope="col">Public URL</th>
-                <th scope="col" class="text-center">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let config of configs.items">
-                <td>
-                    <i class="fa fa-cogs text-info"></i>
-                </td>
-                <td>{{config.name}}</td>
-                <td>
-                    <a *ngIf="config.public" [href]="server + '/public-configs/' + config.name" target="_blank">
-                        <code>{{server}}/public-configs/{{config.name}}</code>
-                    </a>
-                </td>
-                <td class="text-center">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="display(config)">
-                            <i class="fa fa-eye"></i> Display
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="!config.specs" (click)="displaySpecs(config)">
-                            <i class="fa fa-eye"></i> Display Specs
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <ul class="list-unstyled col">
+            <li>
+                <strong>Environment</strong>:
+                <code>{{configs.environment}}</code>
+            </li>
+            <li>
+                <strong>Directory</strong>:
+                <code>{{configs.directory}}</code>
+            </li>
+            <li *ngIf="configs.publicUri">
+                <strong>Public URI</strong>:
+                <code>{{configs.publicUri}}</code>
+            </li>
+            <li *ngIf="configs.specsDirectory">
+                <strong>Specs directory</strong>:
+                <code>{{configs.specsDirectory}}</code>
+            </li>
+        </ul>
+    </div>
 
-    <p>
-        <a [href]="server + '/public-configs'" target="_blank" class="float-right border-info">
-            <i class="fa fa-cogs text-success"></i>
-            <code>list of public configs</code>
-        </a>
-    </p>
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Path</th>
+                        <th scope="col">Public URL</th>
+                        <th scope="col text-center">Env Specific</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let config of configs.items">
+                        <td>
+                            <i class="fa fa-cogs text-info"></i>
+                        </td>
+                        <td>{{config.name}}</td>
+                        <td>
+                            <code>{{config.path}}</code>
+                        </td>
+                        <td>
+                            <a *ngIf="config.public" [href]="server + configs.publicUri + '/' + config.name" target="_blank">
+                                <code>{{configs.publicUri}}/{{config.name}}</code>
+                            </a>
+                        </td>
+                        <td class="text-center">{{config.specific | boolean}}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-secondary" (click)="display(config)" title="Display">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" [disabled]="!config.specsPath" (click)="displaySpecs(config)" title="Display Specs">
+                                    <i class="fa fa-code"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <p class="col">
+            <a [href]="server + '/public-configs'" target="_blank" class="float-right border-info">
+                <i class="fa fa-cogs text-success"></i>
+                <code>list of public configs</code>
+            </a>
+        </p>
+    </div>
 
     <div class="modal fade" id="ConfigModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -61,7 +92,7 @@
                     </h5>
                     <h5 *ngIf="displayData.specsName" class="modal-title" id="ModalTitle">
                         <i class="fa fa-cogs"></i>
-                        Config:
+                        Config Specs:
                         <code>{{displayData.specsName}}</code>
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -69,7 +100,19 @@
                     </button>
                 </div>
                 <div class="modal-body p-2">
-                    <pre class="border rounded text-info p-2"><code>{{displayData.data}}</code></pre>
+                    <ul class="list-unstyled">
+                        <li>
+                            <strong>Path</strong>:
+                            <code>{{displayData.path}}</code>
+                        </li>
+                        <li *ngIf="configs.publicUri && displayData.name && displayData.public">
+                            <strong>Public URI</strong>:
+                            <a [href]="server + configs.publicUri + '/' + displayData.name" target="_blank">
+                                <code>{{configs.publicUri}}/{{displayData.name}}</code>
+                            </a>
+                        </li>
+                    </ul>
+                    <pre class="border rounded text-info p-2"><code>{{displayData.contents}}</code></pre>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">
@@ -79,4 +122,5 @@
             </div>
         </div>
     </div>
+
 </div>

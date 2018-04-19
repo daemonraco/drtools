@@ -1,15 +1,22 @@
 <div *ngIf="middlewares">
     <hr/>
 
-    <h4>
-        <i class="fa fa-prescription-bottle"></i> Middlewares:
-    </h4>
-
-    <div class="list-group">
-        <a *ngFor="let middleware of middlewares" href="#" target="_blank" class="list-group-item list-group-item-action border-info"
-            (click)="$event.preventDefault()">
-            <i class="fa fa-prescription-bottle text-info"></i>
-            <code>{{middleware}}</code>
-        </a>
+    <div class="row">
+        <h4 class="col">
+            <i class="fa fa-prescription-bottle"></i> Middlewares:
+        </h4>
     </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="list-group">
+                <a *ngFor="let middleware of middlewares" href="#" target="_blank" class="list-group-item list-group-item-action border-info"
+                    (click)="$event.preventDefault()">
+                    <i class="fa fa-prescription-bottle text-info"></i>
+                    <code>{{middleware}}</code>
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>

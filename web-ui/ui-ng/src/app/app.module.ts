@@ -17,12 +17,14 @@ import { PageHomeTasksComponent } from './home/tasks/tasks.component';
 
 import { LocationService } from './services/location.service';
 
+import { BooleanPipe } from './pipes/boolean.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
 import { MillisecondsPipe } from './pipes/milliseconds.pipe';
 
 @NgModule({
     declarations: [
         AppComponent,
+        BooleanPipe,
         FooterComponent,
         KeysPipe,
         MillisecondsPipe,
@@ -33,7 +35,7 @@ import { MillisecondsPipe } from './pipes/milliseconds.pipe';
         PageHomeLoadersComponent,
         PageHomeMiddlewaresComponent,
         PageHomeRoutesComponent,
-        PageHomeTasksComponent,
+        PageHomeTasksComponent
     ],
     imports: [
         BrowserModule,
