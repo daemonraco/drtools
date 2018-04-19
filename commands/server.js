@@ -156,7 +156,7 @@ const parseArguments = () => {
     connectorOptions.webUi = webUI = commander.ui;
     // @}
 
-    if (!error && Object.keys(connectorOptions).length === 1) {
+    if (!error && Object.keys(connectorOptions).length === 2) {
         error = `There's nothing to serve.`;
     }
 }

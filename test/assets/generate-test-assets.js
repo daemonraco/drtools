@@ -5,6 +5,7 @@ const path = require('path');
 
 const pairs = [
     [path.join(__dirname, 'configs'), path.join(__dirname, '../tmp/configs')],
+    [path.join(__dirname, 'configs/specs'), path.join(__dirname, '../tmp/configs/specs')],
     [path.join(__dirname, 'endpoints'), path.join(__dirname, '../tmp/endpoints')],
     [path.join(__dirname, 'endpoints/roles'), path.join(__dirname, '../tmp/endpoints/roles')],
     [path.join(__dirname, 'endpoints/users'), path.join(__dirname, '../tmp/endpoints/users')],

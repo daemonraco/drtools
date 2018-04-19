@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 
 const assert = chai.assert;
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3005;
 
 chai.use(chaiHttp);
 

@@ -16,6 +16,9 @@ export class DRToolsService {
     public config(name: string): Observable<any> {
         return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json?config=${name}`).map(data => data.json());
     }
+    public configSpecs(name: string): Observable<any> {
+        return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json?configSpecs=${name}`).map(data => data.json());
+    }
     public info(): Observable<any> {
         return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json`).map(data => data.json());
     }

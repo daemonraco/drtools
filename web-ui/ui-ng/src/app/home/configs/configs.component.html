@@ -15,7 +15,7 @@
                 <th scope="col"></th>
                 <th scope="col">Name</th>
                 <th scope="col">Public URL</th>
-                <th scope="col">Action</th>
+                <th scope="col" class="text-center">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -29,10 +29,15 @@
                         <code>{{server}}/public-configs/{{config.name}}</code>
                     </a>
                 </td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="display(config)">
-                        <i class="fa fa-eye"></i> Display
-                    </button>
+                <td class="text-center">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="display(config)">
+                            <i class="fa fa-eye"></i> Display
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="!config.specs" (click)="displaySpecs(config)">
+                            <i class="fa fa-eye"></i> Display Specs
+                        </button>
+                    </div>
                 </td>
             </tr>
         </tbody>
@@ -46,13 +51,18 @@
     </p>
 
     <div class="modal fade" id="ConfigModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalTitle">
+                    <h5 *ngIf="displayData.name" class="modal-title" id="ModalTitle">
                         <i class="fa fa-cogs"></i>
                         Config:
                         <code>{{displayData.name}}</code>
+                    </h5>
+                    <h5 *ngIf="displayData.specsName" class="modal-title" id="ModalTitle">
+                        <i class="fa fa-cogs"></i>
+                        Config:
+                        <code>{{displayData.specsName}}</code>
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

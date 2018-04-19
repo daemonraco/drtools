@@ -178,6 +178,9 @@ export class ExpressConnector {
 
                         if (req.query.config) {
                             result = connectorResults.configs ? connectorResults.configs.get(req.query.config) : {};
+                        } else if (req.query.configSpecs) {
+                            result = connectorResults.configs ? connectorResults.configs.getSpecs(req.query.configSpecs) : null;
+                            result = result !== null ? result : {};
                         } else {
                             result = this.buildInfoResponse(connectorResults);
                         }
@@ -202,7 +205,8 @@ export class ExpressConnector {
             items: configs.itemNames().map((name: string) => {
                 return {
                     name,
-                    public: publicConfigs.indexOf(name) > -1
+                    public: publicConfigs.indexOf(name) > -1,
+                    specs: configs.getSpecs(name) !== null
                 };
             })
         };

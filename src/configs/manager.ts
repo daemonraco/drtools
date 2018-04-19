@@ -3,20 +3,15 @@
  * @author Alejandro D. Simi
  */
 
+import * as ajv from 'ajv';
 import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as jsonpath from 'jsonpath-plus';
 import * as path from 'path';
 
-import { ConfigsConstants } from '.';
+import { ConfigsConstants, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
 import { ExpressMiddleware } from '../express';
 import { OptionsList, Tools } from '../includes';
-
-export type ConfigsList = { [name: string]: any };
-export interface ConfigOptions {
-    suffix?: string;
-    verbose?: boolean;
-}
 
 declare const global: any;
 declare const process: any;
@@ -25,30 +20,37 @@ export class ConfigsManager {
     //
     // Protected properties.
     protected _configs: ConfigsList = {};
-    protected _configsDirectory: string = null;
+    protected _directory: string = null;
     protected _environmentName: string = null;
     protected _exports: ConfigsList = {};
     protected _lastError: string = null;
     protected _options: ConfigOptions = null;
+    protected _specs: ConfigSpecsList = {};
+    protected _specsDirectory: string = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    public constructor(configsDirectory: string, options: ConfigOptions = {}) {
+    public constructor(directory: string, options: ConfigOptions = {}) {
+        this._directory = directory;
+        this._specsDirectory = path.join(directory, 'specs');
         this._options = options;
         this.cleanOptions();
 
-        this.load(configsDirectory);
+        this.load();
     }
     //
     // Public methods.
-    public configsDirectory(): string {
-        return this._configsDirectory;
+    public directory(): string {
+        return this._directory;
     }
     public environmentName(): string {
         return this._environmentName;
     }
     public get(name: string): any {
-        return typeof this._configs[name] ? this._configs[name] : {};
+        return typeof this._configs[name] !== 'undefined' ? this._configs[name] : {};
+    }
+    public getSpecs(name: string): any {
+        return typeof this._specs[name] !== 'undefined' ? this._specs[name] : null;
     }
     public itemNames(): string[] {
         return Object.keys(this._configs);
@@ -117,7 +119,7 @@ export class ConfigsManager {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
-    protected load(configsDirectory: string): void {
+    protected load(): void {
         this._lastError = null;
         //
         // Loading environment names.
@@ -129,12 +131,23 @@ export class ConfigsManager {
         // Checking given directory path.
         if (!this._lastError) {
             let stat: any = null;
-            try { stat = fs.statSync(configsDirectory); } catch (e) { }
+            try { stat = fs.statSync(this._directory); } catch (e) { }
             if (!stat) {
-                this._lastError = `'${configsDirectory}' does not exist.`;
+                this._lastError = `'${this._directory}' does not exist.`;
                 console.error(chalk.red(this._lastError));
             } else if (!stat.isDirectory()) {
-                this._lastError = `'${configsDirectory}' is not a directory.`;
+                this._lastError = `'${this._directory}' is not a directory.`;
+                console.error(chalk.red(this._lastError));
+            }
+        }
+
+        if (!this._lastError) {
+            let stat: any = null;
+            try { stat = fs.statSync(this._specsDirectory); } catch (e) { }
+            if (!stat) {
+                this._specsDirectory = null;
+            } else if (!stat.isDirectory()) {
+                this._lastError = `'${this._specsDirectory}' is not a directory.`;
                 console.error(chalk.red(this._lastError));
             }
         }
@@ -142,28 +155,27 @@ export class ConfigsManager {
         let files: any[] = [];
         if (!this._lastError) {
             //
-            // Basic paths and patterns.
-            this._configsDirectory = configsDirectory;
+            // Basic patterns.
             const configPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.(json|js)$`);
             const envPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.${this._environmentName}\\.(json|js)$`);
             //
             // Loading basic configuration files.
-            files = fs.readdirSync(this._configsDirectory)
+            files = fs.readdirSync(this._directory)
                 .filter(x => x.match(configPattern))
                 .map(x => {
                     return {
                         name: x.replace(configPattern, '$1'),
-                        path: path.resolve(path.join(this._configsDirectory, x))
+                        path: path.resolve(path.join(this._directory, x))
                     };
                 });
             //
             // Loading evironment specific configuration files.
-            const envFiles = fs.readdirSync(this._configsDirectory)
+            const envFiles = fs.readdirSync(this._directory)
                 .filter(x => x.match(envPattern))
                 .map(x => {
                     return {
                         name: x.replace(envPattern, '$1'),
-                        path: path.resolve(path.join(this._configsDirectory, x))
+                        path: path.resolve(path.join(this._directory, x))
                     };
                 });
             //
@@ -182,6 +194,8 @@ export class ConfigsManager {
         this._exports = {};
         if (!this._lastError) {
             for (let i in files) {
+                let valid: boolean = true;
+
                 try {
                     if (this._options.verbose) {
                         console.log(`\t- '${chalk.green(files[i].name)}'${files[i].specific ? ` (has specific configuration)` : ''}`);
@@ -194,17 +208,28 @@ export class ConfigsManager {
                     if (files[i].specific) {
                         this._configs[files[i].name] = Tools.DeepMergeObjects(this._configs[files[i].name], require(files[i].specific.path));
                     }
-
-                    this.loadExports(files[i].name);
+                    //
+                    // Does it have specs?
+                    if (this._specsDirectory && this.loadSpecsOf(files[i].name)) {
+                        valid = this.validateSpecsOf(files[i].name);
+                    }
+                    //
+                    // If there were no errors validating the config file, it can
+                    // expose exports.
+                    if (valid) {
+                        this.loadExportsOf(files[i].name);
+                    } else {
+                        this._configs[files[i].name] = {};
+                    }
                 } catch (e) {
-                    console.error(`Unable to load config '${files[i].name}'.\n\t${e}`);
+                    console.error(chalk.red(`Unable to load config '${files[i].name}'.\n\t${e}`));
                 }
             }
         }
 
         this._valid = !this._lastError;
     }
-    protected loadExports(name: string): void {
+    protected loadExportsOf(name: string): void {
         const config: any = this._configs[name];
 
         if (typeof config.$exports !== 'undefined' || typeof config.$pathExports !== 'undefined') {
@@ -230,5 +255,51 @@ export class ConfigsManager {
                 }
             }
         }
+    }
+    protected loadSpecsOf(name: string): boolean {
+        let hasSpecs: boolean = false;
+
+        const specsPath: string = path.join(this._specsDirectory, `${name}.json`);
+        let stat: any = null;
+        try { stat = fs.statSync(specsPath); } catch (e) { }
+        if (!stat) {
+            // Nothing not to do.
+        } else if (!stat.isFile()) {
+            this._lastError = `'${this._directory}' is not a file.`;
+            console.error(chalk.red(this._lastError));
+        } else {
+            hasSpecs = true;
+        }
+
+        return hasSpecs;
+    }
+    protected validateSpecsOf(name: string): boolean {
+        let valid: boolean = false;
+
+        const specsPath: string = path.join(this._specsDirectory, `${name}.json`);
+        this._specs[name] = null;
+        try {
+            this._specs[name] = require(specsPath);
+        } catch (e) {
+            this._lastError = `'${this._directory}' is not valid specification file. ${e}`;
+            console.error(chalk.red(this._lastError));
+        }
+        //
+        // Creating a validator.
+        try {
+            const ajvObj: any = new ajv({
+                useDefaults: true
+            });
+            const validator: any = ajvObj.compile(this._specs[name]);
+            if (!validator(this._configs[name])) {
+                throw `'\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`;
+            } else {
+                valid = true;
+            }
+        } catch (e) {
+            console.error(chalk.red(`Config '${name}' is not valid.\n\t${e}`));
+        }
+
+        return valid;
     }
 }
