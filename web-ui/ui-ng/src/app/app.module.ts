@@ -7,6 +7,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
+import { Page404Component } from './404/404.component';
+import { PageDocsComponent } from './docs/docs.component';
 import { PageHomeComponent } from './home/home.component';
 import { PageHomeConfigsComponent } from './home/configs/configs.component';
 import { PageHomeEndpointsComponent } from './home/endpoints/endpoints.component';
@@ -29,6 +31,8 @@ import { MillisecondsPipe } from './pipes/milliseconds.pipe';
         KeysPipe,
         MillisecondsPipe,
         NavbarComponent,
+        Page404Component,
+        PageDocsComponent,
         PageHomeComponent,
         PageHomeConfigsComponent,
         PageHomeEndpointsComponent,

@@ -4,13 +4,20 @@
         <img src="assets/favicon.png" width="30" height="30" class="d-inline-block align-top" alt="DRTools" style="filter:saturate(10%);"> DRTools
     </a>
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02"
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#MainMenu" aria-controls="navbarColor02"
         aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto"></ul>
+    <div id="MainMenu" class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/" routerLinkActive="active">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" routerLink="docs" routerLinkActive="active">Documentation</a>
+            </li>
+        </ul>
     </div>
 </nav>
 <!-- @} -->

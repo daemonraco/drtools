@@ -5,6 +5,7 @@
 
 import * as fs from 'fs';
 import * as glob from 'glob';
+import * as marked from 'marked';
 import * as path from 'path';
 
 import { ConfigItemSpec, ConfigsManager } from '../configs';
@@ -51,6 +52,23 @@ export class ExpressResponseBuilder {
                 result = Tools.DeepCopy(item);
                 result.contents = manager.getSpecs(item.name);
             }
+        }
+
+        return result;
+    }
+    public static DocsContents(doc: string, baseUrl: string): any {
+        let result: any = { doc };
+
+        const rootPath = path.join(__dirname, '../..');
+        result.path = path.join(rootPath, doc);
+        if (fs.existsSync(result.path)) {
+            result.raw = fs.readFileSync(result.path).toString();
+            marked.setOptions({
+                headerIds: true,
+                tables: true,
+                gfm: true
+            });
+            result.html = ExpressResponseBuilder.CleanMDHtmlLinks(rootPath, result.path, marked(result.raw));
         }
 
         return result;
@@ -137,5 +155,25 @@ export class ExpressResponseBuilder {
         }
 
         return results;
+    }
+    //
+    // Protected class methods.
+    protected static CleanMDHtmlLinks(rootPath: string, docPath: string, html: string): string {
+        const pattern: RegExp = /^(.* href=")(.*)(\.md.*)$/;
+        const docDirname = path.dirname(docPath);
+
+        html = html.split('\n')
+            .map((line: string) => {
+                let matches: any[] = line.match(pattern);
+
+                if (matches) {
+                    const newPath = path.resolve(path.join(docDirname, matches[2])).substr(rootPath.length + 1);
+                    line = `${matches[1]}${newPath}${matches[3]}`;
+                }
+
+                return line;
+            }).join('\n');
+
+        return html;
     }
 }

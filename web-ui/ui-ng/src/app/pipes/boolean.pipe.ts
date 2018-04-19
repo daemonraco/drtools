@@ -5,7 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class BooleanPipe implements PipeTransform {
     transform(value: boolean, args?: any): any {
-        console.log(`DEBUG`, JSON.stringify(args, null, 2));
         let out: string = '';
 
         switch (args.toLowerCase()) {

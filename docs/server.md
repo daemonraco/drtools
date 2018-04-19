@@ -17,7 +17,7 @@ ExpressJS server).
 ## Command options
 <!-- AUTO:server-options -->
 ```
-DRTools Server (v0.0.13):
+DRTools Server (v0.0.18):
   Usage: drtools-server [options]
   Options:
     -v, --version                    output the version number

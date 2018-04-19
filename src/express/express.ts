@@ -182,6 +182,8 @@ export class ExpressConnector {
                             result = ExpressResponseBuilder.ConfigContents(connectorResults.configs, req.query.config);
                         } else if (req.query.configSpecs) {
                             result = ExpressResponseBuilder.ConfigSpecsContents(connectorResults.configs, req.query.configSpecs);
+                        } else if (req.query.doc) {
+                            result = ExpressResponseBuilder.DocsContents(req.query.doc, req.query.baseUrl);
                         } else {
                             result = ExpressResponseBuilder.FullInfoResponse(connectorResults);
                         }
