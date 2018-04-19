@@ -12,6 +12,9 @@ export class BooleanPipe implements PipeTransform {
             case 'icon':
                 out = value ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>';
                 break;
+            case 'icon-color':
+                out = value ? '<i class="fa fa-check text-success"></i>' : '<i class="fa fa-times text-muted"></i>';
+                break;
             case 'text':
                 out = value ? 'yes' : 'no';
                 break;

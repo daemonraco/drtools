@@ -4,6 +4,7 @@
  */
 
 import * as express from 'express';
+import * as fs from 'fs';
 import * as glob from 'glob';
 import * as path from 'path';
 
@@ -279,7 +280,15 @@ export class ExpressConnector {
                 const directoryLength = directory.length;
                 const mockups = glob.sync(`${directory}/**/*.json`)
                     .map((p: any) => p.substr(directoryLength))
-                    .map((p: any) => p.replace(/\.json$/, ''));
+                    .map((p: any) => {
+                        const jsonPath: string = path.join(directory, p);
+                        const jsPath: string = jsonPath.replace(/\.json$/, '.js');
+                        return {
+                            behaviors: fs.existsSync(jsPath),
+                            path: jsonPath,
+                            uri: p.replace(/\.json$/, '')
+                        };
+                    });
 
                 results.endpoints.push({
                     uri: endpoint.uri(),

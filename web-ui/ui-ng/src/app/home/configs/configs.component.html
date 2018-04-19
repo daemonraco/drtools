@@ -45,6 +45,7 @@
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     <tr *ngFor="let config of configs.items">
                         <td>
@@ -59,7 +60,7 @@
                                 <code>{{configs.publicUri}}/{{config.name}}</code>
                             </a>
                         </td>
-                        <td class="text-center" [innerHTML]="config.specific | boolean:'icon'"></td>
+                        <td class="text-center" [innerHTML]="config.specific | boolean:'icon-color'"></td>
                         <td class="text-center">
                             <div class="btn-group btn-group-sm" role="group">
                                 <button type="button" class="btn btn-outline-secondary" (click)="display(config)" title="Display">
