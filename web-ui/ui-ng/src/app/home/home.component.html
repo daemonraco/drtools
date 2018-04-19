@@ -1,12 +1,51 @@
-<div class="container pt-3 pb-5">
-    <p class="text-right">
-        These are the tools you have loaded.
-    </p>
+<div class="container pb-5">
+    <div class="row mt-3">
+        <div class="col-10">
+            <p class="text-right">These are the tools you have loaded.</p>
 
-    <ui-home-configs [server]="serverUrl" [configs]="drtools.configs"></ui-home-configs>
-    <ui-home-endpoints [server]="serverUrl" [endpoints]="drtools.endpoints"></ui-home-endpoints>
-    <ui-home-loaders [server]="serverUrl" [loaders]="drtools.loaders"></ui-home-loaders>
-    <ui-home-middlewares [server]="serverUrl" [middlewares]="drtools.middlewares"></ui-home-middlewares>
-    <ui-home-routes [server]="serverUrl" [routes]="drtools.routes"></ui-home-routes>
-    <ui-home-tasks [server]="serverUrl" [tasks]="drtools.tasks"></ui-home-tasks>
+            <ui-home-configs id="configs" [server]="serverUrl" [configs]="drtools.configs"></ui-home-configs>
+            <ui-home-endpoints id="endpoints" [server]="serverUrl" [endpoints]="drtools.endpoints"></ui-home-endpoints>
+            <ui-home-loaders id="loaders" [server]="serverUrl" [loaders]="drtools.loaders"></ui-home-loaders>
+            <ui-home-middlewares id="middlewares" [server]="serverUrl" [middlewares]="drtools.middlewares"></ui-home-middlewares>
+            <ui-home-routes id="routes" [server]="serverUrl" [routes]="drtools.routes"></ui-home-routes>
+            <ui-home-tasks id="tasks" [server]="serverUrl" [tasks]="drtools.tasks"></ui-home-tasks>
+        </div>
+
+        <div class="col">
+            <div class="position-fixed">
+                <ul class="nav flex-column border-left">
+                    <li *ngIf="drtools.configs" class="nav-item">
+                        <a class="nav-link" href="#configs">
+                            <i class="fa fa-cogs"></i> Configs
+                        </a>
+                    </li>
+                    <li *ngIf="drtools.endpoints" class="nav-item">
+                        <a class="nav-link" href="#endpoints">
+                            <i class="fa fa-asterisk"></i> Endpoints
+                        </a>
+                    </li>
+                    <li *ngIf="drtools.loaders" class="nav-item">
+                        <a class="nav-link" href="#loaders">
+                            <i class="fa fa-spinner"></i> Loaders
+                        </a>
+                    </li>
+                    <li *ngIf="drtools.middlewares" class="nav-item">
+                        <a class="nav-link" href="#middlewares">
+                            <i class="fa fa-prescription-bottle"></i> Middlewares
+                        </a>
+                    </li>
+                    <li *ngIf="drtools.routes" class="nav-item">
+                        <a class="nav-link" href="#routes">
+                            <i class="fa fa-map-signs"></i> Routes
+                        </a>
+                    </li>
+                    <li *ngIf="drtools.tasks" class="nav-item">
+                        <a class="nav-link" href="#tasks">
+                            <i class="fa fa-clock"></i> Tasks
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

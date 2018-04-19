@@ -210,7 +210,7 @@ export class ExpressConnector {
         results.middlewares = middlewares ? middlewares.itemNames() : null;
         results.routes = routes ? routes.routes() : null;
         results.tasks = tasks ? tasks.tasks() : null;
-        if (endpoints) {
+        if (endpoints && endpoints.length > 0) {
             results.endpoints = [];
 
             endpoints.forEach((endpoint: EndpointsManager) => {
