@@ -16,6 +16,5 @@ export declare class ExpressConnector {
     protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager;
     protected attachTasks(options: ExpressConnectorOptions, configs: ConfigsManager): TasksManager;
     protected attachWebUI(app: any, options: ExpressConnectorOptions, connectorResults: ExpressConnectorAttachResults): void;
-    protected buildInfoResponse(connectorResults: ExpressConnectorAttachResults): any;
     static Instance(): ExpressConnector;
 }

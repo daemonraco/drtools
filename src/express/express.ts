@@ -10,7 +10,7 @@ import * as path from 'path';
 
 import { ConfigItemSpec, ConfigsConstants, ConfigsManager } from '../configs';
 import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-endpoints';
-import { ExpressConnectorAttachResults, ExpressConnectorOptions } from '.';
+import { ExpressConnectorAttachResults, ExpressConnectorOptions, ExpressResponseBuilder } from '.';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { OptionsList, Tools } from '../includes';
@@ -171,6 +171,7 @@ export class ExpressConnector {
             app.all('*', (req: any, res: any, next: () => void) => {
                 if (req.originalUrl.match(/^\/\.drtools/)) {
                     if (req._parsedUrl.pathname === '/.drtools.json') {
+                        let response: ExpressResponseBuilder
                         let result: any = null;
 
                         if (req.hostname.match(/^(localhost|192\.168\..*|10\..*)$/)) {
@@ -178,35 +179,11 @@ export class ExpressConnector {
                         }
 
                         if (req.query.config) {
-                            result = {}
-                            if (connectorResults.configs) {
-                                let item: ConfigItemSpec = null;
-                                connectorResults.configs.items().forEach((auxItem: ConfigItemSpec) => {
-                                    if (auxItem.name === req.query.config) {
-                                        item = auxItem;
-                                    }
-                                });
-                                if (item) {
-                                    result = Tools.DeepCopy(item);
-                                    result.contents = connectorResults.configs.get(item.name);
-                                }
-                            }
+                            result = ExpressResponseBuilder.ConfigContents(connectorResults.configs, req.query.config);
                         } else if (req.query.configSpecs) {
-                            result = {}
-                            if (connectorResults.configs) {
-                                let item: ConfigItemSpec = null;
-                                connectorResults.configs.items().forEach((auxItem: ConfigItemSpec) => {
-                                    if (auxItem.name === req.query.configSpecs) {
-                                        item = auxItem;
-                                    }
-                                });
-                                if (item && item.specsPath) {
-                                    result = Tools.DeepCopy(item);
-                                    result.contents = connectorResults.configs.getSpecs(item.name);
-                                }
-                            }
+                            result = ExpressResponseBuilder.ConfigSpecsContents(connectorResults.configs, req.query.configSpecs);
                         } else {
-                            result = this.buildInfoResponse(connectorResults);
+                            result = ExpressResponseBuilder.FullInfoResponse(connectorResults);
                         }
 
                         res.status(200).json(result);
@@ -218,89 +195,6 @@ export class ExpressConnector {
                 }
             });
         }
-    }
-    protected buildInfoResponse(connectorResults: ExpressConnectorAttachResults): any {
-        const { configs, endpoints, loaders, middlewares, routes, tasks } = connectorResults;
-        let results: any = {};
-
-        results.configs = null;
-        if (configs) {
-            const publicConfigs: string[] = configs.publicItemNames();
-            results.configs = {
-                directory: configs.directory(),
-                environment: configs.environmentName(),
-                items: configs.items(),
-                publicUri: configs.publicUri(),
-                specsDirectory: configs.specsDirectory(),
-                suffix: configs.suffix()
-            };
-        }
-
-        results.loaders = null;
-        if (loaders) {
-            results.loaders = {
-                directory: loaders.directory(),
-                items: loaders.items(),
-                suffix: loaders.suffix()
-            };
-        }
-
-        results.middlewares = null;
-        if (middlewares) {
-            results.middlewares = {
-                directory: middlewares.directory(),
-                items: middlewares.items(),
-                suffix: middlewares.suffix()
-            };
-        }
-
-        results.routes = null;
-        if (routes) {
-            results.routes = {
-                directory: routes.directory(),
-                items: routes.routes(),
-                suffix: routes.suffix()
-            };
-        }
-
-        results.tasks = null;
-        if (tasks) {
-            results.tasks = {
-                directory: tasks.directory(),
-                items: tasks.tasks(),
-                suffix: tasks.suffix()
-            };
-        }
-
-        if (endpoints && endpoints.length > 0) {
-            results.endpoints = [];
-
-            endpoints.forEach((endpoint: EndpointsManager) => {
-                const directory = endpoint.directory();
-                const directoryLength = directory.length;
-                const mockups = glob.sync(`${directory}/**/*.json`)
-                    .map((p: any) => p.substr(directoryLength))
-                    .map((p: any) => {
-                        const jsonPath: string = path.join(directory, p);
-                        const jsPath: string = jsonPath.replace(/\.json$/, '.js');
-                        return {
-                            behaviors: fs.existsSync(jsPath),
-                            path: jsonPath,
-                            uri: p.replace(/\.json$/, '')
-                        };
-                    });
-
-                results.endpoints.push({
-                    uri: endpoint.uri(),
-                    directory, mockups,
-                    options: endpoint.options()
-                });
-            });
-        } else {
-            results.endpoints = null;
-        }
-
-        return results;
     }
     //
     // Public class methods.
