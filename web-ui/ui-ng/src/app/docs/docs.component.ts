@@ -4,6 +4,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { DRToolsService } from '../services/drtools.service';
 
+declare var $: any;
+declare var hljs: any;
+
 @Component({
     selector: 'ui-docs',
     templateUrl: './docs.component.html',
@@ -25,7 +28,27 @@ export class PageDocsComponent implements OnInit {
             const doc: string = params.doc || 'README.md';
             this.drtSrv.doc(doc).subscribe((data: any) => {
                 this.data = data;
+
                 this.data.html = this.sanitizer.bypassSecurityTrustHtml(this.adaptLinks(this.data.html));
+
+                setTimeout(() => {
+                    const pres: any = document.querySelectorAll('ui-docs pre');
+                    [].forEach.call(pres, (block: any) => {
+                        hljs.highlightBlock(block);
+                    });
+
+                    const tables: any = document.querySelectorAll('ui-docs table');
+                    [].forEach.call(tables, (table: any) => {
+                        table.classList.add('table');
+                    });
+
+                    const hs: any = document.querySelectorAll('ui-docs h2,ui-docs h3');
+                    [].forEach.call(hs, (h: any) => {
+                        h.classList.add('border-bottom');
+                        h.classList.add('mt-4');
+                        h.classList.add('py-1');
+                    });
+                }, 100);
             });
         });
     }

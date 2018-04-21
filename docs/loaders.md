@@ -32,7 +32,8 @@ Its name should be something like `my-init.loader.js` where `.loader` is a suffi
 required to be accepted.
 
 ## Options
-When you create a new manager you may pass these options:
+When you create a new manager you may pass these options in an object as a second
+argument:
 
 | Option    |    Type   |  Default | Description                                             |
 |-----------|:---------:|:--------:|---------------------------------------------------------|

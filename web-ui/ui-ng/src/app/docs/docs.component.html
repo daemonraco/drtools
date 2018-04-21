@@ -1,12 +1,14 @@
 <div class="container mt-1 mb-5">
     <h4 *ngIf="!data.doc">loading...</h4>
 
-    <div *ngIf="data.doc" class="card border-primary">
-        <div class="card-header text-white bg-primary small text-right">
+    <div *ngIf="data.doc" class="row small text-dark border-dark border-bottom mb-3 py-2">
+        <div class="col text-right">
             <i class="fa fa-book"></i>
             {{data.doc}}
         </div>
+    </div>
 
-        <div class="card-body" [innerHTML]="data.html"></div>
+    <div class="row">
+        <div class="col" [innerHTML]="data.html"></div>
     </div>
 </div>

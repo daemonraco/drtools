@@ -17,7 +17,7 @@ ExpressJS server).
 ## Command options
 <!-- AUTO:server-options -->
 ```
-DRTools Server (v0.0.18):
+DRTools Server (v0.0.19):
   Usage: drtools-server [options]
   Options:
     -v, --version                    output the version number
@@ -40,3 +40,6 @@ DRTools Server (v0.0.18):
     -h, --help                       output usage information
 ```
 <!-- /AUTO -->
+
+----
+[Back to README](../README.md)

@@ -218,6 +218,5 @@ app.use(endpoint.provide());
 You can even set `globalBehaviors` as a list of string providing more than one
 path at once giving you the ability to better organize your codes.
 
-
 ----
 [Back to README](../README.md)
