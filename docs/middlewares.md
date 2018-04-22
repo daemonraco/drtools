@@ -43,10 +43,10 @@ module.exports = (req, res, next) => {
 When you create a new manager you may pass these options in an object as a third
 argument:
 
-| Option    |    Type   |    Default   | Description                                             |
-|-----------|:---------:|:------------:|---------------------------------------------------------|
-| `suffix`  |  `string` | `middleware` | Suffix to be expected on each loader file to be loaded. |
-| `verbose` | `boolean` |    `true`    | Whether to display loading log information or not.      |
+| Option    |    Type   |    Default   | Description                                                 |
+|-----------|:---------:|:------------:|-------------------------------------------------------------|
+| `suffix`  |  `string` | `middleware` | Suffix to be expected on each middleware file to be loaded. |
+| `verbose` | `boolean` |    `true`    | Whether to display loading log information or not.          |
 
 ----
 [Back to README](../README.md)
