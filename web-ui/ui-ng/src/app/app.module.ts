@@ -14,6 +14,7 @@ import { PageHomeConfigsComponent } from './home/configs/configs.component';
 import { PageHomeEndpointsComponent } from './home/endpoints/endpoints.component';
 import { PageHomeLoadersComponent } from './home/loaders/loaders.component';
 import { PageHomeMiddlewaresComponent } from './home/middlewares/middlewares.component';
+import { PageHomeMockRoutesComponent } from './home/mock-routes/mock-routes.component';
 import { PageHomeRoutesComponent } from './home/routes/routes.component';
 import { PageHomeTasksComponent } from './home/tasks/tasks.component';
 
@@ -38,6 +39,7 @@ import { MillisecondsPipe } from './pipes/milliseconds.pipe';
         PageHomeEndpointsComponent,
         PageHomeLoadersComponent,
         PageHomeMiddlewaresComponent,
+        PageHomeMockRoutesComponent,
         PageHomeRoutesComponent,
         PageHomeTasksComponent
     ],

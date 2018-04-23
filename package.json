@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "description": "Set of useful tools",
     "main": "lib/drtools",
     "types": "lib/drtools",
@@ -51,6 +51,7 @@
         "glob": "^7.1.2",
         "jsonpath-plus": "^0.16.0",
         "lorem-ipsum": "^1.0.4",
-        "marked": "^0.3.19"
+        "marked": "^0.3.19",
+        "mime-types": "^2.1.18"
     }
 }

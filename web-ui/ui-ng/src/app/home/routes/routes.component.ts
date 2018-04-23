@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-
 @Component({
     selector: 'ui-home-routes',
     templateUrl: './routes.component.html',

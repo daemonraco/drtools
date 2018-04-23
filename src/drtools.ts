@@ -32,6 +32,10 @@ export * from './tasks';
 export * from './mock-endpoints';
 
 //
+// Mock-up routes related exports.
+export * from './mock-routes';
+
+//
 // Exporting ExpressJS Connector singleton.
 import { ExpressConnector as ExpressConnectorClass } from './express';
 export const ExpressConnector: ExpressConnectorClass = ExpressConnectorClass.Instance();

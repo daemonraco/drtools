@@ -74,7 +74,7 @@ export class ExpressResponseBuilder {
         return result;
     }
     public static FullInfoResponse(managers: ExpressConnectorAttachResults): any {
-        const { configs, endpoints, loaders, middlewares, routes, tasks } = managers;
+        const { configs, endpoints, loaders, middlewares, mockRoutes, routes, tasks } = managers;
         let results: any = {};
 
         results.configs = null;
@@ -105,6 +105,14 @@ export class ExpressResponseBuilder {
                 directory: middlewares.directory(),
                 items: middlewares.items(),
                 suffix: middlewares.suffix()
+            };
+        }
+
+        results.mockRoutes = null;
+        if (mockRoutes) {
+            results.mockRoutes = {
+                configPath: mockRoutes.configPath(),
+                routes: mockRoutes.routes()
             };
         }
 

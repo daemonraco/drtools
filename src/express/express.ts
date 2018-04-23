@@ -12,6 +12,7 @@ import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-end
 import { ExpressConnectorAttachResults, ExpressConnectorOptions, ExpressResponseBuilder } from '.';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
+import { MockRoutesManager } from '../mock-routes';
 import { OptionsList, Tools } from '../includes';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
@@ -40,6 +41,7 @@ export class ExpressConnector {
             endpoints: [],
             loadersOptions: {},
             middlewaresOptions: {},
+            mockRoutesOptions: {},
             routesOptions: {},
             tasksOptions: {},
             publishConfigs: true,
@@ -53,6 +55,7 @@ export class ExpressConnector {
             endpoints: [],
             loaders: null,
             middlewares: null,
+            mockRoutes: null,
             routes: null,
             tasks: null
         };
@@ -65,6 +68,9 @@ export class ExpressConnector {
         //
         // Attaching a middlewares manager.
         results.middlewares = this.attachMiddlewares(app, options, results.configs);
+        //
+        // Attaching a routes manager.
+        results.mockRoutes = this.attachMockRoutes(app, options, results.configs);
         //
         // Attaching a routes manager.
         results.routes = this.attachRoutes(app, options, results.configs);
@@ -136,6 +142,19 @@ export class ExpressConnector {
         });
 
         return managers;
+    }
+    protected attachMockRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): MockRoutesManager {
+        let manager: MockRoutesManager = null;
+
+        if (options.mockRoutesConfig) {
+            if (typeof options.verbose !== 'undefined' && typeof options.mockRoutesOptions.verbose === 'undefined') {
+                options.mockRoutesOptions.verbose = options.verbose;
+            }
+
+            manager = new MockRoutesManager(app, options.mockRoutesConfig, options.mockRoutesOptions, configs);
+        }
+
+        return manager;
     }
     protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager {
         let manager: RoutesManager = null;

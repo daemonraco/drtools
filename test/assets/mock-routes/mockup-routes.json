@@ -1,0 +1,30 @@
+{
+    "routes": {
+        "*": [
+            {
+                "uri": "/simple-text",
+                "path": "./simple-text.txt"
+            },
+            {
+                "uri": "/simple-html",
+                "path": "./simple-html.html"
+            },
+            {
+                "uri": "/simple-json",
+                "path": "./simple-json.json"
+            }
+        ],
+        "get": [
+            {
+                "uri": "/simple-image",
+                "path": "../../../web-ui/ui/.drtools/assets/favicon.png"
+            }
+        ],
+        "post": [
+            {
+                "uri": "/simple-text",
+                "path": "./simple-text.post.txt"
+            }
+        ]
+    }
+}

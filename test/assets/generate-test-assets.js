@@ -14,6 +14,7 @@ const pairs = [
     [path.join(__dirname, 'endpoints/_METHODS/post'), path.join(__dirname, '../tmp/endpoints/_METHODS/post')],
     [path.join(__dirname, 'loaders'), path.join(__dirname, '../tmp/loaders')],
     [path.join(__dirname, 'middlewares'), path.join(__dirname, '../tmp/middlewares')],
+    [path.join(__dirname, 'mock-routes'), path.join(__dirname, '../tmp/mock-routes')],
     [path.join(__dirname, 'routes'), path.join(__dirname, '../tmp/routes')],
     [path.join(__dirname, 'tasks'), path.join(__dirname, '../tmp/tasks')]
 ];

@@ -27,6 +27,7 @@ const { configs } = ExpressConnector.attach(app, {
         },
     },
     middlewaresDirectory: path.join(__dirname, '../tmp/middlewares'),
+    mockRoutesConfig: path.join(__dirname, '../tmp/mock-routes/mockup-routes.json'),
     routesDirectory: path.join(__dirname, '../tmp/routes'),
     tasksDirectory: path.join(__dirname, '../tmp/tasks'),
     webUi: true

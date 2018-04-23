@@ -53,6 +53,8 @@ const setAndLoadArguments = () => {
             'port number (default is 3005).')
         .option('-r, --routes [path]',
             'directory where route files are stored.')
+        .option('-R, --mock-routes [path]',
+            'Configuration file for mock-up routes.')
         .option('-t, --tasks [path]',
             'directory where task files are stored.')
         .option('--configs-suffix [suffix]',
@@ -127,6 +129,10 @@ const parseArguments = () => {
         error = `Parameter '--tasks-suffix' should be used along with option '--tasks'.`;
     }
 
+    if (commander.mockRoutes) {
+        connectorOptions.mockRoutesConfig = path.join(process.cwd(), commander.mockRoutes);
+    }
+
     if (commander.endpoint && commander.endpointDirectory) {
         const uri = commander.endpoint[0] === '/' ? commander.endpoint : `/${commander.endpoint}`;
         connectorOptions.endpoints = {
@@ -179,7 +185,7 @@ const startServer = () => {
     });
 
     const connecterResults = ExpressConnector.attach(app, connectorOptions);
-    const { configs, endpoints, loaders, middlewares, routes, tasks } = connecterResults;
+    const { configs, endpoints, loaders, middlewares, mockRoutes, routes, tasks } = connecterResults;
     if (routes) {
         routes.itemNames().forEach(r => availableUrls.push(`/${r}`));
     }
@@ -227,6 +233,11 @@ const startServer = () => {
             const error = tasks.valid() ? '' : chalk.yellow(` (Error: ${tasks.lastError()})`);
             const suffix = connectorOptions.tasksOptions && connectorOptions.tasksOptions.suffix ? ` (suffix: '.${connectorOptions.tasksOptions.suffix}')` : '';
             console.log(`\t- Task files at '${chalk.green(connectorOptions.tasksDirectory)}'${suffix}${error}`);
+        }
+
+        if (mockRoutes) {
+            const error = mockRoutes.valid() ? '' : chalk.yellow(` (Error: ${mockRoutes.lastError()})`);
+            console.log(`\t- Mock-up routes configuration '${chalk.green(mockRoutes.configPath())}'${error}`);
         }
 
         if (connectorOptions.endpoints) {

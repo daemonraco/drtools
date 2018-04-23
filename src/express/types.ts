@@ -7,10 +7,11 @@ import { ConfigOptions, ConfigsManager } from '../configs';
 import { EndpointsManagerOptions, EndpointsManager } from '../mock-endpoints';
 import { LoaderOptions, LoadersManager } from '../loaders';
 import { MiddlewareOptions, MiddlewaresManager } from '../middlewares';
+import { MockRoutesManager, MockRoutesOptions } from '../mock-routes';
 import { RouteOptions, RoutesManager } from '../routes';
 import { TasksManagerOptions, TasksManager } from '../tasks';
 
-export type ExpressMiddleware = (res: any, req: any, next: () => void) => void;
+export type ExpressMiddleware = (req: any, res: any, next: () => void) => void;
 
 export interface ExpressConnectorOptions {
     //
@@ -35,6 +36,10 @@ export interface ExpressConnectorOptions {
     tasksDirectory?: string;
     tasksOptions?: TasksManagerOptions;
     //
+    // Mock-up Routes.
+    mockRoutesConfig?: string;
+    mockRoutesOptions?: MockRoutesOptions;
+    //
     // Endpoints.
     endpoints: EndpointsManagerOptions | EndpointsManagerOptions[];
     //
@@ -48,6 +53,7 @@ export interface ExpressConnectorAttachResults {
     endpoints: EndpointsManager[];
     loaders: LoadersManager;
     middlewares: MiddlewaresManager;
+    mockRoutes: MockRoutesManager;
     routes: RoutesManager;
     tasks: TasksManager;
 }
