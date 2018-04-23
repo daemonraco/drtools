@@ -40,6 +40,7 @@ export class PageDocsComponent implements OnInit {
                     const tables: any = document.querySelectorAll('ui-docs table');
                     [].forEach.call(tables, (table: any) => {
                         table.classList.add('table');
+                        table.classList.add('table-striped');
                     });
 
                     const hs: any = document.querySelectorAll('ui-docs h2,ui-docs h3');

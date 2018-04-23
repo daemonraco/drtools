@@ -28,8 +28,9 @@ _Long answer?_ Well, if you want, you can give it a try, but it's up to you.
 * [Organized Configuration Files](docs/configs.md)
 * [Organized Initializers](docs/loaders.md)
 * [Organized Middlewares](docs/middlewares.md)
-* [Endpoint Mock-ups](docs/endpoints.md)
+* [Mock-up Routes](docs/mock-routes.md)
 * [Organized Tasks](docs/tasks.md)
+* [Endpoint Mock-ups](docs/endpoints.md)
 * [ExpressJS Tools Attacher](docs/express.md) (a.k.a all-in-one)
 * Commands:
     * [Server](docs/server.md)

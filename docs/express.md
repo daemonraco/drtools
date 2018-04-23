@@ -56,6 +56,7 @@ ExpressConnector.attach(app, {
         uri: `/api/v1.0`
     },
     middlewaresDirectory: `/path/to/middlewares`,
+    mockRoutesConfig: `/path/to/mockup-routes.configuration.json`,
     routesDirectory: `/path/to/routes`
 });
 // @}
@@ -93,10 +94,13 @@ When you invoke `ExpressConnector.attach()` you may pass these options:
 | `loadersOptions`       | `LoaderOptions`                                        |   `{}`  | Set of options to be used when a loaders manager is started.                                                                                                       |
 | `middlewaresDirectory` | `string`                                               |  `null` | Directory where middleware scripts are stored.                                                                                                                     |
 | `middlewaresOptions`   | `MiddlewareOptions`                                    |   `{}`  | Set of options to be used when the middleware manager is started.                                                                                                  |
+| `mockRoutesConfig`     | `string`                                               |  `null` | Path to a mock-up routes configuration file.                                                                                                                       |
+| `mockRoutesOptions`    | `MockRoutesOptions`                                    |   `{}`  | Set of options to be used when the mock-up routes manager is started.                                                                                              |
 | `routesDirectory`      | `string`                                               |  `null` | Directory where express routes loaders are stored.                                                                                                                 |
 | `routesOptions`        | `RouteOptions`                                         |   `{}`  | Set of options to be used when the routes manager is started.                                                                                                      |
 | `endpoints`            | `EndpointsManagerOptions`, `EndpointsManagerOptions[]` |   `[]`  | Mock-up endpoints configuration                                                                                                                                    |
 | `verbose`              | `boolean`                                              |  `true` | Whether to display loading log information or not.                                                                                                                 |
+| `webUi`                | `boolean`                                              | `false` | Whether to load or not the DRTools information page at `/.drtools`.                                                                                                |
 
 ----
 [Back to README](../README.md)
