@@ -29,12 +29,12 @@ export class EndpointBehaviors extends Object {
     }
     //
     // Basic behaviors.
-    public endpoint(endpointPath: string): any {
+    public endpoint(endpointPath: string, method: string = null): any {
         let out: any = undefined;
 
         const fullPath: string = path.join(this._endpoint.directory(), `${endpointPath}.json`);
         if (fs.existsSync(fullPath)) {
-            out = this._endpoint.responseFor(endpointPath, true);
+            out = this._endpoint.responseFor(endpointPath, method, true);
         } else {
             const rootPath = this._endpoint.directory();
             const filter = /^(.*)\.json$/i;
@@ -43,10 +43,10 @@ export class EndpointBehaviors extends Object {
                 .filter((p: string) => p.indexOf(rootPath) === 0)
                 .map((p: string) => p.substr(rootPath.length + 1))
                 .map((p: string) => p.replace(filter, '$1'))
-                .map((ep: string) => this._endpoint.responseFor(ep, true));
+                .map((ep: string) => this._endpoint.responseFor(ep, method, true));
 
             if (out.length === 0) {
-                out = this._endpoint.responseFor(endpointPath);
+                out = this._endpoint.responseFor(endpointPath, method);
             }
         }
 

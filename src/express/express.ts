@@ -5,7 +5,6 @@
 
 import * as express from 'express';
 import * as fs from 'fs';
-import * as glob from 'glob';
 import * as path from 'path';
 
 import { ConfigItemSpec, ConfigsConstants, ConfigsManager } from '../configs';

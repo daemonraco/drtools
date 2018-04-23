@@ -4,7 +4,7 @@ export declare class EndpointBehaviors extends Object {
     protected static _PrivateBehaviors: string[];
     protected _endpoint: Endpoint;
     constructor(endpoint: Endpoint);
-    endpoint(endpointPath: string): any;
+    endpoint(endpointPath: string, method?: string): any;
     lorem(params: any): any;
     randNumber(...args: any[]): number;
     randString(length?: number): string;

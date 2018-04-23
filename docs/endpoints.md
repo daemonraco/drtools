@@ -13,6 +13,7 @@
     - [endpoint](#endpoint)
 - [Custom behaviors](#custom-behaviors)
 - [Global custom behaviors](#global-custom-behaviors)
+- [By method](#by-method)
 
 <!-- /TOC -->
 
@@ -217,6 +218,19 @@ app.use(endpoint.provide());
 
 You can even set `globalBehaviors` as a list of string providing more than one
 path at once giving you the ability to better organize your codes.
+
+## By method
+If you want to have a different response for certain path depending on the request
+method, you can do something this.
+
+Let's say your endpoint directory is at `/path/to/mock-ups` and you have a JSON
+file at `/path/to/mock-ups/books.json` that you want it to be used only on `GET`
+requests, you can create the directory `/path/to/mock-ups/_METHODS/get` and move
+`books.json` into it.
+
+If you want a different answer for `POST` requests, you can create the directory
+`/path/to/mock-ups/_METHODS/post` and put another file called `books.json` with
+different contents.
 
 ----
 [Back to README](../README.md)

@@ -40,6 +40,7 @@
                             <tr>
                                 <th scope="col"></th>
                                 <th scope="col">URI</th>
+                                <th scope="col">Method</th>
                                 <th scope="col">Path</th>
                                 <th scope="col" class="text-center">Has Behavoirs</th>
                             </tr>
@@ -54,6 +55,9 @@
                                     <a [href]="server + endpoint.uri" target="_blank">
                                         <code>{{endpoint.uri}}</code>
                                     </a>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge badge-secondary">*</span>
                                 </td>
                                 <td>
                                     <code>{{endpoint.directory}}</code>
@@ -70,6 +74,10 @@
                                     <a [href]="server + endpoint.uri + mockup.uri" target="_blank">
                                         <code>{{mockup.uri}}</code>
                                     </a>
+                                </td>
+                                <td class="text-center">
+                                    <span *ngIf="mockup.method" class="badge badge-primary text-uppercase">{{mockup.method}}</span>
+                                    <span *ngIf="!mockup.method" class="badge badge-secondary">*</span>
                                 </td>
                                 <td>
                                     <code>{{mockup.path}}</code>

@@ -4,8 +4,11 @@
  */
 
 import * as fs from 'fs';
+import * as glob from 'glob';
+import * as path from 'path';
 
-import { Endpoint, EndpointBehaviors, EndpointOptions } from '.';
+import { Endpoint, EndpointBehaviors, EndpointBrief, EndpointBrievesByMethod } from '.';
+import { EndpointOptions, EndpointPathPattern, EndpointRawByMethod } from '.';
 import { Tools } from '../includes';
 
 export class EndpointData {
@@ -15,26 +18,63 @@ export class EndpointData {
     //
     // Protected properties.
     protected _behaviors: EndpointBehaviors = null;
+    protected _brievesByMethod: EndpointBrievesByMethod = {};
     protected _endpoint: Endpoint = null;
+    protected _exists: boolean = false;
     protected _options: EndpointOptions = {};
-    protected _raw: any = '';
+    protected _raw: EndpointRawByMethod = {};
+    protected _uri: string = null;
     //
     // Constructor.
-    constructor(endpoint: Endpoint, dummyDataPath: string, options: EndpointOptions = {}) {
+    constructor(endpoint: Endpoint, uri: string, options: EndpointOptions = {}) {
         this._endpoint = endpoint;
+        this._uri = uri;
         this._options = Tools.DeepMergeObjects(this._options, options);
         this.fixOptions();
 
-        this._behaviors = new EndpointBehaviors(this._endpoint);
+        this.loadPaths();
+        this.loadRaw();
 
-        this.loadRaw(dummyDataPath);
-        this.loadBehaviors(dummyDataPath);
+        this._behaviors = new EndpointBehaviors(this._endpoint);
+        this.loadBehaviors();
     }
     //
     // Public methods.
-    public data(): any {
-        let out = JSON.parse(JSON.stringify(this._raw));
-        return this.expanded(out);
+    public brievesByMethod(): EndpointBrievesByMethod {
+        return this._brievesByMethod;
+    }
+    public data(method: string = null): any {
+        let out: any = {
+            status: 404,
+            message: `Not found.`,
+            data: {}
+        };
+
+        if (this._exists) {
+            method = method ? method.toLowerCase() : null;
+            if (typeof this._raw['*'] !== 'undefined') {
+                method = '*';
+            }
+
+            if (typeof this._raw[method] !== 'undefined') {
+                try {
+                    out.data = JSON.parse(JSON.stringify(this._raw[method]));
+                    out.data = this.expanded(out.data);
+
+                    out.status = 200;
+                    out.message = null;
+                } catch (e) {
+                    out.status = 500;
+                    out.message = `Error loading specs. ${e}`;
+                    out.data = e;
+                }
+            } else {
+                out.status = 400;
+                out.message = `Bad Request.`;
+            }
+        }
+
+        return out;
     }
     //
     // Protected methods.
@@ -74,13 +114,17 @@ export class EndpointData {
             this._options.globalBehaviors = [];
         }
     }
-    protected loadBehaviors(dummyDataPath: string): void {
-        const dummyBehaviorsPath = dummyDataPath.replace(/\.json$/, '.js');
+    protected loadBehaviors(): void {
+        const behaviorsPath: string = path.join(this._endpoint.directory(), `${this._uri}.js`);
 
-        try {
-            const extraBehaviors = require(dummyBehaviorsPath);
-            this._behaviors.importBehaviors(extraBehaviors);
-        } catch (e) { }
+        if (fs.existsSync(behaviorsPath)) {
+            try {
+                const extraBehaviors = require(behaviorsPath);
+                this._behaviors.importBehaviors(extraBehaviors);
+
+                Object.keys(this._brievesByMethod).forEach((method: string) => this._brievesByMethod[method].behaviors = true);
+            } catch (e) { }
+        }
 
         this.loadGlobalBehaviors();
     }
@@ -93,10 +137,43 @@ export class EndpointData {
             }
         });
     }
-    protected loadRaw(dummyDataPath: string): void {
-        this._raw = fs.readFileSync(dummyDataPath).toString();
-        try {
-            this._raw = JSON.parse(this._raw);
-        } catch (e) { }
+    protected loadPaths(): void {
+        const basicPath: string = path.join(this._endpoint.directory(), `${this._uri}.json`);
+        const byMethodPattern: string = path.join(this._endpoint.directory(), `_METHODS/*/${this._uri}.json`);
+        const byMethodPaths: string[] = glob.sync(byMethodPattern);
+
+        if (byMethodPaths.length) {
+            this._exists = true;
+
+            byMethodPaths.forEach((p: string) => {
+                const matches: string[] = p.match(EndpointPathPattern);
+                if (matches) {
+                    this._brievesByMethod[matches[3]] = {
+                        behaviors: false,
+                        method: matches[3],
+                        path: p,
+                        uri: this._uri
+                    };
+                }
+            });
+        } else if (fs.existsSync(basicPath)) {
+            this._exists = true;
+
+            this._brievesByMethod['*'] = {
+                behaviors: false,
+                method: null,
+                path: basicPath,
+                uri: this._uri
+            };
+        }
+    }
+    protected loadRaw(): void {
+        Object.keys(this._brievesByMethod).forEach((method: string) => {
+            this._raw[method] = fs.readFileSync(this._brievesByMethod[method].path).toString();
+
+            try {
+                this._raw[method] = JSON.parse(this._raw[method]);
+            } catch (e) { }
+        });
     }
 }

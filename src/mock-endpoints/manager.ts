@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { ConfigsManager } from '../configs';
-import { Endpoint, EndpointsManagerOptions, EndpointOptions } from '.';
+import { Endpoint, EndpointBrief, EndpointsManagerOptions, EndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
 import { Tools } from '../includes';
 
@@ -41,6 +41,9 @@ export class EndpointsManager {
     }
     public options(): EndpointOptions {
         return this._options.options;
+    }
+    public paths(): EndpointBrief[] {
+        return this._provider.paths();
     }
     public provide(): ExpressMiddleware {
         return this.valid() ? this._provider.expressMiddleware() : this.provideInvalidMiddleware();

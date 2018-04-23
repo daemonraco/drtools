@@ -1,0 +1,62 @@
+[
+    {
+        "id": "1",
+        "title": "Don Quixote",
+        "author": "Miguel De Cervantes",
+        "brief": "The story of the gentle knight and his servant Sancho Panza has entranced readers for centuries."
+    },
+    {
+        "id": "2",
+        "title": "Pilgrim's Progress",
+        "author": "John Bunyan",
+        "brief": "The one with the Slough of Despond and Vanity Fair."
+    },
+    {
+        "id": "3",
+        "title": "Robinson Crusoe",
+        "author": "Daniel Defoe",
+        "brief": "The first English novel."
+    },
+    {
+        "id": "4",
+        "title": "Gulliver's Travels",
+        "author": "Jonathan Swift",
+        "brief": "A wonderful satire that still works for all ages, despite the savagery of Swift's vision."
+    },
+    {
+        "id": "5",
+        "title": "Tom Jones",
+        "author": "Henry Fielding",
+        "brief": "The adventures of a high-spirited orphan boy: an unbeatable plot and a lot of sex ending in a blissful marriage."
+    },
+    {
+        "id": "6",
+        "title": "Clarissa",
+        "author": "Samuel Richardson",
+        "brief": "One of the longest novels in the English language, but unputdownable."
+    },
+    {
+        "id": "7",
+        "title": "Tristram Shandy",
+        "author": "Laurence Sterne",
+        "brief": "One of the first bestsellers, dismissed by Dr Johnson as too fashionable for its own good."
+    },
+    {
+        "id": "8",
+        "title": "Dangerous Liaisons",
+        "author": "Pierre Choderlos De Laclos",
+        "brief": "An epistolary novel and a handbook for seducers: foppish, French, and ferocious."
+    },
+    {
+        "id": "9",
+        "title": "Emma",
+        "author": "Jane Austen",
+        "brief": "Near impossible choice between this and Pride and Prejudice. But Emma never fails to fascinate and annoy."
+    },
+    {
+        "id": "10",
+        "title": "Frankenstein",
+        "author": "Mary Shelley",
+        "brief": "Inspired by spending too much time with Shelley and Byron."
+    }
+]

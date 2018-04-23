@@ -1,5 +1,5 @@
 import { ConfigsManager } from '../configs';
-import { Endpoint, EndpointsManagerOptions, EndpointOptions } from '.';
+import { Endpoint, EndpointBrief, EndpointsManagerOptions, EndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
 export declare class EndpointsManager {
     protected _configs: ConfigsManager;
@@ -13,6 +13,7 @@ export declare class EndpointsManager {
     directory(): string;
     lastError(): string;
     options(): EndpointOptions;
+    paths(): EndpointBrief[];
     provide(): ExpressMiddleware;
     valid(): boolean;
     uri(): string;

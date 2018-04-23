@@ -4,9 +4,10 @@
  */
 
 import * as fs from 'fs';
+import * as glob from 'glob';
 import * as path from 'path';
 
-import { EndpointData, EndpointOptions } from '.';
+import { EndpointBrief, EndpointBrievesByMethod, EndpointData, EndpointOptions, EndpointPathPattern } from '.';
 import { ExpressMiddleware } from '../express';
 import { Tools } from '../includes';
 
@@ -15,7 +16,7 @@ export class Endpoint {
     // Protected properties.
     protected _dirPath: string = '';
     protected _loaded: boolean = false;
-    protected _loadedEndpoints: { [name: string]: EndpointData } = {};
+    protected _loadedEndpoints: { [path: string]: EndpointData } = {};
     protected _restPath: string = '';
     protected _restPattern: RegExp = null;
     protected _options: EndpointOptions = null;
@@ -31,6 +32,19 @@ export class Endpoint {
     }
     //
     // Public methods.
+    public paths(): EndpointBrief[] {
+        const out: EndpointBrief[] = [];
+
+        this.loadAllEndpoints();
+        Object.keys(this._loadedEndpoints).sort().forEach((path: string) => {
+            const brieves: EndpointBrievesByMethod = this._loadedEndpoints[path].brievesByMethod();
+            Object.keys(brieves).forEach((method: string) => {
+                out.push(brieves[method]);
+            });
+        });
+
+        return out;
+    }
     public directory(): string {
         return this._dirPath;
     }
@@ -38,7 +52,9 @@ export class Endpoint {
         return (req: any, res: any, next: any) => {
             const match = req.url.match(this._restPattern);
             if (match) {
-                const result = this.responseFor(match[2]);
+                const result = this.responseFor(match[2], req.method);
+
+                res.header('Content-Type', 'application/json');
 
                 if (result.status === 200) {
                     res.status(result.status).json(result.data);
@@ -54,34 +70,15 @@ export class Endpoint {
             }
         };
     }
-    public responseFor(endpoint: string, simple: boolean = false): { [name: string]: any } {
+    public responseFor(endpoint: string, method: string, simple: boolean = false): { [name: string]: any } {
         let out: { [name: string]: any } = {
             status: 200,
             message: null,
             data: {}
         };
 
-        const endpointPath = path.join(this._dirPath, `${endpoint}.json`);
-        if (typeof this._loadedEndpoints[endpointPath] === 'undefined') {
-            let stat = null;
-            try { stat = fs.statSync(endpointPath); } catch (e) { }
-
-            if (stat && stat.isFile()) {
-                try {
-                    this._loadedEndpoints[endpointPath] = new EndpointData(this, endpointPath, this._options);
-                    out.data = this._loadedEndpoints[endpointPath].data();
-                } catch (e) {
-                    out.status = 500;
-                    out.message = `Error loading specs. ${e}`;
-                }
-            } else {
-                out.status = 404;
-                out.message = `Endpoint '${endpoint}' was not found.`;
-                out.data = {};
-            }
-        } else {
-            out.data = this._loadedEndpoints[endpointPath].data();
-        }
+        this.loadEndpoint(endpoint);
+        out = this._loadedEndpoints[endpoint].data(method);
 
         return simple ? out.data : out;
     }
@@ -128,6 +125,33 @@ export class Endpoint {
             } else {
                 throw `Path '${this._dirPath}' is not a valid path.`
             }
+        }
+    }
+    protected loadAllEndpoints(): void {
+        const paths: string[] = glob.sync(path.join(this.directory(), '**/*.json'));
+        const directoryLength = this.directory().length;
+
+        let uris: string[] = [];
+        paths.forEach((p: string) => {
+            const matches: string[] = p.match(EndpointPathPattern);
+            if (matches) {
+                let uri: string;
+
+                if (matches[2] === '_METHODS') {
+                    uris.push(matches[4]);
+                } else {
+                    uris.push(p.substr(directoryLength + 1).replace(/\.json$/, ''));
+                }
+            }
+        });
+
+        uris.forEach((u: string) => {
+            this.loadEndpoint(u);
+        });
+    }
+    protected loadEndpoint(endpoint: string): void {
+        if (typeof this._loadedEndpoints[endpoint] === 'undefined') {
+            this._loadedEndpoints[endpoint] = new EndpointData(this, endpoint, this._options);
         }
     }
 }

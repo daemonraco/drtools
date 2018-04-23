@@ -130,23 +130,10 @@ export class ExpressResponseBuilder {
             results.endpoints = [];
 
             endpoints.forEach((endpoint: EndpointsManager) => {
-                const directory = endpoint.directory();
-                const directoryLength = directory.length;
-                const mockups = glob.sync(`${directory}/**/*.json`)
-                    .map((p: any) => p.substr(directoryLength))
-                    .map((p: any) => {
-                        const jsonPath: string = path.join(directory, p);
-                        const jsPath: string = jsonPath.replace(/\.json$/, '.js');
-                        return {
-                            behaviors: fs.existsSync(jsPath),
-                            path: jsonPath,
-                            uri: p.replace(/\.json$/, '')
-                        };
-                    });
-
                 results.endpoints.push({
                     uri: endpoint.uri(),
-                    directory, mockups,
+                    directory: endpoint.directory(),
+                    mockups: endpoint.paths(),
                     options: endpoint.options()
                 });
             });
