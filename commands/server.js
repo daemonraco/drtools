@@ -154,6 +154,9 @@ const parseArguments = () => {
     }
 
     connectorOptions.webUi = webUI = commander.ui;
+    if (webUI) {
+        availableUrls.push('/.drtools');
+    }
     // @}
 
     if (!error && Object.keys(connectorOptions).length === 2) {
