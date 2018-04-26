@@ -8,6 +8,8 @@
     - [Configuration file](#configuration-file)
     - [By method](#by-method)
 - [Guards](#guards)
+- [General guards](#general-guards)
+- [Default guard](#default-guard)
 - [Options](#options)
 
 <!-- /TOC -->
@@ -137,13 +139,58 @@ Then, we need to change our configuration:
 }
 ```
 
+## General guards
+The previous way requires you to specify a guard path on each route, but that's
+not the only way, you can write something like this in your configuration:
+```json
+{
+    "guards": [
+        {
+            "name": "basic-guard",
+            "path": "./my-guard.js"
+        }
+    ],
+    "routes": [
+        {
+            "uri": "/simple-json",
+            "path": "./simple-json.json",
+            "guardName": "basic-guard"
+        }
+    ]
+}
+```
+
+This come in handy when you have many routes using the same path, if you happen to
+need a change in such path, you just change it in one place.
+
+## Default guard
+Maybe you already guest it, all routes have a default guard that checks nothing
+but it's there.
+If you want to apply a your guard to all routes you can do this:
+```json
+{
+    "guards": [
+        {
+            "name": "default",
+            "path": "./my-guard.js"
+        }
+    ],
+    "routes": [
+        {
+            "uri": "/simple-json",
+            "path": "./simple-json.json"
+        }
+    ]
+}
+```
+
 ## Options
 When you create a new manager you may pass these options in an object as a third
 argument:
 
-| Option    |    Type   |    Default   | Description                                                 |
-|-----------|:---------:|:------------:|-------------------------------------------------------------|
-| `verbose` | `boolean` |    `true`    | Whether to display loading log information or not.          |
+| Option    |    Type   | Default | Description                                        |
+|-----------|:---------:|:-------:|----------------------------------------------------|
+| `verbose` | `boolean` |  `true` | Whether to display loading log information or not. |
 
 ----
 [Back to README](../README.md)
