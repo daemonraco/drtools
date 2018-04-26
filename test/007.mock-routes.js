@@ -138,4 +138,43 @@ describe(`[007] drtools: Mock-up routes on the ExpressJS connector:`, () => {
                 done();
             });
     });
+
+    it(`requesting a route that returns a globally guarded text`, done => {
+        chai.request(`http://localhost:${port}`)
+            .get(`/name-guarded-text?guard`)
+            .end((err, res) => {
+                assert.isNull(err);
+                assert.strictEqual(res.status, 200);
+                assert.match(res.header['content-type'], /text\/plain/);
+                assert.isString(res.text);
+
+                assert.match(res.text.replace(/[\n\r]/, ''), /this is a guarded text and you succeeded in accessing it/);
+
+                done();
+            });
+    });
+
+    it(`requesting a route that returns a globally guarded text (bad parameters)`, done => {
+        chai.request(`http://localhost:${port}`)
+            .get(`/name-guarded-text`)
+            .end((err, res) => {
+                assert.isNull(err);
+                assert.strictEqual(res.status, 403);
+                assert.match(res.header['content-type'], /application\/json/);
+                assert.isString(res.text);
+
+                let body;
+                try {
+                    body = JSON.parse(res.text);
+                } catch (e) {
+                    assert.isTrue(false, `response body cannot be parsed`);
+                }
+
+                assert.strictEqual(Object.keys(body).length, 1);
+                assert.property(body, 'message');
+                assert.match(body.message.replace(/[\n\r]/, ''), /You are not allowed on this route/);
+
+                done();
+            });
+    });
 });
