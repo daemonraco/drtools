@@ -2,14 +2,16 @@
     "name": "drtools",
     "version": "0.0.23",
     "description": "Set of useful tools",
-    "main": "lib/drtools",
-    "types": "lib/drtools",
+    "main": "dist/core/drtools",
+    "types": "dist/core/drtools",
     "bin": {
-        "drtools-server": "./commands/server.js"
+        "drtools-server": "./dist/commands/server/cmd.js"
     },
     "scripts": {
         "start": "npm run build:live",
+        "prebuild": "rm -frv dist/*",
         "build": "./node_modules/.bin/tsc",
+        "postbuild": "chmod +x dist/commands/server/cmd.js",
         "build:live": "./node_modules/.bin/tsc --watch",
         "gen:docs": "node .tools/gen-docs.js",
         "live:server": "./test/assets/start-live.sh",
