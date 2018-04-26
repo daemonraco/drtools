@@ -6,5 +6,6 @@ export declare class Tools {
     packageData(): any;
     version(): string;
     private load();
+    static CompletePath(incompletePath: string): string;
     static Instance(): Tools;
 }

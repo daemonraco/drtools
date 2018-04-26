@@ -5,8 +5,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
-const tools_1 = require("../includes/tools");
 const drtools_1 = require("../../core/drtools");
+const tools_1 = require("../includes/tools");
 class DRToolsServer {
     constructor() {
         //
@@ -30,8 +30,6 @@ class DRToolsServer {
     // Public methods.
     run() {
         console.log(`DRTools Server (v${tools_1.Tools.Instance().version()}):\n`);
-        //
-        // Running @{
         this.setAndLoadArguments();
         this.parseArguments();
         if (!this.error) {
@@ -40,36 +38,13 @@ class DRToolsServer {
         else {
             console.error(libraries_1.chalk.red(this.error));
         }
-        // @}
     }
     //
     // Protected methods.
-    setAndLoadArguments() {
-        libraries_1.commander
-            .version(tools_1.Tools.Instance().version(), '-v, --version')
-            .option('-c, --configs [path]', 'directory where configuration files are stored.')
-            .option('-e, --endpoint [uri]', 'URL where to provide an endpoint mock-up.')
-            .option('-E, --endpoint-directory [path]', 'directory where endpoint mock-up files are stored.')
-            .option('-l, --loaders [path]', 'directory where initialization files are stored.')
-            .option('-m, --middlewares [path]', 'directory where middleware files are stored.')
-            .option('-p, --port [port-number]', 'port number (default is 3005).')
-            .option('-r, --routes [path]', 'directory where route files are stored.')
-            .option('-R, --mock-routes [path]', 'Configuration file for mock-up routes.')
-            .option('-t, --tasks [path]', 'directory where task files are stored.')
-            .option('--configs-suffix [suffix]', 'expected extension on configuration files.')
-            .option('--endpoint-behaviors [path]', 'path to a behavior script for endpoint mock-up.')
-            .option('--loaders-suffix [suffix]', 'expected extension on initialization files.')
-            .option('--middlewares-suffix [suffix]', 'expected extension on middleware files.')
-            .option('--no-ui', 'do not load internal WebUI.')
-            .option('--routes-suffix [suffix]', 'expected extension on route files.')
-            .option('--tasks-suffix [suffix]', 'expected extension on task files.')
-            .option('--test-run', 'does almost everything except start the server and listen its port.')
-            .parse(process.argv);
-    }
     parseArguments() {
         this.port = libraries_1.commander.port || 3005;
         if (libraries_1.commander.configs) {
-            this.connectorOptions.configsDirectory = libraries_1.path.join(process.cwd(), libraries_1.commander.configs);
+            this.connectorOptions.configsDirectory = tools_1.Tools.CompletePath(libraries_1.commander.configs);
             this.availableUrls.push(drtools_1.ConfigsConstants.PublishUri);
             if (libraries_1.commander.configsSuffix) {
                 this.connectorOptions.configsOptions = { suffix: libraries_1.commander.configsSuffix };
@@ -79,7 +54,7 @@ class DRToolsServer {
             this.error = `Parameter '--configs-suffix' should be used along with option '--configs'.`;
         }
         if (libraries_1.commander.loaders) {
-            this.connectorOptions.loadersDirectory = libraries_1.path.join(process.cwd(), libraries_1.commander.loaders);
+            this.connectorOptions.loadersDirectory = tools_1.Tools.CompletePath(libraries_1.commander.loaders);
             if (libraries_1.commander.loadersSuffix) {
                 this.connectorOptions.loadersOptions = { suffix: libraries_1.commander.loadersSuffix };
             }
@@ -88,7 +63,7 @@ class DRToolsServer {
             this.error = `Parameter '--loaders-suffix' should be used along with option '--loaders'.`;
         }
         if (libraries_1.commander.middlewares) {
-            this.connectorOptions.middlewaresDirectory = libraries_1.path.join(process.cwd(), libraries_1.commander.middlewares);
+            this.connectorOptions.middlewaresDirectory = tools_1.Tools.CompletePath(libraries_1.commander.middlewares);
             if (libraries_1.commander.middlewaresSuffix) {
                 this.connectorOptions.middlewaresOptions = { suffix: libraries_1.commander.middlewaresSuffix };
             }
@@ -97,7 +72,7 @@ class DRToolsServer {
             this.error = `Parameter '--middlewares-suffix' should be used along with option '--middlewares'.`;
         }
         if (libraries_1.commander.routes) {
-            this.connectorOptions.routesDirectory = libraries_1.path.join(process.cwd(), libraries_1.commander.routes);
+            this.connectorOptions.routesDirectory = tools_1.Tools.CompletePath(libraries_1.commander.routes);
             if (libraries_1.commander.routesSuffix) {
                 this.connectorOptions.routesOptions = { suffix: libraries_1.commander.routesSuffix };
             }
@@ -106,7 +81,7 @@ class DRToolsServer {
             this.error = `Parameter '--routes-suffix' should be used along with option '--routes'.`;
         }
         if (libraries_1.commander.tasks) {
-            this.connectorOptions.tasksDirectory = libraries_1.path.join(process.cwd(), libraries_1.commander.tasks);
+            this.connectorOptions.tasksDirectory = tools_1.Tools.CompletePath(libraries_1.commander.tasks);
             if (libraries_1.commander.tasksSuffix) {
                 this.connectorOptions.tasksOptions = { suffix: libraries_1.commander.tasksSuffix };
             }
@@ -115,13 +90,13 @@ class DRToolsServer {
             this.error = `Parameter '--tasks-suffix' should be used along with option '--tasks'.`;
         }
         if (libraries_1.commander.mockRoutes) {
-            this.connectorOptions.mockRoutesConfig = libraries_1.path.join(process.cwd(), libraries_1.commander.mockRoutes);
+            this.connectorOptions.mockRoutesConfig = tools_1.Tools.CompletePath(libraries_1.commander.mockRoutes);
         }
         if (libraries_1.commander.endpoint && libraries_1.commander.endpointDirectory) {
             const uri = libraries_1.commander.endpoint[0] === '/' ? libraries_1.commander.endpoint : `/${libraries_1.commander.endpoint}`;
             this.connectorOptions.endpoints = {
                 uri,
-                directory: libraries_1.path.join(process.cwd(), libraries_1.commander.endpointDirectory),
+                directory: tools_1.Tools.CompletePath(libraries_1.commander.endpointDirectory),
                 options: {
                     globalBehaviors: []
                 }
@@ -129,7 +104,7 @@ class DRToolsServer {
             if (libraries_1.commander.endpointBehaviors) {
                 libraries_1.commander.endpointBehaviors.split(',')
                     .forEach((b) => {
-                    this.connectorOptions.endpoints.options.globalBehaviors.push(libraries_1.path.join(process.cwd(), b));
+                    this.connectorOptions.endpoints.options.globalBehaviors.push(tools_1.Tools.CompletePath(b));
                 });
             }
             this.availableUrls.push(uri);
@@ -151,6 +126,28 @@ class DRToolsServer {
         if (!this.error && Object.keys(this.connectorOptions).length === 2) {
             this.error = `There's nothing to serve.`;
         }
+    }
+    setAndLoadArguments() {
+        libraries_1.commander
+            .version(tools_1.Tools.Instance().version(), '-v, --version')
+            .option('-c, --configs [path]', 'directory where configuration files are stored.')
+            .option('-e, --endpoint [uri]', 'URL where to provide an endpoint mock-up.')
+            .option('-E, --endpoint-directory [path]', 'directory where endpoint mock-up files are stored.')
+            .option('-l, --loaders [path]', 'directory where initialization files are stored.')
+            .option('-m, --middlewares [path]', 'directory where middleware files are stored.')
+            .option('-p, --port [port-number]', 'port number (default is 3005).')
+            .option('-r, --routes [path]', 'directory where route files are stored.')
+            .option('-R, --mock-routes [path]', 'Configuration file for mock-up routes.')
+            .option('-t, --tasks [path]', 'directory where task files are stored.')
+            .option('--configs-suffix [suffix]', 'expected extension on configuration files.')
+            .option('--endpoint-behaviors [path]', 'path to a behavior script for endpoint mock-up.')
+            .option('--loaders-suffix [suffix]', 'expected extension on initialization files.')
+            .option('--middlewares-suffix [suffix]', 'expected extension on middleware files.')
+            .option('--no-ui', 'do not load internal WebUI.')
+            .option('--routes-suffix [suffix]', 'expected extension on route files.')
+            .option('--tasks-suffix [suffix]', 'expected extension on task files.')
+            .option('--test-run', 'does almost everything except start the server and listen its port.')
+            .parse(process.argv);
     }
     startServer() {
         const app = libraries_1.express();

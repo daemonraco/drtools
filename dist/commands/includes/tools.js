@@ -33,6 +33,9 @@ class Tools {
     }
     //
     // Public class methods.
+    static CompletePath(incompletePath) {
+        return libraries_1.fs.existsSync(incompletePath) ? incompletePath : libraries_1.path.join(process.cwd(), incompletePath);
+    }
     static Instance() {
         if (!Tools._Instance) {
             Tools._Instance = new Tools();

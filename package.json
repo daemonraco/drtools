@@ -5,13 +5,14 @@
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
     "bin": {
+        "drtools-generator": "./dist/commands/generator/cmd.js",
         "drtools-server": "./dist/commands/server/cmd.js"
     },
     "scripts": {
         "start": "npm run build:live",
         "prebuild": "rm -frv dist/*",
         "build": "./node_modules/.bin/tsc",
-        "postbuild": "chmod +x dist/commands/server/cmd.js",
+        "postbuild": "chmod -v +x dist/commands/*/cmd.js",
         "build:live": "./node_modules/.bin/tsc --watch",
         "gen:docs": "node .tools/gen-docs.js",
         "live:server": "./test/assets/start-live.sh",

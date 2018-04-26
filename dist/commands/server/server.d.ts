@@ -6,7 +6,7 @@ export declare class DRToolsServer {
     protected port: boolean;
     protected webUI: boolean;
     run(): void;
-    protected setAndLoadArguments(): void;
     protected parseArguments(): void;
+    protected setAndLoadArguments(): void;
     protected startServer(): void;
 }

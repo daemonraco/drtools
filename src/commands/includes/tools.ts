@@ -5,6 +5,8 @@
 
 import { fs, path } from '../../libraries';
 
+declare const process: any;
+
 export class Tools {
     //
     // Private class properties.
@@ -37,6 +39,9 @@ export class Tools {
     }
     //
     // Public class methods.
+    public static CompletePath(incompletePath: string): string {
+        return fs.existsSync(incompletePath) ? incompletePath : path.join(process.cwd(), incompletePath);
+    }
     public static Instance(): Tools {
         if (!Tools._Instance) {
             Tools._Instance = new Tools();
