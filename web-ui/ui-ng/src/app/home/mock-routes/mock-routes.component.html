@@ -51,10 +51,47 @@
                         <td>
                             <code>{{route.path}}</code>
                         </td>
-                        <td *ngIf="hasGuards">
-                            <code>{{route.guardPath}}</code>
+                        <td *ngIf="hasGuards" [class.text-center]="route.guardName">
+                            <span *ngIf="route.guardName" class="badge badge-secondary">{{route.guardName}}</span>
+                            <code *ngIf="route.guardPath">{{route.guardPath}}</code>
                         </td>
-                        <td class="text-center" [innerHTML]="route.valid | boolean:'icon-color'"></td>
+                        <td class="text-center" [innerHTML]="route.valid | boolean:'icon-color'" [title]="route.error ? route.error : ''"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="mockRoutes.guards.length > 0" class="row px-4">
+        <h6 class="col">
+            <i class="fa fa-key"></i> Guards:
+        </h6>
+    </div>
+
+    <div *ngIf="mockRoutes.guards.length > 0" class="row px-4">
+        <div class="col">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col" class="text-center">Name</th>
+                        <th scope="col">Path</th>
+                        <th scope="col" class="text-center">Valid</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let guard of mockRoutes.guards">
+                        <td>
+                            <i class="fa fa-key text-info"></i>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-secondary" [class.badge-success]="guard.name === 'default'">{{guard.name}}</span>
+                        </td>
+                        <td>
+                            <code>{{guard.path}}</code>
+                        </td>
+                        <td class="text-center" [innerHTML]="!guard.error | boolean:'icon-color'" [title]="guard.error ? guard.error : ''"></td>
                     </tr>
                 </tbody>
             </table>

@@ -23,7 +23,7 @@ export declare class MockRoutesManager {
     valid(): boolean;
     protected attach(app: any): void;
     protected cleanParams(): void;
-    protected fullPathFromConfig(relativePath: string): string;
+    protected fullPath(relativePath: string): string;
     protected load(): void;
     protected loadGuard(guardSpec: any): MockRoutesGuard;
     protected loadGuards(): void;

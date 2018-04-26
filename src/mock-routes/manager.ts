@@ -103,7 +103,7 @@ export class MockRoutesManager {
 
         this._routesConfigPath = this._routesConfigPath.match(/\.json$/) ? this._routesConfigPath : `${this._routesConfigPath}.json`;
     }
-    protected fullPathFromConfig(relativePath: string): string {
+    protected fullPath(relativePath: string): string {
         let out: string = relativePath;
 
         const configDir: string = path.dirname(this.configPath());
@@ -146,12 +146,12 @@ export class MockRoutesManager {
         };
 
         out.path = out.path.match(/\.js$/) ? out.path : `${out.path}.js`;
-        out.path = this.fullPathFromConfig(out.path);
+        out.path = this.fullPath(out.path);
 
         try {
             out.guard = require(out.path);
         } catch (e) {
-            out.error = `Unable load '${out.path}'. ${e}`;
+            out.error = `Unable to load '${out.path}'. ${e}`;
         }
 
         return out;
@@ -183,7 +183,7 @@ export class MockRoutesManager {
                 method = method.toLowerCase();
 
                 this._routesConfig.routes[method].forEach((spec: any) => {
-                    const filePath: string = this.fullPathFromConfig(spec.path);
+                    const filePath: string = this.fullPath(spec.path);
 
                     let error: string = undefined;
                     let guard: ExpressMiddleware = null;
@@ -203,10 +203,12 @@ export class MockRoutesManager {
                                 name: null,
                                 path: spec.guard
                             });
+                            guardPath = loadedGuard.path;
 
                             if (!loadedGuard.error) {
                                 guard = loadedGuard.guard;
                             } else {
+                                error = loadedGuard.error;
                                 console.error(chalk.red(loadedGuard.error));
                                 valid = false;
                             }
