@@ -3,12 +3,14 @@
  * @author Alejandro D. Simi
  */
 
+import * as ajv from 'ajv';
 import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as mime from 'mime-types';
 import * as path from 'path';
 
 import { ConfigsManager } from '../configs';
+import { ExpressMiddleware } from '../express';
 import { MockRoutesOptions, MockRoutesRoute } from '.';
 import { Tools } from '../includes';
 
@@ -16,6 +18,7 @@ export class MockRoutesManager {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
+    protected _configsValidator: any = null;
     protected _lastError: string = null;
     protected _options: MockRoutesOptions = null;
     protected _routes: { [uri: string]: MockRoutesRoute } = {};
@@ -28,7 +31,12 @@ export class MockRoutesManager {
         this._routesConfigPath = routesConfigPath;
         this._options = options;
         this._configs = configs;
-        this.cleanOptions();
+        this.cleanParams();
+
+        const ajvObj: any = new ajv({
+            useDefaults: true
+        });
+        this._configsValidator = ajvObj.compile(require('../../assets/mock-routes.specs.json'));
 
         this.load();
         this.loadAndAttach(app);
@@ -60,15 +68,21 @@ export class MockRoutesManager {
     }
     //
     // Protected methods.
-    protected cleanOptions(): void {
+    protected cleanParams(): void {
         let defaultOptions: MockRoutesOptions = {
             verbose: true
         };
-
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
+
+        this._routesConfigPath = this._routesConfigPath.match(/\.json$/) ? this._routesConfigPath : `${this._routesConfigPath}.json`;
     }
     protected load(): void {
         try {
+            if (this._options.verbose) {
+                console.log(`Loading mock-up routes:`);
+                console.log(`\tConfig file: '${chalk.green(this.configPath())}'`);
+            }
+
             this._routesConfig = require(this.configPath());
 
             if (typeof this._routesConfig.routes === 'object' && Array.isArray(this._routesConfig.routes)) {
@@ -77,30 +91,65 @@ export class MockRoutesManager {
                 };
             }
 
-            if (typeof this._routesConfig.routes === 'object') {
-                const configDir: string = path.dirname(this.configPath());
+            if (!this._configsValidator(this._routesConfig)) {
+                this._lastError = `Bad configuration. '\$${this._configsValidator.errors[0].dataPath}' ${this._configsValidator.errors[0].message}`;
+                console.error(chalk.red(this._lastError));
+            }
 
+            if (!this.lastError()) {
                 Object.keys(this._routesConfig.routes).forEach((method: string) => {
                     method = method.toLowerCase();
 
                     this._routesConfig.routes[method].forEach((spec: any) => {
-                        const key: string = `${method.toLowerCase()}:${spec.uri}`;
-                        const filePath: string = path.resolve(fs.existsSync(spec.path) ? spec.path : path.join(configDir, spec.path));
-                        const valid: boolean = fs.existsSync(filePath);
+                        const filePath: string = MockRoutesManager.FullPathFromConfig(this.configPath(), spec.path);
+                        let guardPath: string = null;
+                        let guard: ExpressMiddleware = null;
+                        let valid: boolean = true;
 
-                        this._routes[key] = {
+                        if (!fs.existsSync(filePath)) {
+                            console.error(chalk.red(`Path '${spec.path}' does not exists`));
+                            valid = false;
+                        }
+
+                        if (valid) {
+                            if (typeof spec.guard !== 'undefined' && spec.guard) {
+                                guardPath = spec.guard.match(/\.js$/) ? spec.guard : `${spec.guard}.js`;
+                                guardPath = MockRoutesManager.FullPathFromConfig(this.configPath(), guardPath);
+
+                                try {
+                                    guard = require(guardPath);
+                                } catch (e) {
+                                    console.error(chalk.red(`Unable load '${guardPath}'. ${e}`));
+                                    valid = false;
+                                }
+                            } else {
+                                guard = (req: any, res: any, next: () => void) => next();
+                            }
+                        }
+
+                        const route: MockRoutesRoute = {
                             uri: spec.uri,
                             path: filePath,
+                            originalPath: spec.path,
                             mime: mime.lookup(filePath),
-                            method, valid
+                            guard, guardPath, method, valid
                         };
-
-                        if (!valid) {
-                            this._lastError = `Path '${spec.path}' does not exists`;
-                            console.error(chalk.red(this._lastError));
-                        }
+                        this._routes[MockRoutesManager.RouteKey(route)] = route;
                     });
                 });
+
+                if (this._options.verbose) {
+                    const keys: string[] = Object.keys(this._routes);
+
+                    if (keys.length) {
+                        console.log(`\tRoutes:`);
+                        keys.sort().forEach((key: string) => {
+                            const method: string = chalk.magenta(`[${this._routes[key].method.toUpperCase()}]`);
+                            const file: string = chalk.magenta(this._routes[key].originalPath);
+                            console.log(`\t\t- '${chalk.green(this._routes[key].uri)}' ${method} (file: '${file}')`);
+                        });
+                    }
+                }
             } else {
                 this._lastError = `No routes specified`;
                 console.error(chalk.red(this._lastError));
@@ -119,10 +168,25 @@ export class MockRoutesManager {
 
             const route: MockRoutesRoute = rightKey ? this._routes[rightKey] : null;
             if (route && route.valid) {
-                res.sendFile(route.path);
+                route.guard(req, res, () => {
+                    res.sendFile(route.path);
+                });
             } else {
                 next();
             }
         });
+    }
+    //
+    // Protected class methods.
+    protected static FullPathFromConfig(configPath: string, relativePath: string): string {
+        let out: string = relativePath;
+
+        const configDir: string = path.dirname(configPath);
+        out = path.resolve(fs.existsSync(relativePath) ? relativePath : path.join(configDir, relativePath));
+
+        return out;
+    }
+    protected static RouteKey(route: any): string {
+        return `${route.method.toLowerCase()}:${route.uri}`;
     }
 }

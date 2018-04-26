@@ -1,0 +1,37 @@
+{
+    "name": "config.specs",
+    "properties": {
+        "routes": {
+            "type": "object",
+            "patternProperties": {
+                "^([a-z]+|\\*)$": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "guard": {
+                                "type": "string"
+                            },
+                            "path": {
+                                "type": "string"
+                            },
+                            "uri": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "path",
+                            "uri"
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "routes"
+    ]
+}

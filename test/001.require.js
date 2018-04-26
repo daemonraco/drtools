@@ -6,7 +6,7 @@ const assert = require('chai').assert;
 
 // ---------------------------------------------------------------------------- //
 // Testing.
-describe('drtools: Require:', () => {
+describe(`[001] drtools: Require:`, () => {
     const drtools = require('..');
 
     //

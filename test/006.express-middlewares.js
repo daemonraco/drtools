@@ -14,7 +14,7 @@ chai.use(chaiHttp);
 
 // ---------------------------------------------------------------------------- //
 // Testing.
-describe('drtools: Middlewares on the ExpressJS connector:', () => {
+describe(`[006] drtools: Middlewares on the ExpressJS connector:`, () => {
     it(`requesting an unknown url and checking it was logged by a middleware`, done => {
         chai.request(`http://localhost:${port}`)
             .get(`/not/a/valid/url`)

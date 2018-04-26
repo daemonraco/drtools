@@ -28,7 +28,7 @@ pairs.forEach(pair => {
 
 pairs.forEach(pair => {
     fs.readdirSync(pair[0])
-        .filter(p => p.match(/^.*\.(js|json)$/i))
+        .filter(p => p.match(/^.*\.(html|js|json|png|txt)$/i))
         .map(p => {
             return {
                 from: path.join(pair[0], p),

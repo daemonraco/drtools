@@ -2,6 +2,11 @@
     "routes": {
         "*": [
             {
+                "uri": "/guarded-text",
+                "path": "./guarded-text.txt",
+                "guard": "./guard"
+            },
+            {
                 "uri": "/simple-text",
                 "path": "./simple-text.txt"
             },

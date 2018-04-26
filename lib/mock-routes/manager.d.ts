@@ -2,6 +2,7 @@ import { ConfigsManager } from '../configs';
 import { MockRoutesOptions, MockRoutesRoute } from '.';
 export declare class MockRoutesManager {
     protected _configs: ConfigsManager;
+    protected _configsValidator: any;
     protected _lastError: string;
     protected _options: MockRoutesOptions;
     protected _routes: {
@@ -16,7 +17,9 @@ export declare class MockRoutesManager {
     lastError(): string;
     routes(): MockRoutesRoute[];
     valid(): boolean;
-    protected cleanOptions(): void;
+    protected cleanParams(): void;
     protected load(): void;
     protected loadAndAttach(app: any): void;
+    protected static FullPathFromConfig(configPath: string, relativePath: string): string;
+    protected static RouteKey(route: any): string;
 }
