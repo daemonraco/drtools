@@ -26,6 +26,7 @@
                         <th scope="col" class="text-center">Method</th>
                         <th scope="col" class="text-center">Mime Type</th>
                         <th scope="col">Path</th>
+                        <th *ngIf="hasGuards" scope="col" class="text-center">Guard</th>
                         <th scope="col" class="text-center">Valid</th>
                     </tr>
                 </thead>
@@ -44,11 +45,14 @@
                             <span *ngIf="route.method !== '*'" class="badge badge-primary text-uppercase">{{route.method}}</span>
                             <span *ngIf="route.method === '*'" class="badge badge-secondary">*</span>
                         </td>
-                        <td class="text-center">
-                            <code>{{route.mime}}</code>
+                        <td class="text-center" style="white-space:nowrap;">
+                            <span class="badge badge-info">{{route.mime}}</span>
                         </td>
                         <td>
                             <code>{{route.path}}</code>
+                        </td>
+                        <td *ngIf="hasGuards">
+                            <code>{{route.guardPath}}</code>
                         </td>
                         <td class="text-center" [innerHTML]="route.valid | boolean:'icon-color'"></td>
                     </tr>

@@ -7,6 +7,7 @@
 - [How to invoke it](#how-to-invoke-it)
     - [Configuration file](#configuration-file)
     - [By method](#by-method)
+- [Guards](#guards)
 - [Options](#options)
 
 <!-- /TOC -->
@@ -94,6 +95,45 @@ on `POST` method, you can a configuration like this one:
             }
         ]
     }
+}
+```
+
+## Guards
+If a route requires some sort of prevalidation before it's returned, for example
+logged-in user privileges, you can create a simple validation module and then
+specify it on those routes that require it.
+
+Let's say we continue our examples and reconsider the folder `/path/to/stuff`.
+Let's also say we want to force a user to use the query parameter `guard` when
+requesting `/simple-json`.
+
+To achieve this we need to create a guard first.
+Firse we add file called `my-guard.js` inside `/path/to/stuff` with these
+contents:
+```js
+'use strict';
+
+module.exports = (req, res, next) => {
+    if (typeof req.query.guard !== 'undefined') {
+        next();
+    } else {
+        res.status(403).json({
+            message: `You are not allowed on this route.`
+        });
+    }
+};
+```
+
+Then, we need to change our configuration:
+```json
+{
+    "routes": [
+        {
+            "uri": "/simple-json",
+            "path": "./simple-json.json",
+            "guard": "./my-guard.js"
+        }
+    ]
 }
 ```
 
