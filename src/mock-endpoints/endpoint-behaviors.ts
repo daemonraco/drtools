@@ -3,10 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import * as fs from 'fs';
-import * as glob from 'glob';
-import * as loremIpsum from 'lorem-ipsum';
-import * as path from 'path';
+import { fs, glob, loremIpsum, path } from '../includes/libraries';
 
 import { Endpoint } from '.';
 

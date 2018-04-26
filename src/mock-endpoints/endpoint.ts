@@ -3,9 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import * as fs from 'fs';
-import * as glob from 'glob';
-import * as path from 'path';
+import { fs, glob, path } from '../includes/libraries';
 
 import { EndpointBrief, EndpointBrievesByMethod, EndpointData, EndpointOptions, EndpointPathPattern } from '.';
 import { ExpressMiddleware } from '../express';

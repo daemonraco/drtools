@@ -3,9 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import * as chalk from 'chalk';
-import * as fs from 'fs';
-import * as path from 'path';
+import { chalk, fs, path } from '../includes/libraries';
 
 import { ConfigsManager } from '../configs';
 import { ItemSpec } from '.';

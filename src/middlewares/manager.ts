@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import * as chalk from 'chalk';
+import { chalk } from '../includes/libraries';
 
 import { ConfigsManager } from '../configs';
 import { GenericManager, Tools } from '../includes';

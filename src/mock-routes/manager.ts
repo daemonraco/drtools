@@ -3,11 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import * as ajv from 'ajv';
-import * as chalk from 'chalk';
-import * as fs from 'fs';
-import * as mime from 'mime-types';
-import * as path from 'path';
+import { ajv, chalk, fs, mime, path } from '../includes/libraries';
 
 import { ConfigsManager } from '../configs';
 import { ExpressMiddleware } from '../express';

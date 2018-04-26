@@ -3,10 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import * as fs from 'fs';
-import * as glob from 'glob';
-import * as marked from 'marked';
-import * as path from 'path';
+import { fs, glob, marked, path } from '../includes/libraries';
 
 import { ConfigItemSpec, ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';

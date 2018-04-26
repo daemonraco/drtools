@@ -3,11 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import * as ajv from 'ajv';
-import * as chalk from 'chalk';
-import * as fs from 'fs';
-import * as jsonpath from 'jsonpath-plus';
-import * as path from 'path';
+import { ajv, chalk, fs, jsonpath, path } from '../includes/libraries';
 
 import { ConfigItemSpec, ConfigsConstants, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
 import { ExpressMiddleware } from '../express';

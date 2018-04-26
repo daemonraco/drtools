@@ -3,9 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import * as express from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
+import { express, fs, path } from '../includes/libraries';
 
 import { ConfigItemSpec, ConfigsConstants, ConfigsManager } from '../configs';
 import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-endpoints';
