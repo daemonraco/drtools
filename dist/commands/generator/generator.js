@@ -25,11 +25,15 @@ class DRToolsGenerator {
     run() {
         this.setCommands();
         libraries_1.commander.parse(process.argv);
+        if (libraries_1.commander.options.length <= 1) {
+            this.promptHeader();
+            libraries_1.commander.help();
+        }
     }
     //
     // Protected methods.
     promptHeader() {
-        console.log(`DRTools Generator (v${tools_1.Tools.Instance().version()}):\n`);
+        console.log(`DRTools Generator (v${tools_1.Tools.Instance().version()}):`);
     }
     generateMockUpRoutes(directory, options) {
         let error = null;
@@ -119,7 +123,7 @@ class DRToolsGenerator {
         libraries_1.commander
             .action((cmd, options) => {
             this.promptHeader();
-            console.error(libraries_1.chalk.red(`No valid command specified.`));
+            console.error(libraries_1.chalk.red(`\nNo valid command specified.`));
             libraries_1.commander.help();
         });
     }

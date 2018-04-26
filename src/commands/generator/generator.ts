@@ -33,11 +33,16 @@ export class DRToolsGenerator {
     public run(): void {
         this.setCommands();
         commander.parse(process.argv);
+
+        if (commander.options.length <= 1) {
+            this.promptHeader();
+            commander.help();
+        }
     }
     //
     // Protected methods.
     protected promptHeader(): void {
-        console.log(`DRTools Generator (v${Tools.Instance().version()}):\n`);
+        console.log(`DRTools Generator (v${Tools.Instance().version()}):`);
     }
     protected generateMockUpRoutes(directory: string, options: any): void {
         let error: string = null;
@@ -131,8 +136,7 @@ export class DRToolsGenerator {
         commander
             .action((cmd: any, options: any) => {
                 this.promptHeader();
-
-                console.error(chalk.red(`No valid command specified.`));
+                console.error(chalk.red(`\nNo valid command specified.`));
                 commander.help();
             });
     }
