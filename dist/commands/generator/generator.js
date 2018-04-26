@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drtools_1 = require("../../core/drtools");
 const tools_1 = require("../includes/tools");
 class DRToolsGenerator {
     //
@@ -25,7 +26,7 @@ class DRToolsGenerator {
     run() {
         this.setCommands();
         libraries_1.commander.parse(process.argv);
-        if (libraries_1.commander.options.length <= 1) {
+        if (libraries_1.commander.options.length <= 1 && libraries_1.commander.commands.length <= 1) {
             this.promptHeader();
             libraries_1.commander.help();
         }
@@ -34,6 +35,58 @@ class DRToolsGenerator {
     // Protected methods.
     promptHeader() {
         console.log(`DRTools Generator (v${tools_1.Tools.Instance().version()}):`);
+    }
+    generateRoute(name, directory, options) {
+        let error = null;
+        this.promptHeader();
+        let cleanOptions = {
+            force: options.force == true,
+            suffix: options.suffix ? options.suffix : drtools_1.RoutesConstants.Suffix,
+            testRun: options.testRun == true
+        };
+        cleanOptions.fullName = `${name}.${cleanOptions.suffix}.js`;
+        console.log(`Generating route`);
+        console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
+        if (!error) {
+            let stat = null;
+            try {
+                stat = libraries_1.fs.statSync(directory);
+            }
+            catch (e) { }
+            if (!stat) {
+                error = `'${directory}' is not a valid path.`;
+            }
+            else if (!stat.isDirectory()) {
+                error = `'${directory}' is not a directory.`;
+            }
+            else {
+                directory = libraries_1.path.resolve(directory);
+            }
+        }
+        if (!error) {
+            cleanOptions.fullPath = libraries_1.path.join(directory, cleanOptions.fullName);
+            console.log(`\tRoute file: '${libraries_1.chalk.green(cleanOptions.fullPath)}'`);
+        }
+        if (!error) {
+            console.log(`Generating configuration file...`);
+            if (!cleanOptions.testRun) {
+                const exists = libraries_1.fs.existsSync(cleanOptions.fullPath);
+                if (cleanOptions.force || !exists) {
+                    try {
+                        const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.route.ejs')).toString();
+                        libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {}, {}));
+                    }
+                    catch (e) { }
+                }
+                else if (exists && !cleanOptions.force) {
+                    error = `Path '${cleanOptions.fullPath}' already exists.`;
+                }
+            }
+        }
+        if (error) {
+            console.log();
+            console.error(libraries_1.chalk.red(error));
+        }
     }
     generateMockUpRoutes(directory, options) {
         let error = null;
@@ -119,6 +172,16 @@ class DRToolsGenerator {
             .option('--test-run', 'does almost everything except actually generate files.')
             .action((directory, options) => {
             this.generateMockUpRoutes(directory, options);
+        });
+        libraries_1.commander
+            .command('route <name> <directory>')
+            .alias('r')
+            .description('generates a route with an initial structure.')
+            .option('-f, --force', 'in case the destination file exists, this option forces its replacement.')
+            .option('-s, --suffix [suffix]', 'suffix to use when generating a file.')
+            .option('--test-run', 'does almost everything except actually generate files.')
+            .action((name, directory, options) => {
+            this.generateRoute(name, directory, options);
         });
         libraries_1.commander
             .action((cmd, options) => {
