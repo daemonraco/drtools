@@ -1,10 +1,21 @@
 {
+    "guards": [
+        {
+            "name": "basic-guard",
+            "path": "./guard.js"
+        }
+    ],
     "routes": {
         "*": [
             {
                 "uri": "/guarded-text",
                 "path": "./guarded-text.txt",
                 "guard": "./guard"
+            },
+            {
+                "uri": "/name-guarded-text",
+                "path": "./guarded-text.txt",
+                "guardName": "basic-guard"
             },
             {
                 "uri": "/simple-text",

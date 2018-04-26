@@ -109,6 +109,7 @@ export class ExpressResponseBuilder {
         if (mockRoutes) {
             results.mockRoutes = {
                 configPath: mockRoutes.configPath(),
+                guards: mockRoutes.guards(),
                 routes: mockRoutes.routes()
             };
         }

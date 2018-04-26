@@ -1,6 +1,26 @@
 {
     "name": "config.specs",
     "properties": {
+        "guards": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "path"
+                ]
+            },
+            "default": []
+        },
         "routes": {
             "type": "object",
             "patternProperties": {
@@ -10,7 +30,12 @@
                         "type": "object",
                         "properties": {
                             "guard": {
-                                "type": "string"
+                                "type": "string",
+                                "default": ""
+                            },
+                            "guardName": {
+                                "type": "string",
+                                "default": ""
                             },
                             "path": {
                                 "type": "string"
@@ -21,6 +46,8 @@
                         },
                         "additionalProperties": false,
                         "required": [
+                            "guard",
+                            "guardName",
                             "path",
                             "uri"
                         ]

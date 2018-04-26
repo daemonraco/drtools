@@ -9,8 +9,17 @@ export interface MockRoutesOptions {
     verbose?: boolean;
 }
 
+export interface MockRoutesGuard {
+    error?: string;
+    guard: ExpressMiddleware;
+    name: string;
+    path: string;
+}
+
 export interface MockRoutesRoute {
+    error?: string;
     guard?: ExpressMiddleware;
+    guardName?: string;
     guardPath?: string;
     method: string;
     mime: string;

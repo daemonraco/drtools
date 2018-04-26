@@ -1,8 +1,11 @@
 import { ConfigsManager } from '../configs';
-import { MockRoutesOptions, MockRoutesRoute } from '.';
+import { MockRoutesGuard, MockRoutesOptions, MockRoutesRoute } from '.';
 export declare class MockRoutesManager {
     protected _configs: ConfigsManager;
     protected _configsValidator: any;
+    protected _guards: {
+        [name: string]: MockRoutesGuard;
+    };
     protected _lastError: string;
     protected _options: MockRoutesOptions;
     protected _routes: {
@@ -14,12 +17,16 @@ export declare class MockRoutesManager {
     constructor(app: any, routesConfigPath: string, options?: MockRoutesOptions, configs?: ConfigsManager);
     config(): any;
     configPath(): string;
+    guards(): MockRoutesGuard[];
     lastError(): string;
     routes(): MockRoutesRoute[];
     valid(): boolean;
+    protected attach(app: any): void;
     protected cleanParams(): void;
+    protected fullPathFromConfig(relativePath: string): string;
     protected load(): void;
-    protected loadAndAttach(app: any): void;
-    protected static FullPathFromConfig(configPath: string, relativePath: string): string;
+    protected loadGuard(guardSpec: any): MockRoutesGuard;
+    protected loadGuards(): void;
+    protected loadRoutes(): void;
     protected static RouteKey(route: any): string;
 }
