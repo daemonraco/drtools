@@ -1,0 +1,27 @@
+'use strict';
+
+const { Task } = require('drtools');
+
+class <%= properClassName %>Task extends Task {
+    //
+    // Public methods.
+    description() {
+        return '@TODO no description provided yet';
+    }
+    name() {
+        return '<%= properName %>';
+    }
+    run() {
+        console.log(`Running '<%= properClassName %>Task': ${new Date()}`);
+    }
+    //
+    // Protected methods.
+    load() {
+        this._interval = <%= interval %>;
+        this._runAtStart = <%= runOnStart %>;
+    }
+}
+
+const instance = new <%= properClassName %>Task();
+
+module.exports = instance;

@@ -84,7 +84,7 @@ export abstract class GenericManager<TOptions> {
                 .map(x => {
                     return {
                         name: x.replace(itemsPattern, '$1'),
-                        path: path.join(this._directory, x)
+                        path: Tools.FullPath(path.join(this._directory, x))
                     };
                 });
         }

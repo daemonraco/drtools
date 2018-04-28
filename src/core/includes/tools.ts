@@ -3,6 +3,10 @@
  * @author Alejandro D. Simi
  */
 
+import { fs, path } from '../../libraries';
+
+declare var process: any;
+
 export class Tools {
     //
     // Constructor.
@@ -60,5 +64,8 @@ export class Tools {
         }
 
         return left;
+    }
+    public static FullPath(basicPath: string): string {
+        return fs.existsSync(basicPath) ? path.resolve(basicPath) : path.join(process.cwd(), basicPath);
     }
 }

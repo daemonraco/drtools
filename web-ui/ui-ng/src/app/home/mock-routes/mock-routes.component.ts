@@ -16,7 +16,7 @@ export class PageHomeMockRoutesComponent implements OnChanges, OnInit {
 
     ngOnChanges() {
         this.hasGuards = false;
-        if (this.mockRoutes.routes) {
+        if (this.mockRoutes && this.mockRoutes.routes) {
             this.mockRoutes.routes.forEach((route: any) => {
                 this.hasGuards = this.hasGuards || route.guardPath !== null || route.guardName !== null;
             });

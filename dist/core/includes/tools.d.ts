@@ -1,7 +1,3 @@
-/**
- * @file tools.ts
- * @author Alejandro D. Simi
- */
 export declare class Tools {
     private constructor();
     /**
@@ -26,4 +22,5 @@ export declare class Tools {
      * @returns {any} Returns a merged object.
      */
     static DeepMergeObjects(left: any, right: any): any;
+    static FullPath(basicPath: string): string;
 }

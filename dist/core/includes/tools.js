@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+const libraries_1 = require("../../libraries");
 class Tools {
     //
     // Constructor.
@@ -62,6 +63,9 @@ class Tools {
             }
         }
         return left;
+    }
+    static FullPath(basicPath) {
+        return libraries_1.fs.existsSync(basicPath) ? libraries_1.path.resolve(basicPath) : libraries_1.path.join(process.cwd(), basicPath);
     }
 }
 exports.Tools = Tools;

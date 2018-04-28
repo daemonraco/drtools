@@ -79,7 +79,7 @@ class GenericManager {
                 .map(x => {
                 return {
                     name: x.replace(itemsPattern, '$1'),
-                    path: libraries_1.path.join(this._directory, x)
+                    path: includes_1.Tools.FullPath(libraries_1.path.join(this._directory, x))
                 };
             });
         }
