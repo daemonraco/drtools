@@ -49,6 +49,24 @@ export class PageDocsComponent implements OnInit {
                         h.classList.add('mt-4');
                         h.classList.add('py-1');
                     });
+
+                    const as: any = document.querySelectorAll('ui-docs a');
+                    const asPattern: RegExp = RegExp(`^(\/|${location.protocol}\/\/${location.host})`);
+                    [].forEach.call(as, (a: any) => {
+                        a.addEventListener('click', (event: any) => {
+                            const currentUrl: string = location.href.split('#')[0];
+                            const linkUrl: string = a.href.split('#')[0];
+
+                            if (currentUrl !== linkUrl && a.href.match(asPattern)) {
+                                event.preventDefault();
+
+                                const shortUrl: string = event.target.href.replace(`${location.protocol}//${location.host}`, '');
+                                this.router.navigateByUrl(shortUrl);
+                            }
+                        });
+                    });
+
+                    $(window).scrollTop(0);
                 }, 100);
             });
         });
