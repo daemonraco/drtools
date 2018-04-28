@@ -1,6 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 import { DRToolsService } from '../services/drtools.service';
 
@@ -11,12 +12,16 @@ declare var hljs: any;
     selector: 'ui-docs',
     templateUrl: './docs.component.html',
     styles: [],
-    providers: [DRToolsService]
+    providers: [
+        DRToolsService,
+        Location, { provide: LocationStrategy, useClass: PathLocationStrategy }
+    ]
 })
 export class PageDocsComponent implements OnInit {
     public data: any = {};
 
     constructor(
+        private pls: LocationStrategy,
         private drtSrv: DRToolsService,
         private activatedRoute: ActivatedRoute,
         private router: Router,
@@ -52,6 +57,7 @@ export class PageDocsComponent implements OnInit {
 
                     const as: any = document.querySelectorAll('ui-docs a');
                     const asPattern: RegExp = RegExp(`^(\/|${location.protocol}\/\/${location.host})`);
+                    const baseHref: string = this.pls.getBaseHref().substr(0, this.pls.getBaseHref().length - 1);
                     [].forEach.call(as, (a: any) => {
                         a.addEventListener('click', (event: any) => {
                             const currentUrl: string = location.href.split('#')[0];
@@ -60,7 +66,7 @@ export class PageDocsComponent implements OnInit {
                             if (currentUrl !== linkUrl && a.href.match(asPattern)) {
                                 event.preventDefault();
 
-                                const shortUrl: string = event.target.href.replace(`${location.protocol}//${location.host}`, '');
+                                const shortUrl: string = event.target.href.replace(`${location.protocol}//${location.host}${baseHref}`, '');
                                 this.router.navigateByUrl(shortUrl);
                             }
                         });

@@ -22,7 +22,7 @@ DRTools provides a simple tools that generates assets with some basic structure.
 ## Command options
 <!-- AUTO:generator-options -->
 ```
-DRTools Generator (v0.0.25):
+DRTools Generator (v0.0.26):
 
   Usage: drtools-generator [options] [command]
 
@@ -45,7 +45,7 @@ DRTools Generator (v0.0.25):
 ### Command options
 <!-- AUTO:generator-options:mock-routes -->
 ```
-DRTools Generator (v0.0.25):
+DRTools Generator (v0.0.26):
 
   Usage: drtools-generator [options] <directory>
 
@@ -64,7 +64,7 @@ DRTools Generator (v0.0.25):
 ### Command options
 <!-- AUTO:generator-options:middlewares -->
 ```
-DRTools Generator (v0.0.25):
+DRTools Generator (v0.0.26):
 
   Usage: drtools-generator [options] <name> <directory>
 
@@ -84,7 +84,7 @@ DRTools Generator (v0.0.25):
 ### Command options
 <!-- AUTO:generator-options:routes -->
 ```
-DRTools Generator (v0.0.25):
+DRTools Generator (v0.0.26):
 
   Usage: drtools-generator [options] <name> <directory>
 
@@ -104,7 +104,7 @@ DRTools Generator (v0.0.25):
 ### Command options
 <!-- AUTO:generator-options:tasks -->
 ```
-DRTools Generator (v0.0.25):
+DRTools Generator (v0.0.26):
 
   Usage: drtools-generator [options] <name> <directory>
 

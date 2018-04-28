@@ -1,4 +1,6 @@
 export declare class Tools {
+    private static _IsBrowser;
+    private static _IsNode;
     private constructor();
     /**
      * Takes an object and returns a clone of if. It avoids using the same
@@ -23,4 +25,6 @@ export declare class Tools {
      */
     static DeepMergeObjects(left: any, right: any): any;
     static FullPath(basicPath: string): string;
+    static IsBrowser(): boolean;
+    static IsNode(): boolean;
 }

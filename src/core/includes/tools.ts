@@ -9,6 +9,10 @@ declare var process: any;
 
 export class Tools {
     //
+    // Private class properties.
+    private static _IsBrowser: Function = new Function("try {return this===window;}catch(e){ return false;}");
+    private static _IsNode: Function = new Function("try {return this===global;}catch(e){return false;}");
+    //
     // Constructor.
     private constructor() { }
     //
@@ -67,5 +71,11 @@ export class Tools {
     }
     public static FullPath(basicPath: string): string {
         return fs.existsSync(basicPath) ? path.resolve(basicPath) : path.join(process.cwd(), basicPath);
+    }
+    public static IsBrowser(): boolean {
+        return Tools._IsBrowser();
+    }
+    public static IsNode(): boolean {
+        return Tools._IsNode();
     }
 }

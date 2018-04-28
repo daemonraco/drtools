@@ -67,5 +67,15 @@ class Tools {
     static FullPath(basicPath) {
         return libraries_1.fs.existsSync(basicPath) ? libraries_1.path.resolve(basicPath) : libraries_1.path.join(process.cwd(), basicPath);
     }
+    static IsBrowser() {
+        return Tools._IsBrowser();
+    }
+    static IsNode() {
+        return Tools._IsNode();
+    }
 }
+//
+// Private class properties.
+Tools._IsBrowser = new Function("try {return this===window;}catch(e){ return false;}");
+Tools._IsNode = new Function("try {return this===global;}catch(e){return false;}");
 exports.Tools = Tools;
