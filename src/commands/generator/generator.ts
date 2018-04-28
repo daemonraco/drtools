@@ -30,8 +30,7 @@ export class DRToolsGenerator {
         this.setCommands();
         commander.parse(process.argv);
 
-        if (commander.options.length <= 1 && commander.commands.length <= 1) {
-            this.promptHeader();
+        if (commander.args < 1) {
             commander.help();
         }
     }
@@ -42,8 +41,6 @@ export class DRToolsGenerator {
     }
     protected generateMiddleware(name: string, directory: string, options: any): void {
         let error: string = null;
-
-        this.promptHeader();
 
         let cleanOptions: any = {
             force: options.force == true,
@@ -97,8 +94,6 @@ export class DRToolsGenerator {
     protected generateRoute(name: string, directory: string, options: any): void {
         let error: string = null;
 
-        this.promptHeader();
-
         let cleanOptions: any = {
             force: options.force == true,
             suffix: options.suffix ? options.suffix : RoutesConstants.Suffix,
@@ -148,8 +143,6 @@ export class DRToolsGenerator {
     }
     protected generateMockUpRoutes(directory: string, options: any): void {
         let error: string = null;
-
-        this.promptHeader();
 
         let cleanOptions: any = {
             configName: options.configName ? options.configName : 'routes.json',
@@ -221,8 +214,6 @@ export class DRToolsGenerator {
     }
     protected generateTask(name: string, directory: string, options: any): void {
         let error: string = null;
-
-        this.promptHeader();
 
         let cleanOptions: any = {
             force: options.force == true,
@@ -349,9 +340,12 @@ export class DRToolsGenerator {
 
         commander
             .action((cmd: any, options: any) => {
-                this.promptHeader();
                 console.error(chalk.red(`\nNo valid command specified.`));
                 commander.help();
             });
+        commander.outputHelp((text: string) => {
+            this.promptHeader();
+            return ``;
+        });
     }
 }

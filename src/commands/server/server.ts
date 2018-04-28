@@ -34,8 +34,6 @@ export class DRToolsServer {
     //
     // Public methods.
     public run(): void {
-        console.log(`DRTools Server (v${Tools.Instance().version()}):\n`);
-
         this.setAndLoadArguments();
         this.parseArguments();
         if (!this.error) {
@@ -46,6 +44,9 @@ export class DRToolsServer {
     }
     //
     // Protected methods.
+    protected promptHeader(): void {
+        console.log(`DRTools Server (v${Tools.Instance().version()}):\n`);
+    }
     protected parseArguments(): void {
         this.port = commander.port || 3005;
 
@@ -158,7 +159,7 @@ export class DRToolsServer {
             .option('-r, --routes [path]',
                 'directory where route files are stored.')
             .option('-R, --mock-routes [path]',
-                'Configuration file for mock-up routes.')
+                'configuration file for mock-up routes.')
             .option('-t, --tasks [path]',
                 'directory where task files are stored.')
             .option('--configs-suffix [suffix]',
@@ -177,7 +178,12 @@ export class DRToolsServer {
                 'expected extension on task files.')
             .option('--test-run',
                 'does almost everything except start the server and listen its port.')
-            .parse(process.argv);
+            .outputHelp((text: string) => {
+                this.promptHeader();
+                return '';
+            });
+
+        commander.parse(process.argv);
     }
     protected startServer(): void {
         const app = express();

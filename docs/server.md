@@ -17,9 +17,11 @@ ExpressJS server).
 ## Command options
 <!-- AUTO:server-options -->
 ```
-DRTools Server (v0.0.19):
-  Usage: drtools-server [options]
+
+  Usage: drtools-generator [options]
+
   Options:
+
     -v, --version                    output the version number
     -c, --configs [path]             directory where configuration files are stored.
     -e, --endpoint [uri]             URL where to provide an endpoint mock-up.
@@ -28,6 +30,7 @@ DRTools Server (v0.0.19):
     -m, --middlewares [path]         directory where middleware files are stored.
     -p, --port [port-number]         port number (default is 3005).
     -r, --routes [path]              directory where route files are stored.
+    -R, --mock-routes [path]         configuration file for mock-up routes.
     -t, --tasks [path]               directory where task files are stored.
     --configs-suffix [suffix]        expected extension on configuration files.
     --endpoint-behaviors [path]      path to a behavior script for endpoint mock-up.
@@ -38,6 +41,7 @@ DRTools Server (v0.0.19):
     --tasks-suffix [suffix]          expected extension on task files.
     --test-run                       does almost everything except start the server and listen its port.
     -h, --help                       output usage information
+
 ```
 <!-- /AUTO -->
 

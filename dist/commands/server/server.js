@@ -29,7 +29,6 @@ class DRToolsServer {
     //
     // Public methods.
     run() {
-        console.log(`DRTools Server (v${tools_1.Tools.Instance().version()}):\n`);
         this.setAndLoadArguments();
         this.parseArguments();
         if (!this.error) {
@@ -41,6 +40,9 @@ class DRToolsServer {
     }
     //
     // Protected methods.
+    promptHeader() {
+        console.log(`DRTools Server (v${tools_1.Tools.Instance().version()}):\n`);
+    }
     parseArguments() {
         this.port = libraries_1.commander.port || 3005;
         if (libraries_1.commander.configs) {
@@ -137,7 +139,7 @@ class DRToolsServer {
             .option('-m, --middlewares [path]', 'directory where middleware files are stored.')
             .option('-p, --port [port-number]', 'port number (default is 3005).')
             .option('-r, --routes [path]', 'directory where route files are stored.')
-            .option('-R, --mock-routes [path]', 'Configuration file for mock-up routes.')
+            .option('-R, --mock-routes [path]', 'configuration file for mock-up routes.')
             .option('-t, --tasks [path]', 'directory where task files are stored.')
             .option('--configs-suffix [suffix]', 'expected extension on configuration files.')
             .option('--endpoint-behaviors [path]', 'path to a behavior script for endpoint mock-up.')
@@ -147,7 +149,11 @@ class DRToolsServer {
             .option('--routes-suffix [suffix]', 'expected extension on route files.')
             .option('--tasks-suffix [suffix]', 'expected extension on task files.')
             .option('--test-run', 'does almost everything except start the server and listen its port.')
-            .parse(process.argv);
+            .outputHelp((text) => {
+            this.promptHeader();
+            return '';
+        });
+        libraries_1.commander.parse(process.argv);
     }
     startServer() {
         const app = libraries_1.express();

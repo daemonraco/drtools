@@ -26,8 +26,7 @@ class DRToolsGenerator {
     run() {
         this.setCommands();
         libraries_1.commander.parse(process.argv);
-        if (libraries_1.commander.options.length <= 1 && libraries_1.commander.commands.length <= 1) {
-            this.promptHeader();
+        if (libraries_1.commander.args < 1) {
             libraries_1.commander.help();
         }
     }
@@ -38,7 +37,6 @@ class DRToolsGenerator {
     }
     generateMiddleware(name, directory, options) {
         let error = null;
-        this.promptHeader();
         let cleanOptions = {
             force: options.force == true,
             suffix: options.suffix ? options.suffix : drtools_1.MiddlewaresConstants.Suffix,
@@ -92,7 +90,6 @@ class DRToolsGenerator {
     }
     generateRoute(name, directory, options) {
         let error = null;
-        this.promptHeader();
         let cleanOptions = {
             force: options.force == true,
             suffix: options.suffix ? options.suffix : drtools_1.RoutesConstants.Suffix,
@@ -144,7 +141,6 @@ class DRToolsGenerator {
     }
     generateMockUpRoutes(directory, options) {
         let error = null;
-        this.promptHeader();
         let cleanOptions = {
             configName: options.configName ? options.configName : 'routes.json',
             configPath: null,
@@ -217,7 +213,6 @@ class DRToolsGenerator {
     }
     generateTask(name, directory, options) {
         let error = null;
-        this.promptHeader();
         let cleanOptions = {
             force: options.force == true,
             interval: options.interval ? options.interval : 120000,
@@ -326,9 +321,12 @@ class DRToolsGenerator {
         });
         libraries_1.commander
             .action((cmd, options) => {
-            this.promptHeader();
             console.error(libraries_1.chalk.red(`\nNo valid command specified.`));
             libraries_1.commander.help();
+        });
+        libraries_1.commander.outputHelp((text) => {
+            this.promptHeader();
+            return ``;
         });
     }
 }
