@@ -36,6 +36,60 @@ class DRToolsGenerator {
     promptHeader() {
         console.log(`DRTools Generator (v${tools_1.Tools.Instance().version()}):`);
     }
+    generateMiddleware(name, directory, options) {
+        let error = null;
+        this.promptHeader();
+        let cleanOptions = {
+            force: options.force == true,
+            suffix: options.suffix ? options.suffix : drtools_1.MiddlewaresConstants.Suffix,
+            testRun: options.testRun == true
+        };
+        cleanOptions.fullName = `${name}.${cleanOptions.suffix}.js`;
+        console.log(`Generating middleware`);
+        console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
+        if (!error) {
+            let stat = null;
+            try {
+                stat = libraries_1.fs.statSync(directory);
+            }
+            catch (e) { }
+            if (!stat) {
+                error = `'${directory}' is not a valid path.`;
+            }
+            else if (!stat.isDirectory()) {
+                error = `'${directory}' is not a directory.`;
+            }
+            else {
+                directory = libraries_1.path.resolve(directory);
+            }
+        }
+        if (!error) {
+            cleanOptions.fullPath = libraries_1.path.join(directory, cleanOptions.fullName);
+            console.log(`\tMiddleware file: '${libraries_1.chalk.green(cleanOptions.fullPath)}'`);
+        }
+        if (!error) {
+            console.log(`Generating middleware file...`);
+            if (!cleanOptions.testRun) {
+                const exists = libraries_1.fs.existsSync(cleanOptions.fullPath);
+                if (cleanOptions.force || !exists) {
+                    try {
+                        const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.middleware.ejs')).toString();
+                        libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {
+                            name
+                        }, {}));
+                    }
+                    catch (e) { }
+                }
+                else if (exists && !cleanOptions.force) {
+                    error = `Path '${cleanOptions.fullPath}' already exists.`;
+                }
+            }
+        }
+        if (error) {
+            console.log();
+            console.error(libraries_1.chalk.red(error));
+        }
+    }
     generateRoute(name, directory, options) {
         let error = null;
         this.promptHeader();
@@ -239,11 +293,21 @@ class DRToolsGenerator {
             this.generateMockUpRoutes(directory, options);
         });
         libraries_1.commander
+            .command(`middleware <name> <directory>`)
+            .alias(`m`)
+            .description(`generates a middleware with an initial structure.`)
+            .option(`-f, --force`, `in case the destination file exists, this option forces its replacement.`)
+            .option(`-s, --suffix [suffix]`, `suffix to use when generating a file (default: '${drtools_1.MiddlewaresConstants.Suffix}').`)
+            .option(`--test-run`, `does almost everything except actually generate files.`)
+            .action((name, directory, options) => {
+            this.generateMiddleware(name, directory, options);
+        });
+        libraries_1.commander
             .command(`route <name> <directory>`)
             .alias(`r`)
             .description(`generates a route with an initial structure.`)
             .option(`-f, --force`, `in case the destination file exists, this option forces its replacement.`)
-            .option(`-s, --suffix [suffix]`, `suffix to use when generating a file (default: 'route').`)
+            .option(`-s, --suffix [suffix]`, `suffix to use when generating a file (default: '${drtools_1.RoutesConstants.Suffix}').`)
             .option(`--test-run`, `does almost everything except actually generate files.`)
             .action((name, directory, options) => {
             this.generateRoute(name, directory, options);
@@ -255,7 +319,7 @@ class DRToolsGenerator {
             .option(`-f, --force`, `in case the destination file exists, this option forces its replacement.`)
             .option(`-i, --interval [number]`, `task interval in milliseconds (defalt: 2 minute).`)
             .option(`-r, --run-on-start`, `whether the task should run on start or not (default: false).`)
-            .option(`-s, --suffix [suffix]`, `suffix to use when generating a file (default: 'task').`)
+            .option(`-s, --suffix [suffix]`, `suffix to use when generating a file (default: '${drtools_1.TasksConstants.Suffix}').`)
             .option(`--test-run`, `does almost everything except actually generate files.`)
             .action((name, directory, options) => {
             this.generateTask(name, directory, options);
