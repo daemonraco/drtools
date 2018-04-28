@@ -56,7 +56,7 @@ export class ExpressResponseBuilder {
     public static DocsContents(doc: string, baseUrl: string): any {
         let result: any = { doc };
 
-        const rootPath = path.join(__dirname, '../..');
+        const rootPath = path.join(__dirname, '../../..');
         result.path = path.join(rootPath, doc);
         if (fs.existsSync(result.path)) {
             result.raw = fs.readFileSync(result.path).toString();

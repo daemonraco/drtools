@@ -1,5 +1,16 @@
-<ui-navbar></ui-navbar>
+<div *ngIf="loading || !online" style="margin-top:10%;text-align:center;">
+    <img alt="" type="image/png" src="assets/favicon.png" style="filter:saturate(10%);"/>
 
-<router-outlet></router-outlet>
+    <pre style="color:grey;font-size:large;">DRTools</pre>
 
-<ui-footer></ui-footer>
+    <pre *ngIf="loading" style="color:grey;">Loading...</pre>
+    <pre *ngIf="!loading && !online" style="color:grey;white-space:pre-wrap;">This interface requires internate connection in order to load fonts, styles, etc.</pre>
+</div>
+
+<div *ngIf="!loading && online">
+    <ui-navbar></ui-navbar>
+
+    <router-outlet></router-outlet>
+
+    <ui-footer></ui-footer>
+</div>

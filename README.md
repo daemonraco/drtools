@@ -34,6 +34,7 @@ _Long answer?_ Well, if you want, you can give it a try, but it's up to you.
 * [ExpressJS Tools Attacher](docs/express.md) (a.k.a all-in-one)
 * Commands:
     * [Server](docs/server.md)
+    * [Generator](docs/generator.md)
 
 ## Licence
 MIT &copy; 2018 [Alejandro Dario Simi](http://daemonraco.com)

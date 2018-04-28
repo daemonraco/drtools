@@ -47,7 +47,7 @@ class ExpressResponseBuilder {
     }
     static DocsContents(doc, baseUrl) {
         let result = { doc };
-        const rootPath = libraries_1.path.join(__dirname, '../..');
+        const rootPath = libraries_1.path.join(__dirname, '../../..');
         result.path = libraries_1.path.join(rootPath, doc);
         if (libraries_1.fs.existsSync(result.path)) {
             result.raw = libraries_1.fs.readFileSync(result.path).toString();
