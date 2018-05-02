@@ -106,7 +106,7 @@ class MockRoutesManager {
             }
             //
             // Loading configuration.
-            this._routesConfig = require(this.configPath());
+            this._routesConfig = require(libraries_1.path.resolve(this.configPath()));
             //
             // Fixing parameters.
             if (typeof this._routesConfig.routes === 'object' && Array.isArray(this._routesConfig.routes)) {
