@@ -79,8 +79,9 @@ export class MockRoutesManager {
     protected attach(app: any): void {
         if (!this.lastError()) {
             app.use((req: any, res: any, next: () => void) => {
-                const methodKey: string = `${req.method.toLowerCase()}:${req._parsedUrl.pathname}`;
-                const allMethodsKey: string = `*:${req._parsedUrl.pathname}`;
+                const pathname: string = decodeURIComponent(req._parsedUrl.pathname);
+                const methodKey: string = `${req.method.toLowerCase()}:${pathname}`;
+                const allMethodsKey: string = `*:${pathname}`;
                 let rightKey: string = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
                 rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
 
