@@ -110,7 +110,7 @@ class Endpoint {
             }
             catch (e) { }
             if (stat && stat.isDirectory()) {
-                /// @todo should I do something when it's a success?
+                this._dirPath = libraries_1.path.resolve(this._dirPath);
             }
             else if (stat && !stat.isDirectory()) {
                 throw `Path '${this._dirPath}' is not a directory.`;
