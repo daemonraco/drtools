@@ -61,7 +61,7 @@ class ExpressResponseBuilder {
         return result;
     }
     static FullInfoResponse(managers) {
-        const { configs, endpoints, loaders, middlewares, mockRoutes, routes, tasks } = managers;
+        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, routes, tasks } = managers;
         let results = {};
         results.configs = null;
         if (configs) {
@@ -98,6 +98,10 @@ class ExpressResponseBuilder {
                 guards: mockRoutes.guards(),
                 routes: mockRoutes.routes()
             };
+        }
+        results.mysqlRest = null;
+        if (mysqlRest) {
+            results.mysqlRest = mysqlRest.config();
         }
         results.routes = null;
         if (routes) {

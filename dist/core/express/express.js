@@ -11,15 +11,32 @@ const _1 = require(".");
 const loaders_1 = require("../loaders");
 const middlewares_1 = require("../middlewares");
 const mock_routes_1 = require("../mock-routes");
+const mysql_1 = require("../mysql");
 const includes_1 = require("../includes");
 const routes_1 = require("../routes");
 const tasks_1 = require("../tasks");
 class ExpressConnector {
     //
     // Constructor.
-    constructor() { }
+    constructor() {
+        this._attachments = null;
+        this._uiAttached = false;
+        this._attachments = {
+            configs: null,
+            endpoints: [],
+            loaders: null,
+            middlewares: null,
+            mockRoutes: null,
+            mysqlRest: null,
+            routes: null,
+            tasks: null
+        };
+    }
     //
     // Public methods.
+    attachments() {
+        return this._attachments;
+    }
     attach(app, options = { endpoints: [] }) {
         //
         // Pre-fixing options.
@@ -37,6 +54,7 @@ class ExpressConnector {
             loadersOptions: {},
             middlewaresOptions: {},
             mockRoutesOptions: {},
+            // mysqlRest: null,
             routesOptions: {},
             tasksOptions: {},
             publishConfigs: true,
@@ -51,33 +69,61 @@ class ExpressConnector {
             loaders: null,
             middlewares: null,
             mockRoutes: null,
+            mysqlRest: null,
             routes: null,
             tasks: null
         };
         //
         // Attaching a configs manager.
         results.configs = this.attachConfigs(app, options);
+        if (results.configs) {
+            this._attachments.configs = results.configs;
+        }
         //
         // Attaching a middlewares manager.
         results.loaders = this.attachLoaders(options, results.configs);
+        if (results.loaders) {
+            this._attachments.loaders = results.loaders;
+        }
         //
         // Attaching a middlewares manager.
         results.middlewares = this.attachMiddlewares(app, options, results.configs);
+        if (results.middlewares) {
+            this._attachments.middlewares = results.middlewares;
+        }
         //
         // Attaching a routes manager.
         results.mockRoutes = this.attachMockRoutes(app, options, results.configs);
+        if (results.mockRoutes) {
+            this._attachments.mockRoutes = results.mockRoutes;
+        }
         //
         // Attaching a routes manager.
         results.routes = this.attachRoutes(app, options, results.configs);
+        if (results.routes) {
+            this._attachments.routes = results.routes;
+        }
         //
         // Attaching a routes manager.
         results.tasks = this.attachTasks(options, results.configs);
+        if (results.tasks) {
+            this._attachments.tasks = results.tasks;
+        }
         //
         // Attaching a routes manager.
         results.endpoints = this.attachMockEndpoints(app, options, results.configs);
+        for (const endpoint of results.endpoints) {
+            this._attachments.endpoints.push(endpoint);
+        }
+        //
+        // Attaching a MySQL manager.
+        results.mysqlRest = this.attachMySQLRest(app, options);
+        if (results.mysqlRest) {
+            this._attachments.mysqlRest = results.mysqlRest;
+        }
         //
         // Load Web-UI.
-        this.attachWebUI(app, options, results);
+        this.attachWebUI(app, options);
         return results;
     }
     //
@@ -135,6 +181,14 @@ class ExpressConnector {
         }
         return manager;
     }
+    attachMySQLRest(app, options) {
+        let manager = null;
+        if (options.mysqlRest) {
+            manager = new mysql_1.MySQLRestManager(options.mysqlRest.connection, options.mysqlRest.config);
+            app.use(manager.middleware());
+        }
+        return manager;
+    }
     attachRoutes(app, options, configs) {
         let manager = null;
         if (options.routesDirectory) {
@@ -155,28 +209,29 @@ class ExpressConnector {
         }
         return manager;
     }
-    attachWebUI(app, options, connectorResults) {
-        if (options.webUi) {
+    attachWebUI(app, options) {
+        if (options.webUi && !this._uiAttached) {
+            this._uiAttached = true;
             app.use(libraries_1.express.static(libraries_1.path.join(__dirname, '../../../web-ui/ui')));
             app.all('*', (req, res, next) => {
                 if (req.originalUrl.match(/^\/\.drtools/)) {
                     if (req._parsedUrl.pathname === '/.drtools.json') {
                         let response;
                         let result = null;
-                        if (req.hostname.match(/^(localhost|192\.168\..*|10\..*)$/)) {
+                        if (req.hostname.match(/^(localhost|127.0.0.1|192\.168\..*|10\..*)$/)) {
                             res.header("Access-Control-Allow-Origin", `http://${req.hostname}:4200`);
                         }
                         if (req.query.config) {
-                            result = _1.ExpressResponseBuilder.ConfigContents(connectorResults.configs, req.query.config);
+                            result = _1.ExpressResponseBuilder.ConfigContents(this._attachments.configs, req.query.config);
                         }
                         else if (req.query.configSpecs) {
-                            result = _1.ExpressResponseBuilder.ConfigSpecsContents(connectorResults.configs, req.query.configSpecs);
+                            result = _1.ExpressResponseBuilder.ConfigSpecsContents(this._attachments.configs, req.query.configSpecs);
                         }
                         else if (req.query.doc) {
                             result = _1.ExpressResponseBuilder.DocsContents(req.query.doc, req.query.baseUrl);
                         }
                         else {
-                            result = _1.ExpressResponseBuilder.FullInfoResponse(connectorResults);
+                            result = _1.ExpressResponseBuilder.FullInfoResponse(this._attachments);
                         }
                         res.status(200).json(result);
                     }

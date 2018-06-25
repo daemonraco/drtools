@@ -36,6 +36,10 @@ export * from './mock-endpoints';
 export * from './mock-routes';
 
 //
+// MySQL to RESTful tools.
+export * from './mysql';
+
+//
 // Exporting ExpressJS Connector singleton.
 import { ExpressConnector as ExpressConnectorClass } from './express';
 export const ExpressConnector: ExpressConnectorClass = ExpressConnectorClass.Instance();

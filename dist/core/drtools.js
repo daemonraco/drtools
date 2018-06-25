@@ -32,6 +32,9 @@ __export(require("./mock-endpoints"));
 // Mock-up routes related exports.
 __export(require("./mock-routes"));
 //
+// MySQL to RESTful tools.
+__export(require("./mysql"));
+//
 // Exporting ExpressJS Connector singleton.
 const express_1 = require("./express");
 exports.ExpressConnector = express_1.ExpressConnector.Instance();

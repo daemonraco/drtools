@@ -23,6 +23,7 @@ import { LocationService } from './services/location.service';
 import { BooleanPipe } from './pipes/boolean.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
 import { MillisecondsPipe } from './pipes/milliseconds.pipe';
+import { MysqlRestComponent } from './home/mysql-rest/mysql-rest.component';
 
 @NgModule({
     declarations: [
@@ -41,7 +42,8 @@ import { MillisecondsPipe } from './pipes/milliseconds.pipe';
         PageHomeMiddlewaresComponent,
         PageHomeMockRoutesComponent,
         PageHomeRoutesComponent,
-        PageHomeTasksComponent
+        PageHomeTasksComponent,
+        MysqlRestComponent
     ],
     imports: [
         BrowserModule,

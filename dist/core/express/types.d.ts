@@ -7,9 +7,14 @@ import { EndpointsManagerOptions, EndpointsManager } from '../mock-endpoints';
 import { LoaderOptions, LoadersManager } from '../loaders';
 import { MiddlewareOptions, MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager, MockRoutesOptions } from '../mock-routes';
+import { MySQLRestManager, MySQLRestManagerConfig } from '../mysql';
 import { RouteOptions, RoutesManager } from '../routes';
 import { TasksManagerOptions, TasksManager } from '../tasks';
 export declare type ExpressMiddleware = (req: any, res: any, next: () => void) => void;
+export declare type MySQLRestExpressConfig = {
+    connection: any;
+    config: MySQLRestManagerConfig;
+};
 export interface ExpressConnectorOptions {
     configsDirectory?: string;
     configsOptions?: ConfigOptions;
@@ -24,7 +29,8 @@ export interface ExpressConnectorOptions {
     tasksOptions?: TasksManagerOptions;
     mockRoutesConfig?: string;
     mockRoutesOptions?: MockRoutesOptions;
-    endpoints: EndpointsManagerOptions | EndpointsManagerOptions[];
+    endpoints?: EndpointsManagerOptions | EndpointsManagerOptions[];
+    mysqlRest?: MySQLRestExpressConfig;
     verbose?: boolean;
     webUi?: boolean;
 }
@@ -34,6 +40,7 @@ export interface ExpressConnectorAttachResults {
     loaders: LoadersManager;
     middlewares: MiddlewaresManager;
     mockRoutes: MockRoutesManager;
+    mysqlRest: MySQLRestManager;
     routes: RoutesManager;
     tasks: TasksManager;
 }

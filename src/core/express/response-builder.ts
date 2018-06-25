@@ -71,7 +71,7 @@ export class ExpressResponseBuilder {
         return result;
     }
     public static FullInfoResponse(managers: ExpressConnectorAttachResults): any {
-        const { configs, endpoints, loaders, middlewares, mockRoutes, routes, tasks } = managers;
+        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, routes, tasks } = managers;
         let results: any = {};
 
         results.configs = null;
@@ -112,6 +112,11 @@ export class ExpressResponseBuilder {
                 guards: mockRoutes.guards(),
                 routes: mockRoutes.routes()
             };
+        }
+
+        results.mysqlRest = null;
+        if (mysqlRest) {
+            results.mysqlRest = mysqlRest.config();
         }
 
         results.routes = null;

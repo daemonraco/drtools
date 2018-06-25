@@ -5,3 +5,7 @@ node_js:
   - "9"
   - "10"
   - "node"
+services:
+  - mysql
+addons:
+  mariadb: '10.1'

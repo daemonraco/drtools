@@ -10,6 +10,7 @@
             <ui-home-routes id="routes" [server]="serverUrl" [routes]="drtools.routes"></ui-home-routes>
             <ui-home-mockroutes id="mock-routes" [server]="serverUrl" [mockRoutes]="drtools.mockRoutes"></ui-home-mockroutes>
             <ui-home-tasks id="tasks" [server]="serverUrl" [tasks]="drtools.tasks"></ui-home-tasks>
+            <ui-mysql-rest id="mysqlRest" [server]="serverUrl" [mysqlRest]="drtools.mysqlRest"></ui-mysql-rest>
         </div>
 
         <div class="col small">
@@ -48,6 +49,11 @@
                     <li *ngIf="drtools.tasks" class="nav-item">
                         <a class="nav-link" href="#tasks">
                             <i class="fa fa-clock"></i> Tasks
+                        </a>
+                    </li>
+                    <li *ngIf="drtools.mysqlRest" class="nav-item">
+                        <a class="nav-link" href="#mysqlRest">
+                            <i class="fa fa-clock"></i> MySQL Rest
                         </a>
                     </li>
                 </ul>
