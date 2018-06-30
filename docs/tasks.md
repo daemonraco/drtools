@@ -20,7 +20,7 @@ provides a way to orginize them.
 Considering that you have a directory where you store all your scripts files
 that export a task object, you can do something like this:
 ```js
-const { MiddlewaresManager } = require('drtools');
+const { TasksManager } = require('drtools');
 const manager = new TasksManager('directory/with/tasks/files');
 ```
 
