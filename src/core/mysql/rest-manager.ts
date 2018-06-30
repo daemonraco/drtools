@@ -69,6 +69,10 @@ export class MySQLRestManager {
     //
     // Protected methods.
     protected checkParams(): void {
+        if (!this._conf) {
+            throw `No configuration given`;
+        }
+
         if (typeof this._conf.uri !== 'undefined') {
             this._conf.uri = `/${this._conf.uri}/`;
             while (this._conf.uri.indexOf('//') > -1) {

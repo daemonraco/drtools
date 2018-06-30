@@ -12,7 +12,7 @@ export * from './includes';
 export * from './configs';
 
 //
-// LoaderssManager related exports.
+// LoadersManager related exports.
 export * from './loaders';
 
 //
@@ -38,6 +38,10 @@ export * from './mock-routes';
 //
 // MySQL to RESTful tools.
 export * from './mysql';
+
+//
+// PluginsManager related exports.
+export * from './plugins';
 
 //
 // Exporting ExpressJS Connector singleton.

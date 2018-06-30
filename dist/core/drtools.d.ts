@@ -11,5 +11,6 @@ export * from './tasks';
 export * from './mock-endpoints';
 export * from './mock-routes';
 export * from './mysql';
+export * from './plugins';
 import { ExpressConnector as ExpressConnectorClass } from './express';
 export declare const ExpressConnector: ExpressConnectorClass;

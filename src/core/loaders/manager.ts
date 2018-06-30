@@ -19,7 +19,7 @@ export class LoadersManager extends GenericManager<LoaderOptions> {
     // Constructor.
     constructor(directory: string, options: LoaderOptions = null, configs: ConfigsManager = null) {
         super(directory, options, configs);
-        this.load()
+        this.load();
         this._valid = !this._lastError;
     }
     //

@@ -30,7 +30,7 @@ const { configs } = ExpressConnector.attach(app, {
     mockRoutesConfig: path.join(__dirname, '../tmp/mock-routes/mockup-routes.json'),
     routesDirectory: path.join(__dirname, '../tmp/routes'),
     tasksDirectory: path.join(__dirname, '../tmp/tasks'),
-    mysqlRest:{},
+    // mysqlRest:{},
     webUi: true
 });
 // @}

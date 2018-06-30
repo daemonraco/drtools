@@ -193,7 +193,7 @@ const runFile = () => {
         }
         run();
     } else {
-        fs.unlink(resultsPath);
+        fs.unlink(resultsPath, () => null);
         process.exit();
     }
 }

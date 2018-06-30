@@ -15,6 +15,12 @@ const pairs = [
     [path.join(__dirname, 'loaders'), path.join(__dirname, '../tmp/loaders')],
     [path.join(__dirname, 'middlewares'), path.join(__dirname, '../tmp/middlewares')],
     [path.join(__dirname, 'mock-routes'), path.join(__dirname, '../tmp/mock-routes')],
+    [path.join(__dirname, 'plugins'), path.join(__dirname, '../tmp/plugins')],
+    [path.join(__dirname, 'plugins/example'), path.join(__dirname, '../tmp/plugins/example')],
+    [path.join(__dirname, 'plugins/just-a-function'), path.join(__dirname, '../tmp/plugins/just-a-function')],
+    [path.join(__dirname, 'plugins/just-an-array'), path.join(__dirname, '../tmp/plugins/just-an-array')],
+    [path.join(__dirname, 'plugins/with-config'), path.join(__dirname, '../tmp/plugins/with-config')],
+    [path.join(__dirname, 'plugins/with-no-config'), path.join(__dirname, '../tmp/plugins/with-no-config')],
     [path.join(__dirname, 'routes'), path.join(__dirname, '../tmp/routes')],
     [path.join(__dirname, 'tasks'), path.join(__dirname, '../tmp/tasks')]
 ];

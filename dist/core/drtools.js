@@ -14,7 +14,7 @@ __export(require("./includes"));
 // ConfigsManager related exports.
 __export(require("./configs"));
 //
-// LoaderssManager related exports.
+// LoadersManager related exports.
 __export(require("./loaders"));
 //
 // MiddlewaressManager related exports.
@@ -34,6 +34,9 @@ __export(require("./mock-routes"));
 //
 // MySQL to RESTful tools.
 __export(require("./mysql"));
+//
+// PluginsManager related exports.
+__export(require("./plugins"));
 //
 // Exporting ExpressJS Connector singleton.
 const express_1 = require("./express");
