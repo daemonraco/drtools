@@ -223,7 +223,7 @@ export class ExpressConnector {
     protected attachPlugins(options: ExpressConnectorOptions, configs: ConfigsManager): PluginsManager {
         let manager: PluginsManager = null;
 
-        if (options.pluginsOptions) {
+        if (options.pluginsDirectories) {
             if (typeof options.verbose !== 'undefined' && typeof options.pluginsOptions.verbose === 'undefined') {
                 options.pluginsOptions.verbose = options.verbose;
             }

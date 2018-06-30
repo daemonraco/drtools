@@ -201,7 +201,7 @@ class ExpressConnector {
     }
     attachPlugins(options, configs) {
         let manager = null;
-        if (options.pluginsOptions) {
+        if (options.pluginsDirectories) {
             if (typeof options.verbose !== 'undefined' && typeof options.pluginsOptions.verbose === 'undefined') {
                 options.pluginsOptions.verbose = options.verbose;
             }
