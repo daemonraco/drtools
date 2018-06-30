@@ -9,6 +9,7 @@ import { LoaderOptions, LoadersManager } from '../loaders';
 import { MiddlewareOptions, MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager, MockRoutesOptions } from '../mock-routes';
 import { MySQLRestManager, MySQLRestManagerConfig } from '../mysql';
+import { PluginsOptions, PluginsManager } from '../plugins';
 import { RouteOptions, RoutesManager } from '../routes';
 import { TasksManagerOptions, TasksManager } from '../tasks';
 
@@ -33,6 +34,10 @@ export interface ExpressConnectorOptions {
     // Middlewares.
     middlewaresDirectory?: string;
     middlewaresOptions?: MiddlewareOptions;
+    //
+    // Loaders.
+    pluginsDirectories?: string | string[];
+    pluginsOptions?: PluginsOptions;
     //
     // Routes.
     routesDirectory?: string;
@@ -64,6 +69,7 @@ export interface ExpressConnectorAttachResults {
     middlewares: MiddlewaresManager;
     mockRoutes: MockRoutesManager;
     mysqlRest: MySQLRestManager;
+    plugins: PluginsManager;
     routes: RoutesManager;
     tasks: TasksManager;
 }

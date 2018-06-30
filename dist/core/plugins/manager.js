@@ -34,6 +34,19 @@ class PluginsManager {
     }
     //
     // Public methods.
+    configNameOf(name) {
+        return `${_1.PluginsConstants.ConfigsPrefix}${name}`;
+    }
+    configOf(name) {
+        let results = {};
+        if (this._configs) {
+            results = this._configs.get(this.configNameOf(name));
+        }
+        return results;
+    }
+    configs() {
+        return this._configs;
+    }
     directories() {
         return this._directories;
     }
@@ -105,13 +118,6 @@ class PluginsManager {
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
-    getConfigFor(name) {
-        let results = {};
-        if (this._configs) {
-            results = this._configs.get(`${_1.PluginsConstants.ConfigsPrefix}${name}`);
-        }
-        return results;
-    }
     load() {
         if (!this._lastError) {
             this._itemSpecs = {};
@@ -123,7 +129,7 @@ class PluginsManager {
                     if (this._options.verbose) {
                         console.log(`\t- '${libraries_1.chalk.green(dir.name)}'`);
                     }
-                    global[_1.PluginsConstants.GlobalConfigPointer] = this.getConfigFor(dir.name);
+                    global[_1.PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
                     let library = require(libraries_1.path.join(dir.path, 'index.js'));
                     delete global[_1.PluginsConstants.GlobalConfigPointer];
                     if (typeof library !== 'object' || Array.isArray(library)) {
@@ -131,7 +137,7 @@ class PluginsManager {
                         library = {};
                         library[`${_1.PluginsConstants.DefaultMethod}`] = aux;
                     }
-                    this._itemSpecs[dir.name] = { name: dir.name, library };
+                    this._itemSpecs[dir.name] = { name: dir.name, path: dir.path, library };
                 }
                 catch (e) {
                     console.error(libraries_1.chalk.red(`Unable to load plugin '${dir.name}'. ${e}`));

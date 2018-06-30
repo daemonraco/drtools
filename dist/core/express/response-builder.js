@@ -61,7 +61,7 @@ class ExpressResponseBuilder {
         return result;
     }
     static FullInfoResponse(managers) {
-        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, routes, tasks } = managers;
+        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, plugins, routes, tasks } = managers;
         let results = {};
         results.configs = null;
         if (configs) {
@@ -110,6 +110,27 @@ class ExpressResponseBuilder {
                 items: routes.routes(),
                 suffix: routes.suffix()
             };
+        }
+        results.plugins = null;
+        if (plugins) {
+            results.plugins = {
+                directories: plugins.directories(),
+                plugins: []
+            };
+            const items = plugins.items();
+            for (const name of Object.keys(items).sort()) {
+                const aux = {
+                    name,
+                    path: items[name].path,
+                    methods: plugins.methodsOf(name).sort(),
+                    configName: plugins.configNameOf(name),
+                    config: plugins.configOf(name)
+                };
+                if (Object.keys(aux.config).length < 1) {
+                    aux.config = null;
+                }
+                results.plugins.plugins.push(aux);
+            }
         }
         results.tasks = null;
         if (tasks) {

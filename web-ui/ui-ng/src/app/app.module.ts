@@ -15,6 +15,8 @@ import { PageHomeEndpointsComponent } from './home/endpoints/endpoints.component
 import { PageHomeLoadersComponent } from './home/loaders/loaders.component';
 import { PageHomeMiddlewaresComponent } from './home/middlewares/middlewares.component';
 import { PageHomeMockRoutesComponent } from './home/mock-routes/mock-routes.component';
+import { PageHomeMysqlRestComponent } from './home/mysql-rest/mysql-rest.component';
+import { PageHomePluginsComponent } from './home/plugins/plugins.component';
 import { PageHomeRoutesComponent } from './home/routes/routes.component';
 import { PageHomeTasksComponent } from './home/tasks/tasks.component';
 
@@ -23,7 +25,6 @@ import { LocationService } from './services/location.service';
 import { BooleanPipe } from './pipes/boolean.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
 import { MillisecondsPipe } from './pipes/milliseconds.pipe';
-import { MysqlRestComponent } from './home/mysql-rest/mysql-rest.component';
 
 @NgModule({
     declarations: [
@@ -41,9 +42,10 @@ import { MysqlRestComponent } from './home/mysql-rest/mysql-rest.component';
         PageHomeLoadersComponent,
         PageHomeMiddlewaresComponent,
         PageHomeMockRoutesComponent,
+        PageHomeMysqlRestComponent,
+        PageHomePluginsComponent,
         PageHomeRoutesComponent,
-        PageHomeTasksComponent,
-        MysqlRestComponent
+        PageHomeTasksComponent
     ],
     imports: [
         BrowserModule,

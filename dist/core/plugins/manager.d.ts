@@ -9,6 +9,9 @@ export declare class PluginsManager {
     protected _paths: any[];
     protected _valid: boolean;
     constructor(directories: string | string[], options?: PluginsOptions, configs?: ConfigsManager);
+    configNameOf(name: string): string;
+    configOf(name: string): any;
+    configs(): ConfigsManager;
     directories(): string[];
     get(code: string): any;
     items(): PluginSpecsList;
@@ -19,7 +22,6 @@ export declare class PluginsManager {
     valid(): boolean;
     protected checkDirectories(): void;
     protected cleanOptions(): void;
-    protected getConfigFor(name: string): any;
     protected load(): void;
     protected loadItemPaths(): void;
 }

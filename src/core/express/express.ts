@@ -13,6 +13,7 @@ import { MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager } from '../mock-routes';
 import { MySQLRestManager } from '../mysql';
 import { OptionsList, Tools } from '../includes';
+import { PluginsManager } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
 
@@ -32,6 +33,7 @@ export class ExpressConnector {
             middlewares: null,
             mockRoutes: null,
             mysqlRest: null,
+            plugins: null,
             routes: null,
             tasks: null
         };
@@ -58,6 +60,7 @@ export class ExpressConnector {
             middlewaresOptions: {},
             mockRoutesOptions: {},
             // mysqlRest: null,
+            pluginsOptions: {},
             routesOptions: {},
             tasksOptions: {},
             publishConfigs: true,
@@ -73,6 +76,7 @@ export class ExpressConnector {
             middlewares: null,
             mockRoutes: null,
             mysqlRest: null,
+            plugins: null,
             routes: null,
             tasks: null
         };
@@ -99,6 +103,12 @@ export class ExpressConnector {
         results.mockRoutes = this.attachMockRoutes(app, options, results.configs);
         if (results.mockRoutes) {
             this._attachments.mockRoutes = results.mockRoutes;
+        }
+        //
+        // Attaching a plugins manager.
+        results.plugins = this.attachPlugins(options, results.configs);
+        if (results.plugins) {
+            this._attachments.plugins = results.plugins;
         }
         //
         // Attaching a routes manager.
@@ -206,6 +216,19 @@ export class ExpressConnector {
         if (options.mysqlRest) {
             manager = new MySQLRestManager(options.mysqlRest.connection, options.mysqlRest.config);
             app.use(manager.middleware());
+        }
+
+        return manager;
+    }
+    protected attachPlugins(options: ExpressConnectorOptions, configs: ConfigsManager): PluginsManager {
+        let manager: PluginsManager = null;
+
+        if (options.pluginsOptions) {
+            if (typeof options.verbose !== 'undefined' && typeof options.pluginsOptions.verbose === 'undefined') {
+                options.pluginsOptions.verbose = options.verbose;
+            }
+
+            manager = new PluginsManager(options.pluginsDirectories, options.pluginsOptions, configs);
         }
 
         return manager;

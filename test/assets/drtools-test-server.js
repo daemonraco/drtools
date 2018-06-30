@@ -31,6 +31,7 @@ const { configs } = ExpressConnector.attach(app, {
     routesDirectory: path.join(__dirname, '../tmp/routes'),
     tasksDirectory: path.join(__dirname, '../tmp/tasks'),
     // mysqlRest:{},
+    pluginsDirectories: path.join(__dirname, '../tmp/plugins'),
     webUi: true
 });
 // @}

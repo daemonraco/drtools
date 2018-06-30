@@ -7,6 +7,7 @@ export interface PluginsOptions {
 }
 export interface PluginSpecs {
     name: string;
+    path: string;
     library: {
         [name: string]: any;
     };

@@ -40,6 +40,21 @@ export class PluginsManager {
     }
     //
     // Public methods.
+    public configNameOf(name: string): string {
+        return `${PluginsConstants.ConfigsPrefix}${name}`;
+    }
+    public configOf(name: string): any {
+        let results: any = {};
+
+        if (this._configs) {
+            results = this._configs.get(this.configNameOf(name));
+        }
+
+        return results;
+    }
+    public configs(): ConfigsManager {
+        return this._configs;
+    }
     public directories(): string[] {
         return this._directories;
     }
@@ -117,15 +132,6 @@ export class PluginsManager {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
-    protected getConfigFor(name: string): any {
-        let results: any = {};
-
-        if (this._configs) {
-            results = this._configs.get(`${PluginsConstants.ConfigsPrefix}${name}`);
-        }
-
-        return results;
-    }
     protected load() {
         if (!this._lastError) {
             this._itemSpecs = {};
@@ -140,7 +146,7 @@ export class PluginsManager {
                         console.log(`\t- '${chalk.green(dir.name)}'`);
                     }
 
-                    global[PluginsConstants.GlobalConfigPointer] = this.getConfigFor(dir.name);
+                    global[PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
                     let library: any = require(path.join(dir.path, 'index.js'));
                     delete global[PluginsConstants.GlobalConfigPointer];
 
@@ -150,7 +156,7 @@ export class PluginsManager {
                         library[`${PluginsConstants.DefaultMethod}`] = aux;
                     }
 
-                    this._itemSpecs[dir.name] = { name: dir.name, library };
+                    this._itemSpecs[dir.name] = { name: dir.name, path: dir.path, library };
                 } catch (e) {
                     console.error(chalk.red(`Unable to load plugin '${dir.name}'. ${e}`));
                 }

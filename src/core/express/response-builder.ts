@@ -8,6 +8,7 @@ import { fs, glob, marked, path } from '../../libraries';
 import { ConfigItemSpec, ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';
 import { ExpressConnectorAttachResults } from '.';
+import { PluginSpecsList } from '../plugins';
 import { Tools } from '../includes';
 
 export class ExpressResponseBuilder {
@@ -71,7 +72,7 @@ export class ExpressResponseBuilder {
         return result;
     }
     public static FullInfoResponse(managers: ExpressConnectorAttachResults): any {
-        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, routes, tasks } = managers;
+        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, plugins, routes, tasks } = managers;
         let results: any = {};
 
         results.configs = null;
@@ -126,6 +127,30 @@ export class ExpressResponseBuilder {
                 items: routes.routes(),
                 suffix: routes.suffix()
             };
+        }
+
+        results.plugins = null;
+        if (plugins) {
+            results.plugins = {
+                directories: plugins.directories(),
+                plugins: []
+            };
+            const items: PluginSpecsList = plugins.items();
+            for (const name of Object.keys(items).sort()) {
+                const aux: any = {
+                    name,
+                    path: items[name].path,
+                    methods: plugins.methodsOf(name).sort(),
+                    configName: plugins.configNameOf(name),
+                    config: plugins.configOf(name)
+                };
+
+                if (Object.keys(aux.config).length < 1) {
+                    aux.config = null;
+                }
+
+                results.plugins.plugins.push(aux);
+            }
         }
 
         results.tasks = null;

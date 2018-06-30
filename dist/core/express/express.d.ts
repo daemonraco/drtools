@@ -5,6 +5,7 @@ import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager } from '../mock-routes';
 import { MySQLRestManager } from '../mysql';
+import { PluginsManager } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
 export declare class ExpressConnector {
@@ -20,6 +21,7 @@ export declare class ExpressConnector {
     protected attachMockEndpoints(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): EndpointsManager[];
     protected attachMockRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): MockRoutesManager;
     protected attachMySQLRest(app: any, options: ExpressConnectorOptions): MySQLRestManager;
+    protected attachPlugins(options: ExpressConnectorOptions, configs: ConfigsManager): PluginsManager;
     protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager;
     protected attachTasks(options: ExpressConnectorOptions, configs: ConfigsManager): TasksManager;
     protected attachWebUI(app: any, options: ExpressConnectorOptions): void;

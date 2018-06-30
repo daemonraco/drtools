@@ -13,6 +13,7 @@ const middlewares_1 = require("../middlewares");
 const mock_routes_1 = require("../mock-routes");
 const mysql_1 = require("../mysql");
 const includes_1 = require("../includes");
+const plugins_1 = require("../plugins");
 const routes_1 = require("../routes");
 const tasks_1 = require("../tasks");
 class ExpressConnector {
@@ -28,6 +29,7 @@ class ExpressConnector {
             middlewares: null,
             mockRoutes: null,
             mysqlRest: null,
+            plugins: null,
             routes: null,
             tasks: null
         };
@@ -55,6 +57,7 @@ class ExpressConnector {
             middlewaresOptions: {},
             mockRoutesOptions: {},
             // mysqlRest: null,
+            pluginsOptions: {},
             routesOptions: {},
             tasksOptions: {},
             publishConfigs: true,
@@ -70,6 +73,7 @@ class ExpressConnector {
             middlewares: null,
             mockRoutes: null,
             mysqlRest: null,
+            plugins: null,
             routes: null,
             tasks: null
         };
@@ -96,6 +100,12 @@ class ExpressConnector {
         results.mockRoutes = this.attachMockRoutes(app, options, results.configs);
         if (results.mockRoutes) {
             this._attachments.mockRoutes = results.mockRoutes;
+        }
+        //
+        // Attaching a plugins manager.
+        results.plugins = this.attachPlugins(options, results.configs);
+        if (results.plugins) {
+            this._attachments.plugins = results.plugins;
         }
         //
         // Attaching a routes manager.
@@ -186,6 +196,16 @@ class ExpressConnector {
         if (options.mysqlRest) {
             manager = new mysql_1.MySQLRestManager(options.mysqlRest.connection, options.mysqlRest.config);
             app.use(manager.middleware());
+        }
+        return manager;
+    }
+    attachPlugins(options, configs) {
+        let manager = null;
+        if (options.pluginsOptions) {
+            if (typeof options.verbose !== 'undefined' && typeof options.pluginsOptions.verbose === 'undefined') {
+                options.pluginsOptions.verbose = options.verbose;
+            }
+            manager = new plugins_1.PluginsManager(options.pluginsDirectories, options.pluginsOptions, configs);
         }
         return manager;
     }
