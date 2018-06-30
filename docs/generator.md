@@ -9,10 +9,12 @@
     - [Command options](#command-options-1)
 - [Middlewares generator](#middlewares-generator)
     - [Command options](#command-options-2)
-- [Routes generator](#routes-generator)
+- [Plugins generator](#plugins-generator)
     - [Command options](#command-options-3)
-- [Tasks generator](#tasks-generator)
+- [Routes generator](#routes-generator)
     - [Command options](#command-options-4)
+- [Tasks generator](#tasks-generator)
+    - [Command options](#command-options-5)
 
 <!-- /TOC -->
 
@@ -22,7 +24,7 @@ DRTools provides a simple tools that generates assets with some basic structure.
 ## Command options
 <!-- AUTO:generator-options -->
 ```
-DRTools Generator (v0.0.31):
+DRTools Generator (v0.0.34):
 
   Usage: drtools-generator [options] [command]
 
@@ -35,6 +37,7 @@ DRTools Generator (v0.0.31):
 
     mock-routes|mr [options] <directory>       generates a mock-up routes configuration based on the contents of a directory.
     middleware|m [options] <name> <directory>  generates a middleware with an initial structure.
+    plugin|p [options] <name> <directory>      generates a plugin directory with an initial structure.
     route|r [options] <name> <directory>       generates a route with an initial structure.
     task|t [options] <name> <directory>        generates a task with an initial structure.
 
@@ -45,7 +48,7 @@ DRTools Generator (v0.0.31):
 ### Command options
 <!-- AUTO:generator-options:mock-routes -->
 ```
-DRTools Generator (v0.0.31):
+DRTools Generator (v0.0.34):
 
   Usage: drtools-generator [options] <directory>
 
@@ -64,7 +67,7 @@ DRTools Generator (v0.0.31):
 ### Command options
 <!-- AUTO:generator-options:middlewares -->
 ```
-DRTools Generator (v0.0.31):
+DRTools Generator (v0.0.34):
 
   Usage: drtools-generator [options] <name> <directory>
 
@@ -80,11 +83,31 @@ DRTools Generator (v0.0.31):
 ```
 <!-- /AUTO -->
 
+## Plugins generator
+### Command options
+<!-- AUTO:generator-options:plugins -->
+```
+DRTools Generator (v0.0.34):
+
+  Usage: drtools-generator [options] <name> <directory>
+
+  generates a plugin directory with an initial structure.
+
+  Options:
+
+    -c, --configs [directory]  directory where configuration files are stored.
+    -f, --force                in case the destination assets exist, this option forces their replacement.
+    --test-run                 does almost everything except actually generate files.
+    -h, --help                 output usage information
+
+```
+<!-- /AUTO -->
+
 ## Routes generator
 ### Command options
 <!-- AUTO:generator-options:routes -->
 ```
-DRTools Generator (v0.0.31):
+DRTools Generator (v0.0.34):
 
   Usage: drtools-generator [options] <name> <directory>
 
@@ -104,7 +127,7 @@ DRTools Generator (v0.0.31):
 ### Command options
 <!-- AUTO:generator-options:tasks -->
 ```
-DRTools Generator (v0.0.31):
+DRTools Generator (v0.0.34):
 
   Usage: drtools-generator [options] <name> <directory>
 

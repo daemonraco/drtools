@@ -58,6 +58,7 @@ typings/
 .env
 
 # Internal
+/*.sh
 /*.tgz
 /*.txt
 /.codebeatignore

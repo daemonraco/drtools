@@ -108,6 +108,17 @@ piecesSteps.push({
     }
 });
 piecesSteps.push({
+    name: 'generator-options:plugins',
+    function: (name, next) => {
+        suppose('node', [path.join(__dirname, '../dist/commands/generator/cmd.js'), 'plugin', '--help'], {
+            debug: fs.createWriteStream(resultsPath)
+        }).end(code => {
+            pieces[name] = cleanCmdHelp();
+            next();
+        });
+    }
+});
+piecesSteps.push({
     name: 'generator-options:routes',
     function: (name, next) => {
         suppose('node', [path.join(__dirname, '../dist/commands/generator/cmd.js'), 'route', '--help'], {
@@ -142,6 +153,9 @@ steps.push((mdPath, next) => {
 });
 steps.push((mdPath, next) => {
     inject(mdPath, 'generator-options:middlewares', pieces['generator-options:middlewares'], true, next);
+});
+steps.push((mdPath, next) => {
+    inject(mdPath, 'generator-options:plugins', pieces['generator-options:plugins'], true, next);
 });
 steps.push((mdPath, next) => {
     inject(mdPath, 'generator-options:routes', pieces['generator-options:routes'], true, next);

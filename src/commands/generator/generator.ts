@@ -5,7 +5,7 @@
 
 import { chalk, commander, ejs, fs, glob, path } from '../../libraries';
 
-import { MiddlewaresConstants, RoutesConstants, TasksConstants } from '../../core/drtools';
+import { MiddlewaresConstants, PluginsConstants, RoutesConstants, TasksConstants } from '../../core/drtools';
 import { Tools } from '../includes/tools';
 
 declare const process: any;
@@ -212,6 +212,139 @@ export class DRToolsGenerator {
             console.error(chalk.red(error));
         }
     }
+    protected generatePlugin(name: string, directory: string, options: any): void {
+        let error: string = null;
+
+        let cleanOptions: any = {
+            configs: options.configs ? options.configs : null,
+            force: options.force == true,
+            testRun: options.testRun == true
+        };
+
+        console.log(`Generating plugin`);
+        console.log(`\tName:              '${chalk.green(name)}'`);
+        //
+        // Checking plugins directory.
+        if (!error) {
+            let stat: any = null;
+            try { stat = fs.statSync(directory); } catch (e) { }
+            if (!stat) {
+                error = `'${directory}' is not a valid path.`;
+            } else if (!stat.isDirectory()) {
+                error = `'${directory}' is not a directory.`;
+            } else {
+                directory = path.resolve(directory);
+            }
+        }
+        cleanOptions.pluginDirectory = path.join(directory, name);
+        cleanOptions.pluginIndex = path.join(cleanOptions.pluginDirectory, 'index.js');
+        console.log(`\tWorking directory: '${chalk.green(directory)}'`);
+        console.log(`\tPlugin directory:  '${chalk.green(cleanOptions.pluginDirectory)}'`);
+        //
+        // Checking configurations directory.
+        if (!error && cleanOptions.configs) {
+            let stat: any = null;
+            try { stat = fs.statSync(cleanOptions.configs); } catch (e) { }
+            if (!stat) {
+                error = `'${cleanOptions.configs}' is not a valid path.`;
+            } else if (!stat.isDirectory()) {
+                error = `'${cleanOptions.configs}' is not a directory.`;
+            } else {
+                cleanOptions.configs = path.resolve(cleanOptions.configs);
+            }
+        }
+        if (!error && cleanOptions.configs) {
+            cleanOptions.configFile = path.join(cleanOptions.configs, `${PluginsConstants.ConfigsPrefix}${name}.json`);
+
+            console.log(`\tConfigs directory: '${chalk.green(cleanOptions.configs)}'`);
+            console.log(`\tConfig file:       '${chalk.green(cleanOptions.configFile)}'`);
+        }
+
+        if (!error) {
+            console.log();
+        }
+        //
+        // Checking/Creating plugin directory.
+        if (!error) {
+            let stat: any = null;
+            try { stat = fs.statSync(cleanOptions.pluginDirectory); } catch (e) { }
+            if (stat && stat.isDirectory()) {
+                // Nothing.
+            } else if (!stat) {
+                console.log(`Creating directory: '${chalk.green(cleanOptions.pluginDirectory)}'`);
+                if (!cleanOptions.testRun) {
+                    fs.mkdirSync(cleanOptions.pluginDirectory);
+                }
+            } else {
+                error = `'${cleanOptions.pluginDirectory}' is not a directory.`;
+            }
+        }
+        //
+        // Creating plugin index.
+        if (!error) {
+            let stat: any = null;
+            try { stat = fs.statSync(cleanOptions.pluginIndex); } catch (e) { }
+
+            if (!stat) {
+                // Nothing.
+            } else if (!stat.isFile()) {
+                error = `'${cleanOptions.pluginIndex}' is not a file.`;
+            } else {
+                if (!cleanOptions.force) {
+                    error = `'${cleanOptions.pluginIndex}' already exists.`;
+                }
+            }
+
+            if (!error) {
+                console.log(`Creating file: '${chalk.green(cleanOptions.pluginIndex)}'`);
+                if (!cleanOptions.testRun) {
+                    try {
+                        const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.plugin-index.ejs')).toString();
+                        fs.writeFileSync(cleanOptions.pluginIndex, ejs.render(template, {
+                            name,
+                            defaultMethod: PluginsConstants.DefaultMethod,
+                            globalConstant: PluginsConstants.GlobalConfigPointer
+                        }, {}));
+                    } catch (e) { }
+                }
+            }
+        }
+        //
+        // Creating plugin config.
+        if (!error && cleanOptions.configs) {
+            let stat: any = null;
+            try { stat = fs.statSync(cleanOptions.configFile); } catch (e) { }
+
+            if (!stat) {
+                // Nothing.
+            } else if (!stat.isFile()) {
+                error = `'${cleanOptions.configFile}' is not a file.`;
+            } else {
+                if (!cleanOptions.force) {
+                    error = `'${cleanOptions.configFile}' already exists.`;
+                }
+            }
+
+            if (!error) {
+                console.log(`Creating file: '${chalk.green(cleanOptions.configFile)}'`);
+                if (!cleanOptions.testRun) {
+                    try {
+                        const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.plugin-config.ejs')).toString();
+                        fs.writeFileSync(cleanOptions.configFile, ejs.render(template, {
+                            name,
+                            defaultMethod: PluginsConstants.DefaultMethod,
+                            globalConstant: PluginsConstants.GlobalConfigPointer
+                        }, {}));
+                    } catch (e) { }
+                }
+            }
+        }
+
+        if (error) {
+            console.log();
+            console.error(chalk.red(error));
+        }
+    }
     protected generateTask(name: string, directory: string, options: any): void {
         let error: string = null;
 
@@ -304,6 +437,20 @@ export class DRToolsGenerator {
                 `does almost everything except actually generate files.`)
             .action((name: any, directory: any, options: any) => {
                 this.generateMiddleware(name, directory, options);
+            });
+
+        commander
+            .command(`plugin <name> <directory>`)
+            .alias(`p`)
+            .description(`generates a plugin directory with an initial structure.`)
+            .option(`-c, --configs [directory]`,
+                `directory where configuration files are stored.`)
+            .option(`-f, --force`,
+                `in case the destination assets exist, this option forces their replacement.`)
+            .option(`--test-run`,
+                `does almost everything except actually generate files.`)
+            .action((name: any, directory: any, options: any) => {
+                this.generatePlugin(name, directory, options);
             });
 
         commander

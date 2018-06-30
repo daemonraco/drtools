@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.0.31",
+    "version": "0.0.34",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -25,7 +25,9 @@
     "keywords": [
         "automatic loaders",
         "express",
-        "loaders"
+        "loaders",
+        "plugins",
+        "configs"
     ],
     "author": {
         "name": "Alejandro Dario Simi",
