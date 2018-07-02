@@ -9,3 +9,6 @@ export interface ItemSpec {
 export declare type OptionsList = {
     [name: string]: any;
 };
+export declare type StringsDictionary = {
+    [name: string]: string;
+};

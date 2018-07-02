@@ -9,3 +9,5 @@ export interface ItemSpec {
 };
 
 export type OptionsList = { [name: string]: any };
+
+export type StringsDictionary = { [name: string]: string };
