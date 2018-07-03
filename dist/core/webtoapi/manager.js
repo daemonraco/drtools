@@ -111,6 +111,9 @@ class WebToApi {
                 xmlMode: true
             });
             results = this.analyzeFields(endpoint.fields, doc, doc('body'));
+            if (endpoint.postProcessor) {
+                results = endpoint.postProcessor(results);
+            }
         }
         return results;
     }
@@ -179,6 +182,30 @@ class WebToApi {
                 throw new types_1.WAException(`WebToApi::load(): Bad configuration. '\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`);
             }
             for (const endpoint of this._config.endpoints) {
+                if (endpoint.postProcessor) {
+                    let stat = null;
+                    try {
+                        stat = libraries_1.fs.statSync(endpoint.postProcessor);
+                    }
+                    catch (e) { }
+                    if (stat && stat.isFile()) {
+                        try {
+                            endpoint.postProcessor = require(libraries_1.path.resolve(endpoint.postProcessor));
+                        }
+                        catch (e) {
+                            throw new types_1.WAException(`WebToApi::load(): Unable to load '${endpoint.postProcessor}'. ${e}`);
+                        }
+                        if (typeof endpoint.postProcessor !== 'function') {
+                            throw new types_1.WAException(`WebToApi::load(): Post processor file does not provides a function`);
+                        }
+                    }
+                    else if (stat && !stat.isFile()) {
+                        throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' is not a file`);
+                    }
+                    else {
+                        throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
+                    }
+                }
                 this._endpoints[endpoint.name] = endpoint;
             }
             let stat = null;

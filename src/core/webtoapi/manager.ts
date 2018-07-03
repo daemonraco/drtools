@@ -100,6 +100,10 @@ export class WebToApi {
                 xmlMode: true
             });
             results = this.analyzeFields(endpoint.fields, doc, doc('body'));
+
+            if (endpoint.postProcessor) {
+                results = endpoint.postProcessor(results);
+            }
         }
 
         return results;
@@ -173,6 +177,26 @@ export class WebToApi {
             }
 
             for (const endpoint of this._config.endpoints) {
+                if (endpoint.postProcessor) {
+                    let stat = null;
+                    try { stat = fs.statSync(endpoint.postProcessor); } catch (e) { }
+                    if (stat && stat.isFile()) {
+                        try {
+                            endpoint.postProcessor = require(path.resolve(endpoint.postProcessor));
+                        } catch (e) {
+                            throw new WAException(`WebToApi::load(): Unable to load '${endpoint.postProcessor}'. ${e}`);
+                        }
+
+                        if (typeof endpoint.postProcessor !== 'function') {
+                            throw new WAException(`WebToApi::load(): Post processor file does not provides a function`);
+                        }
+                    } else if (stat && !stat.isFile()) {
+                        throw new WAException(`WebToApi::load(): '${endpoint.postProcessor}' is not a file`);
+                    } else {
+                        throw new WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
+                    }
+                }
+
                 this._endpoints[endpoint.name] = endpoint;
             }
 

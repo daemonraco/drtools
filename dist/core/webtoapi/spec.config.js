@@ -15,7 +15,8 @@ exports.WebToApiConfigSpec = {
                 name: { type: 'string' },
                 url: { type: 'string' },
                 method: { type: 'string', default: 'GET' },
-                fields: { $ref: '#/definitions/fields' }
+                fields: { $ref: '#/definitions/fields' },
+                postProcessor: { type: ['string', 'null'], default: null }
             },
             required: ['fields', 'method', 'name', 'url'],
             additionalProperties: false
