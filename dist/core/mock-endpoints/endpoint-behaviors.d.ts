@@ -1,3 +1,7 @@
+/**
+ * @file endpoint-behaviors.ts
+ * @author Alejandro D. Simi
+ */
 import { Endpoint } from '.';
 export declare class EndpointBehaviors extends Object {
     [key: string]: any;

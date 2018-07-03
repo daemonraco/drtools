@@ -1,3 +1,7 @@
+/**
+ * @file manager.ts
+ * @author Alejandro D. Simi
+ */
 import { WAEndpoint, WAEndpointList, WAParsersList, WAUrlParameters } from './types';
 import { WebToApiRouter } from './router';
 export declare class WebToApi {
@@ -7,7 +11,7 @@ export declare class WebToApi {
     protected _loaded: boolean;
     protected _parsers: WAParsersList;
     protected _router: WebToApiRouter;
-    constructor(config: any);
+    constructor(config: string | any);
     has(type: string): boolean;
     get(type: string, params: WAUrlParameters): Promise<any>;
     router(): any;

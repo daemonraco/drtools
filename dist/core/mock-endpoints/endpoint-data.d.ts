@@ -1,3 +1,7 @@
+/**
+ * @file endpoint-data.ts
+ * @author Alejandro D. Simi
+ */
 import { Endpoint, EndpointBehaviors, EndpointBrievesByMethod } from '.';
 import { EndpointOptions, EndpointRawByMethod } from '.';
 export declare class EndpointData {

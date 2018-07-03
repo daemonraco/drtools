@@ -1,3 +1,7 @@
+/**
+ * @file server.ts
+ * @author Alejandro D. Simi
+ */
 export declare class DRToolsServer {
     protected availableUrls: any[];
     protected chalkForMethods: any;

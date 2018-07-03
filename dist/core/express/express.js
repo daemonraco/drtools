@@ -16,6 +16,7 @@ const includes_1 = require("../includes");
 const plugins_1 = require("../plugins");
 const routes_1 = require("../routes");
 const tasks_1 = require("../tasks");
+const webtoapi_1 = require("../webtoapi");
 class ExpressConnector {
     //
     // Constructor.
@@ -31,7 +32,8 @@ class ExpressConnector {
             mysqlRest: null,
             plugins: null,
             routes: null,
-            tasks: null
+            tasks: null,
+            webToApi: []
         };
     }
     //
@@ -48,6 +50,12 @@ class ExpressConnector {
         else if (!Array.isArray(options.endpoints)) {
             options.endpoints = [options.endpoints];
         }
+        if (typeof options.webToApi === 'undefined') {
+            options.webToApi = [];
+        }
+        else if (!Array.isArray(options.webToApi)) {
+            options.webToApi = [options.webToApi];
+        }
         //
         // Cleaning options.
         let defaultOptions = {
@@ -61,6 +69,7 @@ class ExpressConnector {
             routesOptions: {},
             tasksOptions: {},
             publishConfigs: true,
+            webToApi: [],
             webUi: false
         };
         options = includes_1.Tools.DeepMergeObjects(defaultOptions, options);
@@ -75,7 +84,8 @@ class ExpressConnector {
             mysqlRest: null,
             plugins: null,
             routes: null,
-            tasks: null
+            tasks: null,
+            webToApi: []
         };
         //
         // Attaching a configs manager.
@@ -130,6 +140,14 @@ class ExpressConnector {
         results.mysqlRest = this.attachMySQLRest(app, options);
         if (results.mysqlRest) {
             this._attachments.mysqlRest = results.mysqlRest;
+        }
+        //
+        // Attaching a MySQL manager.
+        results.webToApi = this.attachWebToApi(app, options.webToApi);
+        if (results.webToApi.length > 0) {
+            for (const w of results.webToApi) {
+                this._attachments.webToApi.push(w);
+            }
         }
         //
         // Load Web-UI.
@@ -228,6 +246,15 @@ class ExpressConnector {
             manager = new tasks_1.TasksManager(options.tasksDirectory, options.tasksOptions, configs);
         }
         return manager;
+    }
+    attachWebToApi(app, options) {
+        let managers = [];
+        for (const opts of options) {
+            const manager = new webtoapi_1.WebToApi(opts.config);
+            app.use(opts.path, manager.router());
+            managers.push(manager);
+        }
+        return managers;
     }
     attachWebUI(app, options) {
         if (options.webUi && !this._uiAttached) {

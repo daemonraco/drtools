@@ -1,3 +1,7 @@
+/**
+ * @file generator.ts
+ * @author Alejandro D. Simi
+ */
 export declare class DRToolsGenerator {
     protected _options: any;
     constructor();

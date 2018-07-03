@@ -29,7 +29,30 @@ class WebToApi {
         this._loaded = false;
         this._parsers = {};
         this._router = null;
-        this._config = config;
+        if (typeof config === 'string') {
+            let stat = null;
+            try {
+                stat = libraries_1.fs.statSync(config);
+            }
+            catch (e) { }
+            if (stat && stat.isFile()) {
+                try {
+                    this._config = JSON.parse(libraries_1.fs.readFileSync(config).toString());
+                }
+                catch (e) {
+                    throw new types_1.WAException(`WebToApi::constructor() Error: Unable to load '${config}'. ${e}`);
+                }
+            }
+            else if (stat && stat.isFile()) {
+                throw new types_1.WAException(`WebToApi::constructor() Error: '${config}' is not a file.`);
+            }
+            else {
+                throw new types_1.WAException(`WebToApi::constructor() Error: '${config}' doesn't exist.`);
+            }
+        }
+        else {
+            this._config = config;
+        }
         this.load();
     }
     //
@@ -166,7 +189,7 @@ class WebToApi {
             if (stat && stat.isDirectory()) {
                 this._cachePath = this._config.cachePath;
             }
-            else if (stat.isDirectory()) {
+            else if (stat && !stat.isDirectory()) {
                 throw new types_1.WAException(`WebToApi::load(): '${this._config.cachePath}' is not a directory`);
             }
             else {

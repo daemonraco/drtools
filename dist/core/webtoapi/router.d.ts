@@ -1,3 +1,7 @@
+/**
+ * @file router.ts
+ * @author Alejandro D. Simi
+ */
 import { StringsDictionary } from '../includes/basic-types';
 import { WAEndpoint, WAEndpointList } from './types';
 import { WebToApi } from './manager';

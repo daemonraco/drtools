@@ -1,3 +1,7 @@
+/**
+ * @file tools.ts
+ * @author Alejandro D. Simi
+ */
 export declare class Tools {
     private static _IsBrowser;
     private static _IsNode;

@@ -26,7 +26,7 @@ exports.WebToApiConfigSpec = {
                 name: { type: 'string' },
                 path: { type: 'string' },
                 parser: { type: 'string' },
-                parserParams: { $ref: '#/definitions/any' },
+                parserParams: { $ref: '#/definitions/any', default: null },
                 fields: { $ref: '#/definitions/fields' }
             },
             additionalProperties: false,

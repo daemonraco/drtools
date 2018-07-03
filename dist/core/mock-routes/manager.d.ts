@@ -1,3 +1,7 @@
+/**
+ * @file manager.ts
+ * @author Alejandro D. Simi
+ */
 import { ConfigsManager } from '../configs';
 import { MockRoutesGuard, MockRoutesOptions, MockRoutesRoute } from '.';
 export declare class MockRoutesManager {

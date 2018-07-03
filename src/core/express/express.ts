@@ -7,7 +7,7 @@ import { express, fs, path } from '../../libraries';
 
 import { ConfigItemSpec, ConfigsConstants, ConfigsManager } from '../configs';
 import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-endpoints';
-import { ExpressConnectorAttachResults, ExpressConnectorOptions, ExpressResponseBuilder, MySQLRestExpressConfig } from '.';
+import { ExpressConnectorAttachResults, ExpressConnectorOptions, ExpressResponseBuilder, MySQLRestExpressConfig, WebToApiOptions } from '.';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager } from '../mock-routes';
@@ -16,6 +16,7 @@ import { OptionsList, Tools } from '../includes';
 import { PluginsManager } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
+import { WebToApi } from '../webtoapi';
 
 export class ExpressConnector {
     //
@@ -35,7 +36,8 @@ export class ExpressConnector {
             mysqlRest: null,
             plugins: null,
             routes: null,
-            tasks: null
+            tasks: null,
+            webToApi: []
         };
     }
     //
@@ -51,6 +53,11 @@ export class ExpressConnector {
         } else if (!Array.isArray(options.endpoints)) {
             options.endpoints = [options.endpoints];
         }
+        if (typeof options.webToApi === 'undefined') {
+            options.webToApi = [];
+        } else if (!Array.isArray(options.webToApi)) {
+            options.webToApi = [options.webToApi];
+        }
         //
         // Cleaning options.
         let defaultOptions: ExpressConnectorOptions = {
@@ -64,6 +71,7 @@ export class ExpressConnector {
             routesOptions: {},
             tasksOptions: {},
             publishConfigs: true,
+            webToApi: [],
             webUi: false
         };
         options = Tools.DeepMergeObjects(defaultOptions, options);
@@ -78,7 +86,8 @@ export class ExpressConnector {
             mysqlRest: null,
             plugins: null,
             routes: null,
-            tasks: null
+            tasks: null,
+            webToApi: []
         };
         //
         // Attaching a configs manager.
@@ -133,6 +142,14 @@ export class ExpressConnector {
         results.mysqlRest = this.attachMySQLRest(app, options);
         if (results.mysqlRest) {
             this._attachments.mysqlRest = results.mysqlRest;
+        }
+        //
+        // Attaching a MySQL manager.
+        results.webToApi = this.attachWebToApi(app, <WebToApiOptions[]>options.webToApi);
+        if (results.webToApi.length > 0) {
+            for (const w of results.webToApi) {
+                this._attachments.webToApi.push(w);
+            }
         }
         //
         // Load Web-UI.
@@ -258,6 +275,18 @@ export class ExpressConnector {
         }
 
         return manager;
+    }
+    protected attachWebToApi(app: any, options: WebToApiOptions[]): WebToApi[] {
+        let managers: WebToApi[] = [];
+
+        for (const opts of options) {
+            const manager: WebToApi = new WebToApi(opts.config);
+            app.use(opts.path, manager.router());
+
+            managers.push(manager);
+        }
+
+        return managers;
     }
     protected attachWebUI(app: any, options: ExpressConnectorOptions): void {
         if (options.webUi && !this._uiAttached) {

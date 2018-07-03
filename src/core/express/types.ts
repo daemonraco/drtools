@@ -12,6 +12,7 @@ import { MySQLRestManager, MySQLRestManagerConfig } from '../mysql';
 import { PluginsOptions, PluginsManager } from '../plugins';
 import { RouteOptions, RoutesManager } from '../routes';
 import { TasksManagerOptions, TasksManager } from '../tasks';
+import { WebToApi } from '../webtoapi';
 
 export type ExpressMiddleware = (req: any, res: any, next: () => void) => void;
 
@@ -57,6 +58,9 @@ export interface ExpressConnectorOptions {
     // MySQL RESTful endpoints.
     mysqlRest?: MySQLRestExpressConfig;
     //
+    // HTML Web to API.
+    webToApi?: WebToApiOptions | WebToApiOptions[];
+    //
     // General.
     verbose?: boolean;
     webUi?: boolean;
@@ -72,4 +76,10 @@ export interface ExpressConnectorAttachResults {
     plugins: PluginsManager;
     routes: RoutesManager;
     tasks: TasksManager;
+    webToApi: WebToApi[];
 }
+
+export interface WebToApiOptions {
+    config: string;
+    path: string;
+};

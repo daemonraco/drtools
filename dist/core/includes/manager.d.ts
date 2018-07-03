@@ -1,3 +1,7 @@
+/**
+ * @file manager.ts
+ * @author Alejandro D. Simi
+ */
 import { ConfigsManager } from '../configs';
 import { ItemSpec } from '.';
 export declare abstract class GenericManager<TOptions> {

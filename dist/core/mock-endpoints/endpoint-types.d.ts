@@ -1,3 +1,7 @@
+/**
+ * @file manager.ts
+ * @author Alejandro D. Simi
+ */
 export declare type EndpointRawByMethod = {
     [method: string]: any;
 };
