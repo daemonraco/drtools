@@ -3,9 +3,11 @@
  * @author Alejandro D. Simi
  */
 
+import { BasicDictionary, StringsDictionary } from '../includes';
+
 export type WAEndpoint = any;
 
-export type WAEndpointList = { [name: string]: WAEndpoint };
+export type WAEndpointList = BasicDictionary<WAEndpoint>;
 
 export class WAException {
     code: string = null;
@@ -21,6 +23,6 @@ export class WAException {
     }
 }
 
-export type WAParsersList = { [name: string]: Function };
+export type WAParsersList = BasicDictionary<Function>;
 
-export type WAUrlParameters = { [key: string]: string };
+export type WAUrlParameters = StringsDictionary;

@@ -8,4 +8,5 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./attribute"));
+__export(require("./number"));
 __export(require("./text"));

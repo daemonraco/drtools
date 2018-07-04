@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const includes_1 = require("../includes");
 const configs_1 = require("../configs");
 const mock_endpoints_1 = require("../mock-endpoints");
 const _1 = require(".");
@@ -12,7 +13,6 @@ const loaders_1 = require("../loaders");
 const middlewares_1 = require("../middlewares");
 const mock_routes_1 = require("../mock-routes");
 const mysql_1 = require("../mysql");
-const includes_1 = require("../includes");
 const plugins_1 = require("../plugins");
 const routes_1 = require("../routes");
 const tasks_1 = require("../tasks");
@@ -33,7 +33,7 @@ class ExpressConnector {
             plugins: null,
             routes: null,
             tasks: null,
-            webToApi: []
+            webToApi: {}
         };
     }
     //
@@ -85,7 +85,7 @@ class ExpressConnector {
             plugins: null,
             routes: null,
             tasks: null,
-            webToApi: []
+            webToApi: {}
         };
         //
         // Attaching a configs manager.
@@ -142,11 +142,11 @@ class ExpressConnector {
             this._attachments.mysqlRest = results.mysqlRest;
         }
         //
-        // Attaching a MySQL manager.
+        // Attaching a WebToApi managers.
         results.webToApi = this.attachWebToApi(app, options.webToApi);
-        if (results.webToApi.length > 0) {
-            for (const w of results.webToApi) {
-                this._attachments.webToApi.push(w);
+        if (Object.keys(results.webToApi).length > 0) {
+            for (const k of Object.keys(results.webToApi)) {
+                this._attachments.webToApi[k] = results.webToApi[k];
             }
         }
         //
@@ -248,11 +248,14 @@ class ExpressConnector {
         return manager;
     }
     attachWebToApi(app, options) {
-        let managers = [];
+        let managers = {};
         for (const opts of options) {
+            if (!opts.name) {
+                opts.name = opts.path;
+            }
             const manager = new webtoapi_1.WebToApi(opts.config);
             app.use(opts.path, manager.router());
-            managers.push(manager);
+            managers[opts.name] = manager;
         }
         return managers;
     }

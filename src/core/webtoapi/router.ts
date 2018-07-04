@@ -14,6 +14,7 @@ export class WebToApiRouter {
     // Protected properties.
     protected _config: any = null;
     protected _endpoints: WAEndpointList;
+    protected _knownPaths: string[] = [];
     protected _loaded: boolean = false;
     protected _manager: WebToApi = null;
     protected _router: any = null;
@@ -35,7 +36,8 @@ export class WebToApiRouter {
     // Protected methods.
     protected attendDefaultRequest(req: any, res: any): void {
         res.status(httpStatusCodes.BAD_REQUEST).json({
-            message: `Unable to handle url '${req.url}'`
+            message: `Unable to handle url '${req.url}'`,
+            knownPaths: this._knownPaths
         });
     }
     protected attendRequest(endpoint: WAEndpoint, map: StringsDictionary, req: any, res: any): void {
@@ -58,15 +60,19 @@ export class WebToApiRouter {
 
             for (const route of this._config.routes) {
                 if (typeof this._endpoints[route.endpoint] !== 'undefined') {
+                    this._knownPaths.push(route.path);
+
                     this._router.get(route.path, (req: any, res: any) => {
                         this.attendRequest(this._endpoints[route.endpoint], route.map, req, res);
                     });
-
-                    this._router.all('*', this.attendDefaultRequest);
                 } else {
                     throw new WAException(`WebToApiRouter::load() Error: Unknown endpoint '${route.endpoint}'`);
                 }
             }
+
+            this._router.all('*', (req: any, res: any) => {
+                this.attendDefaultRequest(req, res);
+            });
         }
     }
 }

@@ -2,6 +2,7 @@
  * @file express.ts
  * @author Alejandro D. Simi
  */
+import { BasicDictionary } from '../includes';
 import { ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions, WebToApiOptions } from '.';
@@ -29,7 +30,7 @@ export declare class ExpressConnector {
     protected attachPlugins(options: ExpressConnectorOptions, configs: ConfigsManager): PluginsManager;
     protected attachRoutes(app: any, options: ExpressConnectorOptions, configs: ConfigsManager): RoutesManager;
     protected attachTasks(options: ExpressConnectorOptions, configs: ConfigsManager): TasksManager;
-    protected attachWebToApi(app: any, options: WebToApiOptions[]): WebToApi[];
+    protected attachWebToApi(app: any, options: WebToApiOptions[]): BasicDictionary<WebToApi>;
     protected attachWebUI(app: any, options: ExpressConnectorOptions): void;
     static Instance(): ExpressConnector;
 }

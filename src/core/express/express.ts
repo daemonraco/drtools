@@ -3,16 +3,16 @@
  * @author Alejandro D. Simi
  */
 
-import { express, fs, path } from '../../libraries';
+import { express, path } from '../../libraries';
 
-import { ConfigItemSpec, ConfigsConstants, ConfigsManager } from '../configs';
-import { Endpoint, EndpointsManager, EndpointsManagerOptions } from '../mock-endpoints';
+import { BasicDictionary, Tools } from '../includes';
+import { ConfigsConstants, ConfigsManager } from '../configs';
+import { EndpointsManager, EndpointsManagerOptions } from '../mock-endpoints';
 import { ExpressConnectorAttachResults, ExpressConnectorOptions, ExpressResponseBuilder, MySQLRestExpressConfig, WebToApiOptions } from '.';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager } from '../mock-routes';
 import { MySQLRestManager } from '../mysql';
-import { OptionsList, Tools } from '../includes';
 import { PluginsManager } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
@@ -37,7 +37,7 @@ export class ExpressConnector {
             plugins: null,
             routes: null,
             tasks: null,
-            webToApi: []
+            webToApi: {}
         };
     }
     //
@@ -87,7 +87,7 @@ export class ExpressConnector {
             plugins: null,
             routes: null,
             tasks: null,
-            webToApi: []
+            webToApi: {}
         };
         //
         // Attaching a configs manager.
@@ -144,11 +144,11 @@ export class ExpressConnector {
             this._attachments.mysqlRest = results.mysqlRest;
         }
         //
-        // Attaching a MySQL manager.
+        // Attaching a WebToApi managers.
         results.webToApi = this.attachWebToApi(app, <WebToApiOptions[]>options.webToApi);
-        if (results.webToApi.length > 0) {
-            for (const w of results.webToApi) {
-                this._attachments.webToApi.push(w);
+        if (Object.keys(results.webToApi).length > 0) {
+            for (const k of Object.keys(results.webToApi)) {
+                this._attachments.webToApi[k] = results.webToApi[k];
             }
         }
         //
@@ -276,14 +276,18 @@ export class ExpressConnector {
 
         return manager;
     }
-    protected attachWebToApi(app: any, options: WebToApiOptions[]): WebToApi[] {
-        let managers: WebToApi[] = [];
+    protected attachWebToApi(app: any, options: WebToApiOptions[]): BasicDictionary<WebToApi> {
+        let managers: BasicDictionary<WebToApi> = {};
 
         for (const opts of options) {
+            if (!opts.name) {
+                opts.name = opts.path
+            }
+
             const manager: WebToApi = new WebToApi(opts.config);
             app.use(opts.path, manager.router());
 
-            managers.push(manager);
+            managers[opts.name] = manager;
         }
 
         return managers;

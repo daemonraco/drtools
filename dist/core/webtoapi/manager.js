@@ -13,6 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const includes_1 = require("../includes");
 const types_1 = require("./types");
 const parsers_1 = require("./parsers");
 const spec_config_1 = require("./spec.config");
@@ -20,39 +21,19 @@ const router_1 = require("./router");
 class WebToApi {
     //
     // Constructor.
-    constructor(config) {
+    constructor(configPath) {
         //
         // Protected properties.
         this._cachePath = null;
         this._config = null;
+        this._configPath = null;
         this._endpoints = {};
         this._loaded = false;
         this._parsers = {};
+        this._relativePath = null;
         this._router = null;
-        if (typeof config === 'string') {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(config);
-            }
-            catch (e) { }
-            if (stat && stat.isFile()) {
-                try {
-                    this._config = JSON.parse(libraries_1.fs.readFileSync(config).toString());
-                }
-                catch (e) {
-                    throw new types_1.WAException(`WebToApi::constructor() Error: Unable to load '${config}'. ${e}`);
-                }
-            }
-            else if (stat && stat.isFile()) {
-                throw new types_1.WAException(`WebToApi::constructor() Error: '${config}' is not a file.`);
-            }
-            else {
-                throw new types_1.WAException(`WebToApi::constructor() Error: '${config}' doesn't exist.`);
-            }
-        }
-        else {
-            this._config = config;
-        }
+        this._configPath = configPath;
+        this.loadConfig();
         this.load();
     }
     //
@@ -152,12 +133,8 @@ class WebToApi {
     getCache(key) {
         let results = null;
         const cachePath = `${this.getCachePath(key)}.json`;
-        let stat = null;
-        try {
-            stat = libraries_1.fs.statSync(cachePath);
-        }
-        catch (e) { }
-        if (stat && stat.isFile()) {
+        const ppCheck = includes_1.Tools.CheckFile(cachePath);
+        if (ppCheck.status === includes_1.ToolsCheckPath.Ok) {
             try {
                 results = JSON.parse(libraries_1.fs.readFileSync(cachePath).toString());
             }
@@ -181,51 +158,63 @@ class WebToApi {
             if (!validator(this._config)) {
                 throw new types_1.WAException(`WebToApi::load(): Bad configuration. '\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`);
             }
+            let ppCheck = null;
             for (const endpoint of this._config.endpoints) {
                 if (endpoint.postProcessor) {
-                    let stat = null;
-                    try {
-                        stat = libraries_1.fs.statSync(endpoint.postProcessor);
-                    }
-                    catch (e) { }
-                    if (stat && stat.isFile()) {
-                        try {
-                            endpoint.postProcessor = require(libraries_1.path.resolve(endpoint.postProcessor));
-                        }
-                        catch (e) {
-                            throw new types_1.WAException(`WebToApi::load(): Unable to load '${endpoint.postProcessor}'. ${e}`);
-                        }
-                        if (typeof endpoint.postProcessor !== 'function') {
-                            throw new types_1.WAException(`WebToApi::load(): Post processor file does not provides a function`);
-                        }
-                    }
-                    else if (stat && !stat.isFile()) {
-                        throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' is not a file`);
-                    }
-                    else {
-                        throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
+                    ppCheck = includes_1.Tools.CheckFile(endpoint.postProcessor, this._relativePath);
+                    switch (ppCheck.status) {
+                        case includes_1.ToolsCheckPath.Ok:
+                            try {
+                                endpoint.postProcessorPath = ppCheck.path;
+                                endpoint.postProcessor = require(ppCheck.path);
+                            }
+                            catch (e) {
+                                throw new types_1.WAException(`WebToApi::load(): Unable to load '${endpoint.postProcessor}'. ${e}`);
+                            }
+                            break;
+                        case includes_1.ToolsCheckPath.WrongType:
+                            throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' is not a file`);
+                        default:
+                            throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
                     }
                 }
                 this._endpoints[endpoint.name] = endpoint;
             }
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(this._config.cachePath);
-            }
-            catch (e) { }
-            if (stat && stat.isDirectory()) {
-                this._cachePath = this._config.cachePath;
-            }
-            else if (stat && !stat.isDirectory()) {
-                throw new types_1.WAException(`WebToApi::load(): '${this._config.cachePath}' is not a directory`);
-            }
-            else {
-                throw new types_1.WAException(`WebToApi::load(): '${this._config.cachePath}' doesn't exist`);
+            ppCheck = includes_1.Tools.CheckDirectory(this._config.cachePath, this._relativePath);
+            switch (ppCheck.status) {
+                case includes_1.ToolsCheckPath.Ok:
+                    this._cachePath = ppCheck.path;
+                    break;
+                case includes_1.ToolsCheckPath.WrongType:
+                    throw new types_1.WAException(`WebToApi::load(): '${this._config.cachePath}' is not a directory`);
+                default:
+                    throw new types_1.WAException(`WebToApi::load(): '${this._config.cachePath}' doesn't exist`);
             }
             this._parsers['attr'] = parsers_1.WAParserAttribute;
             this._parsers['attribute'] = parsers_1.WAParserAttribute;
+            this._parsers['number'] = parsers_1.WAParserNumber;
             this._parsers['text'] = parsers_1.WAParserText;
             this._parsers['trim-text'] = parsers_1.WAParserTrimText;
+        }
+    }
+    loadConfig() {
+        if (!this._loaded) {
+            let ppCheck = includes_1.Tools.CheckFile(this._configPath);
+            switch (ppCheck.status) {
+                case includes_1.ToolsCheckPath.Ok:
+                    try {
+                        this._config = JSON.parse(libraries_1.fs.readFileSync(ppCheck.path).toString());
+                    }
+                    catch (e) {
+                        throw new types_1.WAException(`WebToApi::loadConfig() Error: Unable to load '${this._configPath}'. ${e}`);
+                    }
+                    break;
+                case includes_1.ToolsCheckPath.WrongType:
+                    throw new types_1.WAException(`WebToApi::loadConfig() Error: '${this._configPath}' is not a file.`);
+                default:
+                    throw new types_1.WAException(`WebToApi::loadConfig() Error: '${this._configPath}' doesn't exist.`);
+            }
+            this._relativePath = libraries_1.path.dirname(libraries_1.path.resolve(this._configPath));
         }
     }
     loadRouter() {

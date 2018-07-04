@@ -8,6 +8,7 @@ import { WebToApi } from './manager';
 export declare class WebToApiRouter {
     protected _config: any;
     protected _endpoints: WAEndpointList;
+    protected _knownPaths: string[];
     protected _loaded: boolean;
     protected _manager: WebToApi;
     protected _router: any;

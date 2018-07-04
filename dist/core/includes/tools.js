@@ -5,12 +5,28 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+var ToolsCheckPath;
+(function (ToolsCheckPath) {
+    ToolsCheckPath[ToolsCheckPath["Unknown"] = 0] = "Unknown";
+    ToolsCheckPath[ToolsCheckPath["Ok"] = 1] = "Ok";
+    ToolsCheckPath[ToolsCheckPath["DoesntExist"] = 2] = "DoesntExist";
+    ToolsCheckPath[ToolsCheckPath["WrongType"] = 3] = "WrongType";
+    ToolsCheckPath[ToolsCheckPath["WrongChecker"] = 4] = "WrongChecker";
+})(ToolsCheckPath = exports.ToolsCheckPath || (exports.ToolsCheckPath = {}));
+;
+;
 class Tools {
     //
     // Constructor.
     constructor() { }
     //
     // Public class methods.
+    static CheckDirectory(filePath, relativeTo = null) {
+        return Tools.CheckPathByType('isDirectory', filePath, relativeTo);
+    }
+    static CheckFile(filePath, relativeTo = null) {
+        return Tools.CheckPathByType('isFile', filePath, relativeTo);
+    }
     /**
      * Takes an object and returns a clone of if. It avoids using the same
      * pointer.
@@ -72,6 +88,43 @@ class Tools {
     }
     static IsNode() {
         return Tools._IsNode();
+    }
+    //
+    // Protected class methods.
+    static CheckPathByType(checker, filePath, relativeTo = null) {
+        let result = {
+            status: ToolsCheckPath.Unknown,
+            originalPath: filePath,
+            path: filePath,
+            stat: null
+        };
+        try {
+            result.stat = libraries_1.fs.statSync(filePath);
+        }
+        catch (e) { }
+        if (result.stat) {
+            if (typeof result.stat[checker] === 'function') {
+                if (result.stat[checker]) {
+                    result.status = ToolsCheckPath.Ok;
+                    result.path = libraries_1.path.resolve(result.path);
+                }
+                else {
+                    result.status = ToolsCheckPath.WrongType;
+                }
+            }
+            else {
+                result.status = ToolsCheckPath.WrongChecker;
+            }
+        }
+        else {
+            result.status = ToolsCheckPath.DoesntExist;
+        }
+        if (relativeTo && result.status === ToolsCheckPath.DoesntExist) {
+            const aux = result.originalPath;
+            result = Tools.CheckPathByType(checker, libraries_1.path.join(relativeTo, filePath), null);
+            result.originalPath = aux;
+        }
+        return result;
     }
 }
 //

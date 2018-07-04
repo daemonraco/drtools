@@ -73,6 +73,6 @@ exports.WebToApiConfigSpec = {
             items: { $ref: '#/definitions/route' }
         }
     },
-    required: ['cachePath', 'endpoints'],
+    required: ['cachePath', 'endpoints', 'routes'],
     additionalProperties: false
 };

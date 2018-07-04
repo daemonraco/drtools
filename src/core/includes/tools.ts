@@ -7,6 +7,20 @@ import { fs, path } from '../../libraries';
 
 declare var process: any;
 
+export enum ToolsCheckPath {
+    Unknown,
+    Ok,
+    DoesntExist,
+    WrongType,
+    WrongChecker,
+};
+export interface ToolsCheckPathResult {
+    status: ToolsCheckPath;
+    originalPath: string;
+    path: string;
+    stat: any;
+};
+
 export class Tools {
     //
     // Private class properties.
@@ -17,6 +31,12 @@ export class Tools {
     private constructor() { }
     //
     // Public class methods.
+    public static CheckDirectory(filePath: string, relativeTo: string = null): ToolsCheckPathResult {
+        return Tools.CheckPathByType('isDirectory', filePath, relativeTo);
+    }
+    public static CheckFile(filePath: string, relativeTo: string = null): ToolsCheckPathResult {
+        return Tools.CheckPathByType('isFile', filePath, relativeTo);
+    }
     /**
      * Takes an object and returns a clone of if. It avoids using the same
      * pointer.
@@ -77,5 +97,39 @@ export class Tools {
     }
     public static IsNode(): boolean {
         return Tools._IsNode();
+    }
+    //
+    // Protected class methods.
+    protected static CheckPathByType(checker: string, filePath: string, relativeTo: string = null): ToolsCheckPathResult {
+        let result: ToolsCheckPathResult = {
+            status: ToolsCheckPath.Unknown,
+            originalPath: filePath,
+            path: filePath,
+            stat: null
+        };
+
+        try { result.stat = fs.statSync(filePath); } catch (e) { }
+        if (result.stat) {
+            if (typeof result.stat[checker] === 'function') {
+                if (result.stat[checker]) {
+                    result.status = ToolsCheckPath.Ok;
+                    result.path = path.resolve(result.path);
+                } else {
+                    result.status = ToolsCheckPath.WrongType;
+                }
+            } else {
+                result.status = ToolsCheckPath.WrongChecker;
+            }
+        } else {
+            result.status = ToolsCheckPath.DoesntExist;
+        }
+
+        if (relativeTo && result.status === ToolsCheckPath.DoesntExist) {
+            const aux: string = result.originalPath;
+            result = Tools.CheckPathByType(checker, path.join(relativeTo, filePath), null);
+            result.originalPath = aux;
+        }
+
+        return result;
     }
 }

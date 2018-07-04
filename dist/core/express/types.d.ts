@@ -2,6 +2,7 @@
  * @file express-types.ts
  * @author Alejandro D. Simi
  */
+import { BasicDictionary } from '../includes';
 import { ConfigOptions, ConfigsManager } from '../configs';
 import { EndpointsManagerOptions, EndpointsManager } from '../mock-endpoints';
 import { LoaderOptions, LoadersManager } from '../loaders';
@@ -49,9 +50,10 @@ export interface ExpressConnectorAttachResults {
     plugins: PluginsManager;
     routes: RoutesManager;
     tasks: TasksManager;
-    webToApi: WebToApi[];
+    webToApi: BasicDictionary<WebToApi>;
 }
 export interface WebToApiOptions {
     config: string;
+    name?: string;
     path: string;
 }

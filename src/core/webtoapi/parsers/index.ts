@@ -4,4 +4,5 @@
  */
 
 export * from './attribute';
+export * from './number';
 export * from './text';

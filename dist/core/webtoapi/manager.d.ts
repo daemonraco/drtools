@@ -7,11 +7,13 @@ import { WebToApiRouter } from './router';
 export declare class WebToApi {
     protected _cachePath: string;
     protected _config: any;
+    protected _configPath: string;
     protected _endpoints: WAEndpointList;
     protected _loaded: boolean;
     protected _parsers: WAParsersList;
+    protected _relativePath: string;
     protected _router: WebToApiRouter;
-    constructor(config: string | any);
+    constructor(configPath: string);
     has(type: string): boolean;
     get(type: string, params: WAUrlParameters): Promise<any>;
     router(): any;
@@ -22,6 +24,7 @@ export declare class WebToApi {
     protected getCachePath(key: string): string;
     protected getCache(key: string): any;
     protected load(): void;
+    protected loadConfig(): void;
     protected loadRouter(): void;
     protected saveCache(key: string, raw: string, json: any): void;
 }
