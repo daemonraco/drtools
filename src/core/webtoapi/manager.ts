@@ -44,22 +44,30 @@ export class WebToApi {
         if (this.has(type)) {
             const endpoint: any = this._endpoints[type];
 
-            results = this.getCache(key);
-            if (!results) {
-                let data = null;
-                switch (endpoint.method.toUpperCase()) {
-                    case 'GET':
-                    default:
-                        try {
-                            data = await request.get(this.adaptUrl(endpoint.url, params));
-                        } catch (e) {
-                            console.error(chalk.red(`Error: ${e}`));
-                        }
-                        break;
+            let reAnalyze: boolean = false;
+            let raw: string = this.getRawCache(key, endpoint.cacheLifetime);
+            if (raw === null) {
+                reAnalyze = true;
+
+                raw = null;
+                try {
+                    switch (endpoint.method.toUpperCase()) {
+                        case 'GET':
+                        default:
+                            raw = await request.get(this.adaptUrl(endpoint.url, params));
+                            break;
+                    }
+                } catch (e) {
+                    console.error(chalk.red(`Error: ${e}`));
                 }
 
-                results = this.analyze(key, data, endpoint);
-                this.saveCache(key, data, results);
+                this.saveRawCache(key, raw);
+            }
+
+            results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
+            if (!results) {
+                results = this.analyze(key, raw, endpoint);
+                this.saveJSONCache(key, results);
             }
         } else {
             throw new WAException(`Unknown type '${type}'`);
@@ -92,7 +100,7 @@ export class WebToApi {
             results = this.analyzeFields(endpoint.fields, doc, doc('body'));
 
             if (endpoint.postProcessor) {
-                results = endpoint.postProcessor(results);
+                results = endpoint.postProcessor(results, endpoint);
             }
         }
 
@@ -134,18 +142,30 @@ export class WebToApi {
     protected getCachePath(key: string): string {
         return path.join(this._cachePath, `cache.${key}`);
     }
-    protected getCache(key: string): any {
+    protected getCache(key: string, extension: string, lifetime: number): any {
         let results: any = null;
-        const cachePath: string = `${this.getCachePath(key)}.json`;
+        const cachePath: string = `${this.getCachePath(key)}.${extension}`;
 
         const ppCheck: ToolsCheckPathResult = Tools.CheckFile(cachePath);
         if (ppCheck.status === ToolsCheckPath.Ok) {
-            try {
-                results = JSON.parse(fs.readFileSync(cachePath).toString());
-            } catch (e) { }
+            if ((Date.now() - Math.floor(ppCheck.stat.mtimeMs)) < (lifetime * 1000)) {
+                try {
+                    results = fs.readFileSync(cachePath).toString();
+                } catch (e) { }
+            }
         }
 
         return results;
+    }
+    protected getJSONCache(key: string, lifetime: number): any {
+        let results: any = null;
+
+        try { results = JSON.parse(this.getCache(key, 'json', lifetime)); } catch (e) { }
+
+        return results;
+    }
+    protected getRawCache(key: string, lifetime: number): any {
+        return this.getCache(key, 'html', lifetime);
     }
     protected load(): void {
         if (!this._loaded) {
@@ -183,6 +203,10 @@ export class WebToApi {
                             throw new WAException(`WebToApi::load(): '${endpoint.postProcessor}' is not a file`);
                         default:
                             throw new WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
+                    }
+
+                    if (!endpoint.cacheLifetime || endpoint.cacheLifetime < 0) {
+                        endpoint.cacheLifetime = this._config.cacheLifetime;
                     }
                 }
 
@@ -232,10 +256,14 @@ export class WebToApi {
             this._router = new WebToApiRouter(this, this._endpoints, this._config);
         }
     }
-    protected saveCache(key: string, raw: string, json: any) {
+    protected saveCache(key: string, data: string, extension: string) {
         const cachePath = this.getCachePath(key);
-
-        fs.writeFileSync(`${cachePath}.raw`, raw);
-        fs.writeFileSync(`${cachePath}.json`, JSON.stringify(json));
+        fs.writeFileSync(`${cachePath}.${extension}`, data);
+    }
+    protected saveJSONCache(key: string, json: any) {
+        this.saveCache(key, JSON.stringify(json), 'json');
+    }
+    protected saveRawCache(key: string, raw: string) {
+        this.saveCache(key, raw, 'html');
     }
 }

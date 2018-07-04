@@ -15,7 +15,8 @@ export const WebToApiConfigSpec: any = {
                 url: { type: 'string' },
                 method: { type: 'string', default: 'GET' },
                 fields: { $ref: '#/definitions/fields' },
-                postProcessor: { type: ['string', 'null'], default: null }
+                postProcessor: { type: ['string', 'null'], default: null },
+                cacheLifetime: { type: 'integer' }
             },
             required: ['fields', 'method', 'name', 'url'],
             additionalProperties: false
@@ -62,6 +63,7 @@ export const WebToApiConfigSpec: any = {
 
     properties: {
         cachePath: { type: 'string' },
+        cacheLifetime: { type: 'integer', default: 300 },
         endpoints: {
             type: 'array',
             default: [],
@@ -73,6 +75,6 @@ export const WebToApiConfigSpec: any = {
             items: { $ref: '#/definitions/route' }
         }
     },
-    required: ['cachePath', 'endpoints', 'routes'],
+    required: ['cachePath', 'cacheLifetime', 'endpoints', 'routes'],
     additionalProperties: false
 };

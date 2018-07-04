@@ -22,9 +22,13 @@ export declare class WebToApi {
     protected analyzeFields(fields: any[], mainDoc: any, mainElement: any): any;
     protected genKey(type: string, params: WAUrlParameters): string;
     protected getCachePath(key: string): string;
-    protected getCache(key: string): any;
+    protected getCache(key: string, extension: string, lifetime: number): any;
+    protected getJSONCache(key: string, lifetime: number): any;
+    protected getRawCache(key: string, lifetime: number): any;
     protected load(): void;
     protected loadConfig(): void;
     protected loadRouter(): void;
-    protected saveCache(key: string, raw: string, json: any): void;
+    protected saveCache(key: string, data: string, extension: string): void;
+    protected saveJSONCache(key: string, json: any): void;
+    protected saveRawCache(key: string, raw: string): void;
 }

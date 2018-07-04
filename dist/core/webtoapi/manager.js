@@ -47,22 +47,28 @@ class WebToApi {
             const key = this.genKey(type, params);
             if (this.has(type)) {
                 const endpoint = this._endpoints[type];
-                results = this.getCache(key);
-                if (!results) {
-                    let data = null;
-                    switch (endpoint.method.toUpperCase()) {
-                        case 'GET':
-                        default:
-                            try {
-                                data = yield libraries_1.request.get(this.adaptUrl(endpoint.url, params));
-                            }
-                            catch (e) {
-                                console.error(libraries_1.chalk.red(`Error: ${e}`));
-                            }
-                            break;
+                let reAnalyze = false;
+                let raw = this.getRawCache(key, endpoint.cacheLifetime);
+                if (raw === null) {
+                    reAnalyze = true;
+                    raw = null;
+                    try {
+                        switch (endpoint.method.toUpperCase()) {
+                            case 'GET':
+                            default:
+                                raw = yield libraries_1.request.get(this.adaptUrl(endpoint.url, params));
+                                break;
+                        }
                     }
-                    results = this.analyze(key, data, endpoint);
-                    this.saveCache(key, data, results);
+                    catch (e) {
+                        console.error(libraries_1.chalk.red(`Error: ${e}`));
+                    }
+                    this.saveRawCache(key, raw);
+                }
+                results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
+                if (!results) {
+                    results = this.analyze(key, raw, endpoint);
+                    this.saveJSONCache(key, results);
                 }
             }
             else {
@@ -93,7 +99,7 @@ class WebToApi {
             });
             results = this.analyzeFields(endpoint.fields, doc, doc('body'));
             if (endpoint.postProcessor) {
-                results = endpoint.postProcessor(results);
+                results = endpoint.postProcessor(results, endpoint);
             }
         }
         return results;
@@ -130,17 +136,30 @@ class WebToApi {
     getCachePath(key) {
         return libraries_1.path.join(this._cachePath, `cache.${key}`);
     }
-    getCache(key) {
+    getCache(key, extension, lifetime) {
         let results = null;
-        const cachePath = `${this.getCachePath(key)}.json`;
+        const cachePath = `${this.getCachePath(key)}.${extension}`;
         const ppCheck = includes_1.Tools.CheckFile(cachePath);
         if (ppCheck.status === includes_1.ToolsCheckPath.Ok) {
-            try {
-                results = JSON.parse(libraries_1.fs.readFileSync(cachePath).toString());
+            if ((Date.now() - Math.floor(ppCheck.stat.mtimeMs)) < (lifetime * 1000)) {
+                try {
+                    results = libraries_1.fs.readFileSync(cachePath).toString();
+                }
+                catch (e) { }
             }
-            catch (e) { }
         }
         return results;
+    }
+    getJSONCache(key, lifetime) {
+        let results = null;
+        try {
+            results = JSON.parse(this.getCache(key, 'json', lifetime));
+        }
+        catch (e) { }
+        return results;
+    }
+    getRawCache(key, lifetime) {
+        return this.getCache(key, 'html', lifetime);
     }
     load() {
         if (!this._loaded) {
@@ -176,6 +195,9 @@ class WebToApi {
                             throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' is not a file`);
                         default:
                             throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
+                    }
+                    if (!endpoint.cacheLifetime || endpoint.cacheLifetime < 0) {
+                        endpoint.cacheLifetime = this._config.cacheLifetime;
                     }
                 }
                 this._endpoints[endpoint.name] = endpoint;
@@ -222,10 +244,15 @@ class WebToApi {
             this._router = new router_1.WebToApiRouter(this, this._endpoints, this._config);
         }
     }
-    saveCache(key, raw, json) {
+    saveCache(key, data, extension) {
         const cachePath = this.getCachePath(key);
-        libraries_1.fs.writeFileSync(`${cachePath}.raw`, raw);
-        libraries_1.fs.writeFileSync(`${cachePath}.json`, JSON.stringify(json));
+        libraries_1.fs.writeFileSync(`${cachePath}.${extension}`, data);
+    }
+    saveJSONCache(key, json) {
+        this.saveCache(key, JSON.stringify(json), 'json');
+    }
+    saveRawCache(key, raw) {
+        this.saveCache(key, raw, 'html');
     }
 }
 exports.WebToApi = WebToApi;
