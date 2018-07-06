@@ -14,8 +14,17 @@ export declare class WebToApi {
     protected _relativePath: string;
     protected _router: WebToApiRouter;
     constructor(configPath: string);
+    cacheLifetime(): string;
+    cachePath(): string;
+    configPath(): string;
+    description(): string;
+    endpoints(): WAEndpointList;
     has(type: string): boolean;
     get(type: string, params: WAUrlParameters): Promise<any>;
+    name(): string;
+    parsers(): string[];
+    relativePath(): string;
+    routes(): any[];
     router(): any;
     protected adaptUrl(url: string, params: WAUrlParameters): string;
     protected analyze(key: string, data: string, endpoint: WAEndpoint): any;

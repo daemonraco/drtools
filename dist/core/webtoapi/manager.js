@@ -38,6 +38,21 @@ class WebToApi {
     }
     //
     // Public methods.
+    cacheLifetime() {
+        return this._config ? this._config.cacheLifetime : 300;
+    }
+    cachePath() {
+        return this._cachePath;
+    }
+    configPath() {
+        return this._configPath;
+    }
+    description() {
+        return this._config ? this._config.description : '';
+    }
+    endpoints() {
+        return this._endpoints;
+    }
     has(type) {
         return typeof this._endpoints[type] !== 'undefined';
     }
@@ -56,7 +71,11 @@ class WebToApi {
                         switch (endpoint.method.toUpperCase()) {
                             case 'GET':
                             default:
-                                raw = yield libraries_1.request.get(this.adaptUrl(endpoint.url, params));
+                                const options = {
+                                    url: this.adaptUrl(endpoint.url, params),
+                                    headers: endpoint.headers
+                                };
+                                raw = yield libraries_1.request.get(options);
                                 break;
                         }
                     }
@@ -76,6 +95,18 @@ class WebToApi {
             }
             return results;
         });
+    }
+    name() {
+        return this._config ? this._config.name : '';
+    }
+    parsers() {
+        return Object.keys(this._parsers);
+    }
+    relativePath() {
+        return this._relativePath;
+    }
+    routes() {
+        return this._config ? this._config.routes : [];
     }
     router() {
         this.loadRouter();
@@ -177,6 +208,9 @@ class WebToApi {
             if (!validator(this._config)) {
                 throw new types_1.WAException(`WebToApi::load(): Bad configuration. '\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`);
             }
+            if (typeof this._config.name === 'undefined') {
+                this._config.name = libraries_1.path.basename(this._configPath);
+            }
             let ppCheck = null;
             for (const endpoint of this._config.endpoints) {
                 if (endpoint.postProcessor) {
@@ -196,9 +230,9 @@ class WebToApi {
                         default:
                             throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
                     }
-                    if (!endpoint.cacheLifetime || endpoint.cacheLifetime < 0) {
-                        endpoint.cacheLifetime = this._config.cacheLifetime;
-                    }
+                }
+                if (typeof endpoint.cacheLifetime === 'undefined' || endpoint.cacheLifetime < 0) {
+                    endpoint.cacheLifetime = this._config.cacheLifetime;
                 }
                 this._endpoints[endpoint.name] = endpoint;
             }
@@ -214,6 +248,7 @@ class WebToApi {
             }
             this._parsers['attr'] = parsers_1.WAParserAttribute;
             this._parsers['attribute'] = parsers_1.WAParserAttribute;
+            this._parsers['html'] = parsers_1.WAParserHtml;
             this._parsers['number'] = parsers_1.WAParserNumber;
             this._parsers['text'] = parsers_1.WAParserText;
             this._parsers['trim-text'] = parsers_1.WAParserTrimText;
@@ -245,11 +280,13 @@ class WebToApi {
         }
     }
     saveCache(key, data, extension) {
-        const cachePath = this.getCachePath(key);
-        libraries_1.fs.writeFileSync(`${cachePath}.${extension}`, data);
+        if (data) {
+            const cachePath = this.getCachePath(key);
+            libraries_1.fs.writeFileSync(`${cachePath}.${extension}`, data);
+        }
     }
     saveJSONCache(key, json) {
-        this.saveCache(key, JSON.stringify(json), 'json');
+        this.saveCache(key, json ? JSON.stringify(json) : json, 'json');
     }
     saveRawCache(key, raw) {
         this.saveCache(key, raw, 'html');

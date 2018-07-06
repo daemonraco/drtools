@@ -3,12 +3,13 @@
  * @author Alejandro D. Simi
  */
 
-import { fs, glob, marked, path } from '../../libraries';
+import { fs, marked, path } from '../../libraries';
 
 import { ConfigItemSpec, ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';
 import { ExpressConnectorAttachResults } from '.';
 import { PluginSpecsList } from '../plugins';
+import { WebToApi } from '../webtoapi';
 import { Tools } from '../includes';
 
 export class ExpressResponseBuilder {
@@ -72,7 +73,7 @@ export class ExpressResponseBuilder {
         return result;
     }
     public static FullInfoResponse(managers: ExpressConnectorAttachResults): any {
-        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, plugins, routes, tasks } = managers;
+        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, plugins, routes, tasks, webToApi } = managers;
         let results: any = {};
 
         results.configs = null;
@@ -175,6 +176,31 @@ export class ExpressResponseBuilder {
             });
         } else {
             results.endpoints = null;
+        }
+
+        if (webToApi) {
+            results.webtoapi = [];
+
+            for (const key of Object.keys(webToApi)) {
+                const wa: WebToApi = webToApi[key];
+                results.webtoapi.push({
+                    name: wa.name(),
+                    description: wa.description(),
+                    configPath: wa.configPath(),
+                    endpoints: wa.endpoints(),
+                    cachePath: wa.cachePath(),
+                    cacheLifetime: wa.cacheLifetime(),
+                    relativePath: wa.relativePath(),
+                    parsers: wa.parsers(),
+                    routes: wa.routes()
+                });
+            }
+
+            if (results.webtoapi.length < 1) {
+                results.webtoapi = null;
+            }
+        } else {
+            results.webtoapi = null;
         }
 
         return results;

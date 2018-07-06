@@ -15,6 +15,14 @@ exports.WebToApiConfigSpec = {
                 name: { type: 'string' },
                 url: { type: 'string' },
                 method: { type: 'string', default: 'GET' },
+                headers: {
+                    type: 'object',
+                    default: {},
+                    patternProperties: {
+                        '^.*$': { type: 'string' }
+                    },
+                    additionalProperties: false
+                },
                 fields: { $ref: '#/definitions/fields' },
                 postProcessor: { type: ['string', 'null'], default: null },
                 cacheLifetime: { type: 'integer' }
@@ -62,6 +70,8 @@ exports.WebToApiConfigSpec = {
         }
     },
     properties: {
+        name: { type: 'string' },
+        description: { type: 'string', default: '' },
         cachePath: { type: 'string' },
         cacheLifetime: { type: 'integer', default: 300 },
         endpoints: {
@@ -75,6 +85,6 @@ exports.WebToApiConfigSpec = {
             items: { $ref: '#/definitions/route' }
         }
     },
-    required: ['cachePath', 'cacheLifetime', 'endpoints', 'routes'],
+    required: ['cachePath', 'cacheLifetime', 'description', 'endpoints', 'routes'],
     additionalProperties: false
 };

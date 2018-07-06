@@ -1,5 +1,5 @@
 <div class="container pb-5">
-    <div class="row mt-3">
+    <div class="row my-3">
         <div class="col-10">
             <p class="text-right">These are the tools you have loaded.</p>
 
@@ -12,6 +12,7 @@
             <ui-home-tasks id="tasks" [server]="serverUrl" [tasks]="drtools.tasks"></ui-home-tasks>
             <ui-home-mysql-rest id="mysqlRest" [server]="serverUrl" [mysqlRest]="drtools.mysqlRest"></ui-home-mysql-rest>
             <ui-home-plugins id="plugins" [server]="serverUrl" [plugins]="drtools.plugins"></ui-home-plugins>
+            <ui-home-webtoapi id="webtoapi" [server]="serverUrl" [webtoapi]="drtools.webtoapi"></ui-home-webtoapi>
         </div>
 
         <div class="col small">
@@ -60,6 +61,11 @@
                     <li *ngIf="drtools.plugins" class="nav-item">
                         <a class="nav-link" href="#plugins">
                             <i class="fa fa-plug"></i> Plugins
+                        </a>
+                    </li>
+                    <li *ngIf="drtools.webtoapi" class="nav-item">
+                        <a class="nav-link" href="#webtoapi">
+                            <i class="fa fa-microchip"></i> Web to API
                         </a>
                     </li>
                 </ul>

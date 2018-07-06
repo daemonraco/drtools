@@ -1,0 +1,203 @@
+<div *ngIf="webtoapi">
+    <hr/>
+
+    <div class="row">
+        <h4 class="col">
+            <i class="fa fa-microchip"></i> HTML Web to API:
+        </h4>
+    </div>
+
+    <div class="accordion">
+        <div *ngFor="let conf of webtoapi; let i = index" class="card">
+            <div class="card-header" style="cursor:pointer;" data-toggle="collapse" [attr.data-target]="'#webtoapi_collapse_' + i">
+                {{conf.name}}
+            </div>
+
+            <div [id]="'webtoapi_collapse_' + i" class="collapse">
+                <div class="card-body p-2">
+                    <div class="row">
+                        <ul class="list-unstyled col small">
+                            <li>
+                                <strong>Configuration Path</strong>:
+                                <code>{{conf.configPath}}</code>
+                            </li>
+                            <li *ngIf="conf.description">
+                                <strong>Description</strong>:
+                                <small>{{conf.description}}</small>
+                            </li>
+                            <li>
+                                <strong>Cache Directory</strong>:
+                                <code>{{conf.cachePath}}</code>
+                            </li>
+                            <li>
+                                <strong>Cache Lifetime</strong>:
+                                <code>{{conf.cacheLifetime}} secs</code>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-striped table-bordered table-sm">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th colspan="6" scope="col">Endpoints:</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">URL</th>
+                                        <th scope="col">Method</th>
+                                        <th scope="col">Cache Lifetime</th>
+                                        <th scope="col" class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let endpoint of conf.endpointsNG">
+                                        <td>
+                                            <i class="fa fa-microchip text-info"></i>
+                                        </td>
+                                        <td>
+                                            <code>{{endpoint.name}}</code>
+                                        </td>
+                                        <td>
+                                            <code>{{endpoint.url}}</code>
+                                        </td>
+                                        <td>
+                                            <code>{{endpoint.method}}</code>
+                                        </td>
+                                        <td>
+                                            <code>{{endpoint.cacheLifetime}} secs</code>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-outline-secondary" title="Display Endpoint's Specs" (click)="displayEndpoint(endpoint)">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-striped table-bordered table-sm">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th colspan="4" scope="col">Routes:</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Path</th>
+                                        <th scope="col">Endpoint</th>
+                                        <th scope="col">Map</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let route of conf.routes">
+                                        <td>
+                                            <i class="fa fa-microchip text-info"></i>
+                                        </td>
+                                        <td>
+                                            <code>{{route.path}}</code>
+                                        </td>
+                                        <td>
+                                            <code>{{route.endpoint}}</code>
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                <li *ngFor="let m of route.mapNG">
+                                                    <u>
+                                                        <code>{{m.name}}</code>
+                                                    </u>:
+                                                    <code>{{m.value}}</code>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-striped table-bordered table-sm">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th colspan="3" scope="col">Parsers:</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Code</th>
+                                        <th scope="col">Path</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let parsers of conf.parsersNG">
+                                        <td>
+                                            <i class="fa fa-microchip text-info"></i>
+                                        </td>
+                                        <td>
+                                            <code>{{parsers.code}}</code>
+                                        </td>
+                                        <td>
+                                            <code *ngIf="parsers.path">{{parsers.path}}</code>
+                                            <small *ngIf="!parsers.path" class="font-italic">built-in</small>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="WAEndpointModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalTitle">
+                        <i class="fa fa-microchip"></i>
+                        Endpoints:
+                        <code>{{displayData.name}}</code>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body p-2">
+                    <ul class="list-unstyled">
+                        <li *ngIf="displayData.postProcessorPath">
+                            <strong>PostProcessor</strong>:
+                            <code>{{displayData.postProcessorPath}}</code>
+                        </li>
+                        <li *ngIf="displayData.hasHeaders">
+                            <strong>Headers</strong>:
+                            <pre class="border rounded text-info p-2"><code>{{displayData.headers | stringify}}</code></pre>
+                        </li>
+                        <li>
+                            <strong>Fields Confiuration</strong>:
+                            <pre class="border rounded text-info p-2"><code>{{displayData.fields | stringify}}</code></pre>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">
+                        <i class="fa fa-times"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

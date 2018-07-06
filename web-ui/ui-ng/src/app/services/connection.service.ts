@@ -12,7 +12,7 @@ export class ConnectionService {
     // Public methods.
     public isOnline(): Observable<boolean> {
         return Observable.create((observer: Observer<boolean>) => {
-            this.http.get(`https://bootswatch.com`)
+            this.http.get(`https://code.jquery.com/jquery-3.3.1.slim.min.js`)
                 .subscribe(data => {
                     observer.next(true);
                     observer.complete();

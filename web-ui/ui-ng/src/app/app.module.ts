@@ -19,12 +19,14 @@ import { PageHomeMysqlRestComponent } from './home/mysql-rest/mysql-rest.compone
 import { PageHomePluginsComponent } from './home/plugins/plugins.component';
 import { PageHomeRoutesComponent } from './home/routes/routes.component';
 import { PageHomeTasksComponent } from './home/tasks/tasks.component';
+import { PageHomeWebtoapiComponent } from './home/webtoapi/webtoapi.component';
 
 import { LocationService } from './services/location.service';
 
 import { BooleanPipe } from './pipes/boolean.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
 import { MillisecondsPipe } from './pipes/milliseconds.pipe';
+import { StringifyPipe } from './pipes/stringify.pipe';
 
 @NgModule({
     declarations: [
@@ -45,7 +47,9 @@ import { MillisecondsPipe } from './pipes/milliseconds.pipe';
         PageHomeMysqlRestComponent,
         PageHomePluginsComponent,
         PageHomeRoutesComponent,
-        PageHomeTasksComponent
+        PageHomeTasksComponent,
+        PageHomeWebtoapiComponent,
+        StringifyPipe
     ],
     imports: [
         BrowserModule,

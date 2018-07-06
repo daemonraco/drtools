@@ -7,7 +7,7 @@ import { ajv, chalk, cheerio, fs, md5, request, path } from '../../libraries';
 
 import { Tools, ToolsCheckPath, ToolsCheckPathResult } from '../includes';
 import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WAUrlParameters } from './types';
-import { WAParserAttribute, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
+import { WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
 import { WebToApiConfigSpec } from './spec.config';
 import { WebToApiRouter } from './router';
 
@@ -34,6 +34,21 @@ export class WebToApi {
     }
     //
     // Public methods.
+    public cacheLifetime(): string {
+        return this._config ? this._config.cacheLifetime : 300;
+    }
+    public cachePath(): string {
+        return this._cachePath
+    }
+    public configPath(): string {
+        return this._configPath;
+    }
+    public description(): string {
+        return this._config ? this._config.description : '';
+    }
+    public endpoints(): WAEndpointList {
+        return this._endpoints
+    }
     public has(type: string): boolean {
         return typeof this._endpoints[type] !== 'undefined';
     }
@@ -54,7 +69,11 @@ export class WebToApi {
                     switch (endpoint.method.toUpperCase()) {
                         case 'GET':
                         default:
-                            raw = await request.get(this.adaptUrl(endpoint.url, params));
+                            const options = {
+                                url: this.adaptUrl(endpoint.url, params),
+                                headers: endpoint.headers
+                            };
+                            raw = await request.get(options);
                             break;
                     }
                 } catch (e) {
@@ -74,6 +93,18 @@ export class WebToApi {
         }
 
         return results;
+    }
+    public name(): string {
+        return this._config ? this._config.name : '';
+    }
+    public parsers(): string[] {
+        return Object.keys(this._parsers);
+    }
+    public relativePath(): string {
+        return this._relativePath
+    }
+    public routes(): any[] {
+        return this._config ? this._config.routes : [];
     }
     public router(): any {
         this.loadRouter();
@@ -185,6 +216,10 @@ export class WebToApi {
                 throw new WAException(`WebToApi::load(): Bad configuration. '\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`);
             }
 
+            if (typeof this._config.name === 'undefined') {
+                this._config.name = path.basename(this._configPath);
+            }
+
             let ppCheck: ToolsCheckPathResult = null;
 
             for (const endpoint of this._config.endpoints) {
@@ -204,10 +239,10 @@ export class WebToApi {
                         default:
                             throw new WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
                     }
+                }
 
-                    if (!endpoint.cacheLifetime || endpoint.cacheLifetime < 0) {
-                        endpoint.cacheLifetime = this._config.cacheLifetime;
-                    }
+                if (typeof endpoint.cacheLifetime === 'undefined' || endpoint.cacheLifetime < 0) {
+                    endpoint.cacheLifetime = this._config.cacheLifetime;
                 }
 
                 this._endpoints[endpoint.name] = endpoint;
@@ -226,6 +261,7 @@ export class WebToApi {
 
             this._parsers['attr'] = WAParserAttribute;
             this._parsers['attribute'] = WAParserAttribute;
+            this._parsers['html'] = WAParserHtml;
             this._parsers['number'] = WAParserNumber;
             this._parsers['text'] = WAParserText;
             this._parsers['trim-text'] = WAParserTrimText;
@@ -257,11 +293,13 @@ export class WebToApi {
         }
     }
     protected saveCache(key: string, data: string, extension: string) {
-        const cachePath = this.getCachePath(key);
-        fs.writeFileSync(`${cachePath}.${extension}`, data);
+        if (data) {
+            const cachePath = this.getCachePath(key);
+            fs.writeFileSync(`${cachePath}.${extension}`, data);
+        }
     }
     protected saveJSONCache(key: string, json: any) {
-        this.saveCache(key, JSON.stringify(json), 'json');
+        this.saveCache(key, json ? JSON.stringify(json) : json, 'json');
     }
     protected saveRawCache(key: string, raw: string) {
         this.saveCache(key, raw, 'html');
