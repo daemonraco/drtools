@@ -6,8 +6,10 @@
 import { chalk, commander, ejs, fs, glob, path } from '../../libraries';
 
 import { MiddlewaresConstants, PluginsConstants, RoutesConstants, TasksConstants } from '../../core/drtools';
+import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath, ToolsCheckPathResult as CoreToolsCheckPathResult } from '../../core/includes/tools';
 import { Tools } from '../includes/tools';
 
+declare const __dirname: string;
 declare const process: any;
 
 export class DRToolsGenerator {
@@ -409,6 +411,77 @@ export class DRToolsGenerator {
             console.error(chalk.red(error));
         }
     }
+    protected generateWebToApi(type: string, name: string, options: any): void {
+        let error: string = null;
+
+        let cleanOptions: any = {
+            force: options.force == true,
+            cwd: process.cwd(),
+            cachePath: options.cache,
+            // interval: options.interval ? options.interval : 120000,
+            // runOnStart: options.runOnStart ? 'true' : 'false',
+            // suffix: options.suffix ? options.suffix : TasksConstants.Suffix,
+            testRun: options.testRun == true
+        };
+
+        switch (type) {
+            case 'config':
+                this.generateWebToApiConfig(name, cleanOptions);
+                break;
+        }
+    }
+    protected generateWebToApiConfig(name: string, options: any): void {
+        let error: string = null;
+
+        console.log(`Generating WebToApi Configuration:`);
+        console.log(`\tName:              '${chalk.green(name)}'`);
+        console.log(`\tWorking directory: '${chalk.green(options.cwd)}'`);
+
+        let fullPath: string = path.join(options.cwd, `${name}.json`);
+
+        if (!error && !options.cachePath) {
+            error = `No cache directory specified directory.`;
+        } else {
+            console.log(`\tCache directory:   '${chalk.green(options.cachePath)}'`);
+        }
+
+        if (!error) {
+            const checkFP: CoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
+            switch (checkFP.status) {
+                case CoreToolsCheckPath.Ok:
+                    if (!options.force) {
+                        error = `'${fullPath}' already exist.`;
+                    }
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${fullPath}' already exist and it's not a file.`;
+                    break;
+                case CoreToolsCheckPath.WrongChecker:
+                    error = `unable to check '${fullPath}'.`;
+                    break;
+            }
+        }
+
+        if (!error) {
+            console.log();
+
+            console.log(`Creating '${chalk.green(fullPath)}'...`);
+            if (!options.testRun) {
+                try {
+                    const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.wa.config.ejs')).toString();
+                    fs.writeFileSync(fullPath, ejs.render(template, {
+                        cacheDirectory: options.cachePath,
+                        name
+                    }, {}));
+                } catch (e) { }
+            }
+        }
+
+        if (error) {
+            console.log();
+            console.error(chalk.red(error));
+        }
+    }
     protected setCommands(): void {
         commander
             .version(Tools.Instance().version(), `-v, --version`)
@@ -483,6 +556,20 @@ export class DRToolsGenerator {
                 `does almost everything except actually generate files.`)
             .action((name: any, directory: any, options: any) => {
                 this.generateTask(name, directory, options);
+            });
+
+        commander
+            .command(`webtoapi <type> <name>`)
+            .alias(`wa`)
+            .description(`generates assets for HTML Web to API configuration asset.`)
+            .option(`-f, --force`,
+                `in case the destination file exists, this option forces its replacement.`)
+            .option(`-c, --cache [directory]`,
+                `directrory where downloads cache is stored.`)
+            .option(`--test-run`,
+                `does almost everything except actually generate files.`)
+            .action((type: any, name: any, options: any) => {
+                this.generateWebToApi(type, name, options);
             });
 
         commander

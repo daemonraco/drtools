@@ -1,0 +1,48 @@
+{
+    "name": "<%= name %>",
+    "description": "...",
+    "cachePath": "<%= cacheDirectory %>",
+    "cacheLifetime": 86400,
+    "endpoints": [
+        {
+            "name": "example-endpoint",
+            "url": "https://en.wikipedia.org/wiki/:page:",
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+            },
+            "fields": [
+                {
+                    "name": "title",
+                    "path": "h1.firstHeading",
+                    "parser": "trim-text"
+                },
+                {
+                    "name": "mainSections",
+                    "path": "div#toc > ul > li > a",
+                    "fields": [
+                        {
+                            "name": "index",
+                            "path": "span.tocnumber",
+                            "parser": "trim-text"
+                        },
+                        {
+                            "name": "title",
+                            "path": "span.toctext",
+                            "parser": "trim-text"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "routes": [
+        {
+            "path": "/example/:topic",
+            "endpoint": "example-endpoint",
+            "map": {
+                "page": "topic"
+            }
+        }
+    ]
+}

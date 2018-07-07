@@ -81,7 +81,11 @@ export class WebToApi {
                                 url: this.adaptUrl(endpoint.url, params),
                                 headers
                             };
-                            raw = await request.get(options);
+                            try {
+                                raw = await request.get(options);
+                            } catch (he) {
+                                throw new WAException(`${he.name}: Code: ${he.statusCode}. Url: ${options.url}`);
+                            }
                             break;
                     }
                 } catch (e) {
