@@ -27,7 +27,7 @@ export declare class WebToApi {
     routes(): any[];
     router(): any;
     protected adaptUrl(url: string, params: WAUrlParameters): string;
-    protected analyze(key: string, data: string, endpoint: WAEndpoint): any;
+    protected analyze(key: string, data: string, endpoint: WAEndpoint): Promise<any>;
     protected analyzeFields(fields: any[], mainDoc: any, mainElement: any): any;
     protected genKey(type: string, params: WAUrlParameters): string;
     protected getCachePath(key: string): string;

@@ -25,6 +25,7 @@ exports.WebToApiConfigSpec = {
                 },
                 fields: { $ref: '#/definitions/fields' },
                 postProcessor: { type: ['string', 'null'], default: null },
+                preProcessor: { type: ['string', 'null'], default: null },
                 cacheLifetime: { type: 'integer' }
             },
             required: ['fields', 'method', 'name', 'url'],

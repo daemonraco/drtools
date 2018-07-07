@@ -181,6 +181,10 @@
                             <strong>PostProcessor</strong>:
                             <code>{{displayData.postProcessorPath}}</code>
                         </li>
+                        <li *ngIf="displayData.preProcessorPath">
+                            <strong>PreProcessor</strong>:
+                            <code>{{displayData.preProcessorPath}}</code>
+                        </li>
                         <li *ngIf="displayData.hasHeaders">
                             <strong>Headers</strong>:
                             <pre class="border rounded text-info p-2"><code>{{displayData.headers | stringify}}</code></pre>

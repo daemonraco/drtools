@@ -5,8 +5,9 @@
 
 import { ajv, chalk, cheerio, fs, md5, request, path } from '../../libraries';
 
-import { Tools, ToolsCheckPath, ToolsCheckPathResult } from '../includes';
+import { StringsDictionary, Tools, ToolsCheckPath, ToolsCheckPathResult } from '../includes';
 import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WAUrlParameters } from './types';
+import { WAPostProcessorRequest, WAPostProcessorResponse, WAPreProcessorRequest, WAPreProcessorResponse } from './types';
 import { WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
 import { WebToApiConfigSpec } from './spec.config';
 import { WebToApiRouter } from './router';
@@ -64,6 +65,13 @@ export class WebToApi {
             if (raw === null) {
                 reAnalyze = true;
 
+                let headers: StringsDictionary = Tools.DeepCopy(endpoint.headers);
+                if (endpoint.preProcessor) {
+                    const procRequest: WAPreProcessorRequest = { headers, endpoint, params };
+                    const procResponse: WAPreProcessorResponse = await endpoint.preProcessor(procRequest);
+                    headers = procResponse.headers;
+                }
+
                 raw = null;
                 try {
                     switch (endpoint.method.toUpperCase()) {
@@ -71,7 +79,7 @@ export class WebToApi {
                         default:
                             const options = {
                                 url: this.adaptUrl(endpoint.url, params),
-                                headers: endpoint.headers
+                                headers
                             };
                             raw = await request.get(options);
                             break;
@@ -85,7 +93,7 @@ export class WebToApi {
 
             results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
             if (!results) {
-                results = this.analyze(key, raw, endpoint);
+                results = await this.analyze(key, raw, endpoint);
                 this.saveJSONCache(key, results);
             }
         } else {
@@ -120,7 +128,7 @@ export class WebToApi {
 
         return url;
     }
-    protected analyze(key: string, data: string, endpoint: WAEndpoint): any {
+    protected async analyze(key: string, data: string, endpoint: WAEndpoint) {
         let results: any = {};
 
         if (data) {
@@ -131,7 +139,9 @@ export class WebToApi {
             results = this.analyzeFields(endpoint.fields, doc, doc('body'));
 
             if (endpoint.postProcessor) {
-                results = endpoint.postProcessor(results, endpoint);
+                const procRequest: WAPostProcessorRequest = { data: results, endpoint };
+                const procResponse: WAPostProcessorResponse = await endpoint.postProcessor(procRequest);
+                results = procResponse.data;
             }
         }
 
@@ -223,6 +233,24 @@ export class WebToApi {
             let ppCheck: ToolsCheckPathResult = null;
 
             for (const endpoint of this._config.endpoints) {
+                if (endpoint.preProcessor) {
+                    ppCheck = Tools.CheckFile(endpoint.preProcessor, this._relativePath);
+                    switch (ppCheck.status) {
+                        case ToolsCheckPath.Ok:
+                            try {
+                                endpoint.preProcessorPath = ppCheck.path;
+                                endpoint.preProcessor = require(ppCheck.path);
+                            } catch (e) {
+                                throw new WAException(`WebToApi::load(): Unable to load '${endpoint.preProcessor}'. ${e}`);
+                            }
+                            break;
+                        case ToolsCheckPath.WrongType:
+                            throw new WAException(`WebToApi::load(): '${endpoint.preProcessor}' is not a file`);
+                        default:
+                            throw new WAException(`WebToApi::load(): '${endpoint.preProcessor}' doesn't exist`);
+                    }
+                }
+
                 if (endpoint.postProcessor) {
                     ppCheck = Tools.CheckFile(endpoint.postProcessor, this._relativePath);
                     switch (ppCheck.status) {

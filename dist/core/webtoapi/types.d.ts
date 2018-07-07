@@ -11,5 +11,20 @@ export declare class WAException {
     constructor(message: string, code?: string);
     toString: () => string;
 }
+export interface WAPostProcessorRequest {
+    data: any;
+    endpoint: WAEndpoint;
+}
+export interface WAPostProcessorResponse {
+    data: any;
+}
+export interface WAPreProcessorRequest {
+    endpoint: WAEndpoint;
+    headers: StringsDictionary;
+    params: WAUrlParameters;
+}
+export interface WAPreProcessorResponse {
+    headers: StringsDictionary;
+}
 export declare type WAParsersList = BasicDictionary<Function>;
 export declare type WAUrlParameters = StringsDictionary;
