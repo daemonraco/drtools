@@ -16,5 +16,7 @@ export declare class DRToolsGenerator {
     protected generateTask(name: string, directory: string, options: any): void;
     protected generateWebToApi(type: string, name: string, options: any): void;
     protected generateWebToApiConfig(name: string, options: any): void;
+    protected generateWebToApiPostProcessor(name: string, options: any): void;
+    protected generateWebToApiPreProcessor(name: string, options: any): void;
     protected setCommands(): void;
 }

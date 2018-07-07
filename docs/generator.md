@@ -165,6 +165,12 @@ DRTools Generator (v0.2.0):
     --test-run               does almost everything except actually generate files.
     -h, --help               output usage information
 
+  Types:
+
+    'config'    main configuration.
+    'post'      post-processor script.
+    'pre'       pre-processor script.
+
 ```
 <!-- /AUTO -->
 

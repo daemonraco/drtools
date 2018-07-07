@@ -428,6 +428,19 @@ export class DRToolsGenerator {
             case 'config':
                 this.generateWebToApiConfig(name, cleanOptions);
                 break;
+            case 'post':
+                this.generateWebToApiPostProcessor(name, cleanOptions);
+                break;
+            case 'pre':
+                this.generateWebToApiPreProcessor(name, cleanOptions);
+                break;
+            default:
+                error = `Unknown type '${type}'.`;
+        }
+
+        if (error) {
+            console.log();
+            console.error(chalk.red(error));
         }
     }
     protected generateWebToApiConfig(name: string, options: any): void {
@@ -469,6 +482,98 @@ export class DRToolsGenerator {
             if (!options.testRun) {
                 try {
                     const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.wa.config.ejs')).toString();
+                    fs.writeFileSync(fullPath, ejs.render(template, {
+                        cacheDirectory: options.cachePath,
+                        name
+                    }, {}));
+                } catch (e) { }
+            }
+        }
+
+        if (error) {
+            console.log();
+            console.error(chalk.red(error));
+        }
+    }
+    protected generateWebToApiPostProcessor(name: string, options: any): void {
+        let error: string = null;
+
+        console.log(`Generating WebToApi Post-Processor Script:`);
+        console.log(`\tName:              '${chalk.green(name)}'`);
+        console.log(`\tWorking directory: '${chalk.green(options.cwd)}'`);
+
+        let fullPath: string = path.join(options.cwd, `${name}.js`);
+
+        if (!error) {
+            const checkFP: CoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
+            switch (checkFP.status) {
+                case CoreToolsCheckPath.Ok:
+                    if (!options.force) {
+                        error = `'${fullPath}' already exist.`;
+                    }
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${fullPath}' already exist and it's not a file.`;
+                    break;
+                case CoreToolsCheckPath.WrongChecker:
+                    error = `unable to check '${fullPath}'.`;
+                    break;
+            }
+        }
+
+        if (!error) {
+            console.log();
+
+            console.log(`Creating '${chalk.green(fullPath)}'...`);
+            if (!options.testRun) {
+                try {
+                    const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.wa.postprocessor.ejs')).toString();
+                    fs.writeFileSync(fullPath, ejs.render(template, {
+                        cacheDirectory: options.cachePath,
+                        name
+                    }, {}));
+                } catch (e) { }
+            }
+        }
+
+        if (error) {
+            console.log();
+            console.error(chalk.red(error));
+        }
+    }
+    protected generateWebToApiPreProcessor(name: string, options: any): void {
+        let error: string = null;
+
+        console.log(`Generating WebToApi Pre-Processor Script:`);
+        console.log(`\tName:              '${chalk.green(name)}'`);
+        console.log(`\tWorking directory: '${chalk.green(options.cwd)}'`);
+
+        let fullPath: string = path.join(options.cwd, `${name}.js`);
+
+        if (!error) {
+            const checkFP: CoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
+            switch (checkFP.status) {
+                case CoreToolsCheckPath.Ok:
+                    if (!options.force) {
+                        error = `'${fullPath}' already exist.`;
+                    }
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${fullPath}' already exist and it's not a file.`;
+                    break;
+                case CoreToolsCheckPath.WrongChecker:
+                    error = `unable to check '${fullPath}'.`;
+                    break;
+            }
+        }
+
+        if (!error) {
+            console.log();
+
+            console.log(`Creating '${chalk.green(fullPath)}'...`);
+            if (!options.testRun) {
+                try {
+                    const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.wa.preprocessor.ejs')).toString();
                     fs.writeFileSync(fullPath, ejs.render(template, {
                         cacheDirectory: options.cachePath,
                         name
@@ -558,6 +663,11 @@ export class DRToolsGenerator {
                 this.generateTask(name, directory, options);
             });
 
+        let waDescription: string = `generates assets for HTML Web to API configuration asset.\n`;
+        waDescription += `Types:\n`;
+        waDescription += `\t- 'config': Main configuration.\n`;
+        waDescription += `\t- 'post':   Post_processor script.\n`;
+        waDescription += `\t- 'pre':    Pre-processor script.\n`;
         commander
             .command(`webtoapi <type> <name>`)
             .alias(`wa`)
@@ -570,6 +680,14 @@ export class DRToolsGenerator {
                 `does almost everything except actually generate files.`)
             .action((type: any, name: any, options: any) => {
                 this.generateWebToApi(type, name, options);
+            })
+            .on('--help', () => {
+                console.log();
+                console.log('  Types:');
+                console.log();
+                console.log(`    'config'    main configuration.`);
+                console.log(`    'post'      post-processor script.`);
+                console.log(`    'pre'       pre-processor script.`);
             });
 
         commander
