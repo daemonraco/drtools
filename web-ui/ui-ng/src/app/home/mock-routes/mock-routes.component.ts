@@ -9,17 +9,19 @@ export class PageHomeMockRoutesComponent implements OnChanges, OnInit {
     @Input('mockRoutes') public mockRoutes: any = null;
     @Input('server') public server: string = '';
 
-    public hasGuards: boolean = false;
-
     constructor() {
     }
 
     ngOnChanges() {
-        this.hasGuards = false;
-        if (this.mockRoutes && this.mockRoutes.routes) {
-            this.mockRoutes.routes.forEach((route: any) => {
-                this.hasGuards = this.hasGuards || route.guardPath !== null || route.guardName !== null;
-            });
+        if (this.mockRoutes && Array.isArray(this.mockRoutes)) {
+            for (const conf of this.mockRoutes) {
+                conf.hasGuards = false;
+                if (conf.routes) {
+                    conf.routes.forEach((route: any) => {
+                        conf.hasGuards = conf.hasGuards || route.guardPath !== null || route.guardName !== null;
+                    });
+                }
+            }
         }
     }
     ngOnInit() {

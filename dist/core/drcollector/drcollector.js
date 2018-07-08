@@ -117,7 +117,7 @@ class DRCollectorClass {
                 publicItemNames: manager.publicItemNames()
             });
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportEndpointsManager() {
         const results = [];
@@ -129,7 +129,7 @@ class DRCollectorClass {
                 options: manager.options()
             });
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportLoadersManager() {
         const results = [];
@@ -140,7 +140,7 @@ class DRCollectorClass {
                 suffix: manager.suffix()
             });
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportMiddlewaresManager() {
         const results = [];
@@ -151,7 +151,7 @@ class DRCollectorClass {
                 suffix: manager.suffix()
             });
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportMockRoutesManager() {
         const results = [];
@@ -162,14 +162,14 @@ class DRCollectorClass {
                 routes: manager.routes()
             });
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportMySQLRestManager() {
         const results = [];
         for (const manager of this._mySQLRestManager) {
             results.push(manager.config());
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportPluginsManager() {
         const results = [];
@@ -194,7 +194,7 @@ class DRCollectorClass {
             }
             results.push(pluginInfo);
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportRoutesManager() {
         const results = [];
@@ -205,7 +205,7 @@ class DRCollectorClass {
                 suffix: manager.suffix()
             });
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportTasksManager() {
         const results = [];
@@ -216,7 +216,7 @@ class DRCollectorClass {
                 suffix: manager.suffix()
             });
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     infoReportWebToApi() {
         const results = [];
@@ -234,7 +234,7 @@ class DRCollectorClass {
                 routes: manager.routes()
             });
         }
-        return results;
+        return results.length > 0 ? results : null;
     }
     //
     // Protected methods.

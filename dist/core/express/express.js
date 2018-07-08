@@ -281,7 +281,7 @@ class ExpressConnector {
                             result = _1.ExpressResponseBuilder.DocsContents(req.query.doc, req.query.baseUrl);
                         }
                         else {
-                            result = _1.ExpressResponseBuilder.FullInfoResponse(this._attachments);
+                            result = _1.ExpressResponseBuilder.FullInfoResponse();
                         }
                         res.status(200).json(result);
                     }

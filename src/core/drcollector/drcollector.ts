@@ -133,7 +133,7 @@ class DRCollectorClass {
             });
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportEndpointsManager(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -147,7 +147,7 @@ class DRCollectorClass {
             });
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportLoadersManager(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -160,7 +160,7 @@ class DRCollectorClass {
             });
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportMiddlewaresManager(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -173,7 +173,7 @@ class DRCollectorClass {
             });
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportMockRoutesManager(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -186,7 +186,7 @@ class DRCollectorClass {
             });
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportMySQLRestManager(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -195,7 +195,7 @@ class DRCollectorClass {
             results.push(manager.config());
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportPluginsManager(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -225,7 +225,7 @@ class DRCollectorClass {
             results.push(pluginInfo);
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportRoutesManager(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -238,7 +238,7 @@ class DRCollectorClass {
             });
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportTasksManager(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -251,7 +251,7 @@ class DRCollectorClass {
             });
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     protected infoReportWebToApi(): BasicList<any> {
         const results: BasicList<any> = [];
@@ -271,7 +271,7 @@ class DRCollectorClass {
             });
         }
 
-        return results;
+        return results.length > 0 ? results : null;
     }
     //
     // Protected methods.

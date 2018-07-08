@@ -18,6 +18,8 @@ import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
 import { WebToApi } from '../webtoapi';
 
+declare const __dirname: string;
+
 export class ExpressConnector {
     //
     // Private class properties.
@@ -315,7 +317,7 @@ export class ExpressConnector {
                         } else if (req.query.doc) {
                             result = ExpressResponseBuilder.DocsContents(req.query.doc, req.query.baseUrl);
                         } else {
-                            result = ExpressResponseBuilder.FullInfoResponse(this._attachments);
+                            result = ExpressResponseBuilder.FullInfoResponse();
                         }
 
                         res.status(200).json(result);

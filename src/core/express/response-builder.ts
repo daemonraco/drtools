@@ -6,10 +6,8 @@
 import { fs, marked, path } from '../../libraries';
 
 import { ConfigItemSpec, ConfigsManager } from '../configs';
-import { EndpointsManager } from '../mock-endpoints';
+import { DRCollector } from '../drcollector';
 import { ExpressConnectorAttachResults } from '.';
-import { PluginSpecsList } from '../plugins';
-import { WebToApi } from '../webtoapi';
 import { Tools } from '../includes';
 
 export class ExpressResponseBuilder {
@@ -72,139 +70,8 @@ export class ExpressResponseBuilder {
 
         return result;
     }
-    public static FullInfoResponse(managers: ExpressConnectorAttachResults): any {
-        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, plugins, routes, tasks, webToApi } = managers;
-        let results: any = {};
-
-        results.configs = null;
-        if (configs) {
-            const publicConfigs: string[] = configs.publicItemNames();
-            results.configs = {
-                directory: configs.directory(),
-                environment: configs.environmentName(),
-                items: configs.items(),
-                publicUri: configs.publicUri(),
-                specsDirectory: configs.specsDirectory(),
-                suffix: configs.suffix()
-            };
-        }
-
-        results.loaders = null;
-        if (loaders) {
-            results.loaders = {
-                directory: loaders.directory(),
-                items: loaders.items(),
-                suffix: loaders.suffix()
-            };
-        }
-
-        results.middlewares = null;
-        if (middlewares) {
-            results.middlewares = {
-                directory: middlewares.directory(),
-                items: middlewares.items(),
-                suffix: middlewares.suffix()
-            };
-        }
-
-        results.mockRoutes = null;
-        if (mockRoutes) {
-            results.mockRoutes = {
-                configPath: mockRoutes.configPath(),
-                guards: mockRoutes.guards(),
-                routes: mockRoutes.routes()
-            };
-        }
-
-        results.mysqlRest = null;
-        if (mysqlRest) {
-            results.mysqlRest = mysqlRest.config();
-        }
-
-        results.routes = null;
-        if (routes) {
-            results.routes = {
-                directory: routes.directory(),
-                items: routes.routes(),
-                suffix: routes.suffix()
-            };
-        }
-
-        results.plugins = null;
-        if (plugins) {
-            results.plugins = {
-                directories: plugins.directories(),
-                plugins: []
-            };
-            const items: PluginSpecsList = plugins.items();
-            for (const name of Object.keys(items).sort()) {
-                const aux: any = {
-                    name,
-                    path: items[name].path,
-                    methods: plugins.methodsOf(name).sort(),
-                    configName: plugins.configNameOf(name),
-                    config: plugins.configOf(name)
-                };
-
-                if (Object.keys(aux.config).length < 1) {
-                    aux.config = null;
-                }
-
-                results.plugins.plugins.push(aux);
-            }
-        }
-
-        results.tasks = null;
-        if (tasks) {
-            results.tasks = {
-                directory: tasks.directory(),
-                items: tasks.tasks(),
-                suffix: tasks.suffix()
-            };
-        }
-
-        if (endpoints && endpoints.length > 0) {
-            results.endpoints = [];
-
-            endpoints.forEach((endpoint: EndpointsManager) => {
-                results.endpoints.push({
-                    uri: endpoint.uri(),
-                    directory: endpoint.directory(),
-                    mockups: endpoint.paths(),
-                    options: endpoint.options()
-                });
-            });
-        } else {
-            results.endpoints = null;
-        }
-
-        if (webToApi) {
-            results.webtoapi = [];
-
-            for (const key of Object.keys(webToApi)) {
-                const wa: WebToApi = webToApi[key];
-                results.webtoapi.push({
-                    name: wa.name(),
-                    description: wa.description(),
-                    configPath: wa.configPath(),
-                    endpoints: wa.endpoints(),
-                    cachePath: wa.cachePath(),
-                    cacheLifetime: wa.cacheLifetime(),
-                    relativePath: wa.relativePath(),
-                    parsers: wa.parsers(),
-                    customParsers: wa.customParsers(),
-                    routes: wa.routes()
-                });
-            }
-
-            if (results.webtoapi.length < 1) {
-                results.webtoapi = null;
-            }
-        } else {
-            results.webtoapi = null;
-        }
-
-        return results;
+    public static FullInfoResponse(): any {
+        return DRCollector.infoReport();
     }
     //
     // Protected class methods.

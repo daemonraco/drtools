@@ -14,7 +14,11 @@ export class PageHomeMysqlRestComponent implements OnChanges, OnInit {
 
     ngOnChanges() {
         if (this.mysqlRest && Array.isArray(this.mysqlRest.expose)) {
-            this.mysqlRest.expose.sort((a: any, b: any) => a.name.localeCompare(b.name));
+            for (let conf of this.mysqlRest) {
+                if (Array.isArray(conf.expose)) {
+                    conf.expose.sort((a: any, b: any) => a.name.localeCompare(b.name));
+                }
+            }
         }
     }
     ngOnInit() {
