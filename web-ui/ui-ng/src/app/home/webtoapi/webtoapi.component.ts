@@ -37,14 +37,24 @@ export class PageHomeWebtoapiComponent implements OnChanges, OnInit {
                 }
 
                 conf.parsersNG = [];
-                if (Array.isArray(conf.parsers)) {
-                    for (const parser of conf.parsers) {
-                        conf.parsersNG.push({
-                            code: parser,
-                            path: null
-                        });
+                let knownParserNames: string[] = [];
+                if (Array.isArray(conf.customParsers)) {
+                    for (const parser of conf.customParsers) {
+                        knownParserNames.push(parser.code);
+                        conf.parsersNG.push(parser);
                     }
                 }
+                if (Array.isArray(conf.parsers)) {
+                    for (const parser of conf.parsers) {
+                        if (knownParserNames.indexOf(parser) < 0) {
+                            conf.parsersNG.push({
+                                code: parser,
+                                path: null
+                            });
+                        }
+                    }
+                }
+                conf.parsersNG.sort((a, b) => a.code.localeCompare(b.code));
 
                 conf.endpointsNG = [];
                 for (const key of Object.keys(conf.endpoints)) {

@@ -51,6 +51,15 @@ export const WebToApiConfigSpec: any = {
             items: { $ref: '#/definitions/field' },
             minItems: 1
         },
+        parser: {
+            type: 'object',
+            properties: {
+                code: { type: 'string' },
+                path: { type: 'string' }
+            },
+            additionalProperties: false,
+            required: ['code', 'path']
+        },
         route: {
             type: 'object',
             properties: {
@@ -80,12 +89,17 @@ export const WebToApiConfigSpec: any = {
             default: [],
             items: { $ref: '#/definitions/endpoint' }
         },
+        parsers: {
+            type: 'array',
+            default: [],
+            items: { $ref: '#/definitions/parser' }
+        },
         routes: {
             type: 'array',
             default: [],
             items: { $ref: '#/definitions/route' }
         }
     },
-    required: ['cachePath', 'cacheLifetime', 'description', 'endpoints', 'routes'],
+    required: ['cachePath', 'cacheLifetime', 'description', 'endpoints', 'parsers', 'routes'],
     additionalProperties: false
 };

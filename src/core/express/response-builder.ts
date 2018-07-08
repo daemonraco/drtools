@@ -192,6 +192,7 @@ export class ExpressResponseBuilder {
                     cacheLifetime: wa.cacheLifetime(),
                     relativePath: wa.relativePath(),
                     parsers: wa.parsers(),
+                    customParsers: wa.customParsers(),
                     routes: wa.routes()
                 });
             }

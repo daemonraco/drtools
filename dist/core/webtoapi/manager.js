@@ -27,6 +27,7 @@ class WebToApi {
         this._cachePath = null;
         this._config = null;
         this._configPath = null;
+        this._customParsers = [];
         this._endpoints = {};
         this._loaded = false;
         this._parsers = {};
@@ -46,6 +47,9 @@ class WebToApi {
     }
     configPath() {
         return this._configPath;
+    }
+    customParsers() {
+        return includes_1.Tools.DeepCopy(this._customParsers);
     }
     description() {
         return this._config ? this._config.description : '';
@@ -140,7 +144,7 @@ class WebToApi {
                     normalizeWhitespace: true,
                     xmlMode: true
                 });
-                results = this.analyzeFields(endpoint.fields, doc, doc('body'));
+                results = yield this.analyzeFields(endpoint.fields, doc, doc('body'));
                 if (endpoint.postProcessor) {
                     const procRequest = { data: results, endpoint };
                     const procResponse = yield endpoint.postProcessor(procRequest);
@@ -151,30 +155,41 @@ class WebToApi {
         });
     }
     analyzeFields(fields, mainDoc, mainElement) {
-        let results = {};
-        const parse = (field, element) => {
-            let out = null;
-            if (typeof field.fields !== 'undefined') {
-                out = this.analyzeFields(field.fields, mainDoc, element);
+        return __awaiter(this, void 0, void 0, function* () {
+            let results = {};
+            const parse = (field, element) => __awaiter(this, void 0, void 0, function* () {
+                let out = null;
+                if (typeof field.fields !== 'undefined') {
+                    out = yield this.analyzeFields(field.fields, mainDoc, element);
+                }
+                else {
+                    out = yield this._parsers[field.parser](element, field.parserParams);
+                }
+                return out;
+            });
+            for (const field of fields) {
+                const findings = mainElement.find(field.path);
+                if (findings.length > 1) {
+                    results[field.name] = [];
+                    //
+                    // Why a copy to a list and two fors? well each doesn't seem to
+                    // allow async/await @{
+                    const elements = [];
+                    findings.each((index, element) => {
+                        elements.push(element);
+                    });
+                    for (const element of elements) {
+                        let aux = yield parse(field, mainDoc(element));
+                        results[field.name].push(aux);
+                    }
+                    // @}
+                }
+                else {
+                    results[field.name] = yield parse(field, findings);
+                }
             }
-            else {
-                out = this._parsers[field.parser](element, field.parserParams);
-            }
-            return out;
-        };
-        for (const field of fields) {
-            const findings = mainElement.find(field.path);
-            if (findings.length > 1) {
-                results[field.name] = [];
-                findings.each((index, element) => {
-                    results[field.name].push(parse(field, mainDoc(element)));
-                });
-            }
-            else {
-                results[field.name] = parse(field, findings);
-            }
-        }
-        return results;
+            return results;
+        });
     }
     genKey(type, params) {
         return libraries_1.md5(`[${type}][${JSON.stringify(params)}]`);
@@ -264,6 +279,33 @@ class WebToApi {
                             throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
                     }
                 }
+                this._parsers['attr'] = parsers_1.WAParserAttribute;
+                this._parsers['attribute'] = parsers_1.WAParserAttribute;
+                this._parsers['html'] = parsers_1.WAParserHtml;
+                this._parsers['number'] = parsers_1.WAParserNumber;
+                this._parsers['text'] = parsers_1.WAParserText;
+                this._parsers['trim-text'] = parsers_1.WAParserTrimText;
+                for (const parser of this._config.parsers) {
+                    ppCheck = includes_1.Tools.CheckFile(parser.path, this._relativePath);
+                    switch (ppCheck.status) {
+                        case includes_1.ToolsCheckPath.Ok:
+                            try {
+                                this._parsers[parser.code] = require(ppCheck.path);
+                                this._customParsers.push({
+                                    code: parser.code,
+                                    path: ppCheck.path
+                                });
+                            }
+                            catch (e) {
+                                throw new types_1.WAException(`WebToApi::load(): Unable to load '${parser.path}'. ${e}`);
+                            }
+                            break;
+                        case includes_1.ToolsCheckPath.WrongType:
+                            throw new types_1.WAException(`WebToApi::load(): '${parser.path}' is not a file`);
+                        default:
+                            throw new types_1.WAException(`WebToApi::load(): '${parser.path}' doesn't exist`);
+                    }
+                }
                 if (typeof endpoint.cacheLifetime === 'undefined' || endpoint.cacheLifetime < 0) {
                     endpoint.cacheLifetime = this._config.cacheLifetime;
                 }
@@ -279,12 +321,6 @@ class WebToApi {
                 default:
                     throw new types_1.WAException(`WebToApi::load(): '${this._config.cachePath}' doesn't exist`);
             }
-            this._parsers['attr'] = parsers_1.WAParserAttribute;
-            this._parsers['attribute'] = parsers_1.WAParserAttribute;
-            this._parsers['html'] = parsers_1.WAParserHtml;
-            this._parsers['number'] = parsers_1.WAParserNumber;
-            this._parsers['text'] = parsers_1.WAParserText;
-            this._parsers['trim-text'] = parsers_1.WAParserTrimText;
         }
     }
     loadConfig() {

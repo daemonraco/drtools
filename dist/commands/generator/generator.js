@@ -448,6 +448,9 @@ class DRToolsGenerator {
             case 'pre':
                 this.generateWebToApiPreProcessor(name, cleanOptions);
                 break;
+            case 'parser':
+                this.generateWebToApiParser(name, cleanOptions);
+                break;
             default:
                 error = `Unknown type '${type}'.`;
         }
@@ -503,6 +506,44 @@ class DRToolsGenerator {
             console.error(libraries_1.chalk.red(error));
         }
     }
+    generateWebToApiParser(name, options) {
+        let error = null;
+        console.log(`Generating WebToApi Parser Script:`);
+        console.log(`\tName:              '${libraries_1.chalk.green(name)}'`);
+        console.log(`\tWorking directory: '${libraries_1.chalk.green(options.cwd)}'`);
+        let fullPath = libraries_1.path.join(options.cwd, `${name}.js`);
+        if (!error) {
+            const checkFP = tools_1.Tools.CheckFile(fullPath);
+            switch (checkFP.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    if (!options.force) {
+                        error = `'${fullPath}' already exist.`;
+                    }
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${fullPath}' already exist and it's not a file.`;
+                    break;
+                case tools_1.ToolsCheckPath.WrongChecker:
+                    error = `unable to check '${fullPath}'.`;
+                    break;
+            }
+        }
+        if (!error) {
+            console.log();
+            console.log(`Creating '${libraries_1.chalk.green(fullPath)}'...`);
+            if (!options.testRun) {
+                try {
+                    const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.wa.parser.ejs')).toString();
+                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, { name }, {}));
+                }
+                catch (e) { }
+            }
+        }
+        if (error) {
+            console.log();
+            console.error(libraries_1.chalk.red(error));
+        }
+    }
     generateWebToApiPostProcessor(name, options) {
         let error = null;
         console.log(`Generating WebToApi Post-Processor Script:`);
@@ -531,10 +572,7 @@ class DRToolsGenerator {
             if (!options.testRun) {
                 try {
                     const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.wa.postprocessor.ejs')).toString();
-                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, {
-                        cacheDirectory: options.cachePath,
-                        name
-                    }, {}));
+                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, { name }, {}));
                 }
                 catch (e) { }
             }
@@ -572,10 +610,7 @@ class DRToolsGenerator {
             if (!options.testRun) {
                 try {
                     const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.wa.preprocessor.ejs')).toString();
-                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, {
-                        cacheDirectory: options.cachePath,
-                        name
-                    }, {}));
+                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, { name }, {}));
                 }
                 catch (e) { }
             }
@@ -639,11 +674,6 @@ class DRToolsGenerator {
             .action((name, directory, options) => {
             this.generateTask(name, directory, options);
         });
-        let waDescription = `generates assets for HTML Web to API configuration asset.\n`;
-        waDescription += `Types:\n`;
-        waDescription += `\t- 'config': Main configuration.\n`;
-        waDescription += `\t- 'post':   Post_processor script.\n`;
-        waDescription += `\t- 'pre':    Pre-processor script.\n`;
         libraries_1.commander
             .command(`webtoapi <type> <name>`)
             .alias(`wa`)
@@ -659,6 +689,7 @@ class DRToolsGenerator {
             console.log('  Types:');
             console.log();
             console.log(`    'config'    main configuration.`);
+            console.log(`    'parser'    field parser script.`);
             console.log(`    'post'      post-processor script.`);
             console.log(`    'pre'       pre-processor script.`);
         });

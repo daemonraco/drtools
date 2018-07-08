@@ -4,10 +4,12 @@
  */
 import { WAEndpoint, WAEndpointList, WAParsersList, WAUrlParameters } from './types';
 import { WebToApiRouter } from './router';
+import { BasicList } from '../includes/basic-types';
 export declare class WebToApi {
     protected _cachePath: string;
     protected _config: any;
     protected _configPath: string;
+    protected _customParsers: BasicList<any>;
     protected _endpoints: WAEndpointList;
     protected _loaded: boolean;
     protected _parsers: WAParsersList;
@@ -17,6 +19,7 @@ export declare class WebToApi {
     cacheLifetime(): string;
     cachePath(): string;
     configPath(): string;
+    customParsers(): BasicList<any>;
     description(): string;
     endpoints(): WAEndpointList;
     has(type: string): boolean;
@@ -28,7 +31,7 @@ export declare class WebToApi {
     router(): any;
     protected adaptUrl(url: string, params: WAUrlParameters): string;
     protected analyze(key: string, data: string, endpoint: WAEndpoint): Promise<any>;
-    protected analyzeFields(fields: any[], mainDoc: any, mainElement: any): any;
+    protected analyzeFields(fields: any[], mainDoc: any, mainElement: any): Promise<any>;
     protected genKey(type: string, params: WAUrlParameters): string;
     protected getCachePath(key: string): string;
     protected getCache(key: string, extension: string, lifetime: number): any;

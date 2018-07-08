@@ -11,8 +11,9 @@ import { WAPostProcessorRequest, WAPostProcessorResponse, WAPreProcessorRequest,
 import { WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
 import { WebToApiConfigSpec } from './spec.config';
 import { WebToApiRouter } from './router';
+import { BasicList } from '../includes/basic-types';
 
-declare var require: (path: string) => void;
+declare var require: (path: string) => any;
 
 export class WebToApi {
     //
@@ -20,6 +21,7 @@ export class WebToApi {
     protected _cachePath: string = null;
     protected _config: any = null;
     protected _configPath: string = null;
+    protected _customParsers: BasicList<any> = [];
     protected _endpoints: WAEndpointList = {};
     protected _loaded: boolean = false;
     protected _parsers: WAParsersList = {};
@@ -43,6 +45,9 @@ export class WebToApi {
     }
     public configPath(): string {
         return this._configPath;
+    }
+    public customParsers(): BasicList<any> {
+        return Tools.DeepCopy(this._customParsers);
     }
     public description(): string {
         return this._config ? this._config.description : '';
@@ -140,7 +145,7 @@ export class WebToApi {
                 normalizeWhitespace: true,
                 xmlMode: true
             });
-            results = this.analyzeFields(endpoint.fields, doc, doc('body'));
+            results = await this.analyzeFields(endpoint.fields, doc, doc('body'));
 
             if (endpoint.postProcessor) {
                 const procRequest: WAPostProcessorRequest = { data: results, endpoint };
@@ -151,16 +156,16 @@ export class WebToApi {
 
         return results;
     }
-    protected analyzeFields(fields: any[], mainDoc: any, mainElement: any): any {
+    protected async analyzeFields(fields: any[], mainDoc: any, mainElement: any): Promise<any> {
         let results: any = {};
 
-        const parse = (field: any, element: any) => {
+        const parse: Function = async (field: any, element: any): Promise<any> => {
             let out: any = null;
 
             if (typeof field.fields !== 'undefined') {
-                out = this.analyzeFields(field.fields, mainDoc, element);
+                out = await this.analyzeFields(field.fields, mainDoc, element);
             } else {
-                out = this._parsers[field.parser](element, field.parserParams);
+                out = await this._parsers[field.parser](element, field.parserParams);
             }
 
             return out;
@@ -170,12 +175,20 @@ export class WebToApi {
             const findings = mainElement.find(field.path);
             if (findings.length > 1) {
                 results[field.name] = [];
-
+                //
+                // Why a copy to a list and two fors? well each doesn't seem to
+                // allow async/await @{
+                const elements: any[] = []
                 findings.each((index: number, element: any) => {
-                    results[field.name].push(parse(field, mainDoc(element)));
+                    elements.push(element);
                 });
+                for (const element of elements) {
+                    let aux: any = await parse(field, mainDoc(element));
+                    results[field.name].push(aux);
+                }
+                // @}
             } else {
-                results[field.name] = parse(field, findings);
+                results[field.name] = await parse(field, findings);
             }
         }
 
@@ -273,6 +286,34 @@ export class WebToApi {
                     }
                 }
 
+                this._parsers['attr'] = WAParserAttribute;
+                this._parsers['attribute'] = WAParserAttribute;
+                this._parsers['html'] = WAParserHtml;
+                this._parsers['number'] = WAParserNumber;
+                this._parsers['text'] = WAParserText;
+                this._parsers['trim-text'] = WAParserTrimText;
+
+                for (const parser of this._config.parsers) {
+                    ppCheck = Tools.CheckFile(parser.path, this._relativePath);
+                    switch (ppCheck.status) {
+                        case ToolsCheckPath.Ok:
+                            try {
+                                this._parsers[parser.code] = require(ppCheck.path);
+                                this._customParsers.push({
+                                    code: parser.code,
+                                    path: ppCheck.path
+                                });
+                            } catch (e) {
+                                throw new WAException(`WebToApi::load(): Unable to load '${parser.path}'. ${e}`);
+                            }
+                            break;
+                        case ToolsCheckPath.WrongType:
+                            throw new WAException(`WebToApi::load(): '${parser.path}' is not a file`);
+                        default:
+                            throw new WAException(`WebToApi::load(): '${parser.path}' doesn't exist`);
+                    }
+                }
+
                 if (typeof endpoint.cacheLifetime === 'undefined' || endpoint.cacheLifetime < 0) {
                     endpoint.cacheLifetime = this._config.cacheLifetime;
                 }
@@ -290,13 +331,6 @@ export class WebToApi {
                 default:
                     throw new WAException(`WebToApi::load(): '${this._config.cachePath}' doesn't exist`);
             }
-
-            this._parsers['attr'] = WAParserAttribute;
-            this._parsers['attribute'] = WAParserAttribute;
-            this._parsers['html'] = WAParserHtml;
-            this._parsers['number'] = WAParserNumber;
-            this._parsers['text'] = WAParserText;
-            this._parsers['trim-text'] = WAParserTrimText;
         }
     }
     protected loadConfig(): void {

@@ -3,6 +3,6 @@
  * @author Alejandro D. Simi
  */
 
-export function WAParserHtml(element: any, params: any): any {
+export async function WAParserHtml(element: any, params: any): Promise<string> {
     return element.html();
 }

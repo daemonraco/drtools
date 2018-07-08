@@ -3,12 +3,12 @@
  * @author Alejandro D. Simi
  */
 
-export function WAParserText(element: any, params: any): any {
+export async function WAParserText(element: any, params: any): Promise<string> {
     return element.text();
 }
 
-export function WAParserTrimText(element: any, params: any): any {
-    let results = WAParserText(element, params);
+export async function WAParserTrimText(element: any, params: any): Promise<string> {
+    let results = await WAParserText(element, params);
 
     while (results.indexOf('\n') > -1) {
         results = results.replace('\n', ' ');

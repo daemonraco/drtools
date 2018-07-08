@@ -5,6 +5,6 @@
 
 import { WAParserTrimText } from './text';
 
-export function WAParserNumber(element: any, params: any): any {
-    return parseInt(WAParserTrimText(element, params));
+export async function WAParserNumber(element: any, params: any): Promise<number> {
+    return parseInt(await WAParserTrimText(element, params));
 }
