@@ -1,7 +1,26 @@
+/**
+ * @file tools.ts
+ * @author Alejandro D. Simi
+ */
+export declare enum ToolsCheckPath {
+    Unknown = 0,
+    Ok = 1,
+    DoesntExist = 2,
+    WrongType = 3,
+    WrongChecker = 4
+}
+export interface ToolsCheckPathResult {
+    status: ToolsCheckPath;
+    originalPath: string;
+    path: string;
+    stat: any;
+}
 export declare class Tools {
     private static _IsBrowser;
     private static _IsNode;
     private constructor();
+    static CheckDirectory(filePath: string, relativeTo?: string): ToolsCheckPathResult;
+    static CheckFile(filePath: string, relativeTo?: string): ToolsCheckPathResult;
     /**
      * Takes an object and returns a clone of if. It avoids using the same
      * pointer.
@@ -27,4 +46,5 @@ export declare class Tools {
     static FullPath(basicPath: string): string;
     static IsBrowser(): boolean;
     static IsNode(): boolean;
+    protected static CheckPathByType(checker: string, filePath: string, relativeTo?: string): ToolsCheckPathResult;
 }

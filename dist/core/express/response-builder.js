@@ -61,7 +61,7 @@ class ExpressResponseBuilder {
         return result;
     }
     static FullInfoResponse(managers) {
-        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, plugins, routes, tasks } = managers;
+        const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, plugins, routes, tasks, webToApi } = managers;
         let results = {};
         results.configs = null;
         if (configs) {
@@ -153,6 +153,30 @@ class ExpressResponseBuilder {
         }
         else {
             results.endpoints = null;
+        }
+        if (webToApi) {
+            results.webtoapi = [];
+            for (const key of Object.keys(webToApi)) {
+                const wa = webToApi[key];
+                results.webtoapi.push({
+                    name: wa.name(),
+                    description: wa.description(),
+                    configPath: wa.configPath(),
+                    endpoints: wa.endpoints(),
+                    cachePath: wa.cachePath(),
+                    cacheLifetime: wa.cacheLifetime(),
+                    relativePath: wa.relativePath(),
+                    parsers: wa.parsers(),
+                    customParsers: wa.customParsers(),
+                    routes: wa.routes()
+                });
+            }
+            if (results.webtoapi.length < 1) {
+                results.webtoapi = null;
+            }
+        }
+        else {
+            results.webtoapi = null;
         }
         return results;
     }

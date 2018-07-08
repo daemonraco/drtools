@@ -1,3 +1,7 @@
+/**
+ * @file manager.ts
+ * @author Alejandro D. Simi
+ */
 import { ConfigItemSpec, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
 import { ExpressMiddleware } from '../express';
 export declare class ConfigsManager {

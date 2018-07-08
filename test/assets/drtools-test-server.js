@@ -32,9 +32,20 @@ const { configs } = ExpressConnector.attach(app, {
     tasksDirectory: path.join(__dirname, '../tmp/tasks'),
     // mysqlRest:{},
     pluginsDirectories: path.join(__dirname, '../tmp/plugins'),
+    webToApi: [{
+        path: '/webtoapi',
+        config: path.join(__dirname, '../tmp/webtoapi/config.json')
+    }],
     webUi: true
 });
 // @}
+
+app.get('/webtoapi-test/:title', (req, res) => {
+    const html = fs.readFileSync(path.join(__dirname, '../tmp/webtoapi/index.html'))
+        .toString()
+        .replace(/%TITLE%/g, req.params.title);
+    res.status(200).send(html);
+});
 
 app.all('*', (req, res) => {
     res.status(404).json({

@@ -44,6 +44,10 @@ export * from './mysql';
 export * from './plugins';
 
 //
+// HTML Web to API related exports.
+export * from './webtoapi';
+
+//
 // Exporting ExpressJS Connector singleton.
 import { ExpressConnector as ExpressConnectorClass } from './express';
 export const ExpressConnector: ExpressConnectorClass = ExpressConnectorClass.Instance();

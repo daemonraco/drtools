@@ -6,7 +6,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const drtools_1 = require("../../core/drtools");
-const tools_1 = require("../includes/tools");
+const tools_1 = require("../../core/includes/tools");
+const tools_2 = require("../includes/tools");
 class DRToolsGenerator {
     //
     // Constructor
@@ -33,7 +34,7 @@ class DRToolsGenerator {
     //
     // Protected methods.
     promptHeader() {
-        console.log(`DRTools Generator (v${tools_1.Tools.Instance().version()}):`);
+        console.log(`DRTools Generator (v${tools_2.Tools.Instance().version()}):`);
     }
     generateMiddleware(name, directory, options) {
         let error = null;
@@ -426,9 +427,202 @@ class DRToolsGenerator {
             console.error(libraries_1.chalk.red(error));
         }
     }
+    generateWebToApi(type, name, options) {
+        let error = null;
+        let cleanOptions = {
+            force: options.force == true,
+            cwd: process.cwd(),
+            cachePath: options.cache,
+            // interval: options.interval ? options.interval : 120000,
+            // runOnStart: options.runOnStart ? 'true' : 'false',
+            // suffix: options.suffix ? options.suffix : TasksConstants.Suffix,
+            testRun: options.testRun == true
+        };
+        switch (type) {
+            case 'config':
+                this.generateWebToApiConfig(name, cleanOptions);
+                break;
+            case 'post':
+                this.generateWebToApiPostProcessor(name, cleanOptions);
+                break;
+            case 'pre':
+                this.generateWebToApiPreProcessor(name, cleanOptions);
+                break;
+            case 'parser':
+                this.generateWebToApiParser(name, cleanOptions);
+                break;
+            default:
+                error = `Unknown type '${type}'.`;
+        }
+        if (error) {
+            console.log();
+            console.error(libraries_1.chalk.red(error));
+        }
+    }
+    generateWebToApiConfig(name, options) {
+        let error = null;
+        console.log(`Generating WebToApi Configuration:`);
+        console.log(`\tName:              '${libraries_1.chalk.green(name)}'`);
+        console.log(`\tWorking directory: '${libraries_1.chalk.green(options.cwd)}'`);
+        let fullPath = libraries_1.path.join(options.cwd, `${name}.json`);
+        if (!error && !options.cachePath) {
+            error = `No cache directory specified directory.`;
+        }
+        else {
+            console.log(`\tCache directory:   '${libraries_1.chalk.green(options.cachePath)}'`);
+        }
+        if (!error) {
+            const checkFP = tools_1.Tools.CheckFile(fullPath);
+            switch (checkFP.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    if (!options.force) {
+                        error = `'${fullPath}' already exist.`;
+                    }
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${fullPath}' already exist and it's not a file.`;
+                    break;
+                case tools_1.ToolsCheckPath.WrongChecker:
+                    error = `unable to check '${fullPath}'.`;
+                    break;
+            }
+        }
+        if (!error) {
+            console.log();
+            console.log(`Creating '${libraries_1.chalk.green(fullPath)}'...`);
+            if (!options.testRun) {
+                try {
+                    const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.wa.config.ejs')).toString();
+                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, {
+                        cacheDirectory: options.cachePath,
+                        name
+                    }, {}));
+                }
+                catch (e) { }
+            }
+        }
+        if (error) {
+            console.log();
+            console.error(libraries_1.chalk.red(error));
+        }
+    }
+    generateWebToApiParser(name, options) {
+        let error = null;
+        console.log(`Generating WebToApi Parser Script:`);
+        console.log(`\tName:              '${libraries_1.chalk.green(name)}'`);
+        console.log(`\tWorking directory: '${libraries_1.chalk.green(options.cwd)}'`);
+        let fullPath = libraries_1.path.join(options.cwd, `${name}.js`);
+        if (!error) {
+            const checkFP = tools_1.Tools.CheckFile(fullPath);
+            switch (checkFP.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    if (!options.force) {
+                        error = `'${fullPath}' already exist.`;
+                    }
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${fullPath}' already exist and it's not a file.`;
+                    break;
+                case tools_1.ToolsCheckPath.WrongChecker:
+                    error = `unable to check '${fullPath}'.`;
+                    break;
+            }
+        }
+        if (!error) {
+            console.log();
+            console.log(`Creating '${libraries_1.chalk.green(fullPath)}'...`);
+            if (!options.testRun) {
+                try {
+                    const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.wa.parser.ejs')).toString();
+                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, { name }, {}));
+                }
+                catch (e) { }
+            }
+        }
+        if (error) {
+            console.log();
+            console.error(libraries_1.chalk.red(error));
+        }
+    }
+    generateWebToApiPostProcessor(name, options) {
+        let error = null;
+        console.log(`Generating WebToApi Post-Processor Script:`);
+        console.log(`\tName:              '${libraries_1.chalk.green(name)}'`);
+        console.log(`\tWorking directory: '${libraries_1.chalk.green(options.cwd)}'`);
+        let fullPath = libraries_1.path.join(options.cwd, `${name}.js`);
+        if (!error) {
+            const checkFP = tools_1.Tools.CheckFile(fullPath);
+            switch (checkFP.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    if (!options.force) {
+                        error = `'${fullPath}' already exist.`;
+                    }
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${fullPath}' already exist and it's not a file.`;
+                    break;
+                case tools_1.ToolsCheckPath.WrongChecker:
+                    error = `unable to check '${fullPath}'.`;
+                    break;
+            }
+        }
+        if (!error) {
+            console.log();
+            console.log(`Creating '${libraries_1.chalk.green(fullPath)}'...`);
+            if (!options.testRun) {
+                try {
+                    const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.wa.postprocessor.ejs')).toString();
+                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, { name }, {}));
+                }
+                catch (e) { }
+            }
+        }
+        if (error) {
+            console.log();
+            console.error(libraries_1.chalk.red(error));
+        }
+    }
+    generateWebToApiPreProcessor(name, options) {
+        let error = null;
+        console.log(`Generating WebToApi Pre-Processor Script:`);
+        console.log(`\tName:              '${libraries_1.chalk.green(name)}'`);
+        console.log(`\tWorking directory: '${libraries_1.chalk.green(options.cwd)}'`);
+        let fullPath = libraries_1.path.join(options.cwd, `${name}.js`);
+        if (!error) {
+            const checkFP = tools_1.Tools.CheckFile(fullPath);
+            switch (checkFP.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    if (!options.force) {
+                        error = `'${fullPath}' already exist.`;
+                    }
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${fullPath}' already exist and it's not a file.`;
+                    break;
+                case tools_1.ToolsCheckPath.WrongChecker:
+                    error = `unable to check '${fullPath}'.`;
+                    break;
+            }
+        }
+        if (!error) {
+            console.log();
+            console.log(`Creating '${libraries_1.chalk.green(fullPath)}'...`);
+            if (!options.testRun) {
+                try {
+                    const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.wa.preprocessor.ejs')).toString();
+                    libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, { name }, {}));
+                }
+                catch (e) { }
+            }
+        }
+        if (error) {
+            console.log();
+            console.error(libraries_1.chalk.red(error));
+        }
+    }
     setCommands() {
         libraries_1.commander
-            .version(tools_1.Tools.Instance().version(), `-v, --version`);
+            .version(tools_2.Tools.Instance().version(), `-v, --version`);
         libraries_1.commander
             .command(`mock-routes <directory>`)
             .alias(`mr`)
@@ -479,6 +673,25 @@ class DRToolsGenerator {
             .option(`--test-run`, `does almost everything except actually generate files.`)
             .action((name, directory, options) => {
             this.generateTask(name, directory, options);
+        });
+        libraries_1.commander
+            .command(`webtoapi <type> <name>`)
+            .alias(`wa`)
+            .description(`generates assets for HTML Web to API configuration asset.`)
+            .option(`-f, --force`, `in case the destination file exists, this option forces its replacement.`)
+            .option(`-c, --cache [directory]`, `directrory where downloads cache is stored.`)
+            .option(`--test-run`, `does almost everything except actually generate files.`)
+            .action((type, name, options) => {
+            this.generateWebToApi(type, name, options);
+        })
+            .on('--help', () => {
+            console.log();
+            console.log('  Types:');
+            console.log();
+            console.log(`    'config'    main configuration.`);
+            console.log(`    'parser'    field parser script.`);
+            console.log(`    'post'      post-processor script.`);
+            console.log(`    'pre'       pre-processor script.`);
         });
         libraries_1.commander
             .action((cmd, options) => {

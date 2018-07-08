@@ -1,3 +1,7 @@
+/**
+ * @file response-builder.ts
+ * @author Alejandro D. Simi
+ */
 import { ConfigsManager } from '../configs';
 import { ExpressConnectorAttachResults } from '.';
 export declare class ExpressResponseBuilder {

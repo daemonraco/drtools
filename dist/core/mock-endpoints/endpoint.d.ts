@@ -1,3 +1,7 @@
+/**
+ * @file endpoint.ts
+ * @author Alejandro D. Simi
+ */
 import { EndpointBrief, EndpointData, EndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
 export declare class Endpoint {

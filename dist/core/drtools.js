@@ -38,6 +38,9 @@ __export(require("./mysql"));
 // PluginsManager related exports.
 __export(require("./plugins"));
 //
+// HTML Web to API related exports.
+__export(require("./webtoapi"));
+//
 // Exporting ExpressJS Connector singleton.
 const express_1 = require("./express");
 exports.ExpressConnector = express_1.ExpressConnector.Instance();

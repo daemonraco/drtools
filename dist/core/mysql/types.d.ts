@@ -1,3 +1,7 @@
+/**
+ * @file types.ts
+ * @author Alejandro D. Simi
+ */
 export interface MySQLRestAuthMiddlewareData {
 }
 export declare type MySQLRestAuthMiddleware = (req: any, res: any, next: () => void, data: MySQLRestAuthMiddlewareData) => void;

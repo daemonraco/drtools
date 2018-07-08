@@ -140,6 +140,17 @@ piecesSteps.push({
         });
     }
 });
+piecesSteps.push({
+    name: 'generator-options:webtoapi',
+    function: (name, next) => {
+        suppose('node', [path.join(__dirname, '../dist/commands/generator/cmd.js'), 'webtoapi', '--help'], {
+            debug: fs.createWriteStream(resultsPath)
+        }).end(code => {
+            pieces[name] = cleanCmdHelp();
+            next();
+        });
+    }
+});
 
 const steps = [];
 steps.push((mdPath, next) => {
@@ -162,6 +173,9 @@ steps.push((mdPath, next) => {
 });
 steps.push((mdPath, next) => {
     inject(mdPath, 'generator-options:tasks', pieces['generator-options:tasks'], true, next);
+});
+steps.push((mdPath, next) => {
+    inject(mdPath, 'generator-options:webtoapi', pieces['generator-options:webtoapi'], true, next);
 });
 steps.push((mdPath, next) => {
     const readmeLines = fs.readFileSync(mdPath)

@@ -1,3 +1,7 @@
+/**
+ * @file manager.ts
+ * @author Alejandro D. Simi
+ */
 import { ConfigsManager } from '../configs';
 import { Endpoint, EndpointBrief, EndpointsManagerOptions, EndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
