@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drcollector_1 = require("../drcollector");
 const _1 = require(".");
 const includes_1 = require("../includes");
 class MockRoutesManager {
@@ -35,6 +36,7 @@ class MockRoutesManager {
         this.loadRoutes();
         this.attach(app);
         this._valid = !this._lastError;
+        drcollector_1.DRCollector.registerMockRoutesManager(this);
     }
     //
     // Public methods.

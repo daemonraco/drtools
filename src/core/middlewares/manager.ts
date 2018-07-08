@@ -6,6 +6,7 @@
 import { chalk } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
+import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
 import { MiddlewaresConstants, MiddlewareOptions } from '.';
 
@@ -21,6 +22,8 @@ export class MiddlewaresManager extends GenericManager<MiddlewareOptions>  {
         super(directory, options, configs);
         this.loadAndAttach(app);
         this._valid = !this._lastError;
+
+        DRCollector.registerMiddlewaresManager(this);
     }
     //
     // Public methods.

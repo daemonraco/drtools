@@ -6,6 +6,7 @@
 import { chalk } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
+import { DRCollector } from '../drcollector';
 import { GenericManager, ItemSpec, Tools } from '../includes';
 import { Task, TasksConstants, TasksList, TasksManagerOptions } from '.';
 
@@ -26,6 +27,8 @@ export class TasksManager extends GenericManager<TasksManagerOptions> {
 
         this.runAtStart();
         this.setIntervals();
+
+        DRCollector.registerTasksManager(this);
     }
     //
     // Public methods.

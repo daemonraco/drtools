@@ -48,6 +48,10 @@ export * from './plugins';
 export * from './webtoapi';
 
 //
+// Exporting DRTools Collector singleton.
+export * from './drcollector';
+
+//
 // Exporting ExpressJS Connector singleton.
 import { ExpressConnector as ExpressConnectorClass } from './express';
 export const ExpressConnector: ExpressConnectorClass = ExpressConnectorClass.Instance();

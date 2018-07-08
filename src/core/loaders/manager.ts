@@ -6,6 +6,7 @@
 import { chalk } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
+import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
 import { LoadersConstants, LoaderOptions } from '.';
 
@@ -21,6 +22,8 @@ export class LoadersManager extends GenericManager<LoaderOptions> {
         super(directory, options, configs);
         this.load();
         this._valid = !this._lastError;
+
+        DRCollector.registerLoadersManager(this);
     }
     //
     // Public methods.

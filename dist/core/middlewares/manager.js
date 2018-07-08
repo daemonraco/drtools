@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const _1 = require(".");
 class MiddlewaresManager extends includes_1.GenericManager {
@@ -16,6 +17,7 @@ class MiddlewaresManager extends includes_1.GenericManager {
         super(directory, options, configs);
         this.loadAndAttach(app);
         this._valid = !this._lastError;
+        drcollector_1.DRCollector.registerMiddlewaresManager(this);
     }
     //
     // Public methods.

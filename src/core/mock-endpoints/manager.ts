@@ -6,6 +6,7 @@
 import { chalk, fs, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
+import { DRCollector } from '../drcollector';
 import { Endpoint, EndpointBrief, EndpointsManagerOptions, EndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
 import { Tools } from '../includes';
@@ -28,6 +29,8 @@ export class EndpointsManager {
         this.cleanOptions();
 
         this.load();
+
+        DRCollector.registerEndpointsManager(this);
     }
     //
     // Public methods.

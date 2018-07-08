@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+const drcollector_1 = require("../drcollector");
 const _1 = require(".");
 const includes_1 = require("../includes");
 class MySQLRestManager {
@@ -19,6 +20,7 @@ class MySQLRestManager {
         this._connection = connection;
         this._conf = conf;
         this.load();
+        drcollector_1.DRCollector.registerMySQLRestManager(this);
     }
     //
     // Public methods.

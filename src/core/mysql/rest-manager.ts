@@ -3,6 +3,7 @@
  * @author Alejandro D. Simi
  */
 
+import { DRCollector } from '../drcollector';
 import { ExpressMiddleware } from '../express';
 import { MySQLRestExposeConfig, MySQLRestManagerConfig, MySQLRestTable, MySQLRestTableList } from '.';
 import { Tools } from '../includes';
@@ -21,6 +22,8 @@ export class MySQLRestManager {
         this._conf = conf;
 
         this.load();
+
+        DRCollector.registerMySQLRestManager(this);
     }
     //
     // Public methods.

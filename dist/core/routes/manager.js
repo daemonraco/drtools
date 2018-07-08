@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const _1 = require(".");
 class RoutesManager extends includes_1.GenericManager {
@@ -17,6 +18,7 @@ class RoutesManager extends includes_1.GenericManager {
         this._routes = [];
         this.loadAndAttach(app);
         this._valid = !this._lastError;
+        drcollector_1.DRCollector.registerRoutesManager(this);
     }
     //
     // Public methods.

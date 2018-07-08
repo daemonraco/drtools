@@ -13,6 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const types_1 = require("./types");
 const parsers_1 = require("./parsers");
@@ -36,6 +37,7 @@ class WebToApi {
         this._configPath = configPath;
         this.loadConfig();
         this.load();
+        drcollector_1.DRCollector.registerWebToApi(this);
     }
     //
     // Public methods.

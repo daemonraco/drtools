@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const _1 = require(".");
 class PluginsManager {
@@ -31,6 +32,7 @@ class PluginsManager {
         this.loadItemPaths();
         this.load();
         this._valid = !this._lastError;
+        drcollector_1.DRCollector.registerPluginsManager(this);
     }
     //
     // Public methods.

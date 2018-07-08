@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const _1 = require(".");
+const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 class ConfigsManager {
     //
@@ -29,6 +30,7 @@ class ConfigsManager {
         this._options = options;
         this.cleanOptions();
         this.load();
+        drcollector_1.DRCollector.registerConfigsManager(this);
     }
     //
     // Public methods.

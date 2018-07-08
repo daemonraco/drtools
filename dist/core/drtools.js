@@ -41,6 +41,9 @@ __export(require("./plugins"));
 // HTML Web to API related exports.
 __export(require("./webtoapi"));
 //
+// Exporting DRTools Collector singleton.
+__export(require("./drcollector"));
+//
 // Exporting ExpressJS Connector singleton.
 const express_1 = require("./express");
 exports.ExpressConnector = express_1.ExpressConnector.Instance();

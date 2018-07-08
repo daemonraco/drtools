@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 class ExpressResponseBuilder {
     //
@@ -63,6 +64,7 @@ class ExpressResponseBuilder {
     static FullInfoResponse(managers) {
         const { configs, endpoints, loaders, middlewares, mockRoutes, mysqlRest, plugins, routes, tasks, webToApi } = managers;
         let results = {};
+        results.DEBUG = drcollector_1.DRCollector.infoReport();
         results.configs = null;
         if (configs) {
             const publicConfigs = configs.publicItemNames();

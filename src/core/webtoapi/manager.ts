@@ -5,6 +5,7 @@
 
 import { ajv, chalk, cheerio, fs, md5, request, path } from '../../libraries';
 
+import { DRCollector } from '../drcollector';
 import { StringsDictionary, Tools, ToolsCheckPath, ToolsCheckPathResult } from '../includes';
 import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WAUrlParameters } from './types';
 import { WAPostProcessorRequest, WAPostProcessorResponse, WAPreProcessorRequest, WAPreProcessorResponse } from './types';
@@ -34,6 +35,8 @@ export class WebToApi {
 
         this.loadConfig();
         this.load();
+
+        DRCollector.registerWebToApi(this);
     }
     //
     // Public methods.

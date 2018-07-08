@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drcollector_1 = require("../drcollector");
 const _1 = require(".");
 const includes_1 = require("../includes");
 class EndpointsManager {
@@ -24,6 +25,7 @@ class EndpointsManager {
         this._options = options;
         this.cleanOptions();
         this.load();
+        drcollector_1.DRCollector.registerEndpointsManager(this);
     }
     //
     // Public methods.

@@ -6,6 +6,7 @@
 import { ajv, chalk, fs, jsonpath, path } from '../../libraries';
 
 import { ConfigItemSpec, ConfigsConstants, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
+import { DRCollector } from '../drcollector';
 import { ExpressMiddleware } from '../express';
 import { ItemSpec, OptionsList, Tools } from '../includes';
 
@@ -35,6 +36,8 @@ export class ConfigsManager {
         this.cleanOptions();
 
         this.load();
+
+        DRCollector.registerConfigsManager(this);
     }
     //
     // Public methods.

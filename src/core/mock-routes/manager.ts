@@ -6,6 +6,7 @@
 import { ajv, chalk, fs, mime, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
+import { DRCollector } from '../drcollector';
 import { ExpressMiddleware } from '../express';
 import { MockRoutesConstants, MockRoutesGuard, MockRoutesOptions, MockRoutesRoute } from '.';
 import { Tools } from '../includes';
@@ -41,6 +42,8 @@ export class MockRoutesManager {
         this.attach(app);
 
         this._valid = !this._lastError;
+
+        DRCollector.registerMockRoutesManager(this);
     }
     //
     // Public methods.

@@ -6,6 +6,7 @@
 import { chalk, fs, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
+import { DRCollector } from '../drcollector';
 import { Tools } from '../includes';
 import { PluginsConstants, PluginsOptions, PluginSpecs, PluginSpecsList } from '.';
 
@@ -37,6 +38,8 @@ export class PluginsManager {
         this.load();
 
         this._valid = !this._lastError;
+
+        DRCollector.registerPluginsManager(this);
     }
     //
     // Public methods.

@@ -5,6 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
+const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const _1 = require(".");
 class TasksManager extends includes_1.GenericManager {
@@ -20,6 +21,7 @@ class TasksManager extends includes_1.GenericManager {
         this._valid = !this._lastError;
         this.runAtStart();
         this.setIntervals();
+        drcollector_1.DRCollector.registerTasksManager(this);
     }
     //
     // Public methods.
