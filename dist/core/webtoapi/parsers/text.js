@@ -21,6 +21,7 @@ exports.WAParserText = WAParserText;
 function WAParserTrimText(element, params) {
     return __awaiter(this, void 0, void 0, function* () {
         let results = yield WAParserText(element, params);
+        results = results.replace('&nbsp;', ' ');
         while (results.indexOf('\n') > -1) {
             results = results.replace('\n', ' ');
         }

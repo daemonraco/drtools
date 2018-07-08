@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { DRToolsService } from '../services/drtools.service';
 import { LocationService } from '../services/location.service';
 
+declare var $: any;
+
 @Component({
     selector: 'ui-home',
     templateUrl: './home.component.html',
@@ -16,6 +18,13 @@ export class PageHomeComponent implements OnInit {
     constructor(
         private drtSrv: DRToolsService,
         private lSrv: LocationService) {
+    }
+
+    public expandAll(): void {
+        $('ui-home .collapse').collapse('show');
+    }
+    public hideAll(): void {
+        $('ui-home .collapse').collapse('hide');
     }
 
     ngOnInit() {

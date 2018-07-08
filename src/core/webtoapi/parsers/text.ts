@@ -10,6 +10,8 @@ export async function WAParserText(element: any, params: any): Promise<string> {
 export async function WAParserTrimText(element: any, params: any): Promise<string> {
     let results = await WAParserText(element, params);
 
+    results = results.replace('&nbsp;', ' ');
+
     while (results.indexOf('\n') > -1) {
         results = results.replace('\n', ' ');
     }
