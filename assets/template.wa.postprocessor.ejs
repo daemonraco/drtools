@@ -1,7 +1,15 @@
 'use strict';
 
-module.exports = async ({ data, endpoint }) => {
+//
+// <code>
+// class WAPostProcessorData {
+//     data: any;
+//     endpoint: WAEndpoint;
+// }
+// </code>
+
+module.exports = async postProcessorData => {
     // @TODO do some coding here...
 
-    return { data };
+    return postProcessorData;
 }

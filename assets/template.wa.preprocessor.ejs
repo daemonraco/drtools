@@ -1,7 +1,18 @@
 'use strict';
 
-module.exports = async ({ endpoint, headers, params }) => {
+//
+// <code>
+// class WAPreProcessorData {
+//     endpoint: WAEndpoint;
+//     forceAnalysis: boolean;
+//     forceDownloading: boolean;
+//     headers: StringsDictionary;
+//     params: WAUrlParameters;
+// }
+// </code>
+
+module.exports = async (preProcessorData) => {
     // @TODO do some coding here...
 
-    return { headers };
+    return preProcessorData;
 }

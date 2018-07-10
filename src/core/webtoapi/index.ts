@@ -4,4 +4,6 @@
  */
 
 export * from './manager';
+export * from './post-processor-data';
+export * from './pre-processor-data';
 export * from './types';

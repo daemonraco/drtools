@@ -19,6 +19,8 @@ const types_1 = require("./types");
 const parsers_1 = require("./parsers");
 const spec_config_1 = require("./spec.config");
 const router_1 = require("./router");
+const post_processor_data_1 = require("./post-processor-data");
+const pre_processor_data_1 = require("./pre-processor-data");
 class WebToApi {
     //
     // Constructor.
@@ -68,24 +70,28 @@ class WebToApi {
             const key = this.genKey(type, params);
             if (this.has(type)) {
                 const endpoint = this._endpoints[type];
+                let preRequest = new pre_processor_data_1.WAPreProcessorData();
+                preRequest.headers = includes_1.Tools.DeepCopy(endpoint.headers);
+                preRequest.endpoint = endpoint;
+                preRequest.params = params;
+                if (endpoint.preProcessor) {
+                    preRequest = yield endpoint.preProcessor(preRequest);
+                }
+                if (preRequest.forceDownloading) {
+                    preRequest.forceAnalysis = true;
+                }
                 let reAnalyze = false;
                 let raw = this.getRawCache(key, endpoint.cacheLifetime);
-                if (raw === null) {
+                if (raw === null || preRequest.forceDownloading) {
                     reAnalyze = true;
-                    let headers = includes_1.Tools.DeepCopy(endpoint.headers);
-                    if (endpoint.preProcessor) {
-                        const procRequest = { headers, endpoint, params };
-                        const procResponse = yield endpoint.preProcessor(procRequest);
-                        headers = procResponse.headers;
-                    }
                     raw = null;
                     try {
                         switch (endpoint.method.toUpperCase()) {
                             case 'GET':
                             default:
                                 const options = {
-                                    url: this.adaptUrl(endpoint.url, params),
-                                    headers
+                                    url: this.adaptUrl(endpoint.url, preRequest.params),
+                                    headers: preRequest.headers
                                 };
                                 try {
                                     raw = yield libraries_1.request.get(options);
@@ -102,7 +108,7 @@ class WebToApi {
                     this.saveRawCache(key, raw);
                 }
                 results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
-                if (!results) {
+                if (!results || preRequest.forceAnalysis) {
                     results = yield this.analyze(key, raw, endpoint);
                     this.saveJSONCache(key, results);
                 }
@@ -148,9 +154,11 @@ class WebToApi {
                 });
                 results = yield this.analyzeFields(endpoint.fields, doc, doc('body'));
                 if (endpoint.postProcessor) {
-                    const procRequest = { data: results, endpoint };
-                    const procResponse = yield endpoint.postProcessor(procRequest);
-                    results = procResponse.data;
+                    let requestData = new post_processor_data_1.WAPostProcessorData();
+                    requestData.data = results;
+                    requestData.endpoint = endpoint;
+                    requestData = yield endpoint.postProcessor(requestData);
+                    results = requestData.data;
                 }
             }
             return results;

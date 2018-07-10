@@ -2,9 +2,9 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
+import { BasicList } from '../includes/basic-types';
 import { WAEndpoint, WAEndpointList, WAParsersList, WAUrlParameters } from './types';
 import { WebToApiRouter } from './router';
-import { BasicList } from '../includes/basic-types';
 export declare class WebToApi {
     protected _cachePath: string;
     protected _config: any;

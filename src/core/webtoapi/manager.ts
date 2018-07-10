@@ -5,14 +5,15 @@
 
 import { ajv, chalk, cheerio, fs, md5, request, path } from '../../libraries';
 
+import { BasicList } from '../includes/basic-types';
 import { DRCollector } from '../drcollector';
-import { StringsDictionary, Tools, ToolsCheckPath, ToolsCheckPathResult } from '../includes';
+import { Tools, ToolsCheckPath, ToolsCheckPathResult } from '../includes';
 import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WAUrlParameters } from './types';
-import { WAPostProcessorRequest, WAPostProcessorResponse, WAPreProcessorRequest, WAPreProcessorResponse } from './types';
 import { WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
 import { WebToApiConfigSpec } from './spec.config';
 import { WebToApiRouter } from './router';
-import { BasicList } from '../includes/basic-types';
+import { WAPostProcessorData } from './post-processor-data';
+import { WAPreProcessorData } from './pre-processor-data';
 
 declare var require: (path: string) => any;
 
@@ -68,17 +69,23 @@ export class WebToApi {
         if (this.has(type)) {
             const endpoint: any = this._endpoints[type];
 
+            let preRequest: WAPreProcessorData = new WAPreProcessorData();
+            preRequest.headers = Tools.DeepCopy(endpoint.headers);
+            preRequest.endpoint = endpoint;
+            preRequest.params = params;
+
+            if (endpoint.preProcessor) {
+                preRequest = await endpoint.preProcessor(preRequest);
+            }
+
+            if (preRequest.forceDownloading) {
+                preRequest.forceAnalysis = true;
+            }
+
             let reAnalyze: boolean = false;
             let raw: string = this.getRawCache(key, endpoint.cacheLifetime);
-            if (raw === null) {
+            if (raw === null || preRequest.forceDownloading) {
                 reAnalyze = true;
-
-                let headers: StringsDictionary = Tools.DeepCopy(endpoint.headers);
-                if (endpoint.preProcessor) {
-                    const procRequest: WAPreProcessorRequest = { headers, endpoint, params };
-                    const procResponse: WAPreProcessorResponse = await endpoint.preProcessor(procRequest);
-                    headers = procResponse.headers;
-                }
 
                 raw = null;
                 try {
@@ -86,8 +93,8 @@ export class WebToApi {
                         case 'GET':
                         default:
                             const options = {
-                                url: this.adaptUrl(endpoint.url, params),
-                                headers
+                                url: this.adaptUrl(endpoint.url, preRequest.params),
+                                headers: preRequest.headers
                             };
                             try {
                                 raw = await request.get(options);
@@ -104,7 +111,7 @@ export class WebToApi {
             }
 
             results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
-            if (!results) {
+            if (!results || preRequest.forceAnalysis) {
                 results = await this.analyze(key, raw, endpoint);
                 this.saveJSONCache(key, results);
             }
@@ -151,9 +158,12 @@ export class WebToApi {
             results = await this.analyzeFields(endpoint.fields, doc, doc('body'));
 
             if (endpoint.postProcessor) {
-                const procRequest: WAPostProcessorRequest = { data: results, endpoint };
-                const procResponse: WAPostProcessorResponse = await endpoint.postProcessor(procRequest);
-                results = procResponse.data;
+                let requestData: WAPostProcessorData = new WAPostProcessorData();
+                requestData.data = results;
+                requestData.endpoint = endpoint;
+
+                requestData = await endpoint.postProcessor(requestData);
+                results = requestData.data;
             }
         }
 

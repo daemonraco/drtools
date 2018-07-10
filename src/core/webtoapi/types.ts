@@ -23,25 +23,6 @@ export class WAException {
     }
 }
 
-export interface WAPostProcessorRequest {
-    data: any;
-    endpoint: WAEndpoint;
-}
-
-export interface WAPostProcessorResponse {
-    data: any;
-}
-
-export interface WAPreProcessorRequest {
-    endpoint: WAEndpoint;
-    headers: StringsDictionary;
-    params: WAUrlParameters;
-}
-
-export interface WAPreProcessorResponse {
-    headers: StringsDictionary;
-}
-
 export type WAParsersList = BasicDictionary<Function>;
 
 export type WAUrlParameters = StringsDictionary;
