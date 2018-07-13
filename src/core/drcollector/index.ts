@@ -3,4 +3,5 @@
  * @author Alejandro D. Simi
  */
 
+export * from './constants';
 export * from './drcollector';

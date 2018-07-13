@@ -7,8 +7,15 @@ import { bodyParser, chalk, commander, express, fs, glob, http, path } from '../
 
 import {
     ConfigsConstants,
+    ConfigsManager,
     EndpointOptions,
-    ExpressConnector
+    EndpointsManager,
+    ExpressConnector,
+    LoadersManager,
+    MiddlewaresManager,
+    MockRoutesManager,
+    RoutesManager,
+    TasksManager
 } from '../../core/drtools';
 import { Tools } from '../includes/tools';
 
@@ -52,10 +59,13 @@ export class DRToolsServer {
 
         if (commander.configs) {
             this.connectorOptions.configsDirectory = Tools.CompletePath(commander.configs);
+            this.connectorOptions.configsOptions = {};
+
             this.availableUrls.push(ConfigsConstants.PublishUri);
+            this.connectorOptions.configsOptions.publishConfigs = ConfigsConstants.PublishUri;
 
             if (commander.configsSuffix) {
-                this.connectorOptions.configsOptions = { suffix: commander.configsSuffix };
+                this.connectorOptions.configsOptions.suffix = commander.configsSuffix;
             }
         } else if (commander.configsSuffix) {
             this.error = `Parameter '--configs-suffix' should be used along with option '--configs'.`;
@@ -200,10 +210,49 @@ export class DRToolsServer {
             next();
         });
 
-        const connecterResults = ExpressConnector.attach(app, this.connectorOptions);
-        const { configs, endpoints, loaders, middlewares, mockRoutes, routes, tasks } = connecterResults;
+        ExpressConnector.attach(app, { webUi: this.webUI });
+
+        let configs: ConfigsManager = null;
+        if (this.connectorOptions.configsDirectory) {
+            configs = new ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
+        }
+
+        let loaders: LoadersManager = null;
+        if (this.connectorOptions.loadersDirectory) {
+            loaders = new LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
+        }
+
+        let middlewares: MiddlewaresManager = null;
+        if (this.connectorOptions.middlewaresDirectory) {
+            middlewares = new MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
+        }
+
+        let routes: RoutesManager = null;
+        if (this.connectorOptions.routesDirectory) {
+            routes = new RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
+        }
         if (routes) {
             routes.itemNames().forEach((r: string) => this.availableUrls.push(`/${r}`));
+        }
+
+        let tasks: TasksManager = null;
+        if (this.connectorOptions.tasksDirectory) {
+            tasks = new TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
+        }
+
+        let mockRoutes: MockRoutesManager = null;
+        if (this.connectorOptions.mockRoutesConfig) {
+            mockRoutes = new MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
+        }
+
+        let endpoints: EndpointsManager = null;
+        if (this.connectorOptions.endpoints) {
+            endpoints = new EndpointsManager({
+                directory: this.connectorOptions.endpoints.directory,
+                uri: this.connectorOptions.endpoints.uri,
+                options: this.connectorOptions.endpoints.options
+            }, configs);
+            app.use(endpoints.provide());
         }
 
         app.all('*', (req: any, res: any) => {
@@ -257,18 +306,16 @@ export class DRToolsServer {
             }
 
             if (this.connectorOptions.endpoints) {
-                endpoints.forEach(endpoint => {
-                    const error = endpoint.valid() ? '' : chalk.yellow(` (Error: ${endpoint.lastError()})`);
+                const error = endpoints.valid() ? '' : chalk.yellow(` (Error: ${endpoints.lastError()})`);
 
-                    console.log(`\t- Mock-up Endpoint${error}`);
-                    console.log(`\t\tURI:       '${chalk.green(endpoint.uri())}'`);
-                    console.log(`\t\tDirectory: '${chalk.green(endpoint.directory())}'`);
-                    const options: EndpointOptions = endpoint.options();
-                    if (options.globalBehaviors.length > 0) {
-                        console.log(`\t\tBehaviors:`);
-                        (<string[]>options.globalBehaviors).forEach((b: string) => console.log(`\t\t\t'${chalk.green(b)}'`));
-                    }
-                });
+                console.log(`\t- Mock-up Endpoint${error}`);
+                console.log(`\t\tURI:       '${chalk.green(endpoints.uri())}'`);
+                console.log(`\t\tDirectory: '${chalk.green(endpoints.directory())}'`);
+                const options: EndpointOptions = endpoints.options();
+                if (options.globalBehaviors.length > 0) {
+                    console.log(`\t\tBehaviors:`);
+                    (<string[]>options.globalBehaviors).forEach((b: string) => console.log(`\t\t\t'${chalk.green(b)}'`));
+                }
             }
 
             if (this.webUI) {

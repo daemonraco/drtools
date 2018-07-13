@@ -76,10 +76,10 @@
                                         <td class="text-center" [innerHTML]="config.specific | boolean:'icon-color'"></td>
                                         <td class="text-center">
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <button type="button" class="btn btn-outline-secondary" (click)="display(config)" title="Display">
+                                                <button type="button" class="btn btn-outline-secondary" (click)="display(config, conf)" title="Display">
                                                     <i class="fa fa-eye"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-outline-secondary" [disabled]="!config.specsPath" (click)="displaySpecs(config)" title="Display Specs">
+                                                <button type="button" class="btn btn-outline-secondary" [disabled]="!config.specsPath" (click)="displaySpecs(config, conf)" title="Display Specs">
                                                     <i class="fa fa-code"></i>
                                                 </button>
                                             </div>

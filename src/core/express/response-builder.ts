@@ -5,9 +5,9 @@
 
 import { fs, marked, path } from '../../libraries';
 
+import { BasicList } from '../includes';
 import { ConfigItemSpec, ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
-import { ExpressConnectorAttachResults } from '.';
 import { Tools } from '../includes';
 
 export class ExpressResponseBuilder {
@@ -17,8 +17,17 @@ export class ExpressResponseBuilder {
     }
     //
     // Public class methods.
-    public static ConfigContents(manager: ConfigsManager, name: string): any {
+    public static ConfigContents(managerId: string, name: string): any {
         let result: any = {};
+
+        const managers: BasicList<ConfigsManager> = DRCollector.configsManagers();
+        let manager: ConfigsManager = null;
+        for (const m of managers) {
+            if (m.directory() === managerId) {
+                manager = m;
+                break;
+            }
+        }
 
         if (manager) {
             let item: ConfigItemSpec = null;
@@ -35,8 +44,17 @@ export class ExpressResponseBuilder {
 
         return result;
     }
-    public static ConfigSpecsContents(manager: ConfigsManager, name: string): any {
+    public static ConfigSpecsContents(managerId: string, name: string): any {
         let result: any = {};
+
+        const managers: BasicList<ConfigsManager> = DRCollector.configsManagers();
+        let manager: ConfigsManager = null;
+        for (const m of managers) {
+            if (m.directory() === managerId) {
+                manager = m;
+                break;
+            }
+        }
 
         if (manager) {
             let item: ConfigItemSpec = null;

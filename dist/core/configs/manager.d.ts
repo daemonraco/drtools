@@ -24,6 +24,7 @@ export declare class ConfigsManager {
     items(): ConfigItemSpec[];
     itemNames(): string[];
     lastError(): string;
+    options(): ConfigOptions;
     publicItemNames(): string[];
     publishExports(uri?: string): ExpressMiddleware;
     publicUri(): string;

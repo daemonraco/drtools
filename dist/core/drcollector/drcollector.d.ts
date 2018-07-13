@@ -2,6 +2,8 @@
  * @file drcollector.ts
  * @author Alejandro D. Simi
  */
+/// <reference types="node" />
+import { EventEmitter } from '../../libraries';
 import { BasicList } from '../includes';
 import { ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';
@@ -26,8 +28,17 @@ declare class DRCollectorClass {
     protected _routesManager: BasicList<RoutesManager>;
     protected _tasksManager: BasicList<TasksManager>;
     protected _webToApi: BasicList<WebToApi>;
+    protected _events: EventEmitter;
     protected constructor();
+    configsManagers(): BasicList<ConfigsManager>;
+    endpointsManagers(): BasicList<EndpointsManager>;
     infoReport(): any;
+    loadersManagers(): BasicList<LoadersManager>;
+    middlewaresManagers(): BasicList<MiddlewaresManager>;
+    mockRoutesManagers(): BasicList<MockRoutesManager>;
+    mySQLRestManagers(): BasicList<MySQLRestManager>;
+    on(event: string, listener: any): void;
+    pluginsManagers(): BasicList<PluginsManager>;
     registerConfigsManager(manager: ConfigsManager): void;
     registerEndpointsManager(manager: EndpointsManager): void;
     registerLoadersManager(manager: LoadersManager): void;
@@ -38,6 +49,9 @@ declare class DRCollectorClass {
     registerRoutesManager(manager: RoutesManager): void;
     registerTasksManager(manager: TasksManager): void;
     registerWebToApi(manager: WebToApi): void;
+    routesManagers(): BasicList<RoutesManager>;
+    tasksManagers(): BasicList<TasksManager>;
+    webToApi(): BasicList<WebToApi>;
     protected infoReportConfigsManager(): BasicList<any>;
     protected infoReportEndpointsManager(): BasicList<any>;
     protected infoReportLoadersManager(): BasicList<any>;

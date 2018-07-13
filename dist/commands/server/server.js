@@ -47,9 +47,11 @@ class DRToolsServer {
         this.port = libraries_1.commander.port || 3005;
         if (libraries_1.commander.configs) {
             this.connectorOptions.configsDirectory = tools_1.Tools.CompletePath(libraries_1.commander.configs);
+            this.connectorOptions.configsOptions = {};
             this.availableUrls.push(drtools_1.ConfigsConstants.PublishUri);
+            this.connectorOptions.configsOptions.publishConfigs = drtools_1.ConfigsConstants.PublishUri;
             if (libraries_1.commander.configsSuffix) {
-                this.connectorOptions.configsOptions = { suffix: libraries_1.commander.configsSuffix };
+                this.connectorOptions.configsOptions.suffix = libraries_1.commander.configsSuffix;
             }
         }
         else if (libraries_1.commander.configsSuffix) {
@@ -168,10 +170,42 @@ class DRToolsServer {
             }
             next();
         });
-        const connecterResults = drtools_1.ExpressConnector.attach(app, this.connectorOptions);
-        const { configs, endpoints, loaders, middlewares, mockRoutes, routes, tasks } = connecterResults;
+        drtools_1.ExpressConnector.attach(app, { webUi: this.webUI });
+        let configs = null;
+        if (this.connectorOptions.configsDirectory) {
+            configs = new drtools_1.ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
+        }
+        let loaders = null;
+        if (this.connectorOptions.loadersDirectory) {
+            loaders = new drtools_1.LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
+        }
+        let middlewares = null;
+        if (this.connectorOptions.middlewaresDirectory) {
+            middlewares = new drtools_1.MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
+        }
+        let routes = null;
+        if (this.connectorOptions.routesDirectory) {
+            routes = new drtools_1.RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
+        }
         if (routes) {
             routes.itemNames().forEach((r) => this.availableUrls.push(`/${r}`));
+        }
+        let tasks = null;
+        if (this.connectorOptions.tasksDirectory) {
+            tasks = new drtools_1.TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
+        }
+        let mockRoutes = null;
+        if (this.connectorOptions.mockRoutesConfig) {
+            mockRoutes = new drtools_1.MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
+        }
+        let endpoints = null;
+        if (this.connectorOptions.endpoints) {
+            endpoints = new drtools_1.EndpointsManager({
+                directory: this.connectorOptions.endpoints.directory,
+                uri: this.connectorOptions.endpoints.uri,
+                options: this.connectorOptions.endpoints.options
+            }, configs);
+            app.use(endpoints.provide());
         }
         app.all('*', (req, res) => {
             const result = {
@@ -214,17 +248,15 @@ class DRToolsServer {
                 console.log(`\t- Mock-up routes configuration '${libraries_1.chalk.green(mockRoutes.configPath())}'${error}`);
             }
             if (this.connectorOptions.endpoints) {
-                endpoints.forEach(endpoint => {
-                    const error = endpoint.valid() ? '' : libraries_1.chalk.yellow(` (Error: ${endpoint.lastError()})`);
-                    console.log(`\t- Mock-up Endpoint${error}`);
-                    console.log(`\t\tURI:       '${libraries_1.chalk.green(endpoint.uri())}'`);
-                    console.log(`\t\tDirectory: '${libraries_1.chalk.green(endpoint.directory())}'`);
-                    const options = endpoint.options();
-                    if (options.globalBehaviors.length > 0) {
-                        console.log(`\t\tBehaviors:`);
-                        options.globalBehaviors.forEach((b) => console.log(`\t\t\t'${libraries_1.chalk.green(b)}'`));
-                    }
-                });
+                const error = endpoints.valid() ? '' : libraries_1.chalk.yellow(` (Error: ${endpoints.lastError()})`);
+                console.log(`\t- Mock-up Endpoint${error}`);
+                console.log(`\t\tURI:       '${libraries_1.chalk.green(endpoints.uri())}'`);
+                console.log(`\t\tDirectory: '${libraries_1.chalk.green(endpoints.directory())}'`);
+                const options = endpoints.options();
+                if (options.globalBehaviors.length > 0) {
+                    console.log(`\t\tBehaviors:`);
+                    options.globalBehaviors.forEach((b) => console.log(`\t\t\t'${libraries_1.chalk.green(b)}'`));
+                }
             }
             if (this.webUI) {
                 console.log(`WebUI at '${libraries_1.chalk.green(`http://localhost:${this.port}/.drtools`)}'`);

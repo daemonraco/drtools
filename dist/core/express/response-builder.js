@@ -14,8 +14,16 @@ class ExpressResponseBuilder {
     }
     //
     // Public class methods.
-    static ConfigContents(manager, name) {
+    static ConfigContents(managerId, name) {
         let result = {};
+        const managers = drcollector_1.DRCollector.configsManagers();
+        let manager = null;
+        for (const m of managers) {
+            if (m.directory() === managerId) {
+                manager = m;
+                break;
+            }
+        }
         if (manager) {
             let item = null;
             manager.items().forEach((auxItem) => {
@@ -30,8 +38,16 @@ class ExpressResponseBuilder {
         }
         return result;
     }
-    static ConfigSpecsContents(manager, name) {
+    static ConfigSpecsContents(managerId, name) {
         let result = {};
+        const managers = drcollector_1.DRCollector.configsManagers();
+        let manager = null;
+        for (const m of managers) {
+            if (m.directory() === managerId) {
+                manager = m;
+                break;
+            }
+        }
         if (manager) {
             let item = null;
             manager.items().forEach((auxItem) => {

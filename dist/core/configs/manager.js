@@ -55,6 +55,9 @@ class ConfigsManager {
     lastError() {
         return this._lastError;
     }
+    options() {
+        return includes_1.Tools.DeepCopy(this._options);
+    }
     publicItemNames() {
         return Object.keys(this._exports);
     }

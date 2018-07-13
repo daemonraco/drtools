@@ -8,7 +8,7 @@ import { ajv, chalk, fs, jsonpath, path } from '../../libraries';
 import { ConfigItemSpec, ConfigsConstants, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
 import { DRCollector } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-import { ItemSpec, OptionsList, Tools } from '../includes';
+import { ItemSpec, Tools } from '../includes';
 
 declare const global: any;
 declare const process: any;
@@ -61,6 +61,9 @@ export class ConfigsManager {
     }
     public lastError(): string {
         return this._lastError;
+    }
+    public options(): ConfigOptions {
+        return Tools.DeepCopy(this._options);
     }
     public publicItemNames(): string[] {
         return Object.keys(this._exports);

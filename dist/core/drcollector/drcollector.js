@@ -4,7 +4,9 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+const libraries_1 = require("../../libraries");
 const includes_1 = require("../includes");
+const constants_1 = require("./constants");
 class DRCollectorClass {
     //
     // Constructor.
@@ -22,9 +24,18 @@ class DRCollectorClass {
         this._routesManager = [];
         this._tasksManager = [];
         this._webToApi = [];
+        //
+        // Events.
+        this._events = new libraries_1.EventEmitter();
     }
     //
     // Public methods.
+    configsManagers() {
+        return this._configsManagers;
+    }
+    endpointsManagers() {
+        return this._endpointsManager;
+    }
     infoReport() {
         if (!this._infoReport) {
             this._infoReport = {
@@ -42,65 +53,142 @@ class DRCollectorClass {
         }
         return includes_1.Tools.DeepCopy(this._infoReport);
     }
+    loadersManagers() {
+        return this._loadersManagers;
+    }
+    middlewaresManagers() {
+        return this._middlewaresManager;
+    }
+    mockRoutesManagers() {
+        return this._mockRoutesManager;
+    }
+    mySQLRestManagers() {
+        return this._mySQLRestManager;
+    }
+    on(event, listener) {
+        this._events.on(event, listener);
+    }
+    pluginsManagers() {
+        return this._pluginsManager;
+    }
     registerConfigsManager(manager) {
         if (this._configsManagers.indexOf(manager) < 0) {
             this._configsManagers.push(manager);
             this._infoReport = null;
+            const eventData = {
+                configsManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.ConfigsManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerEndpointsManager(manager) {
         if (this._endpointsManager.indexOf(manager) < 0) {
             this._endpointsManager.push(manager);
             this._infoReport = null;
+            const eventData = {
+                endpointsManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.EndpointsManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerLoadersManager(manager) {
         if (this._loadersManagers.indexOf(manager) < 0) {
             this._loadersManagers.push(manager);
             this._infoReport = null;
+            const eventData = {
+                loadersManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.LoadersManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerMiddlewaresManager(manager) {
         if (this._middlewaresManager.indexOf(manager) < 0) {
             this._middlewaresManager.push(manager);
             this._infoReport = null;
+            const eventData = {
+                middlewaresManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.MiddlewaresManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerMockRoutesManager(manager) {
         if (this._mockRoutesManager.indexOf(manager) < 0) {
             this._mockRoutesManager.push(manager);
             this._infoReport = null;
+            const eventData = {
+                mockRoutesManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.MockRoutesManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerMySQLRestManager(manager) {
         if (this._mySQLRestManager.indexOf(manager) < 0) {
             this._mySQLRestManager.push(manager);
             this._infoReport = null;
+            const eventData = {
+                mySQLRestManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.MySQLRestManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerPluginsManager(manager) {
         if (this._pluginsManager.indexOf(manager) < 0) {
             this._pluginsManager.push(manager);
             this._infoReport = null;
+            const eventData = {
+                pluginsManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.PluginsManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerRoutesManager(manager) {
         if (this._routesManager.indexOf(manager) < 0) {
             this._routesManager.push(manager);
             this._infoReport = null;
+            const eventData = {
+                routesManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.RoutesManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerTasksManager(manager) {
         if (this._tasksManager.indexOf(manager) < 0) {
             this._tasksManager.push(manager);
             this._infoReport = null;
+            const eventData = {
+                tasksManager: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.TasksManagerRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
     registerWebToApi(manager) {
         if (this._webToApi.indexOf(manager) < 0) {
             this._webToApi.push(manager);
             this._infoReport = null;
+            const eventData = {
+                webToApi: manager
+            };
+            this._events.emit(constants_1.DRCollectorEvents.WebToApiRegistered, eventData);
+            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
+    }
+    routesManagers() {
+        return this._routesManager;
+    }
+    tasksManagers() {
+        return this._tasksManager;
+    }
+    webToApi() {
+        return this._webToApi;
     }
     //
     // Protected methods.

@@ -24,7 +24,7 @@ const { configs } = ExpressConnector.attach(app, {
         uri: 'api/v1.0',
         options: {
             globalBehaviors: path.join(__dirname, '../tmp/endpoints/.globals.js')
-        },
+        }
     },
     middlewaresDirectory: path.join(__dirname, '../tmp/middlewares'),
     mockRoutesConfig: path.join(__dirname, '../tmp/mock-routes/mockup-routes.json'),

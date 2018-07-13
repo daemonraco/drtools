@@ -9,6 +9,7 @@ import * as chalk from 'chalk';
 import * as cheerio from 'cheerio';
 import * as commander from 'commander';
 import * as ejs from 'ejs';
+import * as EventEmitter from 'events';
 import * as express from 'express';
 import * as fs from 'fs';
 import * as glob from 'glob';
@@ -23,7 +24,7 @@ import * as path from 'path';
 import * as request from 'request-promise-native';
 
 export {
-    ajv, bodyParser, commander, chalk, cheerio, ejs,
-    express, fs, glob, http, httpStatusCodes, jsonpath,
-    loremIpsum, md5, marked, mime, path, request
+    ajv, bodyParser, commander, chalk, cheerio, ejs, express, EventEmitter, fs,
+    glob, http, httpStatusCodes, jsonpath, loremIpsum, md5, marked, mime, path,
+    request
 };
