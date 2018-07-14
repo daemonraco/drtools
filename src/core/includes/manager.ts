@@ -6,17 +6,18 @@
 import { chalk, fs, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
-import { ItemSpec } from '.';
+import { IItemSpec } from '.';
+import { IManagerByKey } from '../drcollector';
 import { Tools } from '../includes';
 
 declare const global: any;
 
-export abstract class GenericManager<TOptions> {
+export abstract class GenericManager<TOptions> implements IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
     protected _directory: string = null;
-    protected _itemSpecs: ItemSpec[] = [];
+    protected _itemSpecs: IItemSpec[] = [];
     protected _lastError: string = null;
     protected _options: TOptions = null;
     protected _valid: boolean = false;
@@ -36,7 +37,7 @@ export abstract class GenericManager<TOptions> {
     public directory(): string {
         return this._directory;
     }
-    public items(): ItemSpec[] {
+    public items(): IItemSpec[] {
         return Tools.DeepCopy(this._itemSpecs);
     }
     public itemNames(): string[] {
@@ -44,6 +45,9 @@ export abstract class GenericManager<TOptions> {
     }
     public lastError(): string {
         return this._lastError;
+    }
+    public matchesKey(key: string): boolean {
+        return this.directory() === key;
     }
     public suffix(): string {
         return typeof (<any>this._options).suffix !== 'undefined' ? (<any>this._options).suffix : '';

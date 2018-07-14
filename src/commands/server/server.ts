@@ -8,7 +8,7 @@ import { bodyParser, chalk, commander, express, fs, glob, http, path } from '../
 import {
     ConfigsConstants,
     ConfigsManager,
-    EndpointOptions,
+    IEndpointOptions,
     EndpointsManager,
     ExpressConnector,
     LoadersManager,
@@ -311,7 +311,7 @@ export class DRToolsServer {
                 console.log(`\t- Mock-up Endpoint${error}`);
                 console.log(`\t\tURI:       '${chalk.green(endpoints.uri())}'`);
                 console.log(`\t\tDirectory: '${chalk.green(endpoints.directory())}'`);
-                const options: EndpointOptions = endpoints.options();
+                const options: IEndpointOptions = endpoints.options();
                 if (options.globalBehaviors.length > 0) {
                     console.log(`\t\tBehaviors:`);
                     (<string[]>options.globalBehaviors).forEach((b: string) => console.log(`\t\t\t'${chalk.green(b)}'`));

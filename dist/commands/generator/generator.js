@@ -461,8 +461,12 @@ class DRToolsGenerator {
     }
     generateWebToApiConfig(name, options) {
         let error = null;
+        let key = name.toLowerCase()
+            .replace(/([- \t]+)/g, ' ')
+            .replace(/ /g, '_');
         console.log(`Generating WebToApi Configuration:`);
         console.log(`\tName:              '${libraries_1.chalk.green(name)}'`);
+        console.log(`\tKey:               '${libraries_1.chalk.green(key)}'`);
         console.log(`\tWorking directory: '${libraries_1.chalk.green(options.cwd)}'`);
         let fullPath = libraries_1.path.join(options.cwd, `${name}.json`);
         if (!error && !options.cachePath) {
@@ -495,7 +499,7 @@ class DRToolsGenerator {
                     const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.wa.config.ejs')).toString();
                     libraries_1.fs.writeFileSync(fullPath, libraries_1.ejs.render(template, {
                         cacheDirectory: options.cachePath,
-                        name
+                        key, name
                     }, {}));
                 }
                 catch (e) { }

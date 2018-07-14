@@ -55,6 +55,9 @@ class ConfigsManager {
     lastError() {
         return this._lastError;
     }
+    matchesKey(key) {
+        return this.directory() === key;
+    }
     options() {
         return includes_1.Tools.DeepCopy(this._options);
     }

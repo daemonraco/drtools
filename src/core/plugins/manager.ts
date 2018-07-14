@@ -6,25 +6,25 @@
 import { chalk, fs, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
-import { DRCollector } from '../drcollector';
+import { DRCollector, IManagerByKey } from '../drcollector';
 import { Tools } from '../includes';
-import { PluginsConstants, PluginsOptions, PluginSpecs, PluginSpecsList } from '.';
+import { PluginsConstants, IPluginsOptions, IPluginSpecs, IPluginSpecsList } from '.';
 
 declare const global: any;
 
-export class PluginsManager {
+export class PluginsManager implements IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
     protected _directories: string[] = [];
-    protected _itemSpecs: PluginSpecsList = null;
+    protected _itemSpecs: IPluginSpecsList = null;
     protected _lastError: string = null;
-    protected _options: PluginsOptions = null;
+    protected _options: IPluginsOptions = null;
     protected _paths: any[] = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(directories: string | string[], options: PluginsOptions = null, configs: ConfigsManager = null) {
+    constructor(directories: string | string[], options: IPluginsOptions = null, configs: ConfigsManager = null) {
         if (!Array.isArray(directories)) {
             directories = [directories];
         }
@@ -70,7 +70,7 @@ export class PluginsManager {
         }
 
         if (typeof this._itemSpecs[codePieces[0]] !== 'undefined') {
-            const specs: PluginSpecs = this._itemSpecs[codePieces[0]];
+            const specs: IPluginSpecs = this._itemSpecs[codePieces[0]];
 
             if (typeof specs.library[codePieces[1]] !== 'undefined') {
                 results = specs.library[codePieces[1]];
@@ -79,7 +79,7 @@ export class PluginsManager {
 
         return results;
     }
-    public items(): PluginSpecsList {
+    public items(): IPluginSpecsList {
         return Tools.DeepCopy(this._itemSpecs);
     }
     public itemNames(): string[] {
@@ -87,6 +87,9 @@ export class PluginsManager {
     }
     public lastError(): string {
         return this._lastError;
+    }
+    public matchesKey(key: string): boolean {
+        return this.directories().indexOf(key) > -1;
     }
     public methodsOf(name: string): string[] {
         return typeof this._itemSpecs[name] !== 'undefined' ? Object.keys(this._itemSpecs[name].library) : [];
@@ -129,7 +132,7 @@ export class PluginsManager {
         }
     }
     protected cleanOptions(): void {
-        let defaultOptions: PluginsOptions = {
+        let defaultOptions: IPluginsOptions = {
             verbose: true
         };
 

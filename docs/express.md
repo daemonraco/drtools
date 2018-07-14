@@ -1,4 +1,8 @@
+__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
+VERSION 0.4.0</span>__
+
 # DRTools: ExpressJS Tools
+
 ## Contents
 <!-- TOC depthFrom:2 updateOnSave:true -->
 

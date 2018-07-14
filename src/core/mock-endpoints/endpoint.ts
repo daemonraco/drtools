@@ -5,7 +5,7 @@
 
 import { fs, glob, path } from '../../libraries';
 
-import { EndpointBrief, EndpointBrievesByMethod, EndpointData, EndpointOptions, EndpointPathPattern } from '.';
+import { IEndpointBrief, IEndpointBrievesByMethod, EndpointData, IEndpointOptions, EndpointPathPattern } from '.';
 import { ExpressMiddleware } from '../express';
 import { Tools } from '../includes';
 
@@ -17,10 +17,10 @@ export class Endpoint {
     protected _loadedEndpoints: { [path: string]: EndpointData } = {};
     protected _restPath: string = '';
     protected _restPattern: RegExp = null;
-    protected _options: EndpointOptions = null;
+    protected _options: IEndpointOptions = null;
     //
     // Constructor.
-    public constructor(dirPath: string, restPath: string, options: EndpointOptions = {}) {
+    public constructor(dirPath: string, restPath: string, options: IEndpointOptions = {}) {
         this._dirPath = dirPath;
         this._restPath = restPath;
         this._options = options;
@@ -30,12 +30,12 @@ export class Endpoint {
     }
     //
     // Public methods.
-    public paths(): EndpointBrief[] {
-        const out: EndpointBrief[] = [];
+    public paths(): IEndpointBrief[] {
+        const out: IEndpointBrief[] = [];
 
         this.loadAllEndpoints();
         Object.keys(this._loadedEndpoints).sort().forEach((path: string) => {
-            const brieves: EndpointBrievesByMethod = this._loadedEndpoints[path].brievesByMethod();
+            const brieves: IEndpointBrievesByMethod = this._loadedEndpoints[path].brievesByMethod();
             Object.keys(brieves).forEach((method: string) => {
                 out.push(brieves[method]);
             });

@@ -39,7 +39,7 @@ class WebToApi {
         this._configPath = configPath;
         this.loadConfig();
         this.load();
-        drcollector_1.DRCollector.registerWebToApi(this);
+        drcollector_1.DRCollector.registerWebToApiManager(this);
     }
     //
     // Public methods.
@@ -118,6 +118,9 @@ class WebToApi {
             }
             return results;
         });
+    }
+    matchesKey(key) {
+        return this._config && this._config.key === key;
     }
     name() {
         return this._config ? this._config.name : '';

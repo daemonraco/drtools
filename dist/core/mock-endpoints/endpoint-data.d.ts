@@ -2,19 +2,19 @@
  * @file endpoint-data.ts
  * @author Alejandro D. Simi
  */
-import { Endpoint, EndpointBehaviors, EndpointBrievesByMethod } from '.';
-import { EndpointOptions, EndpointRawByMethod } from '.';
+import { Endpoint, EndpointBehaviors, IEndpointBrievesByMethod } from '.';
+import { IEndpointOptions, EndpointRawByMethod } from '.';
 export declare class EndpointData {
     readonly BehaviorPattern: RegExp;
     protected _behaviors: EndpointBehaviors;
-    protected _brievesByMethod: EndpointBrievesByMethod;
+    protected _brievesByMethod: IEndpointBrievesByMethod;
     protected _endpoint: Endpoint;
     protected _exists: boolean;
-    protected _options: EndpointOptions;
+    protected _options: IEndpointOptions;
     protected _raw: EndpointRawByMethod;
     protected _uri: string;
-    constructor(endpoint: Endpoint, uri: string, options?: EndpointOptions);
-    brievesByMethod(): EndpointBrievesByMethod;
+    constructor(endpoint: Endpoint, uri: string, options?: IEndpointOptions);
+    brievesByMethod(): IEndpointBrievesByMethod;
     data(method?: string): any;
     protected expanded(out: any): any;
     protected fixOptions(): void;

@@ -35,6 +35,9 @@ class EndpointsManager {
     lastError() {
         return this._lastError;
     }
+    matchesKey(key) {
+        return this.directory() === key;
+    }
     options() {
         return this._options.options;
     }

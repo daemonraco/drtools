@@ -39,6 +39,9 @@ class GenericManager {
     lastError() {
         return this._lastError;
     }
+    matchesKey(key) {
+        return this.directory() === key;
+    }
     suffix() {
         return typeof this._options.suffix !== 'undefined' ? this._options.suffix : '';
     }

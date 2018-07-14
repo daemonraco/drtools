@@ -3,20 +3,20 @@
  * @author Alejandro D. Simi
  */
 
-import { MySQLRestAuthMiddleware, MySQLRestExposeConfig, MySQLTable, MySQLUrlParams, MySQLUrlPieces } from '.';
+import { MySQLRestAuthMiddleware, IMySQLRestExposeConfig, MySQLTable, MySQLUrlParams, MySQLUrlPieces } from '.';
 
 export type MySQLRestTableList = { [name: string]: MySQLRestTable };
 
 export class MySQLRestTable {
     //
     // Protected properties.
-    protected _conf: MySQLRestExposeConfig = null;
+    protected _conf: IMySQLRestExposeConfig = null;
     protected _connection: any = null;
     protected _loaded: boolean = false;
     protected _table: MySQLTable = null;
     //
     // Constructor.
-    constructor(connection: any, conf: MySQLRestExposeConfig) {
+    constructor(connection: any, conf: IMySQLRestExposeConfig) {
         this._connection = connection;
         this._conf = conf;
 

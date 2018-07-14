@@ -2,7 +2,7 @@
  * @file endpoint.ts
  * @author Alejandro D. Simi
  */
-import { EndpointBrief, EndpointData, EndpointOptions } from '.';
+import { IEndpointBrief, EndpointData, IEndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
 export declare class Endpoint {
     protected _dirPath: string;
@@ -12,9 +12,9 @@ export declare class Endpoint {
     };
     protected _restPath: string;
     protected _restPattern: RegExp;
-    protected _options: EndpointOptions;
-    constructor(dirPath: string, restPath: string, options?: EndpointOptions);
-    paths(): EndpointBrief[];
+    protected _options: IEndpointOptions;
+    constructor(dirPath: string, restPath: string, options?: IEndpointOptions);
+    paths(): IEndpointBrief[];
     directory(): string;
     expressMiddleware(): ExpressMiddleware;
     responseFor(endpoint: string, method: string, simple?: boolean): {

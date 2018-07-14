@@ -9,11 +9,12 @@ import { BasicList, Tools } from '../includes';
 import { ConfigsManager } from '../configs';
 import { DRCollectorEvents } from './constants';
 import { EndpointsManager } from '../mock-endpoints';
+import { IManagerByKey } from './types';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager } from '../mock-routes';
 import { MySQLRestManager } from '../mysql';
-import { PluginsManager, PluginSpecsList } from '../plugins';
+import { PluginsManager, IPluginSpecsList } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
 import { WebToApi } from '../webtoapi';
@@ -34,7 +35,7 @@ class DRCollectorClass {
     protected _pluginsManager: BasicList<PluginsManager> = [];
     protected _routesManager: BasicList<RoutesManager> = [];
     protected _tasksManager: BasicList<TasksManager> = [];
-    protected _webToApi: BasicList<WebToApi> = [];
+    protected _webToApiManagers: BasicList<WebToApi> = [];
     //
     // Events.
     protected _events: EventEmitter = new EventEmitter();
@@ -44,8 +45,14 @@ class DRCollectorClass {
     }
     //
     // Public methods.
+    public configsManager(key: string): ConfigsManager {
+        return <ConfigsManager>this.findManager(this.configsManagers(), key);
+    }
     public configsManagers(): BasicList<ConfigsManager> {
         return this._configsManagers;
+    }
+    public endpointsManager(key: string): EndpointsManager {
+        return <EndpointsManager>this.findManager(this.endpointsManagers(), key);
     }
     public endpointsManagers(): BasicList<EndpointsManager> {
         return this._endpointsManager;
@@ -68,11 +75,20 @@ class DRCollectorClass {
 
         return Tools.DeepCopy(this._infoReport);
     }
+    public loadersManager(key: string): LoadersManager {
+        return <LoadersManager>this.findManager(this.loadersManagers(), key);
+    }
     public loadersManagers(): BasicList<LoadersManager> {
         return this._loadersManagers;
     }
+    public middlewaresManager(key: string): MiddlewaresManager {
+        return <MiddlewaresManager>this.findManager(this.middlewaresManagers(), key);
+    }
     public middlewaresManagers(): BasicList<MiddlewaresManager> {
         return this._middlewaresManager;
+    }
+    public mockRoutesManager(key: string): MockRoutesManager {
+        return <MockRoutesManager>this.findManager(this.mockRoutesManagers(), key);
     }
     public mockRoutesManagers(): BasicList<MockRoutesManager> {
         return this._mockRoutesManager;
@@ -82,6 +98,9 @@ class DRCollectorClass {
     }
     public on(event: string, listener: any): void {
         this._events.on(event, listener);
+    }
+    public pluginsManager(key: string): PluginsManager {
+        return <PluginsManager>this.findManager(this.pluginsManagers(), key);
     }
     public pluginsManagers(): BasicList<PluginsManager> {
         return this._pluginsManager;
@@ -194,9 +213,9 @@ class DRCollectorClass {
             this._events.emit(DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
-    public registerWebToApi(manager: WebToApi): void {
-        if (this._webToApi.indexOf(manager) < 0) {
-            this._webToApi.push(manager);
+    public registerWebToApiManager(manager: WebToApi): void {
+        if (this._webToApiManagers.indexOf(manager) < 0) {
+            this._webToApiManagers.push(manager);
             this._infoReport = null;
 
             const eventData: any = {
@@ -206,17 +225,38 @@ class DRCollectorClass {
             this._events.emit(DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
+    public routesManager(key: string): RoutesManager {
+        return <RoutesManager>this.findManager(this.routesManagers(), key);
+    }
     public routesManagers(): BasicList<RoutesManager> {
         return this._routesManager;
+    }
+    public tasksManager(key: string): TasksManager {
+        return <TasksManager>this.findManager(this.tasksManagers(), key);
     }
     public tasksManagers(): BasicList<TasksManager> {
         return this._tasksManager;
     }
-    public webToApi(): BasicList<WebToApi> {
-        return this._webToApi;
+    public webToApiManager(key: string): WebToApi {
+        return <WebToApi>this.findManager(this.webToApiManagers(), key);
+    }
+    public webToApiManagers(): BasicList<WebToApi> {
+        return this._webToApiManagers;
     }
     //
     // Protected methods.
+    protected findManager(managers: BasicList<IManagerByKey>, key: string): IManagerByKey {
+        let manager: IManagerByKey = null;
+
+        for (const m of managers) {
+            if (m.matchesKey(key)) {
+                manager = m;
+                break;
+            }
+        }
+
+        return manager;
+    }
     protected infoReportConfigsManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -304,7 +344,7 @@ class DRCollectorClass {
                 directories: manager.directories(),
                 plugins: []
             };
-            const items: PluginSpecsList = manager.items();
+            const items: IPluginSpecsList = manager.items();
             for (const name of Object.keys(items).sort()) {
                 const aux: any = {
                     name,
@@ -355,7 +395,7 @@ class DRCollectorClass {
     protected infoReportWebToApi(): BasicList<any> {
         const results: BasicList<any> = [];
 
-        for (const manager of this._webToApi) {
+        for (const manager of this._webToApiManagers) {
             results.push({
                 name: manager.name(),
                 description: manager.description(),

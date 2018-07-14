@@ -2,7 +2,7 @@
  * @file types.ts
  * @author Alejandro D. Simi
  */
-export interface MiddlewareOptions {
+export interface IMiddlewareOptions {
     suffix?: string;
     verbose?: boolean;
 }

@@ -4,9 +4,9 @@
  */
 import { ConfigsManager } from '../configs';
 import { GenericManager } from '../includes';
-import { LoaderOptions } from '.';
-export declare class LoadersManager extends GenericManager<LoaderOptions> {
-    constructor(directory: string, options?: LoaderOptions, configs?: ConfigsManager);
+import { ILoaderOptions } from '.';
+export declare class LoadersManager extends GenericManager<ILoaderOptions> {
+    constructor(directory: string, options?: ILoaderOptions, configs?: ConfigsManager);
     protected cleanOptions(): void;
     protected load(): void;
 }

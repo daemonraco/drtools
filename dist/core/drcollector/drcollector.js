@@ -23,15 +23,21 @@ class DRCollectorClass {
         this._pluginsManager = [];
         this._routesManager = [];
         this._tasksManager = [];
-        this._webToApi = [];
+        this._webToApiManagers = [];
         //
         // Events.
         this._events = new libraries_1.EventEmitter();
     }
     //
     // Public methods.
+    configsManager(key) {
+        return this.findManager(this.configsManagers(), key);
+    }
     configsManagers() {
         return this._configsManagers;
+    }
+    endpointsManager(key) {
+        return this.findManager(this.endpointsManagers(), key);
     }
     endpointsManagers() {
         return this._endpointsManager;
@@ -53,11 +59,20 @@ class DRCollectorClass {
         }
         return includes_1.Tools.DeepCopy(this._infoReport);
     }
+    loadersManager(key) {
+        return this.findManager(this.loadersManagers(), key);
+    }
     loadersManagers() {
         return this._loadersManagers;
     }
+    middlewaresManager(key) {
+        return this.findManager(this.middlewaresManagers(), key);
+    }
     middlewaresManagers() {
         return this._middlewaresManager;
+    }
+    mockRoutesManager(key) {
+        return this.findManager(this.mockRoutesManagers(), key);
     }
     mockRoutesManagers() {
         return this._mockRoutesManager;
@@ -67,6 +82,9 @@ class DRCollectorClass {
     }
     on(event, listener) {
         this._events.on(event, listener);
+    }
+    pluginsManager(key) {
+        return this.findManager(this.pluginsManagers(), key);
     }
     pluginsManagers() {
         return this._pluginsManager;
@@ -170,9 +188,9 @@ class DRCollectorClass {
             this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
-    registerWebToApi(manager) {
-        if (this._webToApi.indexOf(manager) < 0) {
-            this._webToApi.push(manager);
+    registerWebToApiManager(manager) {
+        if (this._webToApiManagers.indexOf(manager) < 0) {
+            this._webToApiManagers.push(manager);
             this._infoReport = null;
             const eventData = {
                 webToApi: manager
@@ -181,17 +199,36 @@ class DRCollectorClass {
             this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
+    routesManager(key) {
+        return this.findManager(this.routesManagers(), key);
+    }
     routesManagers() {
         return this._routesManager;
+    }
+    tasksManager(key) {
+        return this.findManager(this.tasksManagers(), key);
     }
     tasksManagers() {
         return this._tasksManager;
     }
-    webToApi() {
-        return this._webToApi;
+    webToApiManager(key) {
+        return this.findManager(this.webToApiManagers(), key);
+    }
+    webToApiManagers() {
+        return this._webToApiManagers;
     }
     //
     // Protected methods.
+    findManager(managers, key) {
+        let manager = null;
+        for (const m of managers) {
+            if (m.matchesKey(key)) {
+                manager = m;
+                break;
+            }
+        }
+        return manager;
+    }
     infoReportConfigsManager() {
         const results = [];
         for (const manager of this._configsManagers) {
@@ -308,7 +345,7 @@ class DRCollectorClass {
     }
     infoReportWebToApi() {
         const results = [];
-        for (const manager of this._webToApi) {
+        for (const manager of this._webToApiManagers) {
             results.push({
                 name: manager.name(),
                 description: manager.description(),

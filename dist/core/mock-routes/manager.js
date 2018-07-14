@@ -56,6 +56,9 @@ class MockRoutesManager {
     lastError() {
         return this._lastError;
     }
+    matchesKey(key) {
+        return this.configPath() === key;
+    }
     routes() {
         let out = [];
         Object.keys(this._routes)

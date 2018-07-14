@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-export interface LoaderOptions {
+export interface ILoaderOptions {
     suffix?: string;
     verbose?: boolean;
 }

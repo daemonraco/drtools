@@ -6,8 +6,8 @@
 import { ajv, chalk, cheerio, fs, md5, request, path } from '../../libraries';
 
 import { BasicList } from '../includes/basic-types';
-import { DRCollector } from '../drcollector';
-import { Tools, ToolsCheckPath, ToolsCheckPathResult } from '../includes';
+import { DRCollector, IManagerByKey } from '../drcollector';
+import { Tools, ToolsCheckPath, IToolsCheckPathResult } from '../includes';
 import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WAUrlParameters } from './types';
 import { WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
 import { WebToApiConfigSpec } from './spec.config';
@@ -17,7 +17,7 @@ import { WAPreProcessorData } from './pre-processor-data';
 
 declare var require: (path: string) => any;
 
-export class WebToApi {
+export class WebToApi implements IManagerByKey {
     //
     // Protected properties.
     protected _cachePath: string = null;
@@ -37,7 +37,7 @@ export class WebToApi {
         this.loadConfig();
         this.load();
 
-        DRCollector.registerWebToApi(this);
+        DRCollector.registerWebToApiManager(this);
     }
     //
     // Public methods.
@@ -120,6 +120,9 @@ export class WebToApi {
         }
 
         return results;
+    }
+    public matchesKey(key: string): boolean {
+        return this._config && this._config.key === key;
     }
     public name(): string {
         return this._config ? this._config.name : '';
@@ -217,7 +220,7 @@ export class WebToApi {
         let results: any = null;
         const cachePath: string = `${this.getCachePath(key)}.${extension}`;
 
-        const ppCheck: ToolsCheckPathResult = Tools.CheckFile(cachePath);
+        const ppCheck: IToolsCheckPathResult = Tools.CheckFile(cachePath);
         if (ppCheck.status === ToolsCheckPath.Ok) {
             if ((Date.now() - Math.floor(ppCheck.stat.mtimeMs)) < (lifetime * 1000)) {
                 try {
@@ -260,7 +263,7 @@ export class WebToApi {
                 this._config.name = path.basename(this._configPath);
             }
 
-            let ppCheck: ToolsCheckPathResult = null;
+            let ppCheck: IToolsCheckPathResult = null;
 
             for (const endpoint of this._config.endpoints) {
                 if (endpoint.preProcessor) {
@@ -348,7 +351,7 @@ export class WebToApi {
     }
     protected loadConfig(): void {
         if (!this._loaded) {
-            let ppCheck: ToolsCheckPathResult = Tools.CheckFile(this._configPath);
+            let ppCheck: IToolsCheckPathResult = Tools.CheckFile(this._configPath);
             switch (ppCheck.status) {
                 case ToolsCheckPath.Ok:
                     try {

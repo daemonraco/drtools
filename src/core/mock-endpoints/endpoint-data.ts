@@ -5,8 +5,8 @@
 
 import { fs, glob, path } from '../../libraries';
 
-import { Endpoint, EndpointBehaviors, EndpointBrief, EndpointBrievesByMethod } from '.';
-import { EndpointOptions, EndpointPathPattern, EndpointRawByMethod } from '.';
+import { Endpoint, EndpointBehaviors, IEndpointBrief, IEndpointBrievesByMethod } from '.';
+import { IEndpointOptions, EndpointPathPattern, EndpointRawByMethod } from '.';
 import { Tools } from '../includes';
 
 export class EndpointData {
@@ -16,15 +16,15 @@ export class EndpointData {
     //
     // Protected properties.
     protected _behaviors: EndpointBehaviors = null;
-    protected _brievesByMethod: EndpointBrievesByMethod = {};
+    protected _brievesByMethod: IEndpointBrievesByMethod = {};
     protected _endpoint: Endpoint = null;
     protected _exists: boolean = false;
-    protected _options: EndpointOptions = {};
+    protected _options: IEndpointOptions = {};
     protected _raw: EndpointRawByMethod = {};
     protected _uri: string = null;
     //
     // Constructor.
-    constructor(endpoint: Endpoint, uri: string, options: EndpointOptions = {}) {
+    constructor(endpoint: Endpoint, uri: string, options: IEndpointOptions = {}) {
         this._endpoint = endpoint;
         this._uri = uri;
         this._options = Tools.DeepMergeObjects(this._options, options);
@@ -38,7 +38,7 @@ export class EndpointData {
     }
     //
     // Public methods.
-    public brievesByMethod(): EndpointBrievesByMethod {
+    public brievesByMethod(): IEndpointBrievesByMethod {
         return this._brievesByMethod;
     }
     public data(method: string = null): any {

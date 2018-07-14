@@ -2,21 +2,22 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-import { ConfigItemSpec, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
+import { ConfigItemSpec, ConfigsList, IConfigOptions, ConfigSpecsList } from '.';
+import { IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-export declare class ConfigsManager {
+export declare class ConfigsManager implements IManagerByKey {
     protected _configs: ConfigsList;
     protected _directory: string;
     protected _environmentName: string;
     protected _items: ConfigItemSpec[];
     protected _exports: ConfigsList;
     protected _lastError: string;
-    protected _options: ConfigOptions;
+    protected _options: IConfigOptions;
     protected _specs: ConfigSpecsList;
     protected _specsDirectory: string;
     protected _publicUri: string;
     protected _valid: boolean;
-    constructor(directory: string, options?: ConfigOptions);
+    constructor(directory: string, options?: IConfigOptions);
     directory(): string;
     environmentName(): string;
     get(name: string): any;
@@ -24,7 +25,8 @@ export declare class ConfigsManager {
     items(): ConfigItemSpec[];
     itemNames(): string[];
     lastError(): string;
-    options(): ConfigOptions;
+    matchesKey(key: string): boolean;
+    options(): IConfigOptions;
     publicItemNames(): string[];
     publishExports(uri?: string): ExpressMiddleware;
     publicUri(): string;

@@ -7,19 +7,19 @@ import { chalk } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
-import { GenericManager, ItemSpec, Tools } from '../includes';
-import { Task, TasksConstants, TasksList, TasksManagerOptions } from '.';
+import { GenericManager, IItemSpec, Tools } from '../includes';
+import { Task, TasksConstants, TasksList, ITasksManagerOptions } from '.';
 
 declare const global: any;
 
-export class TasksManager extends GenericManager<TasksManagerOptions> {
+export class TasksManager extends GenericManager<ITasksManagerOptions> {
     //
     // Protected properties.
     protected _intervals: any[] = [];
     protected _items: TasksList = null;
     //
     // Constructor.
-    constructor(directory: string, options: TasksManagerOptions = null, configs: ConfigsManager = null) {
+    constructor(directory: string, options: ITasksManagerOptions = null, configs: ConfigsManager = null) {
         super(directory, options, configs);
 
         this.load();
@@ -33,7 +33,7 @@ export class TasksManager extends GenericManager<TasksManagerOptions> {
     //
     // Public methods.
     public tasks(): any[] {
-        return this._itemSpecs.map((item: ItemSpec) => {
+        return this._itemSpecs.map((item: IItemSpec) => {
             const task: Task = this._items[item.name];
             return {
                 name: task.name(),
@@ -46,7 +46,7 @@ export class TasksManager extends GenericManager<TasksManagerOptions> {
     //
     // Protected methods.
     protected cleanOptions(): void {
-        let defaultOptions: TasksManagerOptions = {
+        let defaultOptions: ITasksManagerOptions = {
             suffix: TasksConstants.Suffix,
             verbose: true
         };

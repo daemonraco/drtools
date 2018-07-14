@@ -80,6 +80,7 @@ exports.WebToApiConfigSpec = {
         }
     },
     properties: {
+        key: { type: 'string' },
         name: { type: 'string' },
         description: { type: 'string', default: '' },
         cachePath: { type: 'string' },
@@ -100,6 +101,6 @@ exports.WebToApiConfigSpec = {
             items: { $ref: '#/definitions/route' }
         }
     },
-    required: ['cachePath', 'cacheLifetime', 'description', 'endpoints', 'parsers', 'routes'],
+    required: ['key', 'cachePath', 'cacheLifetime', 'description', 'endpoints', 'parsers', 'routes'],
     additionalProperties: false
 };

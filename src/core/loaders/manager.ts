@@ -8,17 +8,17 @@ import { chalk } from '../../libraries';
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
-import { LoadersConstants, LoaderOptions } from '.';
+import { LoadersConstants, ILoaderOptions } from '.';
 
 declare const global: any;
 
-export class LoadersManager extends GenericManager<LoaderOptions> {
+export class LoadersManager extends GenericManager<ILoaderOptions> {
     //
     // Protected properties.
 
     //
     // Constructor.
-    constructor(directory: string, options: LoaderOptions = null, configs: ConfigsManager = null) {
+    constructor(directory: string, options: ILoaderOptions = null, configs: ConfigsManager = null) {
         super(directory, options, configs);
         this.load();
         this._valid = !this._lastError;
@@ -31,7 +31,7 @@ export class LoadersManager extends GenericManager<LoaderOptions> {
     //
     // Protected methods.
     protected cleanOptions(): void {
-        let defaultOptions: LoaderOptions = {
+        let defaultOptions: ILoaderOptions = {
             suffix: LoadersConstants.Suffix,
             verbose: true
         };

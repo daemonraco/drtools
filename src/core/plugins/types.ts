@@ -3,14 +3,14 @@
  * @author Alejandro D. Simi
  */
 
-export interface PluginsOptions {
+export interface IPluginsOptions {
     verbose?: boolean;
 }
 
-export interface PluginSpecs {
+export interface IPluginSpecs {
     name: string;
     path: string;
     library: { [name: string]: any };
 }
 
-export type PluginSpecsList = { [name: string]: PluginSpecs };
+export type IPluginSpecsList = { [name: string]: IPluginSpecs };

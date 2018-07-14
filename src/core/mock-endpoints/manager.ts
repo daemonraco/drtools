@@ -6,24 +6,24 @@
 import { chalk, fs, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
-import { DRCollector } from '../drcollector';
-import { Endpoint, EndpointBrief, EndpointsManagerOptions, EndpointOptions } from '.';
+import { DRCollector, IManagerByKey } from '../drcollector';
+import { Endpoint, IEndpointBrief, IEndpointsManagerOptions, IEndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
 import { Tools } from '../includes';
 
-export class EndpointsManager {
+export class EndpointsManager implements IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
     protected _endpointsDirectory: string = null;
     protected _endpointsUri: string = null;
     protected _lastError: string = null;
-    protected _options: EndpointsManagerOptions = null;
+    protected _options: IEndpointsManagerOptions = null;
     protected _provider: Endpoint = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(options: EndpointsManagerOptions, configs: ConfigsManager = null) {
+    constructor(options: IEndpointsManagerOptions, configs: ConfigsManager = null) {
         this._configs = configs;
         this._options = options;
         this.cleanOptions();
@@ -40,10 +40,13 @@ export class EndpointsManager {
     public lastError(): string {
         return this._lastError;
     }
-    public options(): EndpointOptions {
+    public matchesKey(key: string): boolean {
+        return this.directory() === key;
+    }
+    public options(): IEndpointOptions {
         return this._options.options;
     }
-    public paths(): EndpointBrief[] {
+    public paths(): IEndpointBrief[] {
         return this._provider.paths();
     }
     public provide(): ExpressMiddleware {
@@ -58,7 +61,7 @@ export class EndpointsManager {
     //
     // Protected methods.
     protected cleanOptions(): void {
-        let defaultOptions: EndpointsManagerOptions = {
+        let defaultOptions: IEndpointsManagerOptions = {
             directory: '',
             uri: '',
             options: {}

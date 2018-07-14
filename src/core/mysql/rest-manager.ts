@@ -5,19 +5,19 @@
 
 import { DRCollector } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-import { MySQLRestExposeConfig, MySQLRestManagerConfig, MySQLRestTable, MySQLRestTableList } from '.';
+import { IMySQLRestExposeConfig, IMySQLRestManagerConfig, MySQLRestTable, MySQLRestTableList } from '.';
 import { Tools } from '../includes';
 
 export class MySQLRestManager {
     //
     // Protected properties.
-    protected _conf: MySQLRestManagerConfig = null;
+    protected _conf: IMySQLRestManagerConfig = null;
     protected _connection: any = null;
     protected _loaded: boolean = false;
     protected _tables: MySQLRestTableList = {};
     //
     // Constructor
-    public constructor(connection: any, conf: MySQLRestManagerConfig) {
+    public constructor(connection: any, conf: IMySQLRestManagerConfig) {
         this._connection = connection;
         this._conf = conf;
 
@@ -27,16 +27,16 @@ export class MySQLRestManager {
     }
     //
     // Public methods.
-    public config(): MySQLRestManagerConfig {
+    public config(): IMySQLRestManagerConfig {
         return Tools.DeepCopy(this._conf);
     }
-    public expose(conf: MySQLRestExposeConfig): void {
+    public expose(conf: IMySQLRestExposeConfig): void {
         if (conf && typeof this._tables[conf.name] === 'undefined') {
             if (typeof conf.tablePrefix !== 'string') {
                 conf.tablePrefix = this._conf.tablePrefix;
             }
 
-            (<MySQLRestExposeConfig[]>this._conf.expose).push(conf);
+            (<IMySQLRestExposeConfig[]>this._conf.expose).push(conf);
             this._tables[conf.name] = new MySQLRestTable(this._connection, conf);
         } else if (!conf) {
             throw `No configuration given`;
@@ -104,7 +104,7 @@ export class MySQLRestManager {
             this._tables = {};
             this.checkParams();
 
-            const exposeList: MySQLRestExposeConfig[] = <MySQLRestExposeConfig[]>this._conf.expose;
+            const exposeList: IMySQLRestExposeConfig[] = <IMySQLRestExposeConfig[]>this._conf.expose;
             this._conf.expose = [];
             for (const expose of exposeList) {
                 this.expose(expose);

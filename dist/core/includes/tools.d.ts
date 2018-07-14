@@ -9,7 +9,7 @@ export declare enum ToolsCheckPath {
     WrongType = 3,
     WrongChecker = 4
 }
-export interface ToolsCheckPathResult {
+export interface IToolsCheckPathResult {
     status: ToolsCheckPath;
     originalPath: string;
     path: string;
@@ -19,8 +19,8 @@ export declare class Tools {
     private static _IsBrowser;
     private static _IsNode;
     private constructor();
-    static CheckDirectory(filePath: string, relativeTo?: string): ToolsCheckPathResult;
-    static CheckFile(filePath: string, relativeTo?: string): ToolsCheckPathResult;
+    static CheckDirectory(filePath: string, relativeTo?: string): IToolsCheckPathResult;
+    static CheckFile(filePath: string, relativeTo?: string): IToolsCheckPathResult;
     /**
      * Takes an object and returns a clone of if. It avoids using the same
      * pointer.
@@ -46,5 +46,5 @@ export declare class Tools {
     static FullPath(basicPath: string): string;
     static IsBrowser(): boolean;
     static IsNode(): boolean;
-    protected static CheckPathByType(checker: string, filePath: string, relativeTo?: string): ToolsCheckPathResult;
+    protected static CheckPathByType(checker: string, filePath: string, relativeTo?: string): IToolsCheckPathResult;
 }

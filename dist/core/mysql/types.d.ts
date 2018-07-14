@@ -2,24 +2,24 @@
  * @file types.ts
  * @author Alejandro D. Simi
  */
-export interface MySQLRestAuthMiddlewareData {
+export interface IMySQLRestAuthMiddlewareData {
 }
-export declare type MySQLRestAuthMiddleware = (req: any, res: any, next: () => void, data: MySQLRestAuthMiddlewareData) => void;
+export declare type MySQLRestAuthMiddleware = (req: any, res: any, next: () => void, data: IMySQLRestAuthMiddlewareData) => void;
 export declare type MySQLRestConditions = {
     [fieldName: string]: any;
 };
 export declare type MySQLRestEntry = {
     [fieldName: string]: any;
 };
-export interface MySQLRestExposeConfig {
+export interface IMySQLRestExposeConfig {
     authMiddleware?: MySQLRestAuthMiddleware;
     limit?: number;
     name: string;
     prefix: string;
     tablePrefix?: string;
 }
-export interface MySQLRestManagerConfig {
-    expose?: MySQLRestExposeConfig | MySQLRestExposeConfig[];
+export interface IMySQLRestManagerConfig {
+    expose?: IMySQLRestExposeConfig | IMySQLRestExposeConfig[];
     tablePrefix?: string;
     uri: string;
 }

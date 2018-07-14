@@ -2,16 +2,16 @@
  * @file rest-table.ts
  * @author Alejandro D. Simi
  */
-import { MySQLRestExposeConfig, MySQLTable, MySQLUrlParams, MySQLUrlPieces } from '.';
+import { IMySQLRestExposeConfig, MySQLTable, MySQLUrlParams, MySQLUrlPieces } from '.';
 export declare type MySQLRestTableList = {
     [name: string]: MySQLRestTable;
 };
 export declare class MySQLRestTable {
-    protected _conf: MySQLRestExposeConfig;
+    protected _conf: IMySQLRestExposeConfig;
     protected _connection: any;
     protected _loaded: boolean;
     protected _table: MySQLTable;
-    constructor(connection: any, conf: MySQLRestExposeConfig);
+    constructor(connection: any, conf: IMySQLRestExposeConfig);
     solve(method: string, urlPieces: MySQLUrlPieces, params: MySQLUrlParams, data: any): Promise<any>;
     protected checkParams(): void;
     protected load(): void;

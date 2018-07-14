@@ -3,24 +3,26 @@
  * @author Alejandro D. Simi
  */
 import { ConfigsManager } from '../configs';
-import { PluginsOptions, PluginSpecsList } from '.';
-export declare class PluginsManager {
+import { IManagerByKey } from '../drcollector';
+import { IPluginsOptions, IPluginSpecsList } from '.';
+export declare class PluginsManager implements IManagerByKey {
     protected _configs: ConfigsManager;
     protected _directories: string[];
-    protected _itemSpecs: PluginSpecsList;
+    protected _itemSpecs: IPluginSpecsList;
     protected _lastError: string;
-    protected _options: PluginsOptions;
+    protected _options: IPluginsOptions;
     protected _paths: any[];
     protected _valid: boolean;
-    constructor(directories: string | string[], options?: PluginsOptions, configs?: ConfigsManager);
+    constructor(directories: string | string[], options?: IPluginsOptions, configs?: ConfigsManager);
     configNameOf(name: string): string;
     configOf(name: string): any;
     configs(): ConfigsManager;
     directories(): string[];
     get(code: string): any;
-    items(): PluginSpecsList;
+    items(): IPluginSpecsList;
     itemNames(): string[];
     lastError(): string;
+    matchesKey(key: string): boolean;
     methodsOf(name: string): string[];
     pluginConfig(plgName: string): any;
     valid(): boolean;

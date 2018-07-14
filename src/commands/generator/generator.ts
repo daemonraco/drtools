@@ -6,7 +6,7 @@
 import { chalk, commander, ejs, fs, glob, path } from '../../libraries';
 
 import { MiddlewaresConstants, PluginsConstants, RoutesConstants, TasksConstants } from '../../core/drtools';
-import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath, ToolsCheckPathResult as CoreToolsCheckPathResult } from '../../core/includes/tools';
+import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath, IToolsCheckPathResult as ICoreToolsCheckPathResult } from '../../core/includes/tools';
 import { Tools } from '../includes/tools';
 
 declare const __dirname: string;
@@ -449,8 +449,13 @@ export class DRToolsGenerator {
     protected generateWebToApiConfig(name: string, options: any): void {
         let error: string = null;
 
+        let key: string = name.toLowerCase()
+            .replace(/([- \t]+)/g, ' ')
+            .replace(/ /g, '_');
+
         console.log(`Generating WebToApi Configuration:`);
         console.log(`\tName:              '${chalk.green(name)}'`);
+        console.log(`\tKey:               '${chalk.green(key)}'`);
         console.log(`\tWorking directory: '${chalk.green(options.cwd)}'`);
 
         let fullPath: string = path.join(options.cwd, `${name}.json`);
@@ -462,7 +467,7 @@ export class DRToolsGenerator {
         }
 
         if (!error) {
-            const checkFP: CoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
+            const checkFP: ICoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
             switch (checkFP.status) {
                 case CoreToolsCheckPath.Ok:
                     if (!options.force) {
@@ -487,7 +492,7 @@ export class DRToolsGenerator {
                     const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.wa.config.ejs')).toString();
                     fs.writeFileSync(fullPath, ejs.render(template, {
                         cacheDirectory: options.cachePath,
-                        name
+                        key, name
                     }, {}));
                 } catch (e) { }
             }
@@ -508,7 +513,7 @@ export class DRToolsGenerator {
         let fullPath: string = path.join(options.cwd, `${name}.js`);
 
         if (!error) {
-            const checkFP: CoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
+            const checkFP: ICoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
             switch (checkFP.status) {
                 case CoreToolsCheckPath.Ok:
                     if (!options.force) {
@@ -551,7 +556,7 @@ export class DRToolsGenerator {
         let fullPath: string = path.join(options.cwd, `${name}.js`);
 
         if (!error) {
-            const checkFP: CoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
+            const checkFP: ICoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
             switch (checkFP.status) {
                 case CoreToolsCheckPath.Ok:
                     if (!options.force) {
@@ -594,7 +599,7 @@ export class DRToolsGenerator {
         let fullPath: string = path.join(options.cwd, `${name}.js`);
 
         if (!error) {
-            const checkFP: CoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
+            const checkFP: ICoreToolsCheckPathResult = CoreTools.CheckFile(fullPath);
             switch (checkFP.status) {
                 case CoreToolsCheckPath.Ok:
                     if (!options.force) {

@@ -9,27 +9,27 @@ export type EndpointRawByMethod = { [method: string]: any };
 
 export const EndpointPathPattern: RegExp = /^(.*)\/(_METHODS)\/([a-z]+)\/(.+)\.json$|^(.+)(\.json)$/;
 
-export interface EndpointBrief {
+export interface IEndpointBrief {
     behaviors: boolean;
     method: string;
     path: string;
     uri: string;
 }
 
-export interface EndpointBrievesByMethod {
-    [method: string]: EndpointBrief;
+export interface IEndpointBrievesByMethod {
+    [method: string]: IEndpointBrief;
 }
 
-export interface EndpointOptions {
+export interface IEndpointOptions {
     globalBehaviors?: string | string[];
 }
 
-export interface EndpointsManagerOptions {
+export interface IEndpointsManagerOptions {
     //
     // Mandatory options.
     directory: string;
     uri: string;
     //
     // Optional options.
-    options?: EndpointOptions;
+    options?: IEndpointOptions;
 }

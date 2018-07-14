@@ -1,4 +1,5 @@
 {
+    "key": "test",
     "cachePath": "test/tmp/webtoapi/cache",
     "endpoints": [
         {

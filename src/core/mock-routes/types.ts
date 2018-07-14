@@ -5,18 +5,18 @@
 
 import { ExpressMiddleware } from '../express';
 
-export interface MockRoutesOptions {
+export interface IMockRoutesOptions {
     verbose?: boolean;
 }
 
-export interface MockRoutesGuard {
+export interface IMockRoutesGuard {
     error?: string;
     guard: ExpressMiddleware;
     name: string;
     path: string;
 }
 
-export interface MockRoutesRoute {
+export interface IMockRoutesRoute {
     error?: string;
     guard?: ExpressMiddleware;
     guardName?: string;

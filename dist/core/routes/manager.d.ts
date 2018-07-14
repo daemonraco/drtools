@@ -4,10 +4,10 @@
  */
 import { ConfigsManager } from '../configs';
 import { GenericManager } from '../includes';
-import { RouteOptions } from '.';
-export declare class RoutesManager extends GenericManager<RouteOptions> {
+import { IRouteOptions } from '.';
+export declare class RoutesManager extends GenericManager<IRouteOptions> {
     protected _routes: any[];
-    constructor(app: any, directory: string, options: RouteOptions, configs: ConfigsManager);
+    constructor(app: any, directory: string, options: IRouteOptions, configs: ConfigsManager);
     routes(): any[];
     protected cleanOptions(): void;
     protected load(): void;

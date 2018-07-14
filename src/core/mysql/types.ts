@@ -5,25 +5,25 @@
 
 import { ExpressMiddleware } from '../express';
 
-export interface MySQLRestAuthMiddlewareData {
+export interface IMySQLRestAuthMiddlewareData {
 
 }
 
-export type MySQLRestAuthMiddleware = (req: any, res: any, next: () => void, data: MySQLRestAuthMiddlewareData) => void
+export type MySQLRestAuthMiddleware = (req: any, res: any, next: () => void, data: IMySQLRestAuthMiddlewareData) => void
 
 export type MySQLRestConditions = { [fieldName: string]: any };
 
 export type MySQLRestEntry = { [fieldName: string]: any };
 
-export interface MySQLRestExposeConfig {
+export interface IMySQLRestExposeConfig {
     authMiddleware?: MySQLRestAuthMiddleware;
     limit?: number;
     name: string;
     prefix: string;
     tablePrefix?: string;
 }
-export interface MySQLRestManagerConfig {
-    expose?: MySQLRestExposeConfig | MySQLRestExposeConfig[];
+export interface IMySQLRestManagerConfig {
+    expose?: IMySQLRestExposeConfig | IMySQLRestExposeConfig[];
     tablePrefix?: string;
     uri: string;
 }

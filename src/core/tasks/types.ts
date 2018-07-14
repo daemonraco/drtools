@@ -7,7 +7,7 @@ import { Task } from '.';
 
 export type TasksList = { [name: string]: Task };
 
-export interface TasksManagerOptions {
+export interface ITasksManagerOptions {
     suffix?: string;
     verbose?: boolean;
 }

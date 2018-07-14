@@ -3,9 +3,10 @@
  * @author Alejandro D. Simi
  */
 import { BasicList } from '../includes/basic-types';
+import { IManagerByKey } from '../drcollector';
 import { WAEndpoint, WAEndpointList, WAParsersList, WAUrlParameters } from './types';
 import { WebToApiRouter } from './router';
-export declare class WebToApi {
+export declare class WebToApi implements IManagerByKey {
     protected _cachePath: string;
     protected _config: any;
     protected _configPath: string;
@@ -24,6 +25,7 @@ export declare class WebToApi {
     endpoints(): WAEndpointList;
     has(type: string): boolean;
     get(type: string, params: WAUrlParameters): Promise<any>;
+    matchesKey(key: string): boolean;
     name(): string;
     parsers(): string[];
     relativePath(): string;

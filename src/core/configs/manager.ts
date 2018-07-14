@@ -5,15 +5,15 @@
 
 import { ajv, chalk, fs, jsonpath, path } from '../../libraries';
 
-import { ConfigItemSpec, ConfigsConstants, ConfigsList, ConfigOptions, ConfigSpecsList } from '.';
-import { DRCollector } from '../drcollector';
+import { ConfigItemSpec, ConfigsConstants, ConfigsList, IConfigOptions, ConfigSpecsList } from '.';
+import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-import { ItemSpec, Tools } from '../includes';
+import { IItemSpec, Tools } from '../includes';
 
 declare const global: any;
 declare const process: any;
 
-export class ConfigsManager {
+export class ConfigsManager implements IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsList = {};
@@ -22,14 +22,14 @@ export class ConfigsManager {
     protected _items: ConfigItemSpec[] = [];
     protected _exports: ConfigsList = {};
     protected _lastError: string = null;
-    protected _options: ConfigOptions = null;
+    protected _options: IConfigOptions = null;
     protected _specs: ConfigSpecsList = {};
     protected _specsDirectory: string = null;
     protected _publicUri: string = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    public constructor(directory: string, options: ConfigOptions = {}) {
+    public constructor(directory: string, options: IConfigOptions = {}) {
         this._directory = directory;
         this._specsDirectory = path.join(directory, ConfigsConstants.SpecsDirectory);
         this._options = options;
@@ -62,7 +62,10 @@ export class ConfigsManager {
     public lastError(): string {
         return this._lastError;
     }
-    public options(): ConfigOptions {
+    public matchesKey(key: string): boolean {
+        return this.directory() === key;
+    }
+    public options(): IConfigOptions {
         return Tools.DeepCopy(this._options);
     }
     public publicItemNames(): string[] {
@@ -128,7 +131,7 @@ export class ConfigsManager {
     //
     // Protected methods.
     protected cleanOptions(): void {
-        let defaultOptions: ConfigOptions = {
+        let defaultOptions: IConfigOptions = {
             suffix: ConfigsConstants.Suffix,
             verbose: true
         };
@@ -186,7 +189,7 @@ export class ConfigsManager {
                 });
             //
             // Loading evironment specific configuration files.
-            const envFiles: ItemSpec[] = fs.readdirSync(this._directory)
+            const envFiles: IItemSpec[] = fs.readdirSync(this._directory)
                 .filter(x => x.match(envPattern))
                 .map(x => {
                     return {

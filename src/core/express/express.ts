@@ -7,7 +7,7 @@ import { express, path } from '../../libraries';
 
 import { ConfigsConstants, ConfigsManager } from '../configs';
 import { DRCollector, DRCollectorEvents } from '../drcollector';
-import { ExpressConnectorOptions, ExpressResponseBuilder } from '.';
+import { IExpressConnectorOptions, ExpressResponseBuilder } from '.';
 
 declare const __dirname: string;
 
@@ -19,7 +19,7 @@ export class ExpressConnector {
     // Protected properties.
     protected _attached: boolean = false;
     protected _expressApp: any = null;
-    protected _options: ExpressConnectorOptions = null;
+    protected _options: IExpressConnectorOptions = null;
     protected _uiAttached: boolean = false;
     //
     // Constructor.
@@ -27,7 +27,7 @@ export class ExpressConnector {
     }
     //
     // Public methods.
-    public attach(app: any, options: ExpressConnectorOptions): void {
+    public attach(app: any, options: IExpressConnectorOptions): void {
         if (!this._attached) {
             this._attached = true;
 
@@ -55,7 +55,7 @@ export class ExpressConnector {
             this._expressApp.use(manager.publishExports(uri));
         }
     }
-    protected attachWebUI(app: any, options: ExpressConnectorOptions): void {
+    protected attachWebUI(app: any, options: IExpressConnectorOptions): void {
         if (options.webUi && !this._uiAttached) {
             this._uiAttached = true;
 

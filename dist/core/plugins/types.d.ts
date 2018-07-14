@@ -2,16 +2,16 @@
  * @file types.ts
  * @author Alejandro D. Simi
  */
-export interface PluginsOptions {
+export interface IPluginsOptions {
     verbose?: boolean;
 }
-export interface PluginSpecs {
+export interface IPluginSpecs {
     name: string;
     path: string;
     library: {
         [name: string]: any;
     };
 }
-export declare type PluginSpecsList = {
-    [name: string]: PluginSpecs;
+export declare type IPluginSpecsList = {
+    [name: string]: IPluginSpecs;
 };

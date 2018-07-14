@@ -6,7 +6,7 @@
 export type BasicDictionary<T> = { [key: string]: T };
 export type BasicList<T> = T[];
 
-export interface ItemSpec {
+export interface IItemSpec {
     name: string;
     path: string;
 };

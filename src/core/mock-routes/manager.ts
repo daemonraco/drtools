@@ -6,26 +6,26 @@
 import { ajv, chalk, fs, mime, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
-import { DRCollector } from '../drcollector';
+import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-import { MockRoutesConstants, MockRoutesGuard, MockRoutesOptions, MockRoutesRoute } from '.';
+import { MockRoutesConstants, IMockRoutesGuard, IMockRoutesOptions, IMockRoutesRoute } from '.';
 import { Tools } from '../includes';
 
-export class MockRoutesManager {
+export class MockRoutesManager implements IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
     protected _configsValidator: any = null;
-    protected _guards: { [name: string]: MockRoutesGuard } = {};
+    protected _guards: { [name: string]: IMockRoutesGuard } = {};
     protected _lastError: string = null;
-    protected _options: MockRoutesOptions = null;
-    protected _routes: { [uri: string]: MockRoutesRoute } = {};
+    protected _options: IMockRoutesOptions = null;
+    protected _routes: { [uri: string]: IMockRoutesRoute } = {};
     protected _routesConfig: any = {};
     protected _routesConfigPath: string = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(app: any, routesConfigPath: string, options: MockRoutesOptions = null, configs: ConfigsManager = null) {
+    constructor(app: any, routesConfigPath: string, options: IMockRoutesOptions = null, configs: ConfigsManager = null) {
         this._routesConfigPath = routesConfigPath;
         this._options = options;
         this._configs = configs;
@@ -53,8 +53,8 @@ export class MockRoutesManager {
     public configPath(): string {
         return this._routesConfigPath;
     }
-    public guards(): MockRoutesGuard[] {
-        let out: MockRoutesGuard[] = [];
+    public guards(): IMockRoutesGuard[] {
+        let out: IMockRoutesGuard[] = [];
 
         Object.keys(this._guards)
             .sort()
@@ -65,8 +65,11 @@ export class MockRoutesManager {
     public lastError(): string {
         return this._lastError;
     }
-    public routes(): MockRoutesRoute[] {
-        let out: MockRoutesRoute[] = [];
+    public matchesKey(key: string): boolean {
+        return this.configPath() === key;
+    }
+    public routes(): IMockRoutesRoute[] {
+        let out: IMockRoutesRoute[] = [];
 
         Object.keys(this._routes)
             .sort()
@@ -88,7 +91,7 @@ export class MockRoutesManager {
                 let rightKey: string = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
                 rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
 
-                const route: MockRoutesRoute = rightKey ? this._routes[rightKey] : null;
+                const route: IMockRoutesRoute = rightKey ? this._routes[rightKey] : null;
                 if (route && route.valid) {
                     route.guard(req, res, () => {
                         res.sendFile(route.path);
@@ -100,7 +103,7 @@ export class MockRoutesManager {
         }
     }
     protected cleanParams(): void {
-        let defaultOptions: MockRoutesOptions = {
+        let defaultOptions: IMockRoutesOptions = {
             verbose: true
         };
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
@@ -142,8 +145,8 @@ export class MockRoutesManager {
             console.error(chalk.red(this._lastError));
         }
     }
-    protected loadGuard(guardSpec: any): MockRoutesGuard {
-        let out: MockRoutesGuard = {
+    protected loadGuard(guardSpec: any): IMockRoutesGuard {
+        let out: IMockRoutesGuard = {
             name: guardSpec.name,
             path: guardSpec.path,
             guard: undefined
@@ -203,7 +206,7 @@ export class MockRoutesManager {
 
                     if (valid) {
                         if (spec.guard) {
-                            const loadedGuard: MockRoutesGuard = this.loadGuard({
+                            const loadedGuard: IMockRoutesGuard = this.loadGuard({
                                 name: null,
                                 path: spec.guard
                             });
@@ -231,7 +234,7 @@ export class MockRoutesManager {
                         }
                     }
 
-                    const route: MockRoutesRoute = {
+                    const route: IMockRoutesRoute = {
                         uri: spec.uri,
                         path: filePath,
                         originalPath: spec.path,

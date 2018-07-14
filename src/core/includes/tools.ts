@@ -14,7 +14,7 @@ export enum ToolsCheckPath {
     WrongType,
     WrongChecker,
 };
-export interface ToolsCheckPathResult {
+export interface IToolsCheckPathResult {
     status: ToolsCheckPath;
     originalPath: string;
     path: string;
@@ -31,10 +31,10 @@ export class Tools {
     private constructor() { }
     //
     // Public class methods.
-    public static CheckDirectory(filePath: string, relativeTo: string = null): ToolsCheckPathResult {
+    public static CheckDirectory(filePath: string, relativeTo: string = null): IToolsCheckPathResult {
         return Tools.CheckPathByType('isDirectory', filePath, relativeTo);
     }
-    public static CheckFile(filePath: string, relativeTo: string = null): ToolsCheckPathResult {
+    public static CheckFile(filePath: string, relativeTo: string = null): IToolsCheckPathResult {
         return Tools.CheckPathByType('isFile', filePath, relativeTo);
     }
     /**
@@ -100,8 +100,8 @@ export class Tools {
     }
     //
     // Protected class methods.
-    protected static CheckPathByType(checker: string, filePath: string, relativeTo: string = null): ToolsCheckPathResult {
-        let result: ToolsCheckPathResult = {
+    protected static CheckPathByType(checker: string, filePath: string, relativeTo: string = null): IToolsCheckPathResult {
+        let result: IToolsCheckPathResult = {
             status: ToolsCheckPath.Unknown,
             originalPath: filePath,
             path: filePath,

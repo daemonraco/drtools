@@ -8,17 +8,17 @@ import { chalk } from '../../libraries';
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
-import { RoutesConstants, RouteOptions } from '.';
+import { RoutesConstants, IRouteOptions } from '.';
 
 declare const global: any;
 
-export class RoutesManager extends GenericManager<RouteOptions> {
+export class RoutesManager extends GenericManager<IRouteOptions> {
     //
     // Protected properties.
     protected _routes: any[] = [];
     //
     // Constructor.
-    constructor(app: any, directory: string, options: RouteOptions = {}, configs: ConfigsManager) {
+    constructor(app: any, directory: string, options: IRouteOptions = {}, configs: ConfigsManager) {
         super(directory, options, configs);
         this.loadAndAttach(app);
         this._valid = !this._lastError;
@@ -33,7 +33,7 @@ export class RoutesManager extends GenericManager<RouteOptions> {
     //
     // Protected methods.
     protected cleanOptions(): void {
-        let defaultOptions: RouteOptions = {
+        let defaultOptions: IRouteOptions = {
             suffix: RoutesConstants.Suffix,
             verbose: true
         };

@@ -75,6 +75,9 @@ class PluginsManager {
     lastError() {
         return this._lastError;
     }
+    matchesKey(key) {
+        return this.directories().indexOf(key) > -1;
+    }
     methodsOf(name) {
         return typeof this._itemSpecs[name] !== 'undefined' ? Object.keys(this._itemSpecs[name].library) : [];
     }

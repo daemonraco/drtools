@@ -4,11 +4,11 @@
  */
 import { ConfigsManager } from '../configs';
 import { GenericManager } from '../includes';
-import { TasksList, TasksManagerOptions } from '.';
-export declare class TasksManager extends GenericManager<TasksManagerOptions> {
+import { TasksList, ITasksManagerOptions } from '.';
+export declare class TasksManager extends GenericManager<ITasksManagerOptions> {
     protected _intervals: any[];
     protected _items: TasksList;
-    constructor(directory: string, options?: TasksManagerOptions, configs?: ConfigsManager);
+    constructor(directory: string, options?: ITasksManagerOptions, configs?: ConfigsManager);
     tasks(): any[];
     protected cleanOptions(): void;
     protected load(): void;

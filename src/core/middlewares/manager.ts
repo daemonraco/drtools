@@ -6,19 +6,19 @@
 import { chalk } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
-import { DRCollector } from '../drcollector';
+import { DRCollector, IManagerByKey } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
-import { MiddlewaresConstants, MiddlewareOptions } from '.';
+import { MiddlewaresConstants, IMiddlewareOptions } from '.';
 
 declare const global: any;
 
-export class MiddlewaresManager extends GenericManager<MiddlewareOptions>  {
+export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
     //
     // Protected properties.
 
     //
     // Constructor.
-    constructor(app: any, directory: string, options: MiddlewareOptions = null, configs: ConfigsManager = null) {
+    constructor(app: any, directory: string, options: IMiddlewareOptions = null, configs: ConfigsManager = null) {
         super(directory, options, configs);
         this.loadAndAttach(app);
         this._valid = !this._lastError;
@@ -31,7 +31,7 @@ export class MiddlewaresManager extends GenericManager<MiddlewareOptions>  {
     //
     // Protected methods.
     protected cleanOptions(): void {
-        let defaultOptions: MiddlewareOptions = {
+        let defaultOptions: IMiddlewareOptions = {
             suffix: MiddlewaresConstants.Suffix,
             verbose: true
         };
