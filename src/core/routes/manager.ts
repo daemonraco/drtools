@@ -15,18 +15,29 @@ declare const global: any;
 export class RoutesManager extends GenericManager<IRouteOptions> {
     //
     // Protected properties.
+    protected _expressApp: any = null;
     protected _routes: any[] = [];
     //
     // Constructor.
     constructor(app: any, directory: string, options: IRouteOptions = {}, configs: ConfigsManager) {
         super(directory, options, configs);
-        this.loadAndAttach(app);
+        this._expressApp = app;
         this._valid = !this._lastError;
 
         DRCollector.registerRoutesManager(this);
     }
     //
     // Public methods.
+    public async load(): Promise<boolean> {
+        if (!this._loaded) {
+            this._loaded = true;
+
+            this.loadAndAttach();
+            this._valid = !this._lastError;
+        }
+
+        return this.valid();
+    }
     public routes(): any[] {
         return this._routes;
     }
@@ -40,10 +51,7 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
-    protected load() {
-        // Nothing to do here.
-    }
-    protected loadAndAttach(app: any) {
+    protected loadAndAttach() {
         if (this._options.verbose) {
             console.log(`Loading routes:`);
         }
@@ -70,7 +78,7 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
                                 };
                             })
                     });
-                    app.use(`/${this._itemSpecs[i].name}`, router);
+                    this._expressApp.use(`/${this._itemSpecs[i].name}`, router);
 
                     delete global.configs;
                 } catch (e) {

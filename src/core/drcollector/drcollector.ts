@@ -3,13 +3,13 @@
  * @author Alejandro D. Simi
  */
 
-import { EventEmitter } from '../../libraries';
+import { chalk, EventEmitter } from '../../libraries';
 
 import { BasicList, Tools } from '../includes';
 import { ConfigsManager } from '../configs';
-import { DRCollectorEvents } from './constants';
+import { DRCollectorConstants, DRCollectorManagers, DRCollectorEvents } from './constants';
 import { EndpointsManager } from '../mock-endpoints';
-import { IManagerByKey } from './types';
+import { IAsyncManager, IManagerByKey } from './types';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager } from '../mock-routes';
@@ -134,6 +134,8 @@ class DRCollectorClass {
             this._loadersManagers.push(manager);
             this._infoReport = null;
 
+            this.monitorAsyncManagerLoading(DRCollectorManagers.Loader, manager);
+
             const eventData: any = {
                 loadersManager: manager
             };
@@ -145,6 +147,8 @@ class DRCollectorClass {
         if (this._middlewaresManager.indexOf(manager) < 0) {
             this._middlewaresManager.push(manager);
             this._infoReport = null;
+
+            this.monitorAsyncManagerLoading(DRCollectorManagers.Middlewares, manager);
 
             const eventData: any = {
                 middlewaresManager: manager
@@ -194,6 +198,8 @@ class DRCollectorClass {
             this._routesManager.push(manager);
             this._infoReport = null;
 
+            this.monitorAsyncManagerLoading(DRCollectorManagers.Routes, manager);
+
             const eventData: any = {
                 routesManager: manager
             };
@@ -205,6 +211,8 @@ class DRCollectorClass {
         if (this._tasksManager.indexOf(manager) < 0) {
             this._tasksManager.push(manager);
             this._infoReport = null;
+
+            this.monitorAsyncManagerLoading(DRCollectorManagers.Tasks, manager);
 
             const eventData: any = {
                 tasksManager: manager
@@ -412,9 +420,13 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
-    //
-    // Protected methods.
-
+    protected monitorAsyncManagerLoading(type: string, manager: IAsyncManager): void {
+        setTimeout(() => {
+            if (!manager.loaded()) {
+                console.error(chalk.red(`A manager of type '${type}' is still waiting to be initialized`));
+            }
+        }, DRCollectorConstants.AsyncLoadingTimeout);
+    }
     //
     // Public class methods.
     public static Instance(): DRCollectorClass {

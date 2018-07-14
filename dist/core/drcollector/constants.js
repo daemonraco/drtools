@@ -4,6 +4,25 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+class DRCollectorConstants {
+    constructor() { }
+}
+DRCollectorConstants.AsyncLoadingTimeout = 10 * 1000;
+exports.DRCollectorConstants = DRCollectorConstants;
+class DRCollectorManagers {
+    constructor() { }
+}
+DRCollectorManagers.Configs = 'configs';
+DRCollectorManagers.Endpoints = 'endpoints';
+DRCollectorManagers.Loader = 'loaders';
+DRCollectorManagers.Middlewares = 'middlewares';
+DRCollectorManagers.MockRoutes = 'mock-routes';
+DRCollectorManagers.MySQL = 'mysql';
+DRCollectorManagers.Plugins = 'plugins';
+DRCollectorManagers.Routes = 'routes';
+DRCollectorManagers.Tasks = 'tasks';
+DRCollectorManagers.WebToApi = 'webtoapi';
+exports.DRCollectorManagers = DRCollectorManagers;
 class DRCollectorEvents {
     constructor() { }
 }

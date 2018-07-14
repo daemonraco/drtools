@@ -213,60 +213,57 @@ export class DRToolsServer {
         ExpressConnector.attach(app, { webUi: this.webUI });
 
         let configs: ConfigsManager = null;
-        if (this.connectorOptions.configsDirectory) {
-            configs = new ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
-        }
-
         let loaders: LoadersManager = null;
-        if (this.connectorOptions.loadersDirectory) {
-            loaders = new LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
-        }
-
         let middlewares: MiddlewaresManager = null;
-        if (this.connectorOptions.middlewaresDirectory) {
-            middlewares = new MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
-        }
-
         let routes: RoutesManager = null;
-        if (this.connectorOptions.routesDirectory) {
-            routes = new RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
-        }
-        if (routes) {
-            routes.itemNames().forEach((r: string) => this.availableUrls.push(`/${r}`));
-        }
-
         let tasks: TasksManager = null;
-        if (this.connectorOptions.tasksDirectory) {
-            tasks = new TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
-        }
-
         let mockRoutes: MockRoutesManager = null;
-        if (this.connectorOptions.mockRoutesConfig) {
-            mockRoutes = new MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
-        }
-
         let endpoints: EndpointsManager = null;
-        if (this.connectorOptions.endpoints) {
-            endpoints = new EndpointsManager({
-                directory: this.connectorOptions.endpoints.directory,
-                uri: this.connectorOptions.endpoints.uri,
-                options: this.connectorOptions.endpoints.options
-            }, configs);
-            app.use(endpoints.provide());
-        }
 
-        app.all('*', (req: any, res: any) => {
-            const result: any = {
-                message: `Path '${req.url}' was not found.`
-            };
-
-            if (req.originalUrl === '/') {
-                result.availableUrls = this.availableUrls.sort();
+        const loadManagers = async () => {
+            if (this.connectorOptions.configsDirectory) {
+                configs = new ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
             }
 
-            res.status(404).json(result);
-        });
+            if (this.connectorOptions.loadersDirectory) {
+                loaders = new LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
+                await loaders.load();
+            }
 
+            if (this.connectorOptions.middlewaresDirectory) {
+                middlewares = new MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
+                await middlewares.load();
+            }
+
+            if (this.connectorOptions.routesDirectory) {
+                routes = new RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
+                await routes.load();
+            }
+            if (routes) {
+                routes.itemNames().forEach((r: string) => this.availableUrls.push(`/${r}`));
+            }
+
+            if (this.connectorOptions.tasksDirectory) {
+                tasks = new TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
+                await tasks.load();
+            }
+
+            if (this.connectorOptions.mockRoutesConfig) {
+                mockRoutes = new MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
+            }
+
+            if (this.connectorOptions.endpoints) {
+                endpoints = new EndpointsManager({
+                    directory: this.connectorOptions.endpoints.directory,
+                    uri: this.connectorOptions.endpoints.uri,
+                    options: this.connectorOptions.endpoints.options
+                }, configs);
+                app.use(endpoints.provide());
+            }
+        }
+        const exitHandler = (options: any, err: any) => {
+            process.exit();
+        }
         const listingInfo = () => {
             console.log(`\nListening at '${chalk.green(`http://localhost:${this.port}`)}'`);
 
@@ -325,15 +322,27 @@ export class DRToolsServer {
             console.log();
         };
 
-        if (commander.testRun) {
-            listingInfo();
-        } else {
-            http.createServer(app).listen(this.port, listingInfo);
-        }
+        loadManagers().then(() => {
+            app.all('*', (req: any, res: any) => {
+                const result: any = {
+                    message: `Path '${req.url}' was not found.`
+                };
 
-        const exitHandler = (options: any, err: any) => {
-            process.exit();
-        }
+                if (req.originalUrl === '/') {
+                    result.availableUrls = this.availableUrls.sort();
+                }
+
+                res.status(404).json(result);
+            });
+
+            if (commander.testRun) {
+                listingInfo();
+            } else {
+                http.createServer(app).listen(this.port, listingInfo);
+            }
+        }).catch(err => {
+            console.error(chalk.red(`There was an error loading managers.`), err);
+        });
         //
         // Do something when app is closing.
         process.on('exit', exitHandler.bind(null, { cleanup: true }));

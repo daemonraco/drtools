@@ -16,6 +16,7 @@ class GenericManager {
         this._directory = null;
         this._itemSpecs = [];
         this._lastError = null;
+        this._loaded = false;
         this._options = null;
         this._valid = false;
         this._configs = configs;
@@ -38,6 +39,9 @@ class GenericManager {
     }
     lastError() {
         return this._lastError;
+    }
+    loaded() {
+        return this._loaded;
     }
     matchesKey(key) {
         return this.directory() === key;

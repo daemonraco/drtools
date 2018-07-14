@@ -3,6 +3,14 @@
  * @file server.ts
  * @author Alejandro D. Simi
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const drtools_1 = require("../../core/drtools");
@@ -172,50 +180,50 @@ class DRToolsServer {
         });
         drtools_1.ExpressConnector.attach(app, { webUi: this.webUI });
         let configs = null;
-        if (this.connectorOptions.configsDirectory) {
-            configs = new drtools_1.ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
-        }
         let loaders = null;
-        if (this.connectorOptions.loadersDirectory) {
-            loaders = new drtools_1.LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
-        }
         let middlewares = null;
-        if (this.connectorOptions.middlewaresDirectory) {
-            middlewares = new drtools_1.MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
-        }
         let routes = null;
-        if (this.connectorOptions.routesDirectory) {
-            routes = new drtools_1.RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
-        }
-        if (routes) {
-            routes.itemNames().forEach((r) => this.availableUrls.push(`/${r}`));
-        }
         let tasks = null;
-        if (this.connectorOptions.tasksDirectory) {
-            tasks = new drtools_1.TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
-        }
         let mockRoutes = null;
-        if (this.connectorOptions.mockRoutesConfig) {
-            mockRoutes = new drtools_1.MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
-        }
         let endpoints = null;
-        if (this.connectorOptions.endpoints) {
-            endpoints = new drtools_1.EndpointsManager({
-                directory: this.connectorOptions.endpoints.directory,
-                uri: this.connectorOptions.endpoints.uri,
-                options: this.connectorOptions.endpoints.options
-            }, configs);
-            app.use(endpoints.provide());
-        }
-        app.all('*', (req, res) => {
-            const result = {
-                message: `Path '${req.url}' was not found.`
-            };
-            if (req.originalUrl === '/') {
-                result.availableUrls = this.availableUrls.sort();
+        const loadManagers = () => __awaiter(this, void 0, void 0, function* () {
+            if (this.connectorOptions.configsDirectory) {
+                configs = new drtools_1.ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
             }
-            res.status(404).json(result);
+            if (this.connectorOptions.loadersDirectory) {
+                loaders = new drtools_1.LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
+                yield loaders.load();
+            }
+            if (this.connectorOptions.middlewaresDirectory) {
+                middlewares = new drtools_1.MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
+                yield middlewares.load();
+            }
+            if (this.connectorOptions.routesDirectory) {
+                routes = new drtools_1.RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
+                yield routes.load();
+            }
+            if (routes) {
+                routes.itemNames().forEach((r) => this.availableUrls.push(`/${r}`));
+            }
+            if (this.connectorOptions.tasksDirectory) {
+                tasks = new drtools_1.TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
+                yield tasks.load();
+            }
+            if (this.connectorOptions.mockRoutesConfig) {
+                mockRoutes = new drtools_1.MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
+            }
+            if (this.connectorOptions.endpoints) {
+                endpoints = new drtools_1.EndpointsManager({
+                    directory: this.connectorOptions.endpoints.directory,
+                    uri: this.connectorOptions.endpoints.uri,
+                    options: this.connectorOptions.endpoints.options
+                }, configs);
+                app.use(endpoints.provide());
+            }
         });
+        const exitHandler = (options, err) => {
+            process.exit();
+        };
         const listingInfo = () => {
             console.log(`\nListening at '${libraries_1.chalk.green(`http://localhost:${this.port}`)}'`);
             if (this.connectorOptions.configsDirectory) {
@@ -263,15 +271,25 @@ class DRToolsServer {
             }
             console.log();
         };
-        if (libraries_1.commander.testRun) {
-            listingInfo();
-        }
-        else {
-            libraries_1.http.createServer(app).listen(this.port, listingInfo);
-        }
-        const exitHandler = (options, err) => {
-            process.exit();
-        };
+        loadManagers().then(() => {
+            app.all('*', (req, res) => {
+                const result = {
+                    message: `Path '${req.url}' was not found.`
+                };
+                if (req.originalUrl === '/') {
+                    result.availableUrls = this.availableUrls.sort();
+                }
+                res.status(404).json(result);
+            });
+            if (libraries_1.commander.testRun) {
+                listingInfo();
+            }
+            else {
+                libraries_1.http.createServer(app).listen(this.port, listingInfo);
+            }
+        }).catch(err => {
+            console.error(libraries_1.chalk.red(`There was an error loading managers.`), err);
+        });
         //
         // Do something when app is closing.
         process.on('exit', exitHandler.bind(null, { cleanup: true }));

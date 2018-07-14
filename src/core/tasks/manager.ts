@@ -21,17 +21,45 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
     // Constructor.
     constructor(directory: string, options: ITasksManagerOptions = null, configs: ConfigsManager = null) {
         super(directory, options, configs);
-
-        this.load();
         this._valid = !this._lastError;
-
-        this.runAtStart();
-        this.setIntervals();
 
         DRCollector.registerTasksManager(this);
     }
     //
     // Public methods.
+    public async load(): Promise<boolean> {
+        if (!this._loaded) {
+            this._loaded = true;
+
+            if (this._options.verbose) {
+                console.log(`Loading tasks:`);
+            }
+
+            this._items = {};
+            if (!this._lastError && this._itemSpecs.length > 0) {
+                for (let item of this._itemSpecs) {
+                    try {
+                        if (this._options.verbose) {
+                            console.log(`\t- '${chalk.green(item.name)}'`);
+                        }
+
+                        const task: Task = require(item.path);
+                        task.setConfigs(this._configs);
+                        this._items[item.name] = <Task>task;
+                    } catch (e) {
+                        console.error(chalk.red(`Unable to load task '${item.name}'.\n\t${e}`));
+                    }
+                }
+            }
+
+            this._valid = !this._lastError;
+
+            this.runAtStart();
+            this.setIntervals();
+        }
+
+        return this.valid();
+    }
     public tasks(): any[] {
         return this._itemSpecs.map((item: IItemSpec) => {
             const task: Task = this._items[item.name];
@@ -52,28 +80,6 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
-    }
-    protected load(): void {
-        if (this._options.verbose) {
-            console.log(`Loading tasks:`);
-        }
-
-        this._items = {};
-        if (!this._lastError && this._itemSpecs.length > 0) {
-            for (let i in this._itemSpecs) {
-                try {
-                    if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(this._itemSpecs[i].name)}'`);
-                    }
-
-                    const task: Task = require(this._itemSpecs[i].path);
-                    task.setConfigs(this._configs);
-                    this._items[this._itemSpecs[i].name] = <Task>task;
-                } catch (e) {
-                    console.error(chalk.red(`Unable to load task '${this._itemSpecs[i].name}'.\n\t${e}`));
-                }
-            }
-        }
     }
     protected runAtStart(): void {
         if (this.valid()) {

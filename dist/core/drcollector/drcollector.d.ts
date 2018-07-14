@@ -7,7 +7,7 @@ import { EventEmitter } from '../../libraries';
 import { BasicList } from '../includes';
 import { ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';
-import { IManagerByKey } from './types';
+import { IAsyncManager, IManagerByKey } from './types';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager } from '../mock-routes';
@@ -73,6 +73,7 @@ declare class DRCollectorClass {
     protected infoReportRoutesManager(): BasicList<any>;
     protected infoReportTasksManager(): BasicList<any>;
     protected infoReportWebToApi(): BasicList<any>;
+    protected monitorAsyncManagerLoading(type: string, manager: IAsyncManager): void;
     static Instance(): DRCollectorClass;
 }
 export declare const DRCollector: DRCollectorClass;

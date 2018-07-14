@@ -6,19 +6,20 @@
 import { chalk, fs, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
+import { IAsyncManager, IManagerByKey } from '../drcollector';
 import { IItemSpec } from '.';
-import { IManagerByKey } from '../drcollector';
 import { Tools } from '../includes';
 
 declare const global: any;
 
-export abstract class GenericManager<TOptions> implements IManagerByKey {
+export abstract class GenericManager<TOptions> implements IAsyncManager, IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
     protected _directory: string = null;
     protected _itemSpecs: IItemSpec[] = [];
     protected _lastError: string = null;
+    protected _loaded: boolean = false;
     protected _options: TOptions = null;
     protected _valid: boolean = false;
     //
@@ -45,6 +46,10 @@ export abstract class GenericManager<TOptions> implements IManagerByKey {
     }
     public lastError(): string {
         return this._lastError;
+    }
+    public abstract load(): Promise<boolean>;
+    public loaded(): boolean {
+        return this._loaded;
     }
     public matchesKey(key: string): boolean {
         return this.directory() === key;
@@ -73,7 +78,6 @@ export abstract class GenericManager<TOptions> implements IManagerByKey {
         }
     }
     protected abstract cleanOptions(): void;
-    protected abstract load(): void;
     protected loadItemPaths(): void {
         if (!this._lastError) {
             this._itemSpecs = [];

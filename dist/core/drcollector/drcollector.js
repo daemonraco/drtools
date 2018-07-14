@@ -115,6 +115,7 @@ class DRCollectorClass {
         if (this._loadersManagers.indexOf(manager) < 0) {
             this._loadersManagers.push(manager);
             this._infoReport = null;
+            this.monitorAsyncManagerLoading(constants_1.DRCollectorManagers.Loader, manager);
             const eventData = {
                 loadersManager: manager
             };
@@ -126,6 +127,7 @@ class DRCollectorClass {
         if (this._middlewaresManager.indexOf(manager) < 0) {
             this._middlewaresManager.push(manager);
             this._infoReport = null;
+            this.monitorAsyncManagerLoading(constants_1.DRCollectorManagers.Middlewares, manager);
             const eventData = {
                 middlewaresManager: manager
             };
@@ -170,6 +172,7 @@ class DRCollectorClass {
         if (this._routesManager.indexOf(manager) < 0) {
             this._routesManager.push(manager);
             this._infoReport = null;
+            this.monitorAsyncManagerLoading(constants_1.DRCollectorManagers.Routes, manager);
             const eventData = {
                 routesManager: manager
             };
@@ -181,6 +184,7 @@ class DRCollectorClass {
         if (this._tasksManager.indexOf(manager) < 0) {
             this._tasksManager.push(manager);
             this._infoReport = null;
+            this.monitorAsyncManagerLoading(constants_1.DRCollectorManagers.Tasks, manager);
             const eventData = {
                 tasksManager: manager
             };
@@ -361,8 +365,13 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
-    //
-    // Protected methods.
+    monitorAsyncManagerLoading(type, manager) {
+        setTimeout(() => {
+            if (!manager.loaded()) {
+                console.error(libraries_1.chalk.red(`A manager of type '${type}' is still waiting to be initialized`));
+            }
+        }, constants_1.DRCollectorConstants.AsyncLoadingTimeout);
+    }
     //
     // Public class methods.
     static Instance() {
