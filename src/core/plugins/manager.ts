@@ -7,16 +7,17 @@ import { chalk, fs, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
 import { DRCollector, IAsyncManager, IManagerByKey } from '../drcollector';
-import { Tools } from '../includes';
+import { IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
 import { PluginsConstants, IPluginsOptions, IPluginSpecs, IPluginSpecsList } from '.';
 
 declare const global: any;
+declare const process: any;
 
 export class PluginsManager implements IAsyncManager, IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
-    protected _directories: string[] = [];
+    protected _directory: string = null;
     protected _itemSpecs: IPluginSpecsList = null;
     protected _lastError: string = null;
     protected _loaded: boolean = false;
@@ -25,16 +26,13 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(directories: string | string[], options: IPluginsOptions = null, configs: ConfigsManager = null) {
-        if (!Array.isArray(directories)) {
-            directories = [directories];
-        }
-        this._directories = directories;
+    constructor(directory: string, options: IPluginsOptions = null, configs: ConfigsManager = null) {
+        this._directory = directory;
         this._options = options;
         this._configs = configs;
 
         this.cleanOptions();
-        this.checkDirectories();
+        this.checkDirectory();
         this.loadItemPaths();
 
         this._valid = !this._lastError;
@@ -58,8 +56,8 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     public configs(): ConfigsManager {
         return this._configs;
     }
-    public directories(): string[] {
-        return this._directories;
+    public directory(): string {
+        return this._directory;
     }
     public get(code: string): any {
         let results: any = null;
@@ -144,46 +142,32 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
         return this._loaded;
     }
     public matchesKey(key: string): boolean {
-        return this.directories().indexOf(key) > -1;
+        return this.directory() === key;
     }
     public methodsOf(name: string): string[] {
         return typeof this._itemSpecs[name] !== 'undefined' ? Object.keys(this._itemSpecs[name].library) : [];
-    }
-    public pluginConfig(plgName: string): any {
-        let out: any = null;
-
-        return out;
     }
     public valid(): boolean {
         return this._valid;
     }
     //
     // Protected methods.
-    protected checkDirectories(): void {
+    protected checkDirectory(): void {
         //
         // Checking given directory paths.
         if (!this._lastError) {
-            const cleanDirectories: string[] = [];
-
-            for (let dir of this._directories) {
-                dir = Tools.FullPath(dir);
-
-                let stat: any = null;
-                try { stat = fs.statSync(dir); } catch (e) { }
-                if (!stat) {
-                    this._lastError = `'${dir}' does not exist.`;
-                    console.error(chalk.red(this._lastError));
+            const check: IToolsCheckPathResult = Tools.CheckDirectory(this._directory, process.cwd());
+            switch (check.status) {
+                case ToolsCheckPath.Ok:
+                    this._directory = check.path;
                     break;
-                } else if (!stat.isDirectory()) {
-                    this._lastError = `'${dir}' is not a directory.`;
+                case ToolsCheckPath.WrongType:
+                    this._lastError = `'${this._directory}' is not a directory.`;
                     console.error(chalk.red(this._lastError));
-                    break;
-                }
-
-                cleanDirectories.push(dir);
+                default:
+                    this._lastError = `'${this._directory}' does not exist.`;
+                    console.error(chalk.red(this._lastError));
             }
-
-            this._directories = cleanDirectories;
         }
     }
     protected cleanOptions(): void {
@@ -197,23 +181,21 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
         if (!this._lastError) {
             this._paths = [];
 
-            for (const dir of this._directories) {
-                let dirs = fs.readdirSync(dir)
-                    .map(x => {
-                        return {
-                            name: x,
-                            path: Tools.FullPath(path.join(dir, x))
-                        };
-                    })
-                    .filter(x => {
-                        let stat = null;
-                        try { stat = fs.statSync(x.path); } catch (e) { }
-                        return stat && stat.isDirectory();
-                    });
+            let dirs = fs.readdirSync(this._directory)
+                .map(x => {
+                    return {
+                        name: x,
+                        path: Tools.FullPath(path.join(this._directory, x))
+                    };
+                })
+                .filter(x => {
+                    let stat = null;
+                    try { stat = fs.statSync(x.path); } catch (e) { }
+                    return stat && stat.isDirectory();
+                });
 
-                for (const dir of dirs) {
-                    this._paths.push(dir);
-                }
+            for (const dir of dirs) {
+                this._paths.push(dir);
             }
         }
     }

@@ -19,25 +19,22 @@ const _1 = require(".");
 class PluginsManager {
     //
     // Constructor.
-    constructor(directories, options = null, configs = null) {
+    constructor(directory, options = null, configs = null) {
         //
         // Protected properties.
         this._configs = null;
-        this._directories = [];
+        this._directory = null;
         this._itemSpecs = null;
         this._lastError = null;
         this._loaded = false;
         this._options = null;
         this._paths = null;
         this._valid = false;
-        if (!Array.isArray(directories)) {
-            directories = [directories];
-        }
-        this._directories = directories;
+        this._directory = directory;
         this._options = options;
         this._configs = configs;
         this.cleanOptions();
-        this.checkDirectories();
+        this.checkDirectory();
         this.loadItemPaths();
         this._valid = !this._lastError;
         drcollector_1.DRCollector.registerPluginsManager(this);
@@ -57,8 +54,8 @@ class PluginsManager {
     configs() {
         return this._configs;
     }
-    directories() {
-        return this._directories;
+    directory() {
+        return this._directory;
     }
     get(code) {
         let results = null;
@@ -133,45 +130,32 @@ class PluginsManager {
         return this._loaded;
     }
     matchesKey(key) {
-        return this.directories().indexOf(key) > -1;
+        return this.directory() === key;
     }
     methodsOf(name) {
         return typeof this._itemSpecs[name] !== 'undefined' ? Object.keys(this._itemSpecs[name].library) : [];
-    }
-    pluginConfig(plgName) {
-        let out = null;
-        return out;
     }
     valid() {
         return this._valid;
     }
     //
     // Protected methods.
-    checkDirectories() {
+    checkDirectory() {
         //
         // Checking given directory paths.
         if (!this._lastError) {
-            const cleanDirectories = [];
-            for (let dir of this._directories) {
-                dir = includes_1.Tools.FullPath(dir);
-                let stat = null;
-                try {
-                    stat = libraries_1.fs.statSync(dir);
-                }
-                catch (e) { }
-                if (!stat) {
-                    this._lastError = `'${dir}' does not exist.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
+            const check = includes_1.Tools.CheckDirectory(this._directory, process.cwd());
+            switch (check.status) {
+                case includes_1.ToolsCheckPath.Ok:
+                    this._directory = check.path;
                     break;
-                }
-                else if (!stat.isDirectory()) {
-                    this._lastError = `'${dir}' is not a directory.`;
+                case includes_1.ToolsCheckPath.WrongType:
+                    this._lastError = `'${this._directory}' is not a directory.`;
                     console.error(libraries_1.chalk.red(this._lastError));
-                    break;
-                }
-                cleanDirectories.push(dir);
+                default:
+                    this._lastError = `'${this._directory}' does not exist.`;
+                    console.error(libraries_1.chalk.red(this._lastError));
             }
-            this._directories = cleanDirectories;
         }
     }
     cleanOptions() {
@@ -183,25 +167,23 @@ class PluginsManager {
     loadItemPaths() {
         if (!this._lastError) {
             this._paths = [];
-            for (const dir of this._directories) {
-                let dirs = libraries_1.fs.readdirSync(dir)
-                    .map(x => {
-                    return {
-                        name: x,
-                        path: includes_1.Tools.FullPath(libraries_1.path.join(dir, x))
-                    };
-                })
-                    .filter(x => {
-                    let stat = null;
-                    try {
-                        stat = libraries_1.fs.statSync(x.path);
-                    }
-                    catch (e) { }
-                    return stat && stat.isDirectory();
-                });
-                for (const dir of dirs) {
-                    this._paths.push(dir);
+            let dirs = libraries_1.fs.readdirSync(this._directory)
+                .map(x => {
+                return {
+                    name: x,
+                    path: includes_1.Tools.FullPath(libraries_1.path.join(this._directory, x))
+                };
+            })
+                .filter(x => {
+                let stat = null;
+                try {
+                    stat = libraries_1.fs.statSync(x.path);
                 }
+                catch (e) { }
+                return stat && stat.isDirectory();
+            });
+            for (const dir of dirs) {
+                this._paths.push(dir);
             }
         }
     }

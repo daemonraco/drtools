@@ -10,8 +10,7 @@
     <div class="accordion">
         <div *ngFor="let conf of plugins; let i = index" class="card">
             <div class="card-header" style="cursor:pointer;" data-toggle="collapse" [attr.data-target]="'#plugins_collapse_' + i">
-                <i class="fa fa-plug text-info"></i>
-                <i class="text-secondary font-weight-light">&lt;click to expand&gt;</i>
+                <i class="fa fa-plug text-info"></i> {{conf.directory}}
             </div>
 
             <div [id]="'plugins_collapse_' + i" class="collapse">
@@ -19,12 +18,8 @@
                     <div class="row">
                         <ul class="list-unstyled col small">
                             <li>
-                                <strong>Directories</strong>:
-                                <ul>
-                                    <li *ngFor="let path of conf.directories">
-                                        <code>{{path}}</code>
-                                    </li>
-                                </ul>
+                                <strong>Directory</strong>:
+                                <code>{{conf.directory}}</code>
                             </li>
                         </ul>
                     </div>

@@ -351,7 +351,7 @@ class DRCollectorClass {
 
         for (const manager of this._pluginsManager) {
             const pluginInfo: any = {
-                directories: manager.directories(),
+                directory: manager.directory(),
                 plugins: []
             };
             const items: IPluginSpecsList = manager.items();
