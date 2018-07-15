@@ -161,6 +161,7 @@ class DRCollectorClass {
         if (this._pluginsManager.indexOf(manager) < 0) {
             this._pluginsManager.push(manager);
             this._infoReport = null;
+            this.monitorAsyncManagerLoading(constants_1.DRCollectorManagers.Plugins, manager);
             const eventData = {
                 pluginsManager: manager
             };

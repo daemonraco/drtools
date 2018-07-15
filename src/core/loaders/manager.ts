@@ -39,7 +39,7 @@ export class LoadersManager extends GenericManager<ILoaderOptions> {
                             console.log(`\t- '${chalk.green(item.name)}'`);
                         }
 
-                        global.configs = this._configs;
+                        global[LoadersConstants.GlobalConfigsPointer] = this._configs;
 
                         const lib: any = require(item.path);
                         let prom: any = null
@@ -49,11 +49,11 @@ export class LoadersManager extends GenericManager<ILoaderOptions> {
                             prom = lib;
                         }
 
-                        if (prom instanceof Promise) {
+                        if (prom && prom instanceof Promise) {
                             await prom;
                         }
 
-                        delete global.configs;
+                        delete global[LoadersConstants.GlobalConfigsPointer];
                     } catch (e) {
                         console.error(chalk.red(`Unable to load loader '${item.name}'.\n\t${e}`));
                     }

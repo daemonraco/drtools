@@ -3,56 +3,109 @@
 const port = process.env.PORT || 3005;
 
 const bodyParser = require('body-parser');
+const chalk = require('chalk');
 const express = require('express');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
-
+//
+// Importing DRTools.
+const {
+    ConfigsManager,
+    EndpointsManager,
+    ExpressConnector,
+    LoadersManager,
+    MiddlewaresManager,
+    MockRoutesManager,
+    RoutesManager,
+    PluginsManager,
+    TasksManager,
+    WebToApi
+} = require('../..');
+//
+// Creating an express application.
 const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
+//
+// Loading steps.
+const loadingSteps = [];
+//
+// Loading parser.
+loadingSteps.push(async () => {
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
+});
 //
 // Section to be tested @{
-const { ExpressConnector } = require('../..');
-const { configs } = ExpressConnector.attach(app, {
-    configsDirectory: path.join(__dirname, '../tmp/configs'),
-    loadersDirectory: path.join(__dirname, '../tmp/loaders'),
-    endpoints: {
+loadingSteps.push(async () => {
+    const configs = new ConfigsManager(path.join(__dirname, '../tmp/configs'), { publishConfigs: true });
+
+    ExpressConnector.attach(app, { webUi: true });
+
+    const loaders = new LoadersManager(path.join(__dirname, '../tmp/loaders'), {}, configs);
+    await loaders.load();
+
+    const middlewares = new MiddlewaresManager(app, path.join(__dirname, '../tmp/middlewares'), {}, configs);
+    await middlewares.load();
+
+    new MockRoutesManager(app, path.join(__dirname, '../tmp/mock-routes/mockup-routes.json'), {}, configs);
+
+    const plugins = new PluginsManager(path.join(__dirname, '../tmp/plugins'), {}, configs);
+    await plugins.load();
+
+    const routes = new RoutesManager(app, path.join(__dirname, '../tmp/routes'), {}, configs);
+    await routes.load();
+
+    const tasks = new TasksManager(path.join(__dirname, '../tmp/tasks'), {}, configs);
+    await tasks.load();
+
+    new EndpointsManager({
         directory: path.join(__dirname, '../tmp/endpoints'),
         uri: 'api/v1.0',
         options: {
             globalBehaviors: path.join(__dirname, '../tmp/endpoints/.globals.js')
         }
-    },
-    middlewaresDirectory: path.join(__dirname, '../tmp/middlewares'),
-    mockRoutesConfig: path.join(__dirname, '../tmp/mock-routes/mockup-routes.json'),
-    routesDirectory: path.join(__dirname, '../tmp/routes'),
-    tasksDirectory: path.join(__dirname, '../tmp/tasks'),
-    // mysqlRest:{},
-    pluginsDirectories: path.join(__dirname, '../tmp/plugins'),
-    webToApi: [{
-        path: '/webtoapi',
-        config: path.join(__dirname, '../tmp/webtoapi/config.json')
-    }],
-    webUi: true
+    }, configs);
+
+    const webtoapi = new WebToApi(path.join(__dirname, '../tmp/webtoapi/config.json'));
+    app.use('/webtoapi', webtoapi.router());
 });
 // @}
+//
+// Defaults.
+loadingSteps.push(async () => {
+    app.get('/webtoapi-test/:title', (req, res) => {
+        const html = fs.readFileSync(path.join(__dirname, '../tmp/webtoapi/index.html'))
+            .toString()
+            .replace(/%TITLE%/g, req.params.title);
+        res.status(200).send(html);
+    });
 
-app.get('/webtoapi-test/:title', (req, res) => {
-    const html = fs.readFileSync(path.join(__dirname, '../tmp/webtoapi/index.html'))
-        .toString()
-        .replace(/%TITLE%/g, req.params.title);
-    res.status(200).send(html);
-});
-
-app.all('*', (req, res) => {
-    res.status(404).json({
-        message: `Path '${req.url}' was not found.`
+    app.all('*', (req, res) => {
+        res.status(404).json({
+            message: `Path '${req.url}' was not found.`
+        });
     });
 });
+//
+// Steps loaders.
+const loadSteps = async () => {
+    const step = loadingSteps.shift();
 
-http.createServer(app).listen(port, () => {
-    console.log(`listening on port ${port}`);
-});
+    if (step) {
+        try {
+            await step();
+            loadSteps();
+        } catch (err) {
+            console.error(chalk.red(err));
+        }
+    } else {
+        //
+        // Starting server.
+        http.createServer(app).listen(port, () => {
+            console.log(`listening on port ${port}`);
+        });
+    }
+};
+//
+// Loading...
+loadSteps();

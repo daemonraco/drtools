@@ -10,4 +10,5 @@ class PluginsConstants {
 PluginsConstants.ConfigsPrefix = 'plugin.';
 PluginsConstants.DefaultMethod = 'default';
 PluginsConstants.GlobalConfigPointer = 'DRTOOLS_PLUGIN_CONFIG_POINTER';
+PluginsConstants.InitializationMethod = 'init';
 exports.PluginsConstants = PluginsConstants;

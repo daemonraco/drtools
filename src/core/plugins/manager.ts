@@ -6,19 +6,20 @@
 import { chalk, fs, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
-import { DRCollector, IManagerByKey } from '../drcollector';
+import { DRCollector, IAsyncManager, IManagerByKey } from '../drcollector';
 import { Tools } from '../includes';
 import { PluginsConstants, IPluginsOptions, IPluginSpecs, IPluginSpecsList } from '.';
 
 declare const global: any;
 
-export class PluginsManager implements IManagerByKey {
+export class PluginsManager implements IAsyncManager, IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
     protected _directories: string[] = [];
     protected _itemSpecs: IPluginSpecsList = null;
     protected _lastError: string = null;
+    protected _loaded: boolean = false;
     protected _options: IPluginsOptions = null;
     protected _paths: any[] = null;
     protected _valid: boolean = false;
@@ -35,7 +36,6 @@ export class PluginsManager implements IManagerByKey {
         this.cleanOptions();
         this.checkDirectories();
         this.loadItemPaths();
-        this.load();
 
         this._valid = !this._lastError;
 
@@ -88,6 +88,61 @@ export class PluginsManager implements IManagerByKey {
     public lastError(): string {
         return this._lastError;
     }
+    public async load(): Promise<boolean> {
+        if (!this._loaded) {
+            this._loaded = true;
+
+            if (!this._lastError) {
+                this._itemSpecs = {};
+
+                if (this._options.verbose) {
+                    console.log(`Loading plugins:`);
+                }
+
+                for (const dir of this._paths) {
+                    try {
+                        if (this._options.verbose) {
+                            console.log(`\t- '${chalk.green(dir.name)}'`);
+                        }
+
+                        global[PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
+                        let library: any = require(path.join(dir.path, 'index.js'));
+                        delete global[PluginsConstants.GlobalConfigPointer];
+
+                        if (typeof library !== 'object' || Array.isArray(library)) {
+                            const aux = library;
+                            library = {};
+                            library[`${PluginsConstants.DefaultMethod}`] = aux;
+                        }
+
+                        let prom: any = null;
+                        switch (typeof library[`${PluginsConstants.InitializationMethod}`]) {
+                            case 'function':
+                                prom = library[`${PluginsConstants.InitializationMethod}`]();
+                                break;
+                            case 'object':
+                                prom = library[`${PluginsConstants.InitializationMethod}`];
+                                break;
+                        }
+                        if (prom && prom instanceof Promise) {
+                            await prom;
+                        }
+
+                        this._itemSpecs[dir.name] = { name: dir.name, path: dir.path, library };
+                    } catch (e) {
+                        console.error(chalk.red(`Unable to load plugin '${dir.name}'. ${e}`));
+                    }
+                }
+            }
+
+            this._valid = !this._lastError;
+        }
+
+        return this.valid();
+    }
+    public loaded(): boolean {
+        return this._loaded;
+    }
     public matchesKey(key: string): boolean {
         return this.directories().indexOf(key) > -1;
     }
@@ -137,37 +192,6 @@ export class PluginsManager implements IManagerByKey {
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
-    }
-    protected load() {
-        if (!this._lastError) {
-            this._itemSpecs = {};
-
-            if (this._options.verbose) {
-                console.log(`Loading plugins:`);
-            }
-
-            for (const dir of this._paths) {
-                try {
-                    if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(dir.name)}'`);
-                    }
-
-                    global[PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
-                    let library: any = require(path.join(dir.path, 'index.js'));
-                    delete global[PluginsConstants.GlobalConfigPointer];
-
-                    if (typeof library !== 'object' || Array.isArray(library)) {
-                        const aux = library;
-                        library = {};
-                        library[`${PluginsConstants.DefaultMethod}`] = aux;
-                    }
-
-                    this._itemSpecs[dir.name] = { name: dir.name, path: dir.path, library };
-                } catch (e) {
-                    console.error(chalk.red(`Unable to load plugin '${dir.name}'. ${e}`));
-                }
-            }
-        }
     }
     protected loadItemPaths(): void {
         if (!this._lastError) {

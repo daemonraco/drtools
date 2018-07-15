@@ -5,6 +5,6 @@ module.exports = () => {
         setTimeout(() => {
             console.log(`Function->Promise loader... loaded`);
             resolve();
-        }, 1000);
+        }, 100);
     });
 }

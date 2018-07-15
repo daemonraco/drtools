@@ -27,35 +27,56 @@ describe(`[008] drtools: Plugins manager:`, () => {
     const configs = new ConfigsManager(path.join(__dirname, 'tmp/configs'));
     let mainManager = null;
 
-    it(`tries to load plugins from a non-existent directory`, () => {
+    it(`tries to load plugins from a non-existent directory`, done => {
         const dir = path.join(__dirname, 'not-a-directory');
         assert.isFalse(fs.existsSync(dir));
 
         const manager = new PluginsManager(dir, {}, configs);
-        assert.isFalse(manager.valid());
-        assert.match(manager.lastError(), /'.*drtools\/test\/not-a-directory' does not exist/);
+        manager.load()
+            .then(() => {
+                assert.isFalse(manager.valid());
+                assert.match(manager.lastError(), /'.*drtools\/test\/not-a-directory' does not exist/);
+            })
+            .catch(err => {
+                assert.isFalse(true, `Error: ${err}`);
+            })
+            .finally(() => done());
     });
 
-    it(`tries to load plugins from a valid directory`, () => {
+    it(`tries to load plugins from a valid directory`, done => {
         const dir = path.join(__dirname, 'tmp/plugins');
         assert.isTrue(fs.existsSync(dir));
 
         mainManager = new PluginsManager(dir, {}, configs);
-        assert.isTrue(mainManager.valid());
-        assert.isNull(mainManager.lastError());
+        mainManager.load()
+            .then(() => {
+                assert.isTrue(mainManager.valid());
+                assert.isNull(mainManager.lastError());
 
-        checkPluginNames(mainManager);
+                checkPluginNames(mainManager);
+            })
+            .catch(err => {
+                assert.isFalse(true, `Error: ${err}`);
+            })
+            .finally(() => done());
     });
 
-    it(`tries to load plugins from a list of valid directories`, () => {
+    it(`tries to load plugins from a list of valid directories`, done => {
         const dir = path.join(__dirname, 'tmp/plugins');
         assert.isTrue(fs.existsSync(dir));
 
         const manager = new PluginsManager([dir], {}, configs);
-        assert.isTrue(manager.valid());
-        assert.isNull(manager.lastError());
+        manager.load()
+            .then(() => {
+                assert.isTrue(manager.valid());
+                assert.isNull(manager.lastError());
 
-        checkPluginNames(manager);
+                checkPluginNames(manager);
+            })
+            .catch(err => {
+                assert.isFalse(true, `Error: ${err}`);
+            })
+            .finally(() => done());
     });
 
     it(`checks a non existing plugin`, () => {

@@ -39,7 +39,7 @@ class LoadersManager extends includes_1.GenericManager {
                             if (this._options.verbose) {
                                 console.log(`\t- '${libraries_1.chalk.green(item.name)}'`);
                             }
-                            global.configs = this._configs;
+                            global[_1.LoadersConstants.GlobalConfigsPointer] = this._configs;
                             const lib = require(item.path);
                             let prom = null;
                             if (typeof lib === 'function') {
@@ -48,10 +48,10 @@ class LoadersManager extends includes_1.GenericManager {
                             else if (typeof lib === 'object') {
                                 prom = lib;
                             }
-                            if (prom instanceof Promise) {
+                            if (prom && prom instanceof Promise) {
                                 yield prom;
                             }
-                            delete global.configs;
+                            delete global[_1.LoadersConstants.GlobalConfigsPointer];
                         }
                         catch (e) {
                             console.error(libraries_1.chalk.red(`Unable to load loader '${item.name}'.\n\t${e}`));

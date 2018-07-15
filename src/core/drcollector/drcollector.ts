@@ -186,6 +186,8 @@ class DRCollectorClass {
             this._pluginsManager.push(manager);
             this._infoReport = null;
 
+            this.monitorAsyncManagerLoading(DRCollectorManagers.Plugins, manager);
+
             const eventData: any = {
                 pluginsManager: manager
             };

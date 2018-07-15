@@ -1,6 +1,6 @@
 'use strict';
 
-const timer = new Promise((resolve, reject) => setTimeout(resolve, 1000));
+const timer = new Promise((resolve, reject) => setTimeout(resolve, 100));
 
 module.exports = async () => {
     await timer;
