@@ -13,6 +13,7 @@ export * from './mock-routes';
 export * from './mysql';
 export * from './plugins';
 export * from './webtoapi';
+export * from './hooks';
 export * from './drcollector';
 import { ExpressConnector as ExpressConnectorClass } from './express';
 export declare const ExpressConnector: ExpressConnectorClass;

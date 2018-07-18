@@ -1,6 +1,3 @@
-__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
-VERSION 0.5.0</span>__
-
 # DRTools: Loaders
 ## Contents
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -9,6 +6,7 @@ VERSION 0.5.0</span>__
 - [What is a loader?](#what-is-a-loader)
 - [How to invoke it](#how-to-invoke-it)
     - [How does it look](#how-does-it-look)
+    - [Async loader](#async-loader)
 - [Options](#options)
 
 <!-- /TOC -->
@@ -23,6 +21,8 @@ that have to be loaded and run at certain point, you can do something like this:
 ```js
 const { LoadersManager } = require('drtools');
 const manager = new LoadersManager('directory/with/loader/files');
+manager.load()
+    .then(()=> console.log('loaded!'));
 ```
 
 ### How does it look
@@ -33,6 +33,34 @@ console.log('Loaded');
 ```
 Its name should be something like `my-init.loader.js` where `.loader` is a suffix
 required to be accepted.
+
+### Async loader
+If your loader has to load things in an asynchronous way, you may do something
+like this:
+```js
+'use strict';
+module.exports = new Promise((resolve, reject) => {
+    console.log('Loaded');
+    resolve();
+});
+```
+Or like this:
+```js
+'use strict';
+module.exports = () => {
+    return new Promise((resolve, reject) => {
+        console.log('Loaded');
+        resolve();
+    });
+}
+```
+Or even better:
+```js
+'use strict';
+module.exports = async () => {
+    console.log('Loaded');
+}
+```
 
 ## Options
 When you create a new manager you may pass these options in an object as a second

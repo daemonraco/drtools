@@ -49,7 +49,7 @@ class DRToolsServer {
     //
     // Protected methods.
     promptHeader() {
-        console.log(`DRTools Server (v${tools_1.Tools.Instance().version()}):\n`);
+        console.log(`DRTools Server (v${tools_1.Tools.Instance().version()}):`);
     }
     parseArguments() {
         this.port = libraries_1.commander.port || 3005;

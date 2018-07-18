@@ -5,7 +5,7 @@
 
 import { express, httpStatusCodes } from '../../libraries';
 
-import { StringsDictionary } from '../includes/basic-types';
+import { OptionsList, StringsDictionary } from '../includes/basic-types';
 import { WAEndpoint, WAEndpointList, WAException } from './types';
 import { WebToApi } from './manager';
 
@@ -40,7 +40,7 @@ export class WebToApiRouter {
             knownPaths: this._knownPaths
         });
     }
-    protected attendRequest(endpoint: WAEndpoint, map: StringsDictionary, req: any, res: any): void {
+    protected attendRequest(endpoint: WAEndpoint, map: StringsDictionary, req: any, res: any, options: OptionsList = {}): void {
         const params: StringsDictionary = {};
         for (const k of Object.keys(map)) {
             if (typeof req.params[map[k]] !== 'undefined') {
@@ -50,7 +50,13 @@ export class WebToApiRouter {
 
         this._manager.get(endpoint.name, params)
             .then(results => res.status(httpStatusCodes.OK).json(results))
-            .catch(error => res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json(error))
+            .catch(error => {
+                if (options.logErrors) {
+                    console.error(`Error at '${req.url}'`, error);
+                }
+
+                res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json(error);
+            });
     }
     protected load(): void {
         if (!this._loaded) {
@@ -63,7 +69,10 @@ export class WebToApiRouter {
                     this._knownPaths.push(route.path);
 
                     this._router.get(route.path, (req: any, res: any) => {
-                        this.attendRequest(this._endpoints[route.endpoint], route.map, req, res);
+                        const options: OptionsList = {
+                            logErrors: route.logErrors
+                        };
+                        this.attendRequest(this._endpoints[route.endpoint], route.map, req, res, options);
                     });
                 } else {
                     throw new WAException(`WebToApiRouter::load() Error: Unknown endpoint '${route.endpoint}'`);

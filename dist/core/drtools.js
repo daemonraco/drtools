@@ -41,6 +41,9 @@ __export(require("./plugins"));
 // HTML Web to API related exports.
 __export(require("./webtoapi"));
 //
+// Hooks related exports.
+__export(require("./hooks"));
+//
 // Exporting DRTools Collector singleton.
 __export(require("./drcollector"));
 //

@@ -52,7 +52,7 @@ export class DRToolsServer {
     //
     // Protected methods.
     protected promptHeader(): void {
-        console.log(`DRTools Server (v${Tools.Instance().version()}):\n`);
+        console.log(`DRTools Server (v${Tools.Instance().version()}):`);
     }
     protected parseArguments(): void {
         this.port = commander.port || 3005;

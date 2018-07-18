@@ -61,24 +61,6 @@ describe(`[008] drtools: Plugins manager:`, () => {
             .finally(() => done());
     });
 
-    it(`tries to load plugins from a list of valid directories`, done => {
-        const dir = path.join(__dirname, 'tmp/plugins');
-        assert.isTrue(fs.existsSync(dir));
-
-        const manager = new PluginsManager([dir], {}, configs);
-        manager.load()
-            .then(() => {
-                assert.isTrue(manager.valid());
-                assert.isNull(manager.lastError());
-
-                checkPluginNames(manager);
-            })
-            .catch(err => {
-                assert.isFalse(true, `Error: ${err}`);
-            })
-            .finally(() => done());
-    });
-
     it(`checks a non existing plugin`, () => {
         assert.isTrue(mainManager.valid());
         assert.isNull(mainManager.lastError());

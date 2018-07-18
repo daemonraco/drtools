@@ -35,7 +35,7 @@ class WebToApiRouter {
             knownPaths: this._knownPaths
         });
     }
-    attendRequest(endpoint, map, req, res) {
+    attendRequest(endpoint, map, req, res, options = {}) {
         const params = {};
         for (const k of Object.keys(map)) {
             if (typeof req.params[map[k]] !== 'undefined') {
@@ -44,7 +44,12 @@ class WebToApiRouter {
         }
         this._manager.get(endpoint.name, params)
             .then(results => res.status(libraries_1.httpStatusCodes.OK).json(results))
-            .catch(error => res.status(libraries_1.httpStatusCodes.INTERNAL_SERVER_ERROR).json(error));
+            .catch(error => {
+            if (options.logErrors) {
+                console.error(`Error at '${req.url}'`, error);
+            }
+            res.status(libraries_1.httpStatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        });
     }
     load() {
         if (!this._loaded) {
@@ -54,7 +59,10 @@ class WebToApiRouter {
                 if (typeof this._endpoints[route.endpoint] !== 'undefined') {
                     this._knownPaths.push(route.path);
                     this._router.get(route.path, (req, res) => {
-                        this.attendRequest(this._endpoints[route.endpoint], route.map, req, res);
+                        const options = {
+                            logErrors: route.logErrors
+                        };
+                        this.attendRequest(this._endpoints[route.endpoint], route.map, req, res, options);
                     });
                 }
                 else {

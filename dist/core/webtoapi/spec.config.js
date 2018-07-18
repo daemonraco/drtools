@@ -73,9 +73,10 @@ exports.WebToApiConfigSpec = {
                         '^.*$': { type: 'string' }
                     },
                     additionalProperties: false
-                }
+                },
+                logErrors: { type: 'boolean', default: false }
             },
-            required: ['endpoint', 'map', 'path'],
+            required: ['endpoint', 'map', 'path', 'logErrors'],
             additionalProperties: false
         }
     },

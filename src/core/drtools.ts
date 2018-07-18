@@ -48,6 +48,10 @@ export * from './plugins';
 export * from './webtoapi';
 
 //
+// Hooks related exports.
+export * from './hooks';
+
+//
 // Exporting DRTools Collector singleton.
 export * from './drcollector';
 
