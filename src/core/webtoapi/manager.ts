@@ -189,6 +189,7 @@ export class WebToApi implements IManagerByKey {
 
         for (const field of fields) {
             const findings = mainElement.find(field.path);
+
             if (findings.length > 1) {
                 results[field.name] = [];
                 //
@@ -196,13 +197,18 @@ export class WebToApi implements IManagerByKey {
                 // allow async/await @{
                 const elements: any[] = []
                 findings.each((index: number, element: any) => {
-                    elements.push(element);
+                    if (field.index === null || field.index === index) {
+                        elements.push(element);
+                    }
                 });
                 for (const element of elements) {
                     let aux: any = await parse(field, mainDoc(element));
                     results[field.name].push(aux);
                 }
                 // @}
+                if (field.index !== null && results[field.name].length > 0) {
+                    results[field.name] = results[field.name][0];
+                }
             } else {
                 results[field.name] = await parse(field, findings);
             }

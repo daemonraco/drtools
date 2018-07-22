@@ -24,6 +24,10 @@ export class MySQLTable {
     // Public methods.
     public all(conditions: MySQLRestConditions = {}, order: MySQLRestOrder = {}, limit: number = null, offset: number = null, full: boolean = false): Promise<any> {
         return new Promise<any>((resolve: (res: any) => void, reject: (err: string) => void) => {
+            if (!this._connection) {
+                throw `MySQLTable::all() Error: No connection provided.`;
+            }
+
             let query: string = '';
             let queryParams: any[] = [];
 
@@ -95,6 +99,10 @@ export class MySQLTable {
     }
     public count(conditions: MySQLRestConditions = {}, full: boolean = false): Promise<any> {
         return new Promise<any>((resolve: (res: any) => void, reject: (err: string) => void) => {
+            if (!this._connection) {
+                throw `MySQLTable::count() Error: No connection provided.`;
+            }
+
             let query: string = '';
             let queryParams: any[] = [];
 
@@ -124,6 +132,10 @@ export class MySQLTable {
     }
     public delete(id: string | number): Promise<any> {
         return new Promise<any>((resolve: (res: any) => void, reject: (err: string) => void) => {
+            if (!this._connection) {
+                throw `MySQLTable::delete() Error: No connection provided.`;
+            }
+
             let query: string = '';
 
             query += `DELETE FROM ${this._conf.tablePrefix}${this._conf.name} `;
@@ -140,6 +152,10 @@ export class MySQLTable {
     }
     public get(id: string | number): Promise<MySQLRestEntry> {
         return new Promise<MySQLRestEntry>((resolve: (res: MySQLRestEntry) => void, reject: (err: string) => void) => {
+            if (!this._connection) {
+                throw `MySQLTable::get() Error: No connection provided.`;
+            }
+
             let query: string = '';
 
             query += `SELECT  * `;
@@ -161,6 +177,10 @@ export class MySQLTable {
     }
     public insert(data: any): Promise<any> {
         return new Promise<any>((resolve: (res: any) => void, reject: (err: string) => void) => {
+            if (!this._connection) {
+                throw `MySQLTable::insert() Error: No connection provided.`;
+            }
+
             if (typeof data === 'object') {
                 let query: string = '';
                 let queryParams: any[] = [];
@@ -193,6 +213,10 @@ export class MySQLTable {
     }
     public update(id: string | number, data: any): Promise<any> {
         return new Promise<any>((resolve: (res: any) => void, reject: (err: string) => void) => {
+            if (!this._connection) {
+                throw `MySQLTable::update() Error: No connection provided.`;
+            }
+
             if (typeof data === 'object') {
                 let query: string = '';
                 let queryParams: any[] = [];

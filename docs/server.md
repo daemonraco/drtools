@@ -19,7 +19,6 @@ ExpressJS server).
 ```
 DRTools Server (v0.6.0):
 
-
   Usage: drtools-generator [options]
 
   Options:

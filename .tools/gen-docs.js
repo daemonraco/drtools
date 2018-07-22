@@ -29,7 +29,7 @@ const cleanCmdHelp = () => {
 
     return lines.join('\n');
 }
-const inject = (mdPath, section, data, isCode, next) => {
+const inject = ({ mdPath, section, data, isCode, codeType }, next) => {
     const openPattern = new RegExp(`<!-- AUTO:${section}.* -->`);
     const closePattern = new RegExp(`<!-- /AUTO -->`);
 
@@ -50,7 +50,7 @@ const inject = (mdPath, section, data, isCode, next) => {
             if (line.match(openPattern)) {
                 ignoring = true;
 
-                newReadmeContents += isCode ? '```\n' : '';
+                newReadmeContents += isCode ? '```' + `${codeType ? codeType : ''}\n` : '';
                 newReadmeContents += `${data}\n`;
                 newReadmeContents += isCode ? '```\n' : '';
             }
@@ -151,31 +151,42 @@ piecesSteps.push({
         });
     }
 });
+piecesSteps.push({
+    name: 'webtoapi:specs',
+    function: (name, next) => {
+        const { WebToApiConfigSpec } = require('../dist/core/webtoapi/spec.config.js');
+        pieces[name] = JSON.stringify(WebToApiConfigSpec, null, 4);
+        next();
+    }
+});
 
 const steps = [];
 steps.push((mdPath, next) => {
-    inject(mdPath, 'server-options', pieces['server-options'], true, next);
+    inject({ mdPath, section: 'server-options', data: pieces['server-options'], isCode: true }, next);
 });
 steps.push((mdPath, next) => {
-    inject(mdPath, 'generator-options', pieces['generator-options'], true, next);
+    inject({ mdPath, section: 'generator-options', data: pieces['generator-options'], isCode: true }, next);
 });
 steps.push((mdPath, next) => {
-    inject(mdPath, 'generator-options:mock-routes', pieces['generator-options:mock-routes'], true, next);
+    inject({ mdPath, section: 'generator-options:mock-routes', data: pieces['generator-options:mock-routes'], isCode: true }, next);
 });
 steps.push((mdPath, next) => {
-    inject(mdPath, 'generator-options:middlewares', pieces['generator-options:middlewares'], true, next);
+    inject({ mdPath, section: 'generator-options:middlewares', data: pieces['generator-options:middlewares'], isCode: true }, next);
 });
 steps.push((mdPath, next) => {
-    inject(mdPath, 'generator-options:plugins', pieces['generator-options:plugins'], true, next);
+    inject({ mdPath, section: 'generator-options:plugins', data: pieces['generator-options:plugins'], isCode: true }, next);
 });
 steps.push((mdPath, next) => {
-    inject(mdPath, 'generator-options:routes', pieces['generator-options:routes'], true, next);
+    inject({ mdPath, section: 'generator-options:routes', data: pieces['generator-options:routes'], isCode: true }, next);
 });
 steps.push((mdPath, next) => {
-    inject(mdPath, 'generator-options:tasks', pieces['generator-options:tasks'], true, next);
+    inject({ mdPath, section: 'generator-options:tasks', data: pieces['generator-options:tasks'], isCode: true }, next);
 });
 steps.push((mdPath, next) => {
-    inject(mdPath, 'generator-options:webtoapi', pieces['generator-options:webtoapi'], true, next);
+    inject({ mdPath, section: 'generator-options:webtoapi', data: pieces['generator-options:webtoapi'], isCode: true }, next);
+});
+steps.push((mdPath, next) => {
+    inject({ mdPath, section: 'webtoapi:specs', data: pieces['webtoapi:specs'], isCode: true, codeType: 'json' }, next);
 });
 steps.push((mdPath, next) => {
     const readmeLines = fs.readFileSync(mdPath)

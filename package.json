@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -12,7 +12,7 @@
         "start": "npm run build:live",
         "prebuild": "rm -frv dist/*",
         "build": "./node_modules/.bin/tsc",
-        "postbuild": "chmod -v +x dist/commands/*/cmd.js",
+        "postbuild": "chmod -v +x dist/commands/*/cmd.js && npm run gen:docs",
         "build:live": "./node_modules/.bin/tsc --watch",
         "gen:docs": "node .tools/gen-docs.js",
         "live:server": "./test/assets/start-live.sh",

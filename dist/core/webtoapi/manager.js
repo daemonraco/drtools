@@ -189,13 +189,18 @@ class WebToApi {
                     // allow async/await @{
                     const elements = [];
                     findings.each((index, element) => {
-                        elements.push(element);
+                        if (field.index === null || field.index === index) {
+                            elements.push(element);
+                        }
                     });
                     for (const element of elements) {
                         let aux = yield parse(field, mainDoc(element));
                         results[field.name].push(aux);
                     }
                     // @}
+                    if (field.index !== null && results[field.name].length > 0) {
+                        results[field.name] = results[field.name][0];
+                    }
                 }
                 else {
                     results[field.name] = yield parse(field, findings);

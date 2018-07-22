@@ -36,13 +36,14 @@ exports.WebToApiConfigSpec = {
             properties: {
                 name: { type: 'string' },
                 path: { type: 'string' },
+                index: { type: ['number', 'null'], default: null },
                 parser: { type: 'string' },
                 parserParams: { $ref: '#/definitions/any', default: null },
                 fields: { $ref: '#/definitions/fields' }
             },
             additionalProperties: false,
             oneOf: [{
-                    required: ['name', 'path', 'parser', 'parserParams']
+                    required: ['name', 'path', 'index', 'parser', 'parserParams']
                 }, {
                     required: ['name', 'path', 'fields']
                 }]

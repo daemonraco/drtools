@@ -22,6 +22,9 @@ class MySQLTable {
     // Public methods.
     all(conditions = {}, order = {}, limit = null, offset = null, full = false) {
         return new Promise((resolve, reject) => {
+            if (!this._connection) {
+                throw `MySQLTable::all() Error: No connection provided.`;
+            }
             let query = '';
             let queryParams = [];
             query += `SELECT  * `;
@@ -88,6 +91,9 @@ class MySQLTable {
     }
     count(conditions = {}, full = false) {
         return new Promise((resolve, reject) => {
+            if (!this._connection) {
+                throw `MySQLTable::count() Error: No connection provided.`;
+            }
             let query = '';
             let queryParams = [];
             query += `SELECT  COUNT(*) as c `;
@@ -117,6 +123,9 @@ class MySQLTable {
     }
     delete(id) {
         return new Promise((resolve, reject) => {
+            if (!this._connection) {
+                throw `MySQLTable::delete() Error: No connection provided.`;
+            }
             let query = '';
             query += `DELETE FROM ${this._conf.tablePrefix}${this._conf.name} `;
             query += `WHERE       ${this._conf.prefix}id = ? `;
@@ -132,6 +141,9 @@ class MySQLTable {
     }
     get(id) {
         return new Promise((resolve, reject) => {
+            if (!this._connection) {
+                throw `MySQLTable::get() Error: No connection provided.`;
+            }
             let query = '';
             query += `SELECT  * `;
             query += `FROM    ${this._conf.tablePrefix}${this._conf.name} `;
@@ -153,6 +165,9 @@ class MySQLTable {
     }
     insert(data) {
         return new Promise((resolve, reject) => {
+            if (!this._connection) {
+                throw `MySQLTable::insert() Error: No connection provided.`;
+            }
             if (typeof data === 'object') {
                 let query = '';
                 let queryParams = [];
@@ -184,6 +199,9 @@ class MySQLTable {
     }
     update(id, data) {
         return new Promise((resolve, reject) => {
+            if (!this._connection) {
+                throw `MySQLTable::update() Error: No connection provided.`;
+            }
             if (typeof data === 'object') {
                 let query = '';
                 let queryParams = [];

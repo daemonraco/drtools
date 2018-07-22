@@ -58,7 +58,10 @@ export class MySQLRestManager {
                 } else if (typeof this._tables[table] !== 'undefined') {
                     this._tables[table].solve(req.method, pieces, req.query, req.body)
                         .then(results => res.status(200).json(results))
-                        .catch(error => res.status(500).json({ error }));
+                        .catch(error => {
+                            console.error(`MySQLRestManager::middleware() Error:`, error);
+                            res.status(500).json({ error })
+                        });
                 } else {
                     res.status(404).json({
                         error: `Unknown table '${table}'`
