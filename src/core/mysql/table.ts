@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import { MySQLRestConditions, MySQLRestConstants, MySQLRestEntry, MySQLRestOrder } from '.';
+import { MySQLRestConditions, MySQLRestEntry, MySQLRestOrder } from '.';
 
 export class MySQLTable {
     //

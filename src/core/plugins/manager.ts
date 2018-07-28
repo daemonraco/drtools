@@ -189,9 +189,8 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
                     };
                 })
                 .filter(x => {
-                    let stat = null;
-                    try { stat = fs.statSync(x.path); } catch (e) { }
-                    return stat && stat.isDirectory();
+                    const check = Tools.CheckDirectory(x.path);
+                    return check.status === ToolsCheckPath.Ok;
                 });
 
             for (const dir of dirs) {

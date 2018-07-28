@@ -47,19 +47,17 @@ class DRToolsGenerator {
         console.log(`Generating middleware`);
         console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
         if (!error) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(directory);
-            }
-            catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            }
-            else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            }
-            else {
-                directory = libraries_1.path.resolve(directory);
+            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
         if (!error) {
@@ -100,19 +98,17 @@ class DRToolsGenerator {
         console.log(`Generating route`);
         console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
         if (!error) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(directory);
-            }
-            catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            }
-            else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            }
-            else {
-                directory = libraries_1.path.resolve(directory);
+            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
         if (!error) {
@@ -151,19 +147,17 @@ class DRToolsGenerator {
         console.log(`Generating a mock-up routes`);
         console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
         if (!error) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(directory);
-            }
-            catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            }
-            else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            }
-            else {
-                directory = libraries_1.path.resolve(directory);
+            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
         if (!error) {
@@ -224,19 +218,17 @@ class DRToolsGenerator {
         //
         // Checking plugins directory.
         if (!error) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(directory);
-            }
-            catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            }
-            else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            }
-            else {
-                directory = libraries_1.path.resolve(directory);
+            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
         cleanOptions.pluginDirectory = libraries_1.path.join(directory, name);
@@ -246,19 +238,17 @@ class DRToolsGenerator {
         //
         // Checking configurations directory.
         if (!error && cleanOptions.configs) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(cleanOptions.configs);
-            }
-            catch (e) { }
-            if (!stat) {
-                error = `'${cleanOptions.configs}' is not a valid path.`;
-            }
-            else if (!stat.isDirectory()) {
-                error = `'${cleanOptions.configs}' is not a directory.`;
-            }
-            else {
-                cleanOptions.configs = libraries_1.path.resolve(cleanOptions.configs);
+            const check = tools_1.Tools.CheckDirectory(cleanOptions.configs, process.cwd());
+            switch (check.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    cleanOptions.configs = check.path;
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${cleanOptions.configs}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${cleanOptions.configs}' is not a valid path.`;
+                    break;
             }
         }
         if (!error && cleanOptions.configs) {
@@ -376,19 +366,17 @@ class DRToolsGenerator {
         console.log(`Generating task`);
         console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
         if (!error) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(directory);
-            }
-            catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            }
-            else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            }
-            else {
-                directory = libraries_1.path.resolve(directory);
+            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case tools_1.ToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case tools_1.ToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
         if (!error) {

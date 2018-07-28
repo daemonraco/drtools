@@ -19,7 +19,7 @@ export declare class Tools {
     private static _IsBrowser;
     private static _IsNode;
     private constructor();
-    static CheckDirectory(filePath: string, relativeTo?: string): IToolsCheckPathResult;
+    static CheckDirectory(dirPath: string, relativeTo?: string): IToolsCheckPathResult;
     static CheckFile(filePath: string, relativeTo?: string): IToolsCheckPathResult;
     /**
      * Takes an object and returns a clone of if. It avoids using the same

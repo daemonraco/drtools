@@ -9,7 +9,9 @@ import { ConfigsManager } from '../configs';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { Endpoint, IEndpointBrief, IEndpointsManagerOptions, IEndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
-import { Tools } from '../includes';
+import { Tools, ToolsCheckPath } from '../includes';
+
+declare const process: any;
 
 export class EndpointsManager implements IManagerByKey {
     //
@@ -72,14 +74,19 @@ export class EndpointsManager implements IManagerByKey {
     protected load() {
         //
         // Checking given directory path.
-        let stat: any = null;
-        try { stat = fs.statSync(this._options.directory); } catch (e) { }
-        if (!stat) {
-            this._lastError = `'${this._options.directory}' does not exist.`;
-            console.error(chalk.red(this._lastError));
-        } else if (!stat.isDirectory()) {
-            this._lastError = `'${this._options.directory}' is not a directory.`;
-            console.error(chalk.red(this._lastError));
+        const check = Tools.CheckDirectory(this._options.directory, process.cwd());
+        switch (check.status) {
+            case ToolsCheckPath.Ok:
+                this._options.directory = check.path;
+                break;
+            case ToolsCheckPath.WrongType:
+                this._lastError = `'${this._options.directory}' is not a directory.`;
+                console.error(chalk.red(this._lastError));
+                break;
+            default:
+                this._lastError = `'${this._options.directory}' does not exist.`;
+                console.error(chalk.red(this._lastError));
+                break;
         }
         //
         // Basic paths.

@@ -8,9 +8,9 @@ import { chalk, fs, path } from '../../libraries';
 import { ConfigsManager } from '../configs';
 import { IAsyncManager, IManagerByKey } from '../drcollector';
 import { IItemSpec } from '.';
-import { Tools } from '../includes';
+import { Tools, ToolsCheckPath } from '../includes';
 
-declare const global: any;
+declare const process: any;
 
 export abstract class GenericManager<TOptions> implements IAsyncManager, IManagerByKey {
     //
@@ -66,15 +66,22 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
         //
         // Checking given directory path.
         if (!this._lastError) {
-            let stat: any = null;
-            try { stat = fs.statSync(this._directory); } catch (e) { }
-            if (!stat) {
-                this._lastError = `'${this._directory}' does not exist.`;
-                console.error(chalk.red(this._lastError));
-            } else if (!stat.isDirectory()) {
-                this._lastError = `'${this._directory}' is not a directory.`;
-                console.error(chalk.red(this._lastError));
+            const check = Tools.CheckDirectory(this._directory, process.cwd());
+            switch (check.status) {
+                case ToolsCheckPath.Ok:
+                    this._directory = check.path;
+                    break;
+                case ToolsCheckPath.WrongType:
+                    this._lastError = `'${this._directory}' is not a directory.`;
+                    console.error(chalk.red(this._lastError));
+                    break;
+                default:
+                    this._lastError = `'${this._directory}' does not exist.`;
+                    console.error(chalk.red(this._lastError));
+                    break;
             }
+
+            this._valid = !this._lastError;
         }
     }
     protected abstract cleanOptions(): void;
@@ -95,6 +102,8 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
                         path: Tools.FullPath(path.join(this._directory, x))
                     };
                 });
+
+            this._valid = !this._lastError;
         }
     }
 }

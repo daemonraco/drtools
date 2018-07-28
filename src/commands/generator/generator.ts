@@ -55,14 +55,17 @@ export class DRToolsGenerator {
         console.log(`\tWorking directory:  '${chalk.green(directory)}'`);
 
         if (!error) {
-            let stat: any = null;
-            try { stat = fs.statSync(directory); } catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            } else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            } else {
-                directory = path.resolve(directory);
+            const check = CoreTools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case CoreToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
 
@@ -107,14 +110,17 @@ export class DRToolsGenerator {
         console.log(`\tWorking directory:  '${chalk.green(directory)}'`);
 
         if (!error) {
-            let stat: any = null;
-            try { stat = fs.statSync(directory); } catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            } else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            } else {
-                directory = path.resolve(directory);
+            const check = CoreTools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case CoreToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
 
@@ -157,14 +163,17 @@ export class DRToolsGenerator {
         console.log(`\tWorking directory:  '${chalk.green(directory)}'`);
 
         if (!error) {
-            let stat: any = null;
-            try { stat = fs.statSync(directory); } catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            } else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            } else {
-                directory = path.resolve(directory);
+            const check = CoreTools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case CoreToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
 
@@ -228,14 +237,17 @@ export class DRToolsGenerator {
         //
         // Checking plugins directory.
         if (!error) {
-            let stat: any = null;
-            try { stat = fs.statSync(directory); } catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            } else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            } else {
-                directory = path.resolve(directory);
+            const check = CoreTools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case CoreToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
         cleanOptions.pluginDirectory = path.join(directory, name);
@@ -245,14 +257,17 @@ export class DRToolsGenerator {
         //
         // Checking configurations directory.
         if (!error && cleanOptions.configs) {
-            let stat: any = null;
-            try { stat = fs.statSync(cleanOptions.configs); } catch (e) { }
-            if (!stat) {
-                error = `'${cleanOptions.configs}' is not a valid path.`;
-            } else if (!stat.isDirectory()) {
-                error = `'${cleanOptions.configs}' is not a directory.`;
-            } else {
-                cleanOptions.configs = path.resolve(cleanOptions.configs);
+            const check = CoreTools.CheckDirectory(cleanOptions.configs, process.cwd());
+            switch (check.status) {
+                case CoreToolsCheckPath.Ok:
+                    cleanOptions.configs = check.path;
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${cleanOptions.configs}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${cleanOptions.configs}' is not a valid path.`;
+                    break;
             }
         }
         if (!error && cleanOptions.configs) {
@@ -363,14 +378,17 @@ export class DRToolsGenerator {
         console.log(`\tWorking directory:  '${chalk.green(directory)}'`);
 
         if (!error) {
-            let stat: any = null;
-            try { stat = fs.statSync(directory); } catch (e) { }
-            if (!stat) {
-                error = `'${directory}' is not a valid path.`;
-            } else if (!stat.isDirectory()) {
-                error = `'${directory}' is not a directory.`;
-            } else {
-                directory = path.resolve(directory);
+            const check = CoreTools.CheckDirectory(directory, process.cwd());
+            switch (check.status) {
+                case CoreToolsCheckPath.Ok:
+                    directory = check.path;
+                    break;
+                case CoreToolsCheckPath.WrongType:
+                    error = `'${directory}' is not a directory.`;
+                    break;
+                default:
+                    error = `'${directory}' is not a valid path.`;
+                    break;
             }
         }
 

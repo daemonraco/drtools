@@ -36,7 +36,8 @@ describe(`[003] drtools: Loaders manager:`, () => {
         manager.load()
             .then(() => {
                 assert.isFalse(manager.valid());
-                assert.match(manager.lastError(), /'.*drtools\/test\/tmp\/loaders\/date.loader.js' is not a directory/);
+                assert.match(manager.lastError(), /\/test\/tmp\/loaders\/date.loader.js'/);
+                assert.match(manager.lastError(), /not a directory/);
             })
             .catch(err => {
                 assert.isFalse(true, `Error: ${err}`);

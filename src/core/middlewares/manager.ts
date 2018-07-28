@@ -6,7 +6,7 @@
 import { chalk } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
-import { DRCollector, IManagerByKey } from '../drcollector';
+import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
 import { MiddlewaresConstants, IMiddlewareOptions } from '.';
 

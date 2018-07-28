@@ -175,12 +175,8 @@ class PluginsManager {
                 };
             })
                 .filter(x => {
-                let stat = null;
-                try {
-                    stat = libraries_1.fs.statSync(x.path);
-                }
-                catch (e) { }
-                return stat && stat.isDirectory();
+                const check = includes_1.Tools.CheckDirectory(x.path);
+                return check.status === includes_1.ToolsCheckPath.Ok;
             });
             for (const dir of dirs) {
                 this._paths.push(dir);

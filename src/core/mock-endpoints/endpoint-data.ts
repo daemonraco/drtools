@@ -5,7 +5,7 @@
 
 import { fs, glob, path } from '../../libraries';
 
-import { Endpoint, EndpointBehaviors, IEndpointBrief, IEndpointBrievesByMethod } from '.';
+import { Endpoint, EndpointBehaviors, IEndpointBrievesByMethod } from '.';
 import { IEndpointOptions, EndpointPathPattern, EndpointRawByMethod } from '.';
 import { Tools } from '../includes';
 

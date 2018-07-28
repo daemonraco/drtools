@@ -3,11 +3,13 @@
  * @author Alejandro D. Simi
  */
 
-import { fs, glob, path } from '../../libraries';
+import { glob, path } from '../../libraries';
 
 import { IEndpointBrief, IEndpointBrievesByMethod, EndpointData, IEndpointOptions, EndpointPathPattern } from '.';
 import { ExpressMiddleware } from '../express';
-import { Tools } from '../includes';
+import { Tools, ToolsCheckPath } from '../includes';
+
+declare const process: any;
 
 export class Endpoint {
     //
@@ -113,15 +115,15 @@ export class Endpoint {
         if (!this._loaded) {
             this._loaded = true;
 
-            let stat: any = null;
-            try { stat = fs.statSync(this._dirPath); } catch (e) { }
-
-            if (stat && stat.isDirectory()) {
-                this._dirPath = path.resolve(this._dirPath);
-            } else if (stat && !stat.isDirectory()) {
-                throw `Path '${this._dirPath}' is not a directory.`
-            } else {
-                throw `Path '${this._dirPath}' is not a valid path.`
+            const check = Tools.CheckDirectory(this._dirPath, process.cwd());
+            switch (check.status) {
+                case ToolsCheckPath.Ok:
+                    this._dirPath = check.path;
+                    break;
+                case ToolsCheckPath.WrongType:
+                    throw `Path '${this._dirPath}' is not a directory.`;
+                default:
+                    throw `Path '${this._dirPath}' is not a valid path.`;
             }
         }
     }

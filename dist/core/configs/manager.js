@@ -138,34 +138,36 @@ class ConfigsManager {
         //
         // Checking given directory path.
         if (!this._lastError) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(this._directory);
-            }
-            catch (e) { }
-            if (!stat) {
-                this._lastError = `'${this._directory}' does not exist.`;
-                console.error(libraries_1.chalk.red(this._lastError));
-            }
-            else if (!stat.isDirectory()) {
-                this._lastError = `'${this._directory}' is not a directory.`;
-                console.error(libraries_1.chalk.red(this._lastError));
+            const check = includes_1.Tools.CheckDirectory(this._directory, process.cwd());
+            switch (check.status) {
+                case includes_1.ToolsCheckPath.Ok:
+                    this._directory = check.path;
+                    break;
+                case includes_1.ToolsCheckPath.WrongType:
+                    this._lastError = `'${this._directory}' is not a directory.`;
+                    console.error(libraries_1.chalk.red(this._lastError));
+                    break;
+                default:
+                    this._lastError = `'${this._directory}' does not exist.`;
+                    console.error(libraries_1.chalk.red(this._lastError));
+                    break;
             }
         }
         //
         // Checking specs directory.
         if (!this._lastError) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(this._specsDirectory);
-            }
-            catch (e) { }
-            if (!stat) {
-                this._specsDirectory = null;
-            }
-            else if (!stat.isDirectory()) {
-                this._lastError = `'${this._specsDirectory}' is not a directory.`;
-                console.error(libraries_1.chalk.red(this._lastError));
+            const check = includes_1.Tools.CheckDirectory(this._specsDirectory, process.cwd());
+            switch (check.status) {
+                case includes_1.ToolsCheckPath.Ok:
+                    this._specsDirectory = check.path;
+                    break;
+                case includes_1.ToolsCheckPath.WrongType:
+                    this._lastError = `'${this._specsDirectory}' is not a directory.`;
+                    console.error(libraries_1.chalk.red(this._lastError));
+                    break;
+                default:
+                    this._specsDirectory = null;
+                    break;
             }
         }
         if (!this._lastError) {
@@ -207,41 +209,41 @@ class ConfigsManager {
         this._configs = {};
         this._exports = {};
         if (!this._lastError) {
-            for (let i in this._items) {
+            for (const item of this._items) {
                 let valid = true;
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${libraries_1.chalk.green(this._items[i].name)}'${this._items[i].specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`\t- '${libraries_1.chalk.green(item.name)}'${item.specific ? ` (has specific configuration)` : ''}`);
                     }
                     //
                     // Loading basic configuration.
-                    this._configs[this._items[i].name] = require(this._items[i].path);
+                    this._configs[item.name] = require(item.path);
                     //
                     // Merging with the environment specific configuration.
-                    if (this._items[i].specific) {
-                        this._configs[this._items[i].name] = includes_1.Tools.DeepMergeObjects(this._configs[this._items[i].name], require(this._items[i].specific.path));
+                    if (item.specific) {
+                        this._configs[item.name] = includes_1.Tools.DeepMergeObjects(this._configs[item.name], require(item.specific.path));
                     }
                     //
                     // Does it have specs?
-                    this._items[i].specsPath = null;
+                    item.specsPath = null;
                     if (this._specsDirectory) {
-                        this._items[i].specsPath = this.loadSpecsOf(this._items[i].name);
-                        if (this._items[i].specsPath !== null) {
-                            valid = this.validateSpecsOf(this._items[i].name, this._items[i].specsPath);
+                        item.specsPath = this.loadSpecsOf(item.name);
+                        if (item.specsPath !== null) {
+                            valid = this.validateSpecsOf(item.name, item.specsPath);
                         }
                     }
                     //
                     // If there were no errors validating the config file, it can
                     // expose exports.
                     if (valid) {
-                        this._items[i].public = this.loadExportsOf(this._items[i].name);
+                        item.public = this.loadExportsOf(item.name);
                     }
                     else {
-                        this._configs[this._items[i].name] = {};
+                        this._configs[item.name] = {};
                     }
                 }
                 catch (e) {
-                    console.error(libraries_1.chalk.red(`Unable to load config '${this._items[i].name}'.\n\t${e}`));
+                    console.error(libraries_1.chalk.red(`Unable to load config '${item.name}'.\n\t${e}`));
                 }
             }
         }
@@ -277,18 +279,18 @@ class ConfigsManager {
     }
     loadSpecsOf(name) {
         let specsPath = libraries_1.path.join(this._specsDirectory, `${name}.json`);
-        let stat = null;
-        try {
-            stat = libraries_1.fs.statSync(specsPath);
-        }
-        catch (e) { }
-        if (!stat) {
-            specsPath = null;
-        }
-        else if (!stat.isFile()) {
-            this._lastError = `'${this._directory}' is not a file.`;
-            console.error(libraries_1.chalk.red(this._lastError));
-            specsPath = null;
+        const check = includes_1.Tools.CheckFile(specsPath);
+        switch (check.status) {
+            case includes_1.ToolsCheckPath.Ok:
+                specsPath = check.path;
+                break;
+            case includes_1.ToolsCheckPath.WrongType:
+                this._lastError = `'${specsPath}' is not a file.`;
+                console.error(libraries_1.chalk.red(this._lastError));
+                break;
+            default:
+                specsPath = null;
+                break;
         }
         return specsPath;
     }

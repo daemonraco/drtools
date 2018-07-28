@@ -58,19 +58,21 @@ class GenericManager {
         //
         // Checking given directory path.
         if (!this._lastError) {
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(this._directory);
+            const check = includes_1.Tools.CheckDirectory(this._directory, process.cwd());
+            switch (check.status) {
+                case includes_1.ToolsCheckPath.Ok:
+                    this._directory = check.path;
+                    break;
+                case includes_1.ToolsCheckPath.WrongType:
+                    this._lastError = `'${this._directory}' is not a directory.`;
+                    console.error(libraries_1.chalk.red(this._lastError));
+                    break;
+                default:
+                    this._lastError = `'${this._directory}' does not exist.`;
+                    console.error(libraries_1.chalk.red(this._lastError));
+                    break;
             }
-            catch (e) { }
-            if (!stat) {
-                this._lastError = `'${this._directory}' does not exist.`;
-                console.error(libraries_1.chalk.red(this._lastError));
-            }
-            else if (!stat.isDirectory()) {
-                this._lastError = `'${this._directory}' is not a directory.`;
-                console.error(libraries_1.chalk.red(this._lastError));
-            }
+            this._valid = !this._lastError;
         }
     }
     loadItemPaths() {
@@ -89,6 +91,7 @@ class GenericManager {
                     path: includes_1.Tools.FullPath(libraries_1.path.join(this._directory, x))
                 };
             });
+            this._valid = !this._lastError;
         }
     }
 }

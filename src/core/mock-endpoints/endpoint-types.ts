@@ -3,8 +3,6 @@
  * @author Alejandro D. Simi
  */
 
-import { OptionsList } from '../includes';
-
 export type EndpointRawByMethod = { [method: string]: any };
 
 export const EndpointPathPattern: RegExp = /^(.*)\/(_METHODS)\/([a-z]+)\/(.+)\.json$|^(.+)(\.json)$/;

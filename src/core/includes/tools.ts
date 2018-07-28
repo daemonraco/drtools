@@ -31,8 +31,8 @@ export class Tools {
     private constructor() { }
     //
     // Public class methods.
-    public static CheckDirectory(filePath: string, relativeTo: string = null): IToolsCheckPathResult {
-        return Tools.CheckPathByType('isDirectory', filePath, relativeTo);
+    public static CheckDirectory(dirPath: string, relativeTo: string = null): IToolsCheckPathResult {
+        return Tools.CheckPathByType('isDirectory', dirPath, relativeTo);
     }
     public static CheckFile(filePath: string, relativeTo: string = null): IToolsCheckPathResult {
         return Tools.CheckPathByType('isFile', filePath, relativeTo);
@@ -111,7 +111,7 @@ export class Tools {
         try { result.stat = fs.statSync(filePath); } catch (e) { }
         if (result.stat) {
             if (typeof result.stat[checker] === 'function') {
-                if (result.stat[checker]) {
+                if ((result.stat[checker])()) {
                     result.status = ToolsCheckPath.Ok;
                     result.path = path.resolve(result.path);
                 } else {

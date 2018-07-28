@@ -3,8 +3,6 @@
  * @author Alejandro D. Simi
  */
 
-import { ExpressMiddleware } from '../express';
-
 export interface IMySQLRestAuthMiddlewareData {
 
 }

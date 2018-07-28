@@ -66,18 +66,19 @@ class EndpointsManager {
     load() {
         //
         // Checking given directory path.
-        let stat = null;
-        try {
-            stat = libraries_1.fs.statSync(this._options.directory);
-        }
-        catch (e) { }
-        if (!stat) {
-            this._lastError = `'${this._options.directory}' does not exist.`;
-            console.error(libraries_1.chalk.red(this._lastError));
-        }
-        else if (!stat.isDirectory()) {
-            this._lastError = `'${this._options.directory}' is not a directory.`;
-            console.error(libraries_1.chalk.red(this._lastError));
+        const check = includes_1.Tools.CheckDirectory(this._options.directory, process.cwd());
+        switch (check.status) {
+            case includes_1.ToolsCheckPath.Ok:
+                this._options.directory = check.path;
+                break;
+            case includes_1.ToolsCheckPath.WrongType:
+                this._lastError = `'${this._options.directory}' is not a directory.`;
+                console.error(libraries_1.chalk.red(this._lastError));
+                break;
+            default:
+                this._lastError = `'${this._options.directory}' does not exist.`;
+                console.error(libraries_1.chalk.red(this._lastError));
+                break;
         }
         //
         // Basic paths.

@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const _1 = require(".");
+const includes_1 = require("../includes");
 class Endpoint {
     //
     // Constructor.
@@ -104,19 +105,15 @@ class Endpoint {
     load() {
         if (!this._loaded) {
             this._loaded = true;
-            let stat = null;
-            try {
-                stat = libraries_1.fs.statSync(this._dirPath);
-            }
-            catch (e) { }
-            if (stat && stat.isDirectory()) {
-                this._dirPath = libraries_1.path.resolve(this._dirPath);
-            }
-            else if (stat && !stat.isDirectory()) {
-                throw `Path '${this._dirPath}' is not a directory.`;
-            }
-            else {
-                throw `Path '${this._dirPath}' is not a valid path.`;
+            const check = includes_1.Tools.CheckDirectory(this._dirPath, process.cwd());
+            switch (check.status) {
+                case includes_1.ToolsCheckPath.Ok:
+                    this._dirPath = check.path;
+                    break;
+                case includes_1.ToolsCheckPath.WrongType:
+                    throw `Path '${this._dirPath}' is not a directory.`;
+                default:
+                    throw `Path '${this._dirPath}' is not a valid path.`;
             }
         }
     }

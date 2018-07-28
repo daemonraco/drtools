@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import { MySQLRestAuthMiddleware, IMySQLRestExposeConfig, MySQLTable, MySQLUrlParams, MySQLUrlPieces } from '.';
+import { IMySQLRestExposeConfig, MySQLTable, MySQLUrlParams, MySQLUrlPieces } from '.';
 
 export type MySQLRestTableList = { [name: string]: MySQLRestTable };
 
