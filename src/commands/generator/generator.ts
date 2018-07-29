@@ -82,7 +82,8 @@ export class DRToolsGenerator {
                     try {
                         const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.middleware.ejs')).toString();
                         fs.writeFileSync(cleanOptions.fullPath, ejs.render(template, {
-                            name
+                            name,
+                            globalConstant: MiddlewaresConstants.GlobalConfigPointer
                         }, {}));
                     } catch (e) { }
                 } else if (exists && !cleanOptions.force) {
@@ -136,7 +137,10 @@ export class DRToolsGenerator {
                 if (cleanOptions.force || !exists) {
                     try {
                         const template: string = fs.readFileSync(path.join(__dirname, '../../../assets/template.route.ejs')).toString();
-                        fs.writeFileSync(cleanOptions.fullPath, ejs.render(template, {}, {}));
+                        fs.writeFileSync(cleanOptions.fullPath, ejs.render(template, {
+                            name,
+                            globalConstant: RoutesConstants.GlobalConfigPointer
+                        }, {}));
                     } catch (e) { }
                 } else if (exists && !cleanOptions.force) {
                     error = `Path '${cleanOptions.fullPath}' already exists.`;

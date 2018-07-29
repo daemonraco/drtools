@@ -72,7 +72,8 @@ class DRToolsGenerator {
                     try {
                         const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.middleware.ejs')).toString();
                         libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {
-                            name
+                            name,
+                            globalConstant: drtools_1.MiddlewaresConstants.GlobalConfigPointer
                         }, {}));
                     }
                     catch (e) { }
@@ -122,7 +123,10 @@ class DRToolsGenerator {
                 if (cleanOptions.force || !exists) {
                     try {
                         const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.route.ejs')).toString();
-                        libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {}, {}));
+                        libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {
+                            name,
+                            globalConstant: drtools_1.RoutesConstants.GlobalConfigPointer
+                        }, {}));
                     }
                     catch (e) { }
                 }

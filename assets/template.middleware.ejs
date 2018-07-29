@@ -1,5 +1,7 @@
 'use strict';
 
+const config = global['<%= globalConstant %>'];
+
 module.exports = (req, res, next) => {
     console.log(`Running middleware '<%= name %>'. Current URL: ${req.originalUrl}`);
     next();

@@ -63,7 +63,7 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
                         console.log(`\t- '${chalk.green(this._itemSpecs[i].name)}'`);
                     }
 
-                    global.configs = this._configs;
+                    global[RoutesConstants.GlobalConfigPointer] = this._configs;
 
                     const router: any = require(this._itemSpecs[i].path);
                     this._routes.push({
@@ -80,7 +80,7 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
                     });
                     this._expressApp.use(`/${this._itemSpecs[i].name}`, router);
 
-                    delete global.configs;
+                    delete global[RoutesConstants.GlobalConfigPointer];
                 } catch (e) {
                     console.error(chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.\n\t${e}`));
                 }

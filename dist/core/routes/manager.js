@@ -63,7 +63,7 @@ class RoutesManager extends includes_1.GenericManager {
                     if (this._options.verbose) {
                         console.log(`\t- '${libraries_1.chalk.green(this._itemSpecs[i].name)}'`);
                     }
-                    global.configs = this._configs;
+                    global[_1.RoutesConstants.GlobalConfigPointer] = this._configs;
                     const router = require(this._itemSpecs[i].path);
                     this._routes.push({
                         name: this._itemSpecs[i].name,
@@ -78,7 +78,7 @@ class RoutesManager extends includes_1.GenericManager {
                         })
                     });
                     this._expressApp.use(`/${this._itemSpecs[i].name}`, router);
-                    delete global.configs;
+                    delete global[_1.RoutesConstants.GlobalConfigPointer];
                 }
                 catch (e) {
                     console.error(libraries_1.chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.\n\t${e}`));
