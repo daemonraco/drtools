@@ -205,6 +205,16 @@ class WebToApi {
                 else {
                     results[field.name] = yield parse(field, findings);
                 }
+                if (findings.length > 0 && field.forceArray) {
+                    if (!Array.isArray(results[field.name])) {
+                        if (results[field.name] !== null) {
+                            results[field.name] = [results[field.name]];
+                        }
+                        else {
+                            results[field.name] = [];
+                        }
+                    }
+                }
             }
             return results;
         });
@@ -297,6 +307,8 @@ class WebToApi {
                             throw new types_1.WAException(`WebToApi::load(): '${endpoint.postProcessor}' doesn't exist`);
                     }
                 }
+                this._parsers['anchor'] = parsers_1.WAParserAnchor;
+                this._parsers['anchor-full'] = parsers_1.WAParserAnchorFull;
                 this._parsers['attr'] = parsers_1.WAParserAttribute;
                 this._parsers['attribute'] = parsers_1.WAParserAttribute;
                 this._parsers['html'] = parsers_1.WAParserHtml;

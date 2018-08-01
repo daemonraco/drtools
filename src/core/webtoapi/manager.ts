@@ -9,7 +9,7 @@ import { BasicList } from '../includes/basic-types';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { Tools, ToolsCheckPath, IToolsCheckPathResult } from '../includes';
 import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WAUrlParameters } from './types';
-import { WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
+import { WAParserAnchor, WAParserAnchorFull, WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
 import { WebToApiConfigSpec } from './spec.config';
 import { WebToApiRouter } from './router';
 import { WAPostProcessorData } from './post-processor-data';
@@ -212,6 +212,16 @@ export class WebToApi implements IManagerByKey {
             } else {
                 results[field.name] = await parse(field, findings);
             }
+
+            if (findings.length > 0 && field.forceArray) {
+                if (!Array.isArray(results[field.name])) {
+                    if (results[field.name] !== null) {
+                        results[field.name] = [results[field.name]];
+                    } else {
+                        results[field.name] = [];
+                    }
+                }
+            }
         }
 
         return results;
@@ -308,6 +318,8 @@ export class WebToApi implements IManagerByKey {
                     }
                 }
 
+                this._parsers['anchor'] = WAParserAnchor;
+                this._parsers['anchor-full'] = WAParserAnchorFull;
                 this._parsers['attr'] = WAParserAttribute;
                 this._parsers['attribute'] = WAParserAttribute;
                 this._parsers['html'] = WAParserHtml;

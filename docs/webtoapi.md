@@ -101,6 +101,10 @@ specification:
                     ],
                     "default": null
                 },
+                "forceArray": {
+                    "type": "boolean",
+                    "default": false
+                },
                 "parser": {
                     "type": "string"
                 },
@@ -119,6 +123,7 @@ specification:
                         "name",
                         "path",
                         "index",
+                        "forceArray",
                         "parser",
                         "parserParams"
                     ]
