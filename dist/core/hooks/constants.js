@@ -4,6 +4,11 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+class HookConstants {
+    constructor() { }
+}
+HookConstants.DefaultHookOrder = 1000;
+exports.HookConstants = HookConstants;
 class HookEvents {
     constructor() { }
 }
