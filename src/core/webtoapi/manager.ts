@@ -8,8 +8,9 @@ import { ajv, chalk, cheerio, fs, md5, request, path } from '../../libraries';
 import { BasicList } from '../includes/basic-types';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { Tools, ToolsCheckPath, IToolsCheckPathResult } from '../includes';
-import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WAUrlParameters } from './types';
+import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WARulesList, WAUrlParameters } from './types';
 import { WAParserAnchor, WAParserAnchorFull, WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
+import { WARuleAppend, WARuleCombine, WARuleCopy, WARuleForget } from './rules';
 import { WebToApiConfigSpec } from './spec.config';
 import { WebToApiRouter } from './router';
 import { WAPostProcessorData } from './post-processor-data';
@@ -29,6 +30,7 @@ export class WebToApi implements IManagerByKey {
     protected _parsers: WAParsersList = {};
     protected _relativePath: string = null;
     protected _router: WebToApiRouter = null;
+    protected _rules: WARulesList = {};
     //
     // Constructor.
     public constructor(configPath: string) {
@@ -112,7 +114,7 @@ export class WebToApi implements IManagerByKey {
 
             results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
             if (!results || preRequest.forceAnalysis) {
-                results = await this.analyze(key, raw, endpoint);
+                results = await this.analyze(key, raw, endpoint, preRequest);
                 this.saveJSONCache(key, results);
             }
         } else {
@@ -150,7 +152,7 @@ export class WebToApi implements IManagerByKey {
 
         return url;
     }
-    protected async analyze(key: string, data: string, endpoint: WAEndpoint) {
+    protected async analyze(key: string, data: string, endpoint: WAEndpoint, preRequest: WAPreProcessorData) {
         let results: any = {};
 
         if (data) {
@@ -158,12 +160,15 @@ export class WebToApi implements IManagerByKey {
                 normalizeWhitespace: true,
                 xmlMode: true
             });
+
             results = await this.analyzeFields(endpoint.fields, doc, doc('body'));
+            results = await this.applyRules(endpoint.rules, results);
 
             if (endpoint.postProcessor) {
                 let requestData: WAPostProcessorData = new WAPostProcessorData();
                 requestData.data = results;
                 requestData.endpoint = endpoint;
+                requestData.request = preRequest;
 
                 requestData = await endpoint.postProcessor(requestData);
                 results = requestData.data;
@@ -222,9 +227,20 @@ export class WebToApi implements IManagerByKey {
                     }
                 }
             }
+
+            results[field.name] = await this.applyRules(field.rules, results[field.name]);
         }
 
         return results;
+    }
+    protected async applyRules(rules: any[], root: any): Promise<string> {
+        for (const rule of rules) {
+            if (typeof this._rules[rule.type] !== 'undefined') {
+                root = await this._rules[rule.type](rule, root);
+            }
+        }
+
+        return root;
     }
     protected genKey(type: string, params: WAUrlParameters): string {
         return md5(`[${type}][${JSON.stringify(params)}]`);
@@ -272,6 +288,13 @@ export class WebToApi implements IManagerByKey {
             }
 
             if (!validator(this._config)) {
+                if (Tools.FullErrors()) {
+                    for (const error of validator.errors) {
+                        console.log(chalk.red(`WebToApi::load() Error:`));
+                        console.log(chalk.red(`WebToApi::load():    \$${error.dataPath}`));
+                        console.log(chalk.red(`WebToApi::load():    ${error.message}`));
+                    }
+                }
                 throw new WAException(`WebToApi::load(): Bad configuration. '\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`);
             }
 
@@ -326,6 +349,11 @@ export class WebToApi implements IManagerByKey {
                 this._parsers['number'] = WAParserNumber;
                 this._parsers['text'] = WAParserText;
                 this._parsers['trim-text'] = WAParserTrimText;
+
+                this._rules['append'] = WARuleAppend;
+                this._rules['combine'] = WARuleCombine;
+                this._rules['copy'] = WARuleCopy;
+                this._rules['forget'] = WARuleForget;
 
                 for (const parser of this._config.parsers) {
                     ppCheck = Tools.CheckFile(parser.path, this._relativePath);

@@ -59,6 +59,10 @@ specification:
                 "fields": {
                     "$ref": "#/definitions/fields"
                 },
+                "rules": {
+                    "$ref": "#/definitions/rules",
+                    "default": []
+                },
                 "postProcessor": {
                     "type": [
                         "string",
@@ -79,6 +83,7 @@ specification:
             },
             "required": [
                 "fields",
+                "rules",
                 "method",
                 "name",
                 "url"
@@ -114,6 +119,10 @@ specification:
                 },
                 "fields": {
                     "$ref": "#/definitions/fields"
+                },
+                "rules": {
+                    "$ref": "#/definitions/rules",
+                    "default": []
                 }
             },
             "additionalProperties": false,
@@ -132,7 +141,9 @@ specification:
                     "required": [
                         "name",
                         "path",
-                        "fields"
+                        "index",
+                        "fields",
+                        "rules"
                     ]
                 }
             ]
@@ -191,6 +202,118 @@ specification:
                 "logErrors"
             ],
             "additionalProperties": false
+        },
+        "rule_append": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "pattern": "^append$"
+                },
+                "fieldName": {
+                    "type": "string"
+                },
+                "fieldPaths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "type",
+                "fieldName",
+                "fieldPaths"
+            ],
+            "additionalProperties": false
+        },
+        "rule_combine": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "pattern": "^combine$"
+                },
+                "fieldName": {
+                    "type": "string"
+                },
+                "fieldPaths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "type",
+                "fieldName",
+                "fieldPaths"
+            ],
+            "additionalProperties": false
+        },
+        "rule_copy": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "pattern": "^copy$"
+                },
+                "fieldName": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "forceArray": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "required": [
+                "type",
+                "fieldName",
+                "from"
+            ],
+            "additionalProperties": false
+        },
+        "rule_forget": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "pattern": "^forget$"
+                },
+                "field": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type",
+                "field"
+            ],
+            "additionalProperties": false
+        },
+        "rules": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "#/definitions/rule_append"
+                    },
+                    {
+                        "$ref": "#/definitions/rule_combine"
+                    },
+                    {
+                        "$ref": "#/definitions/rule_copy"
+                    },
+                    {
+                        "$ref": "#/definitions/rule_forget"
+                    }
+                ]
+            },
+            "default": []
         }
     },
     "properties": {

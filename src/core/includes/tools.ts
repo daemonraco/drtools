@@ -89,6 +89,9 @@ export class Tools {
 
         return left;
     }
+    public static FullErrors(): boolean {
+        return typeof process.env.DRTOOLS_DEBUG !== 'undefined';
+    }
     public static FullPath(basicPath: string): string {
         return fs.existsSync(basicPath) ? path.resolve(basicPath) : path.join(process.cwd(), basicPath);
     }

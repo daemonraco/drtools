@@ -12,4 +12,5 @@ export declare class WAException {
     toString: () => string;
 }
 export declare type WAParsersList = BasicDictionary<Function>;
+export declare type WARulesList = BasicDictionary<Function>;
 export declare type WAUrlParameters = StringsDictionary;

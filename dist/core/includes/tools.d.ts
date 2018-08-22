@@ -43,6 +43,7 @@ export declare class Tools {
      * @returns {any} Returns a merged object.
      */
     static DeepMergeObjects(left: any, right: any): any;
+    static FullErrors(): boolean;
     static FullPath(basicPath: string): string;
     static IsBrowser(): boolean;
     static IsNode(): boolean;

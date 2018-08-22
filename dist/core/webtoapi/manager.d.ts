@@ -4,8 +4,9 @@
  */
 import { BasicList } from '../includes/basic-types';
 import { IManagerByKey } from '../drcollector';
-import { WAEndpoint, WAEndpointList, WAParsersList, WAUrlParameters } from './types';
+import { WAEndpoint, WAEndpointList, WAParsersList, WARulesList, WAUrlParameters } from './types';
 import { WebToApiRouter } from './router';
+import { WAPreProcessorData } from './pre-processor-data';
 export declare class WebToApi implements IManagerByKey {
     protected _cachePath: string;
     protected _config: any;
@@ -16,6 +17,7 @@ export declare class WebToApi implements IManagerByKey {
     protected _parsers: WAParsersList;
     protected _relativePath: string;
     protected _router: WebToApiRouter;
+    protected _rules: WARulesList;
     constructor(configPath: string);
     cacheLifetime(): string;
     cachePath(): string;
@@ -32,8 +34,9 @@ export declare class WebToApi implements IManagerByKey {
     routes(): any[];
     router(): any;
     protected adaptUrl(url: string, params: WAUrlParameters): string;
-    protected analyze(key: string, data: string, endpoint: WAEndpoint): Promise<any>;
+    protected analyze(key: string, data: string, endpoint: WAEndpoint, preRequest: WAPreProcessorData): Promise<any>;
     protected analyzeFields(fields: any[], mainDoc: any, mainElement: any): Promise<any>;
+    protected applyRules(rules: any[], root: any): Promise<string>;
     protected genKey(type: string, params: WAUrlParameters): string;
     protected getCachePath(key: string): string;
     protected getCache(key: string, extension: string, lifetime: number): any;

@@ -10,6 +10,7 @@ class WAPostProcessorData {
         // Public properties.
         this.data = null;
         this.endpoint = null;
+        this.request = null;
     }
 }
 exports.WAPostProcessorData = WAPostProcessorData;

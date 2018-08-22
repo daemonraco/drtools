@@ -66,6 +66,7 @@ typings/
 /.tools
 /.travis.yml
 /web-ui/ui-ng
+/web-ui/tmp-*
 /src
 /test
 /tsconfig.json

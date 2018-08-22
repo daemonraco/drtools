@@ -17,6 +17,7 @@ const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const types_1 = require("./types");
 const parsers_1 = require("./parsers");
+const rules_1 = require("./rules");
 const spec_config_1 = require("./spec.config");
 const router_1 = require("./router");
 const post_processor_data_1 = require("./post-processor-data");
@@ -36,6 +37,7 @@ class WebToApi {
         this._parsers = {};
         this._relativePath = null;
         this._router = null;
+        this._rules = {};
         this._configPath = configPath;
         this.loadConfig();
         this.load();
@@ -109,7 +111,7 @@ class WebToApi {
                 }
                 results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
                 if (!results || preRequest.forceAnalysis) {
-                    results = yield this.analyze(key, raw, endpoint);
+                    results = yield this.analyze(key, raw, endpoint, preRequest);
                     this.saveJSONCache(key, results);
                 }
             }
@@ -147,7 +149,7 @@ class WebToApi {
         }
         return url;
     }
-    analyze(key, data, endpoint) {
+    analyze(key, data, endpoint, preRequest) {
         return __awaiter(this, void 0, void 0, function* () {
             let results = {};
             if (data) {
@@ -156,10 +158,12 @@ class WebToApi {
                     xmlMode: true
                 });
                 results = yield this.analyzeFields(endpoint.fields, doc, doc('body'));
+                results = yield this.applyRules(endpoint.rules, results);
                 if (endpoint.postProcessor) {
                     let requestData = new post_processor_data_1.WAPostProcessorData();
                     requestData.data = results;
                     requestData.endpoint = endpoint;
+                    requestData.request = preRequest;
                     requestData = yield endpoint.postProcessor(requestData);
                     results = requestData.data;
                 }
@@ -215,8 +219,19 @@ class WebToApi {
                         }
                     }
                 }
+                results[field.name] = yield this.applyRules(field.rules, results[field.name]);
             }
             return results;
+        });
+    }
+    applyRules(rules, root) {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const rule of rules) {
+                if (typeof this._rules[rule.type] !== 'undefined') {
+                    root = yield this._rules[rule.type](rule, root);
+                }
+            }
+            return root;
         });
     }
     genKey(type, params) {
@@ -264,6 +279,13 @@ class WebToApi {
                 throw new types_1.WAException(`WebToApi::load(): ${e}`);
             }
             if (!validator(this._config)) {
+                if (includes_1.Tools.FullErrors()) {
+                    for (const error of validator.errors) {
+                        console.log(libraries_1.chalk.red(`WebToApi::load() Error:`));
+                        console.log(libraries_1.chalk.red(`WebToApi::load():    \$${error.dataPath}`));
+                        console.log(libraries_1.chalk.red(`WebToApi::load():    ${error.message}`));
+                    }
+                }
                 throw new types_1.WAException(`WebToApi::load(): Bad configuration. '\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`);
             }
             if (typeof this._config.name === 'undefined') {
@@ -315,6 +337,10 @@ class WebToApi {
                 this._parsers['number'] = parsers_1.WAParserNumber;
                 this._parsers['text'] = parsers_1.WAParserText;
                 this._parsers['trim-text'] = parsers_1.WAParserTrimText;
+                this._rules['append'] = rules_1.WARuleAppend;
+                this._rules['combine'] = rules_1.WARuleCombine;
+                this._rules['copy'] = rules_1.WARuleCopy;
+                this._rules['forget'] = rules_1.WARuleForget;
                 for (const parser of this._config.parsers) {
                     ppCheck = includes_1.Tools.CheckFile(parser.path, this._relativePath);
                     switch (ppCheck.status) {

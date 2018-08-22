@@ -80,6 +80,9 @@ class Tools {
         }
         return left;
     }
+    static FullErrors() {
+        return typeof process.env.DRTOOLS_DEBUG !== 'undefined';
+    }
     static FullPath(basicPath) {
         return libraries_1.fs.existsSync(basicPath) ? libraries_1.path.resolve(basicPath) : libraries_1.path.join(process.cwd(), basicPath);
     }

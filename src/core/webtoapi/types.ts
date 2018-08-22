@@ -25,4 +25,6 @@ export class WAException {
 
 export type WAParsersList = BasicDictionary<Function>;
 
+export type WARulesList = BasicDictionary<Function>;
+
 export type WAUrlParameters = StringsDictionary;
