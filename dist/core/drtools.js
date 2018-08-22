@@ -44,6 +44,9 @@ __export(require("./webtoapi"));
 // Hooks related exports.
 __export(require("./hooks"));
 //
+// Promisify related exports.
+__export(require("./promisify"));
+//
 // Exporting DRTools Collector singleton.
 __export(require("./drcollector"));
 //

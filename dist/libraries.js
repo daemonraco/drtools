@@ -42,3 +42,5 @@ const path = require("path");
 exports.path = path;
 const request = require("request-promise-native");
 exports.request = request;
+const util = require("util");
+exports.util = util;
