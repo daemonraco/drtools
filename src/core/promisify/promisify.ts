@@ -5,6 +5,7 @@
 
 import { PromisifyBuilder } from './builder';
 import { PromisifyStrategies } from './constants';
+import { util } from '../../libraries';
 
 declare var Promise: any;
 
@@ -14,7 +15,7 @@ declare var Promise: any;
 export class Promisify extends Object {
     //
     // Signature.
-    [key: string]: any;
+    [key: string]: Function;
     //
     // Public methods.
     public registerFunction(methodName: string, func: Function, strategy: Function | string = PromisifyStrategies.Default): void {
@@ -25,19 +26,15 @@ export class Promisify extends Object {
             throw `Method '${methodName}' is already registered`;
         }
 
+        let method: Function = null;
         if (typeof strategy === 'function') {
-            this[methodName] = strategy(func, parentObject);
+            this[methodName] = method = strategy(func, parentObject);
         } else {
-            switch (strategy) {
-                case PromisifyStrategies.Default:
-                    this[methodName] = PromisifyBuilder.DefaultStrategy(func, parentObject);
-                    break;
-                case PromisifyStrategies.ErrorAndData:
-                    this[methodName] = PromisifyBuilder.ErrorAndData(func, parentObject);
-                    break;
-                default:
-                    throw `Unknown strategy '${strategy}'`;
-            }
+            this[methodName] = method = PromisifyBuilder.Factory(strategy, func, parentObject);
+        }
+
+        if (method !== null) {
+            (<any>func)[util.promisify.custom] = method;
         }
     }
 }

@@ -6,7 +6,10 @@
  * @class PromisifyStrategies
  */
 export declare class PromisifyStrategies {
+    static readonly DataAndError: string;
+    static readonly DataAndErrorCallbacks: string;
     static readonly Default: string;
     static readonly ErrorAndData: string;
+    static readonly ErrorAndDataCallbacks: string;
     private constructor();
 }

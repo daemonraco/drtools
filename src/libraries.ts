@@ -22,9 +22,10 @@ import * as md5 from 'md5';
 import * as mime from 'mime-types';
 import * as path from 'path';
 import * as request from 'request-promise-native';
+import * as util from 'util';
 
 export {
     ajv, bodyParser, commander, chalk, cheerio, ejs, express, EventEmitter, fs,
     glob, http, httpStatusCodes, jsonpath, loremIpsum, md5, marked, mime, path,
-    request
+    request, util
 };

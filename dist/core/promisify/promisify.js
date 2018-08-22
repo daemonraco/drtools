@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const builder_1 = require("./builder");
 const constants_1 = require("./constants");
+const libraries_1 = require("../../libraries");
 /**
  * @class Promisify
  */
@@ -19,20 +20,15 @@ class Promisify extends Object {
         if (typeof this[methodName] !== 'undefined') {
             throw `Method '${methodName}' is already registered`;
         }
+        let method = null;
         if (typeof strategy === 'function') {
-            this[methodName] = strategy(func, parentObject);
+            this[methodName] = method = strategy(func, parentObject);
         }
         else {
-            switch (strategy) {
-                case constants_1.PromisifyStrategies.Default:
-                    this[methodName] = builder_1.PromisifyBuilder.DefaultStrategy(func, parentObject);
-                    break;
-                case constants_1.PromisifyStrategies.ErrorAndData:
-                    this[methodName] = builder_1.PromisifyBuilder.ErrorAndData(func, parentObject);
-                    break;
-                default:
-                    throw `Unknown strategy '${strategy}'`;
-            }
+            this[methodName] = method = builder_1.PromisifyBuilder.Factory(strategy, func, parentObject);
+        }
+        if (method !== null) {
+            func[libraries_1.util.promisify.custom] = method;
         }
     }
 }
