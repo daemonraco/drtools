@@ -52,6 +52,10 @@ export * from './webtoapi';
 export * from './hooks';
 
 //
+// Promisify related exports.
+export * from './promisify';
+
+//
 // Exporting DRTools Collector singleton.
 export * from './drcollector';
 
