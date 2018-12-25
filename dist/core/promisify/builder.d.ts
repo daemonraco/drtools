@@ -16,6 +16,7 @@ export declare class PromisifyBuilder {
     static ErrorAndData(func: Function, parentObject: object): Function;
     static ErrorAndDataCallbacks(func: Function, parentObject: object): Function;
     static Factory(strategy: string, func: Function, parentObject: object): Function;
+    static JustError(func: Function, parentObject: object): Function;
     protected static FactoryByType(): {
         [key: string]: Function;
     };

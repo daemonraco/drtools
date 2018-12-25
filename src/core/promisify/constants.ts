@@ -12,6 +12,7 @@ export class PromisifyStrategies {
     public static readonly Default: string = 'default';
     public static readonly ErrorAndData: string = 'error-and-data';
     public static readonly ErrorAndDataCallbacks: string = 'error-and-data-callbacks';
+    public static readonly JustError: string = 'just-error';
 
     private constructor() { }
 }

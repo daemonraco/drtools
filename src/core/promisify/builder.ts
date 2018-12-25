@@ -130,6 +130,28 @@ export class PromisifyBuilder {
 
         return result;
     }
+    public static JustError(func: Function, parentObject: object): Function {
+        const PROMESIFY_BUILDER_METHOD_POINTER: Function = func;
+        const PROMESIFY_BUILDER_METHOD_PARENT: object = parentObject;
+
+        const result: Function = function () {
+            const args: any[] = Array.from(arguments);
+            return new Promise((resolve: GenericFunction, reject: GenericFunction) => {
+                args.push((error: any) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve();
+                    }
+                });
+                PROMESIFY_BUILDER_METHOD_POINTER.apply(PROMESIFY_BUILDER_METHOD_PARENT, args);
+            });
+        };
+        result.bind(PROMESIFY_BUILDER_METHOD_POINTER);
+        result.bind(PROMESIFY_BUILDER_METHOD_PARENT);
+
+        return result;
+    }
     //
     // Protected class methods.
     protected static FactoryByType() {
@@ -140,6 +162,7 @@ export class PromisifyBuilder {
             PromisifyBuilder.BuildersByType[`${PromisifyStrategies.Default}`] = PromisifyBuilder.DefaultStrategy;
             PromisifyBuilder.BuildersByType[`${PromisifyStrategies.ErrorAndData}`] = PromisifyBuilder.ErrorAndData;
             PromisifyBuilder.BuildersByType[`${PromisifyStrategies.ErrorAndDataCallbacks}`] = PromisifyBuilder.ErrorAndDataCallbacks;
+            PromisifyBuilder.BuildersByType[`${PromisifyStrategies.JustError}`] = PromisifyBuilder.JustError;
         }
 
         return PromisifyBuilder.BuildersByType;

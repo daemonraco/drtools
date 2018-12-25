@@ -11,5 +11,6 @@ export declare class PromisifyStrategies {
     static readonly Default: string;
     static readonly ErrorAndData: string;
     static readonly ErrorAndDataCallbacks: string;
+    static readonly JustError: string;
     private constructor();
 }
