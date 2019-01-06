@@ -9,7 +9,7 @@ import { BasicList } from '../includes/basic-types';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { Tools, ToolsCheckPath, IToolsCheckPathResult } from '../includes';
 import { WAEndpoint, WAEndpointList, WAException, WAParsersList, WARulesList, WAUrlParameters } from './types';
-import { WAParserAnchor, WAParserAnchorFull, WAParserAttribute, WAParserHtml, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
+import { WAParserAnchor, WAParserAnchorFull, WAParserAttribute, WAParserHtml, WAParserLDJson, WAParserNumber, WAParserText, WAParserTrimText } from './parsers';
 import { WARuleAppend, WARuleCombine, WARuleCopy, WARuleForget } from './rules';
 import { WebToApiConfigSpec } from './spec.config';
 import { WebToApiRouter } from './router';
@@ -161,7 +161,7 @@ export class WebToApi implements IManagerByKey {
                 xmlMode: true
             });
 
-            results = await this.analyzeFields(endpoint.fields, doc, doc('body'));
+            results = await this.analyzeFields(endpoint.fields, doc, doc(endpoint.mainSelector));
             results = await this.applyRules(endpoint.rules, results);
 
             if (endpoint.postProcessor) {
@@ -346,6 +346,7 @@ export class WebToApi implements IManagerByKey {
                 this._parsers['attr'] = WAParserAttribute;
                 this._parsers['attribute'] = WAParserAttribute;
                 this._parsers['html'] = WAParserHtml;
+                this._parsers['ld-json'] = WAParserLDJson;
                 this._parsers['number'] = WAParserNumber;
                 this._parsers['text'] = WAParserText;
                 this._parsers['trim-text'] = WAParserTrimText;

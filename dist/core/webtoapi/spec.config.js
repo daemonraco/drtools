@@ -15,6 +15,7 @@ exports.WebToApiConfigSpec = {
                 name: { type: 'string' },
                 url: { type: 'string' },
                 method: { type: 'string', default: 'GET' },
+                mainSelector: { type: 'string', default: 'body' },
                 headers: {
                     type: 'object',
                     default: {},
@@ -29,7 +30,7 @@ exports.WebToApiConfigSpec = {
                 preProcessor: { type: ['string', 'null'], default: null },
                 cacheLifetime: { type: 'integer' }
             },
-            required: ['fields', 'rules', 'method', 'name', 'url'],
+            required: ['fields', 'rules', 'mainSelector', 'method', 'name', 'url'],
             additionalProperties: false
         },
         field: {

@@ -17,7 +17,7 @@ ExpressJS server).
 ## Command options
 <!-- AUTO:server-options -->
 ```
-DRTools Server (v0.7.0):
+DRTools Server (v0.7.2):
 
   Usage: drtools-generator [options]
 

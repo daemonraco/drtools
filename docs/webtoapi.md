@@ -46,6 +46,10 @@ specification:
                     "type": "string",
                     "default": "GET"
                 },
+                "mainSelector": {
+                    "type": "string",
+                    "default": "body"
+                },
                 "headers": {
                     "type": "object",
                     "default": {},
@@ -84,6 +88,7 @@ specification:
             "required": [
                 "fields",
                 "rules",
+                "mainSelector",
                 "method",
                 "name",
                 "url"

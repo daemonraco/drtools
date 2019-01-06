@@ -10,5 +10,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./anchor"));
 __export(require("./attribute"));
 __export(require("./html"));
+__export(require("./ld-json"));
 __export(require("./number"));
 __export(require("./text"));

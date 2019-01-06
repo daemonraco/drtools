@@ -157,7 +157,7 @@ class WebToApi {
                     normalizeWhitespace: true,
                     xmlMode: true
                 });
-                results = yield this.analyzeFields(endpoint.fields, doc, doc('body'));
+                results = yield this.analyzeFields(endpoint.fields, doc, doc(endpoint.mainSelector));
                 results = yield this.applyRules(endpoint.rules, results);
                 if (endpoint.postProcessor) {
                     let requestData = new post_processor_data_1.WAPostProcessorData();
@@ -334,6 +334,7 @@ class WebToApi {
                 this._parsers['attr'] = parsers_1.WAParserAttribute;
                 this._parsers['attribute'] = parsers_1.WAParserAttribute;
                 this._parsers['html'] = parsers_1.WAParserHtml;
+                this._parsers['ld-json'] = parsers_1.WAParserLDJson;
                 this._parsers['number'] = parsers_1.WAParserNumber;
                 this._parsers['text'] = parsers_1.WAParserText;
                 this._parsers['trim-text'] = parsers_1.WAParserTrimText;
