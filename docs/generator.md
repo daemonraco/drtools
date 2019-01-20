@@ -72,6 +72,7 @@ generates a middleware with an initial structure.
 
 Options:
   -f, --force            in case the destination file exists, this option forces its replacement.
+  -k, --koa              creates a template for configurations using KoaJS.
   -s, --suffix [suffix]  suffix to use when generating a file (default: 'middleware').
   --test-run             does almost everything except actually generate files.
   -h, --help             output usage information
@@ -108,6 +109,7 @@ generates a route with an initial structure.
 
 Options:
   -f, --force            in case the destination file exists, this option forces its replacement.
+  -k, --koa              creates a template for configurations using KoaJS.
   -s, --suffix [suffix]  suffix to use when generating a file (default: 'route').
   --test-run             does almost everything except actually generate files.
   -h, --help             output usage information

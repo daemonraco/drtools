@@ -1,0 +1,8 @@
+'use strict';
+
+const config = global['<%= globalConstant %>'];
+
+module.exports = async (ctx, next) => {
+    console.log(`Running middleware '<%= name %>'. Current URL: ${ctx.originalUrl}`);
+    await next();
+};

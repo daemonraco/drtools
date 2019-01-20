@@ -1,0 +1,20 @@
+'use strict';
+
+const express = require('express');
+const router = express.Router();
+
+const config = global['<%= globalConstant %>'];
+
+router.get('/', async ctx => {
+    res.json({
+        message: 'it works!'
+    });
+});
+
+router.all('*', async ctx => {
+    res.status(404).json({
+        message: `Path '${ctx.originalUrl}' is not available.`
+    });
+});
+
+module.exports = router;
