@@ -89,6 +89,12 @@ class Tools {
     static IsBrowser() {
         return Tools._IsBrowser();
     }
+    static IsExpress(app) {
+        return app.context === undefined;
+    }
+    static IsKoa(app) {
+        return app.context !== undefined;
+    }
     static IsNode() {
         return Tools._IsNode();
     }

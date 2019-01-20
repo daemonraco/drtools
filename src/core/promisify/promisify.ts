@@ -15,7 +15,7 @@ declare var Promise: any;
 export class Promisify extends Object {
     //
     // Signature.
-    [key: string]: Function;
+    [key: string]: any;
     //
     // Public methods.
     public registerFunction(methodName: string, func: Function, strategy: Function | string = PromisifyStrategies.Default): void {

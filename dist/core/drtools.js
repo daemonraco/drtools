@@ -53,3 +53,7 @@ __export(require("./drcollector"));
 // Exporting ExpressJS Connector singleton.
 const express_1 = require("./express");
 exports.ExpressConnector = express_1.ExpressConnector.Instance();
+//
+// Exporting KoaJS Connector singleton.
+const koa_1 = require("./koa");
+exports.KoaConnector = koa_1.KoaConnector.Instance();

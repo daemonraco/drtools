@@ -56,9 +56,6 @@ class ExpressConnector {
                     if (req._parsedUrl.pathname === '/.drtools.json') {
                         let response;
                         let result = null;
-                        if (req.hostname.match(/^(localhost|127.0.0.1|192\.168\..*|10\..*)$/)) {
-                            res.header("Access-Control-Allow-Origin", `http://${req.hostname}:4200`);
-                        }
                         if (req.query.config && req.query.manager) {
                             result = _1.ExpressResponseBuilder.ConfigContents(req.query.manager, req.query.config);
                         }

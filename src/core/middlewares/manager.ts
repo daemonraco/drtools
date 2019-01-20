@@ -8,19 +8,19 @@ import { chalk } from '../../libraries';
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
-import { MiddlewaresConstants, IMiddlewareOptions } from '.';
+import { IMiddlewareOptions, MiddlewaresConstants } from '.';
 
 declare const global: any;
 
 export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
     //
     // Protected properties.
-    protected _expressApp: any = null;
+    protected _app: any = null;
     //
     // Constructor.
     constructor(app: any, directory: string, options: IMiddlewareOptions = null, configs: ConfigsManager = null) {
         super(directory, options, configs);
-        this._expressApp = app;
+        this._app = app;
         this._valid = !this._lastError;
 
         DRCollector.registerMiddlewaresManager(this);
@@ -60,7 +60,7 @@ export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
                     }
 
                     global.configs = this._configs;
-                    this._expressApp.use(require(item.path));
+                    this._app.use(require(item.path));
                     delete global.configs;
                 } catch (e) {
                     console.error(chalk.red(`Unable to load middleware '${item.name}'.\n\t${e}`));

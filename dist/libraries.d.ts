@@ -2,24 +2,29 @@
  * @file libraries.ts
  * @author Alejandro D. Simi
  */
+import * as EventEmitter from 'events';
+import * as KoaRouter from 'koa-router';
 import * as ajv from 'ajv';
 import * as bodyParser from 'body-parser';
 import * as chalk from 'chalk';
 import * as cheerio from 'cheerio';
 import * as commander from 'commander';
 import * as ejs from 'ejs';
-import * as EventEmitter from 'events';
 import * as express from 'express';
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as http from 'http';
 import * as httpStatusCodes from 'http-status-codes';
 import * as jsonpath from 'jsonpath-plus';
+import * as koa from 'koa';
+import * as koaSend from 'koa-send';
+import * as koaStatic from 'koa-static';
 import * as loremIpsum from 'lorem-ipsum';
 import * as marked from 'marked';
 import * as md5 from 'md5';
 import * as mime from 'mime-types';
 import * as path from 'path';
 import * as request from 'request-promise-native';
+import * as url from 'url';
 import * as util from 'util';
-export { ajv, bodyParser, commander, chalk, cheerio, ejs, express, EventEmitter, fs, glob, http, httpStatusCodes, jsonpath, loremIpsum, md5, marked, mime, path, request, util };
+export { KoaRouter, EventEmitter, ajv, bodyParser, chalk, cheerio, commander, ejs, express, fs, glob, http, httpStatusCodes, jsonpath, koa, koaSend, koaStatic, loremIpsum, marked, md5, mime, path, request, url, util };

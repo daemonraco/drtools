@@ -30,9 +30,9 @@ export declare class MockRoutesManager implements IManagerByKey {
     protected attach(app: any): void;
     protected cleanParams(): void;
     protected fullPath(relativePath: string): string;
-    protected load(): void;
+    protected load(isExpress: boolean): void;
     protected loadGuard(guardSpec: any): IMockRoutesGuard;
-    protected loadGuards(): void;
+    protected loadGuards(isExpress: boolean): void;
     protected loadRoutes(): void;
     protected static RouteKey(route: any): string;
 }

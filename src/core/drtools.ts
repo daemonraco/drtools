@@ -63,3 +63,8 @@ export * from './drcollector';
 // Exporting ExpressJS Connector singleton.
 import { ExpressConnector as ExpressConnectorClass } from './express';
 export const ExpressConnector: ExpressConnectorClass = ExpressConnectorClass.Instance();
+
+//
+// Exporting KoaJS Connector singleton.
+import { KoaConnector as KoaConnectorClass } from './koa';
+export const KoaConnector: KoaConnectorClass = KoaConnectorClass.Instance();

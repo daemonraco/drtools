@@ -5,6 +5,11 @@
 import { ConfigItemSpec, ConfigsList, IConfigOptions, ConfigSpecsList } from '.';
 import { IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
+import { KoaMiddleware } from '../koa';
+declare enum PublishExportsTypes {
+    Express = "express",
+    Koa = "koa"
+}
 export declare class ConfigsManager implements IManagerByKey {
     protected _configs: ConfigsList;
     protected _directory: string;
@@ -29,13 +34,16 @@ export declare class ConfigsManager implements IManagerByKey {
     options(): IConfigOptions;
     publicItemNames(): string[];
     publishExports(uri?: string): ExpressMiddleware;
+    publishExportsForKoa(uri?: string): KoaMiddleware;
     publicUri(): string;
     specsDirectory(): string;
     suffix(): string;
     valid(): boolean;
     protected cleanOptions(): void;
+    protected genericPublishExports(type: PublishExportsTypes, uri?: string): ExpressMiddleware | KoaMiddleware;
     protected load(): void;
     protected loadExportsOf(name: string): boolean;
     protected loadSpecsOf(name: string): string;
     protected validateSpecsOf(name: string, specsPath: string): boolean;
 }
+export {};

@@ -46,6 +46,8 @@ export declare class Tools {
     static FullErrors(): boolean;
     static FullPath(basicPath: string): string;
     static IsBrowser(): boolean;
+    static IsExpress(app: any): boolean;
+    static IsKoa(app: any): boolean;
     static IsNode(): boolean;
     protected static CheckPathByType(checker: string, filePath: string, relativeTo?: string): IToolsCheckPathResult;
 }

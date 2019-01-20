@@ -3,18 +3,19 @@
  * @author Alejandro D. Simi
  */
 import { ExpressMiddleware } from '../express';
+import { KoaMiddleware } from '../koa';
 export interface IMockRoutesOptions {
     verbose?: boolean;
 }
 export interface IMockRoutesGuard {
     error?: string;
-    guard: ExpressMiddleware;
+    guard: ExpressMiddleware | KoaMiddleware;
     name: string;
     path: string;
 }
 export interface IMockRoutesRoute {
     error?: string;
-    guard?: ExpressMiddleware;
+    guard?: any;
     guardName?: string;
     guardPath?: string;
     method: string;
