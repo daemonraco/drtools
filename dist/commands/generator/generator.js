@@ -70,7 +70,10 @@ class DRToolsGenerator {
                 const exists = libraries_1.fs.existsSync(cleanOptions.fullPath);
                 if (cleanOptions.force || !exists) {
                     try {
-                        const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.middleware.ejs')).toString();
+                        const templatePath = options.koa
+                            ? libraries_1.path.join(__dirname, '../../../assets/template.middleware.koa.ejs')
+                            : libraries_1.path.join(__dirname, '../../../assets/template.middleware.ejs');
+                        const template = libraries_1.fs.readFileSync(templatePath).toString();
                         libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {
                             name,
                             globalConstant: drtools_1.MiddlewaresConstants.GlobalConfigPointer
@@ -122,7 +125,10 @@ class DRToolsGenerator {
                 const exists = libraries_1.fs.existsSync(cleanOptions.fullPath);
                 if (cleanOptions.force || !exists) {
                     try {
-                        const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.route.ejs')).toString();
+                        const templatePath = options.koa
+                            ? libraries_1.path.join(__dirname, '../../../assets/template.route.koa.ejs')
+                            : libraries_1.path.join(__dirname, '../../../assets/template.route.ejs');
+                        const template = libraries_1.fs.readFileSync(templatePath).toString();
                         libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {
                             name,
                             globalConstant: drtools_1.RoutesConstants.GlobalConfigPointer
@@ -633,6 +639,7 @@ class DRToolsGenerator {
             .alias(`m`)
             .description(`generates a middleware with an initial structure.`)
             .option(`-f, --force`, `in case the destination file exists, this option forces its replacement.`)
+            .option(`-k, --koa`, `creates a template for configurations using KoaJS.`)
             .option(`-s, --suffix [suffix]`, `suffix to use when generating a file (default: '${drtools_1.MiddlewaresConstants.Suffix}').`)
             .option(`--test-run`, `does almost everything except actually generate files.`)
             .action((name, directory, options) => {
@@ -653,6 +660,7 @@ class DRToolsGenerator {
             .alias(`r`)
             .description(`generates a route with an initial structure.`)
             .option(`-f, --force`, `in case the destination file exists, this option forces its replacement.`)
+            .option(`-k, --koa`, `creates a template for configurations using KoaJS.`)
             .option(`-s, --suffix [suffix]`, `suffix to use when generating a file (default: '${drtools_1.RoutesConstants.Suffix}').`)
             .option(`--test-run`, `does almost everything except actually generate files.`)
             .action((name, directory, options) => {

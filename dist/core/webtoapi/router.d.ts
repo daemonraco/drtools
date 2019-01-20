@@ -8,13 +8,16 @@ import { WebToApi } from './manager';
 export declare class WebToApiRouter {
     protected _config: any;
     protected _endpoints: WAEndpointList;
+    protected _expressRouter: any;
     protected _knownPaths: string[];
+    protected _koaRouter: any;
     protected _loaded: boolean;
     protected _manager: WebToApi;
-    protected _router: any;
     constructor(manager: WebToApi, endpoints: WAEndpointList, config: any);
     expressRouter(): any;
-    protected attendDefaultRequest(req: any, res: any): void;
-    protected attendRequest(endpoint: WAEndpoint, map: StringsDictionary, req: any, res: any, options?: OptionsList): void;
+    koaRouter(): any;
+    protected attendRequest(endpoint: WAEndpoint, map: StringsDictionary, url: string, urlParams: any, options?: OptionsList): Promise<any>;
+    protected buildExpressRouter(): void;
+    protected buildKoaRouter(): void;
     protected load(): void;
 }

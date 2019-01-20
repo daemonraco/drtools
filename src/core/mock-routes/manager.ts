@@ -3,13 +3,15 @@
  * @author Alejandro D. Simi
  */
 
-import { ajv, chalk, fs, mime, path } from '../../libraries';
+import { ajv, chalk, fs, koaSend, mime, path, url } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-import { MockRoutesConstants, IMockRoutesGuard, IMockRoutesOptions, IMockRoutesRoute } from '.';
+import { IMockRoutesGuard, IMockRoutesOptions, IMockRoutesRoute, MockRoutesConstants } from '.';
 import { Tools } from '../includes';
+
+declare var Promise: any;
 
 export class MockRoutesManager implements IManagerByKey {
     //
@@ -36,8 +38,10 @@ export class MockRoutesManager implements IManagerByKey {
         });
         this._configsValidator = ajvObj.compile(require('../../../assets/mock-routes.specs.json'));
 
-        this.load();
-        this.loadGuards();
+        const isExpress: boolean = Tools.IsExpress(app);
+
+        this.load(isExpress);
+        this.loadGuards(isExpress);
         this.loadRoutes();
         this.attach(app);
 
@@ -84,22 +88,46 @@ export class MockRoutesManager implements IManagerByKey {
     // Protected methods.
     protected attach(app: any): void {
         if (!this.lastError()) {
-            app.use((req: any, res: any, next: () => void) => {
-                const pathname: string = decodeURIComponent(req._parsedUrl.pathname);
-                const methodKey: string = `${req.method.toLowerCase()}:${pathname}`;
-                const allMethodsKey: string = `*:${pathname}`;
-                let rightKey: string = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
-                rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
+            if (Tools.IsExpress(app)) {
+                app.use((req: any, res: any, next: () => void) => {
+                    const pathname: string = decodeURIComponent(req._parsedUrl.pathname);
+                    const methodKey: string = `${req.method.toLowerCase()}:${pathname}`;
+                    const allMethodsKey: string = `*:${pathname}`;
+                    let rightKey: string = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
+                    rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
 
-                const route: IMockRoutesRoute = rightKey ? this._routes[rightKey] : null;
-                if (route && route.valid) {
-                    route.guard(req, res, () => {
-                        res.sendFile(route.path);
-                    });
-                } else {
-                    next();
-                }
-            });
+                    const route: IMockRoutesRoute = rightKey ? this._routes[rightKey] : null;
+                    if (route && route.valid) {
+                        route.guard(req, res, () => {
+                            res.sendFile(route.path);
+                        });
+                    } else {
+                        next();
+                    }
+                });
+            } else if (Tools.IsKoa(app)) {
+                app.use(async (ctx: any, next: () => void): Promise<any> => {
+                    const parsedUrl = url.parse(ctx.originalUrl);
+
+                    const pathname: string = decodeURIComponent(parsedUrl.pathname);
+                    const methodKey: string = `${ctx.method.toLowerCase()}:${pathname}`;
+                    const allMethodsKey: string = `*:${pathname}`;
+                    let rightKey: string = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
+                    rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
+
+                    const route: IMockRoutesRoute = rightKey ? this._routes[rightKey] : null;
+                    if (route && route.valid) {
+                        route.guard(ctx, async (): Promise<any> => {
+                            await koaSend(ctx, route.path);
+                        });
+                    } else {
+                        await next();
+                    }
+                });
+            } else {
+                this._lastError = `Unknown app type`;
+                console.error(chalk.red(this._lastError));
+            }
         }
     }
     protected cleanParams(): void {
@@ -118,7 +146,7 @@ export class MockRoutesManager implements IManagerByKey {
 
         return out;
     }
-    protected load(): void {
+    protected load(isExpress: boolean): void {
         try {
             if (this._options.verbose) {
                 console.log(`Loading mock-up routes:`);
@@ -163,14 +191,16 @@ export class MockRoutesManager implements IManagerByKey {
 
         return out;
     }
-    protected loadGuards(): void {
+    protected loadGuards(isExpress: boolean): void {
         //
         // Loading guards.
         if (!this.lastError()) {
             this._guards[MockRoutesConstants.DefaultGuard] = {
                 name: MockRoutesConstants.DefaultGuard,
                 path: null,
-                guard: (req: any, res: any, next: () => void) => next()
+                guard: isExpress
+                    ? (req: any, res: any, next: () => void) => next()
+                    : (ctx: any, next: () => void) => next(),
             };
 
             this._routesConfig.guards.forEach((guard: any) => {

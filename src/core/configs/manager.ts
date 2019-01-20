@@ -3,15 +3,22 @@
  * @author Alejandro D. Simi
  */
 
-import { ajv, chalk, fs, jsonpath, path } from '../../libraries';
+import { ajv, chalk, fs, httpStatusCodes, jsonpath, path } from '../../libraries';
 
 import { ConfigItemSpec, ConfigsConstants, ConfigsList, IConfigOptions, ConfigSpecsList } from '.';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
 import { IItemSpec, Tools, ToolsCheckPath } from '../includes';
+import { KoaMiddleware } from '../koa';
+
+enum PublishExportsTypes {
+    Express = 'express',
+    Koa = 'koa',
+};
 
 declare const global: any;
 declare const process: any;
+declare var Promise: any;
 
 export class ConfigsManager implements IManagerByKey {
     //
@@ -48,10 +55,10 @@ export class ConfigsManager implements IManagerByKey {
         return this._environmentName;
     }
     public get(name: string): any {
-        return typeof this._configs[name] !== 'undefined' ? this._configs[name] : {};
+        return this._configs[name] !== undefined ? this._configs[name] : {};
     }
     public getSpecs(name: string): any {
-        return typeof this._specs[name] !== 'undefined' ? this._specs[name] : null;
+        return this._specs[name] !== undefined ? this._specs[name] : null;
     }
     public items(): ConfigItemSpec[] {
         return this._items;
@@ -72,49 +79,10 @@ export class ConfigsManager implements IManagerByKey {
         return Object.keys(this._exports);
     }
     public publishExports(uri: string = ConfigsConstants.PublishUri): ExpressMiddleware {
-        //
-        // Cleaning URI @{
-        this._publicUri = `/${uri}/`;
-        [
-            ['//', '/']
-        ].forEach((pair: any) => {
-            while (this._publicUri.indexOf(pair[0]) > -1) {
-                this._publicUri = this._publicUri.replace(pair[0], pair[1]);
-            }
-        });
-        this._publicUri = this._publicUri.substr(0, this._publicUri.length - 1);
-        const uriForPattern: string = this._publicUri.replace(/\//g, '\\/').replace(/\./g, '\\.');
-        // @}
-
-        const pattern: RegExp = new RegExp(`^${uriForPattern}([\\/]?)(.*)$`);
-
-        return (req: any, res: any, next: () => void) => {
-            let responded: boolean = false;
-
-            if (req.originalUrl.match(pattern)) {
-                const name: string = req.originalUrl.replace(pattern, '$2');
-                if (name) {
-                    if (typeof this._exports[name] !== 'undefined') {
-                        res.json(this._exports[name]);
-                    } else {
-                        res.status(404).json({
-                            error: true,
-                            message: `Unknown exported configuration '${name}'.`
-                        });
-                    }
-                } else {
-                    res.json({
-                        configs: Object.keys(this._exports)
-                    });
-                }
-
-                responded = true;
-            }
-
-            if (!responded) {
-                next();
-            }
-        };
+        return <ExpressMiddleware>this.genericPublishExports(PublishExportsTypes.Express, uri);
+    }
+    public publishExportsForKoa(uri: string = ConfigsConstants.PublishUri): KoaMiddleware {
+        return <KoaMiddleware>this.genericPublishExports(PublishExportsTypes.Koa, uri);
     }
     public publicUri(): string {
         return this._publicUri;
@@ -137,6 +105,88 @@ export class ConfigsManager implements IManagerByKey {
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
+    }
+    protected genericPublishExports(type: PublishExportsTypes, uri: string = ConfigsConstants.PublishUri): ExpressMiddleware | KoaMiddleware {
+        //
+        // Cleaning URI @{
+        this._publicUri = `/${uri}/`;
+        [
+            ['//', '/']
+        ].forEach((pair: any) => {
+            while (this._publicUri.indexOf(pair[0]) > -1) {
+                this._publicUri = this._publicUri.replace(pair[0], pair[1]);
+            }
+        });
+        this._publicUri = this._publicUri.substr(0, this._publicUri.length - 1);
+        const uriForPattern: string = this._publicUri.replace(/\//g, '\\/').replace(/\./g, '\\.');
+        // @}
+
+        const pattern: RegExp = new RegExp(`^${uriForPattern}([\\/]?)(.*)$`);
+
+        let middlewareResult: ExpressMiddleware | KoaMiddleware = null;
+
+        switch (type) {
+            case PublishExportsTypes.Express:
+                middlewareResult = (req: any, res: any, next: () => void) => {
+                    let responded: boolean = false;
+
+                    if (req.originalUrl.match(pattern)) {
+                        const name: string = req.originalUrl.replace(pattern, '$2');
+                        if (name) {
+                            if (this._exports[name] !== undefined) {
+                                res.json(this._exports[name]);
+                            } else {
+                                res.status(httpStatusCodes.NOT_FOUND).json({
+                                    error: true,
+                                    message: `Unknown exported configuration '${name}'.`
+                                });
+                            }
+                        } else {
+                            res.json({
+                                configs: Object.keys(this._exports)
+                            });
+                        }
+
+                        responded = true;
+                    }
+
+                    if (!responded) {
+                        next();
+                    }
+                };
+                break;
+            case PublishExportsTypes.Koa:
+                middlewareResult = async (ctx: any, next: () => void): Promise<any> => {
+                    let responded: boolean = false;
+
+                    if (ctx.originalUrl.match(pattern)) {
+                        const name: string = ctx.originalUrl.replace(pattern, '$2');
+                        if (name) {
+                            if (this._exports[name] !== undefined) {
+                                ctx.body = this._exports[name];
+                            } else {
+                                ctx.throw(httpStatusCodes.NOT_FOUND, {
+                                    error: true,
+                                    message: `Unknown exported configuration '${name}'.`
+                                });
+                            }
+                        } else {
+                            ctx.body = {
+                                configs: Object.keys(this._exports),
+                            };
+                        }
+
+                        responded = true;
+                    }
+
+                    if (!responded) {
+                        await next();
+                    }
+                };
+                break;
+        }
+
+        return middlewareResult;
     }
     protected load(): void {
         this._lastError = null;
@@ -267,16 +317,16 @@ export class ConfigsManager implements IManagerByKey {
 
         const config: any = this._configs[name];
 
-        if (typeof config.$exports !== 'undefined' || typeof config.$pathExports !== 'undefined') {
+        if (config.$exports !== undefined || config.$pathExports !== undefined) {
             this._exports[name] = {};
         }
 
-        if (typeof config.$exports !== 'undefined') {
+        if (config.$exports !== undefined) {
             this._exports[name] = Tools.DeepMergeObjects(this._exports[name], config.$exports);
             hasExports = true;
         }
 
-        if (typeof config.$pathExports !== 'undefined') {
+        if (config.$pathExports !== undefined) {
             for (let k in config.$pathExports) {
                 const results: any = jsonpath({
                     path: config.$pathExports[k],

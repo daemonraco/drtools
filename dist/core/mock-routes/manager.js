@@ -3,6 +3,14 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const drcollector_1 = require("../drcollector");
@@ -31,8 +39,9 @@ class MockRoutesManager {
             useDefaults: true
         });
         this._configsValidator = ajvObj.compile(require('../../../assets/mock-routes.specs.json'));
-        this.load();
-        this.loadGuards();
+        const isExpress = includes_1.Tools.IsExpress(app);
+        this.load(isExpress);
+        this.loadGuards(isExpress);
         this.loadRoutes();
         this.attach(app);
         this._valid = !this._lastError;
@@ -73,22 +82,47 @@ class MockRoutesManager {
     // Protected methods.
     attach(app) {
         if (!this.lastError()) {
-            app.use((req, res, next) => {
-                const pathname = decodeURIComponent(req._parsedUrl.pathname);
-                const methodKey = `${req.method.toLowerCase()}:${pathname}`;
-                const allMethodsKey = `*:${pathname}`;
-                let rightKey = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
-                rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
-                const route = rightKey ? this._routes[rightKey] : null;
-                if (route && route.valid) {
-                    route.guard(req, res, () => {
-                        res.sendFile(route.path);
-                    });
-                }
-                else {
-                    next();
-                }
-            });
+            if (includes_1.Tools.IsExpress(app)) {
+                app.use((req, res, next) => {
+                    const pathname = decodeURIComponent(req._parsedUrl.pathname);
+                    const methodKey = `${req.method.toLowerCase()}:${pathname}`;
+                    const allMethodsKey = `*:${pathname}`;
+                    let rightKey = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
+                    rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
+                    const route = rightKey ? this._routes[rightKey] : null;
+                    if (route && route.valid) {
+                        route.guard(req, res, () => {
+                            res.sendFile(route.path);
+                        });
+                    }
+                    else {
+                        next();
+                    }
+                });
+            }
+            else if (includes_1.Tools.IsKoa(app)) {
+                app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
+                    const parsedUrl = libraries_1.url.parse(ctx.originalUrl);
+                    const pathname = decodeURIComponent(parsedUrl.pathname);
+                    const methodKey = `${ctx.method.toLowerCase()}:${pathname}`;
+                    const allMethodsKey = `*:${pathname}`;
+                    let rightKey = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
+                    rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
+                    const route = rightKey ? this._routes[rightKey] : null;
+                    if (route && route.valid) {
+                        route.guard(ctx, () => __awaiter(this, void 0, void 0, function* () {
+                            yield libraries_1.koaSend(ctx, route.path);
+                        }));
+                    }
+                    else {
+                        yield next();
+                    }
+                }));
+            }
+            else {
+                this._lastError = `Unknown app type`;
+                console.error(libraries_1.chalk.red(this._lastError));
+            }
         }
     }
     cleanParams() {
@@ -104,7 +138,7 @@ class MockRoutesManager {
         out = libraries_1.path.resolve(libraries_1.fs.existsSync(relativePath) ? relativePath : libraries_1.path.join(configDir, relativePath));
         return out;
     }
-    load() {
+    load(isExpress) {
         try {
             if (this._options.verbose) {
                 console.log(`Loading mock-up routes:`);
@@ -148,14 +182,16 @@ class MockRoutesManager {
         }
         return out;
     }
-    loadGuards() {
+    loadGuards(isExpress) {
         //
         // Loading guards.
         if (!this.lastError()) {
             this._guards[_1.MockRoutesConstants.DefaultGuard] = {
                 name: _1.MockRoutesConstants.DefaultGuard,
                 path: null,
-                guard: (req, res, next) => next()
+                guard: isExpress
+                    ? (req, res, next) => next()
+                    : (ctx, next) => next(),
             };
             this._routesConfig.guards.forEach((guard) => {
                 this._guards[guard.name] = this.loadGuard(guard);

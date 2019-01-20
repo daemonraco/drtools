@@ -23,8 +23,8 @@ class MiddlewaresManager extends includes_1.GenericManager {
         super(directory, options, configs);
         //
         // Protected properties.
-        this._expressApp = null;
-        this._expressApp = app;
+        this._app = null;
+        this._app = app;
         this._valid = !this._lastError;
         drcollector_1.DRCollector.registerMiddlewaresManager(this);
     }
@@ -60,7 +60,7 @@ class MiddlewaresManager extends includes_1.GenericManager {
                         console.log(`\t- '${libraries_1.chalk.green(item.name)}'`);
                     }
                     global.configs = this._configs;
-                    this._expressApp.use(require(item.path));
+                    this._app.use(require(item.path));
                     delete global.configs;
                 }
                 catch (e) {

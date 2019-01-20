@@ -98,6 +98,12 @@ export class Tools {
     public static IsBrowser(): boolean {
         return Tools._IsBrowser();
     }
+    public static IsExpress(app: any): boolean {
+        return app.context === undefined;
+    }
+    public static IsKoa(app: any): boolean {
+        return app.context !== undefined;
+    }
     public static IsNode(): boolean {
         return Tools._IsNode();
     }

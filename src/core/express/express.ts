@@ -67,10 +67,6 @@ export class ExpressConnector {
                         let response: ExpressResponseBuilder
                         let result: any = null;
 
-                        if (req.hostname.match(/^(localhost|127.0.0.1|192\.168\..*|10\..*)$/)) {
-                            res.header("Access-Control-Allow-Origin", `http://${req.hostname}:4200`);
-                        }
-
                         if (req.query.config && req.query.manager) {
                             result = ExpressResponseBuilder.ConfigContents(req.query.manager, req.query.config);
                         } else if (req.query.configSpecs && req.query.manager) {
