@@ -23,9 +23,11 @@ class RoutesManager extends includes_1.GenericManager {
         super(directory, options, configs);
         //
         // Protected properties.
-        this._expressApp = null;
+        this._app = null;
+        this._isKoa = false;
         this._routes = [];
-        this._expressApp = app;
+        this._app = app;
+        this._isKoa = includes_1.Tools.IsKoa(this._app);
         this._valid = !this._lastError;
         drcollector_1.DRCollector.registerRoutesManager(this);
     }
@@ -69,19 +71,29 @@ class RoutesManager extends includes_1.GenericManager {
                         name: this._itemSpecs[i].name,
                         path: this._itemSpecs[i].path,
                         routes: router.stack
-                            .filter((r) => r.route.path !== '*')
+                            .filter((r) => (this._isKoa && r.path !== '*') || (!this._isKoa && r.route.path !== '*'))
                             .map((r) => {
                             return {
-                                uri: `/${this._itemSpecs[i].name}${r.route.path}`,
-                                methods: r.route.methods
+                                uri: this._isKoa
+                                    ? `/${this._itemSpecs[i].name}${r.path}`
+                                    : `/${this._itemSpecs[i].name}${r.route.path}`,
+                                methods: this._isKoa
+                                    ? r.methods
+                                    : r.route.methods,
                             };
                         })
                     });
-                    this._expressApp.use(`/${this._itemSpecs[i].name}`, router);
+                    if (this._isKoa) {
+                        router.prefix(`/${this._itemSpecs[i].name}`);
+                        this._app.use(router.routes());
+                    }
+                    else {
+                        this._app.use(`/${this._itemSpecs[i].name}`, router);
+                    }
                     delete global[_1.RoutesConstants.GlobalConfigPointer];
                 }
-                catch (e) {
-                    console.error(libraries_1.chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.\n\t${e}`));
+                catch (err) {
+                    console.error(libraries_1.chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.`), err);
                 }
             }
         }

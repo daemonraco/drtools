@@ -15,13 +15,15 @@ declare const global: any;
 export class RoutesManager extends GenericManager<IRouteOptions> {
     //
     // Protected properties.
-    protected _expressApp: any = null;
+    protected _app: any = null;
+    protected _isKoa: boolean = false;
     protected _routes: any[] = [];
     //
     // Constructor.
     constructor(app: any, directory: string, options: IRouteOptions = {}, configs: ConfigsManager) {
         super(directory, options, configs);
-        this._expressApp = app;
+        this._app = app;
+        this._isKoa = Tools.IsKoa(this._app);
         this._valid = !this._lastError;
 
         DRCollector.registerRoutesManager(this);
@@ -70,19 +72,28 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
                         name: this._itemSpecs[i].name,
                         path: this._itemSpecs[i].path,
                         routes: router.stack
-                            .filter((r: any) => r.route.path !== '*')
+                            .filter((r: any) => (this._isKoa && r.path !== '*') || (!this._isKoa && r.route.path !== '*'))
                             .map((r: any) => {
                                 return {
-                                    uri: `/${this._itemSpecs[i].name}${r.route.path}`,
-                                    methods: r.route.methods
+                                    uri: this._isKoa
+                                        ? `/${this._itemSpecs[i].name}${r.path}`
+                                        : `/${this._itemSpecs[i].name}${r.route.path}`,
+                                    methods: this._isKoa
+                                        ? r.methods
+                                        : r.route.methods,
                                 };
                             })
                     });
-                    this._expressApp.use(`/${this._itemSpecs[i].name}`, router);
+                    if (this._isKoa) {
+                        router.prefix(`/${this._itemSpecs[i].name}`);
+                        this._app.use(router.routes());
+                    } else {
+                        this._app.use(`/${this._itemSpecs[i].name}`, router);
+                    }
 
                     delete global[RoutesConstants.GlobalConfigPointer];
-                } catch (e) {
-                    console.error(chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.\n\t${e}`));
+                } catch (err) {
+                    console.error(chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.`), err);
                 }
             }
         }

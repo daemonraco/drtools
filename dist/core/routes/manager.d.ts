@@ -6,7 +6,8 @@ import { ConfigsManager } from '../configs';
 import { GenericManager } from '../includes';
 import { IRouteOptions } from '.';
 export declare class RoutesManager extends GenericManager<IRouteOptions> {
-    protected _expressApp: any;
+    protected _app: any;
+    protected _isKoa: boolean;
     protected _routes: any[];
     constructor(app: any, directory: string, options: IRouteOptions, configs: ConfigsManager);
     load(): Promise<boolean>;
