@@ -3,6 +3,14 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const drcollector_1 = require("../drcollector");
@@ -47,6 +55,9 @@ class EndpointsManager {
     provide() {
         return this.valid() ? this._provider.expressMiddleware() : this.provideInvalidMiddleware();
     }
+    provideForKoa() {
+        return this.valid() ? this._provider.koaMiddleware() : this.provideInvalidKoaMiddleware();
+    }
     valid() {
         return this._valid;
     }
@@ -88,6 +99,12 @@ class EndpointsManager {
             this._endpointsUri = this._provider.uri();
         }
         this._valid = !this._lastError;
+    }
+    provideInvalidKoaMiddleware() {
+        return (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+            console.error(libraries_1.chalk.red(`EndpointsManager Error: ${this._lastError}`));
+            yield next();
+        });
     }
     provideInvalidMiddleware() {
         return (req, res, next) => {

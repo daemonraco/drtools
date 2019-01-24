@@ -3,13 +3,15 @@
  * @author Alejandro D. Simi
  */
 
-import { glob, path } from '../../libraries';
+import { glob, httpStatusCodes, path } from '../../libraries';
 
-import { IEndpointBrief, IEndpointBrievesByMethod, EndpointData, IEndpointOptions, EndpointPathPattern } from '.';
 import { ExpressMiddleware } from '../express';
+import { IEndpointBrief, IEndpointBrievesByMethod, EndpointData, IEndpointOptions, EndpointPathPattern } from '.';
+import { KoaMiddleware } from '../koa';
 import { Tools, ToolsCheckPath } from '../includes';
 
-declare const process: any;
+declare var Promise: any;
+declare var process: any;
 
 export class Endpoint {
     //
@@ -56,7 +58,7 @@ export class Endpoint {
 
                 res.header('Content-Type', 'application/json');
 
-                if (result.status === 200) {
+                if (result.status === httpStatusCodes.OK) {
                     res.status(result.status).json(result.data);
                 } else {
                     res.status(result.status).json({
@@ -70,9 +72,31 @@ export class Endpoint {
             }
         };
     }
+    public koaMiddleware(): KoaMiddleware {
+        return async (ctx: any, next: any): Promise<void> => {
+            const match = ctx.url.match(this._restPattern);
+            if (match) {
+                const result = this.responseFor(match[2], ctx.method);
+
+                ctx.set('Content-Type', 'application/json');
+
+                if (result.status === httpStatusCodes.OK) {
+                    ctx.body = result.data;
+                } else {
+                    ctx.throw(result.status, {
+                        status: result.status,
+                        message: result.message,
+                        data: result.data
+                    });
+                }
+            } else {
+                await next();
+            }
+        };
+    }
     public responseFor(endpoint: string, method: string, simple: boolean = false): { [name: string]: any } {
         let out: { [name: string]: any } = {
-            status: 200,
+            status: httpStatusCodes.OK,
             message: null,
             data: {}
         };

@@ -3,12 +3,13 @@
  * @author Alejandro D. Simi
  */
 
-import { chalk, fs, path } from '../../libraries';
+import { chalk } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { Endpoint, IEndpointBrief, IEndpointsManagerOptions, IEndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
+import { KoaMiddleware } from '../koa';
 import { Tools, ToolsCheckPath } from '../includes';
 
 declare const process: any;
@@ -54,6 +55,9 @@ export class EndpointsManager implements IManagerByKey {
     public provide(): ExpressMiddleware {
         return this.valid() ? this._provider.expressMiddleware() : this.provideInvalidMiddleware();
     }
+    public provideForKoa(): KoaMiddleware {
+        return this.valid() ? this._provider.koaMiddleware() : this.provideInvalidKoaMiddleware();
+    }
     public valid(): boolean {
         return this._valid;
     }
@@ -97,6 +101,12 @@ export class EndpointsManager implements IManagerByKey {
         }
 
         this._valid = !this._lastError;
+    }
+    protected provideInvalidKoaMiddleware(): KoaMiddleware {
+        return async (ctx: any, next: () => void): Promise<void> => {
+            console.error(chalk.red(`EndpointsManager Error: ${this._lastError}`));
+            await next();
+        }
     }
     protected provideInvalidMiddleware(): ExpressMiddleware {
         return (req: any, res: any, next: () => void) => {

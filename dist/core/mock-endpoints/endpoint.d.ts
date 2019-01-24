@@ -2,8 +2,9 @@
  * @file endpoint.ts
  * @author Alejandro D. Simi
  */
-import { IEndpointBrief, EndpointData, IEndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
+import { IEndpointBrief, EndpointData, IEndpointOptions } from '.';
+import { KoaMiddleware } from '../koa';
 export declare class Endpoint {
     protected _dirPath: string;
     protected _loaded: boolean;
@@ -17,6 +18,7 @@ export declare class Endpoint {
     paths(): IEndpointBrief[];
     directory(): string;
     expressMiddleware(): ExpressMiddleware;
+    koaMiddleware(): KoaMiddleware;
     responseFor(endpoint: string, method: string, simple?: boolean): {
         [name: string]: any;
     };

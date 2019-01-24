@@ -3,6 +3,14 @@
  * @file endpoint.ts
  * @author Alejandro D. Simi
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const _1 = require(".");
@@ -47,7 +55,7 @@ class Endpoint {
             if (match) {
                 const result = this.responseFor(match[2], req.method);
                 res.header('Content-Type', 'application/json');
-                if (result.status === 200) {
+                if (result.status === libraries_1.httpStatusCodes.OK) {
                     res.status(result.status).json(result.data);
                 }
                 else {
@@ -63,9 +71,31 @@ class Endpoint {
             }
         };
     }
+    koaMiddleware() {
+        return (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+            const match = ctx.url.match(this._restPattern);
+            if (match) {
+                const result = this.responseFor(match[2], ctx.method);
+                ctx.set('Content-Type', 'application/json');
+                if (result.status === libraries_1.httpStatusCodes.OK) {
+                    ctx.body = result.data;
+                }
+                else {
+                    ctx.throw(result.status, {
+                        status: result.status,
+                        message: result.message,
+                        data: result.data
+                    });
+                }
+            }
+            else {
+                yield next();
+            }
+        });
+    }
     responseFor(endpoint, method, simple = false) {
         let out = {
-            status: 200,
+            status: libraries_1.httpStatusCodes.OK,
             message: null,
             data: {}
         };

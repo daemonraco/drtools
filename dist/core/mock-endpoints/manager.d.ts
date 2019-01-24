@@ -6,6 +6,7 @@ import { ConfigsManager } from '../configs';
 import { IManagerByKey } from '../drcollector';
 import { Endpoint, IEndpointBrief, IEndpointsManagerOptions, IEndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
+import { KoaMiddleware } from '../koa';
 export declare class EndpointsManager implements IManagerByKey {
     protected _configs: ConfigsManager;
     protected _endpointsDirectory: string;
@@ -21,9 +22,11 @@ export declare class EndpointsManager implements IManagerByKey {
     options(): IEndpointOptions;
     paths(): IEndpointBrief[];
     provide(): ExpressMiddleware;
+    provideForKoa(): KoaMiddleware;
     valid(): boolean;
     uri(): string;
     protected cleanOptions(): void;
     protected load(): void;
+    protected provideInvalidKoaMiddleware(): KoaMiddleware;
     protected provideInvalidMiddleware(): ExpressMiddleware;
 }
