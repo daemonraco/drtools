@@ -48,14 +48,16 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
     protected cleanOptions(): void {
         let defaultOptions: IRouteOptions = {
             suffix: RoutesConstants.Suffix,
-            verbose: true
+            urlPrefix: '',
+            verbose: true,
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
     protected loadAndAttach() {
         if (this._options.verbose) {
-            console.log(`Loading routes:`);
+            const str: string = this._options.urlPrefix ? ` (prefix: '${this._options.urlPrefix}')` : '';
+            console.log(`Loading routes${str}:`);
         }
 
         if (!this._lastError && this._itemSpecs.length > 0) {
@@ -85,10 +87,10 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
                             })
                     });
                     if (this._isKoa) {
-                        router.prefix(`/${this._itemSpecs[i].name}`);
+                        router.prefix(`${this._options.urlPrefix}/${this._itemSpecs[i].name}`);
                         this._app.use(router.routes());
                     } else {
-                        this._app.use(`/${this._itemSpecs[i].name}`, router);
+                        this._app.use(`${this._options.urlPrefix}/${this._itemSpecs[i].name}`, router);
                     }
 
                     delete global[RoutesConstants.GlobalConfigPointer];

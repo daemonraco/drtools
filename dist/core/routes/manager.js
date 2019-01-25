@@ -51,13 +51,15 @@ class RoutesManager extends includes_1.GenericManager {
     cleanOptions() {
         let defaultOptions = {
             suffix: _1.RoutesConstants.Suffix,
-            verbose: true
+            urlPrefix: '',
+            verbose: true,
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
     loadAndAttach() {
         if (this._options.verbose) {
-            console.log(`Loading routes:`);
+            const str = this._options.urlPrefix ? ` (prefix: '${this._options.urlPrefix}')` : '';
+            console.log(`Loading routes${str}:`);
         }
         if (!this._lastError && this._itemSpecs.length > 0) {
             for (let i in this._itemSpecs) {
@@ -84,11 +86,11 @@ class RoutesManager extends includes_1.GenericManager {
                         })
                     });
                     if (this._isKoa) {
-                        router.prefix(`/${this._itemSpecs[i].name}`);
+                        router.prefix(`${this._options.urlPrefix}/${this._itemSpecs[i].name}`);
                         this._app.use(router.routes());
                     }
                     else {
-                        this._app.use(`/${this._itemSpecs[i].name}`, router);
+                        this._app.use(`${this._options.urlPrefix}/${this._itemSpecs[i].name}`, router);
                     }
                     delete global[_1.RoutesConstants.GlobalConfigPointer];
                 }

@@ -4,5 +4,6 @@
  */
 export interface IRouteOptions {
     suffix?: string;
+    urlPrefix?: string;
     verbose?: boolean;
 }
