@@ -67,6 +67,7 @@ class WebToApiRouter {
                 results.status = libraries_1.httpStatusCodes.INTERNAL_SERVER_ERROR;
                 results.body = { error: `${error}` };
             }
+            return results;
         });
     }
     buildExpressRouter() {

@@ -131,8 +131,7 @@ export class EndpointData {
             try {
                 const globalBehaviors = require(globalBehaviorsPath);
                 this._behaviors.importBehaviors(globalBehaviors);
-            } catch (e) {
-            }
+            } catch (e) { }
         });
     }
     protected loadPaths(): void {

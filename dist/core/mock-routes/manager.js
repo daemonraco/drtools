@@ -161,9 +161,9 @@ class MockRoutesManager {
                 console.error(libraries_1.chalk.red(this._lastError));
             }
         }
-        catch (e) {
-            this._lastError = `${e}`;
-            console.error(libraries_1.chalk.red(this._lastError));
+        catch (err) {
+            this._lastError = `${err}`;
+            console.error(libraries_1.chalk.red(this._lastError), err);
         }
     }
     loadGuard(guardSpec) {

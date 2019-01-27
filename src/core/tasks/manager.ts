@@ -10,8 +10,6 @@ import { DRCollector } from '../drcollector';
 import { GenericManager, IItemSpec, Tools } from '../includes';
 import { Task, TasksConstants, TasksList, ITasksManagerOptions } from '.';
 
-declare const global: any;
-
 export class TasksManager extends GenericManager<ITasksManagerOptions> {
     //
     // Protected properties.
@@ -46,8 +44,8 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
                         const task: Task = require(item.path);
                         task.setConfigs(this._configs);
                         this._items[item.name] = <Task>task;
-                    } catch (e) {
-                        console.error(chalk.red(`Unable to load task '${item.name}'.\n\t${e}`));
+                    } catch (err) {
+                        console.error(chalk.red(`Unable to load task '${item.name}'.`), err);
                     }
                 }
             }

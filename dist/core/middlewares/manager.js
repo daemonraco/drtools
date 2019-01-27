@@ -63,8 +63,8 @@ class MiddlewaresManager extends includes_1.GenericManager {
                     this._app.use(require(item.path));
                     delete global.configs;
                 }
-                catch (e) {
-                    console.error(libraries_1.chalk.red(`Unable to load middleware '${item.name}'.\n\t${e}`));
+                catch (err) {
+                    console.error(libraries_1.chalk.red(`Unable to load middleware '${item.name}'.`), err);
                 }
             }
         }

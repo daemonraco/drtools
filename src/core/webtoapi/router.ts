@@ -67,6 +67,8 @@ export class WebToApiRouter {
             results.status = httpStatusCodes.INTERNAL_SERVER_ERROR;
             results.body = { error: `${error}` };
         }
+
+        return results;
     }
     protected buildExpressRouter(): void {
         if (!this._expressRouter) {

@@ -296,8 +296,8 @@ class ConfigsManager {
                         this._configs[item.name] = {};
                     }
                 }
-                catch (e) {
-                    console.error(libraries_1.chalk.red(`Unable to load config '${item.name}'.\n\t${e}`));
+                catch (err) {
+                    console.error(libraries_1.chalk.red(`Unable to load config '${item.name}'.`), err);
                 }
             }
         }

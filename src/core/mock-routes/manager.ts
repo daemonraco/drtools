@@ -168,9 +168,9 @@ export class MockRoutesManager implements IManagerByKey {
                 this._lastError = `Bad configuration. '\$${this._configsValidator.errors[0].dataPath}' ${this._configsValidator.errors[0].message}`;
                 console.error(chalk.red(this._lastError));
             }
-        } catch (e) {
-            this._lastError = `${e}`;
-            console.error(chalk.red(this._lastError));
+        } catch (err) {
+            this._lastError = `${err}`;
+            console.error(chalk.red(this._lastError), err);
         }
     }
     protected loadGuard(guardSpec: any): IMockRoutesGuard {

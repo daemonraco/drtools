@@ -304,8 +304,8 @@ export class ConfigsManager implements IManagerByKey {
                     } else {
                         this._configs[item.name] = {};
                     }
-                } catch (e) {
-                    console.error(chalk.red(`Unable to load config '${item.name}'.\n\t${e}`));
+                } catch (err) {
+                    console.error(chalk.red(`Unable to load config '${item.name}'.`), err);
                 }
             }
         }

@@ -48,8 +48,8 @@ class TasksManager extends includes_1.GenericManager {
                             task.setConfigs(this._configs);
                             this._items[item.name] = task;
                         }
-                        catch (e) {
-                            console.error(libraries_1.chalk.red(`Unable to load task '${item.name}'.\n\t${e}`));
+                        catch (err) {
+                            console.error(libraries_1.chalk.red(`Unable to load task '${item.name}'.`), err);
                         }
                     }
                 }

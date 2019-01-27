@@ -25,8 +25,9 @@ export declare class WebToApi implements IManagerByKey {
     customParsers(): BasicList<any>;
     description(): string;
     endpoints(): WAEndpointList;
-    has(type: string): boolean;
     get(type: string, params: WAUrlParameters): Promise<any>;
+    has(type: string): boolean;
+    koaRouter(): any;
     matchesKey(key: string): boolean;
     name(): string;
     parsers(): string[];

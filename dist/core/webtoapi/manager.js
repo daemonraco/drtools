@@ -63,9 +63,6 @@ class WebToApi {
     endpoints() {
         return this._endpoints;
     }
-    has(type) {
-        return typeof this._endpoints[type] !== 'undefined';
-    }
     get(type, params) {
         return __awaiter(this, void 0, void 0, function* () {
             let results = {};
@@ -104,8 +101,8 @@ class WebToApi {
                                 break;
                         }
                     }
-                    catch (e) {
-                        console.error(libraries_1.chalk.red(`Error: ${e}`));
+                    catch (err) {
+                        console.error(libraries_1.chalk.red(`Error: `), err);
                     }
                     this.saveRawCache(key, raw);
                 }
@@ -120,6 +117,13 @@ class WebToApi {
             }
             return results;
         });
+    }
+    has(type) {
+        return typeof this._endpoints[type] !== 'undefined';
+    }
+    koaRouter() {
+        this.loadRouter();
+        return this._router.koaRouter();
     }
     matchesKey(key) {
         return this._config && this._config.key === key;

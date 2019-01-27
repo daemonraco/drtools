@@ -61,9 +61,6 @@ export class WebToApi implements IManagerByKey {
     public endpoints(): WAEndpointList {
         return this._endpoints
     }
-    public has(type: string): boolean {
-        return typeof this._endpoints[type] !== 'undefined';
-    }
     public async get(type: string, params: WAUrlParameters) {
         let results: any = {};
         const key = this.genKey(type, params);
@@ -105,8 +102,8 @@ export class WebToApi implements IManagerByKey {
                             }
                             break;
                     }
-                } catch (e) {
-                    console.error(chalk.red(`Error: ${e}`));
+                } catch (err) {
+                    console.error(chalk.red(`Error: `), err);
                 }
 
                 this.saveRawCache(key, raw);
@@ -122,6 +119,13 @@ export class WebToApi implements IManagerByKey {
         }
 
         return results;
+    }
+    public has(type: string): boolean {
+        return typeof this._endpoints[type] !== 'undefined';
+    }
+    public koaRouter(): any {
+        this.loadRouter();
+        return this._router.koaRouter();
     }
     public matchesKey(key: string): boolean {
         return this._config && this._config.key === key;

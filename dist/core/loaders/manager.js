@@ -53,8 +53,8 @@ class LoadersManager extends includes_1.GenericManager {
                             }
                             delete global[_1.LoadersConstants.GlobalConfigsPointer];
                         }
-                        catch (e) {
-                            console.error(libraries_1.chalk.red(`Unable to load loader '${item.name}'.\n\t${e}`));
+                        catch (err) {
+                            console.error(libraries_1.chalk.red(`Unable to load loader '${item.name}'.`), err);
                         }
                     }
                 }

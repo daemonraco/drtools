@@ -116,8 +116,8 @@ class PluginsManager {
                             }
                             this._itemSpecs[dir.name] = { name: dir.name, path: dir.path, library };
                         }
-                        catch (e) {
-                            console.error(libraries_1.chalk.red(`Unable to load plugin '${dir.name}'. ${e}`));
+                        catch (err) {
+                            console.error(libraries_1.chalk.red(`Unable to load plugin '${dir.name}'.`), err);
                         }
                     }
                 }

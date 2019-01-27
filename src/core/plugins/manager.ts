@@ -127,8 +127,8 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
                         }
 
                         this._itemSpecs[dir.name] = { name: dir.name, path: dir.path, library };
-                    } catch (e) {
-                        console.error(chalk.red(`Unable to load plugin '${dir.name}'. ${e}`));
+                    } catch (err) {
+                        console.error(chalk.red(`Unable to load plugin '${dir.name}'.`), err);
                     }
                 }
             }

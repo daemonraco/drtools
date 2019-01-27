@@ -54,8 +54,8 @@ export class LoadersManager extends GenericManager<ILoaderOptions> {
                         }
 
                         delete global[LoadersConstants.GlobalConfigsPointer];
-                    } catch (e) {
-                        console.error(chalk.red(`Unable to load loader '${item.name}'.\n\t${e}`));
+                    } catch (err) {
+                        console.error(chalk.red(`Unable to load loader '${item.name}'.`), err);
                     }
                 }
             }
