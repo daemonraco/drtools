@@ -1,18 +1,18 @@
 'use strict';
 
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
 
 const config = global['<%= globalConstant %>'];
+const router = Router();
 
 router.get('/', async ctx => {
-    res.json({
+    ctx.body = {
         message: 'it works!'
-    });
+    };
 });
 
 router.all('*', async ctx => {
-    res.status(404).json({
+    ctx.throw(404, {
         message: `Path '${ctx.originalUrl}' is not available.`
     });
 });

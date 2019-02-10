@@ -1,3 +1,6 @@
+__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
+VERSION 0.7.0</span>__
+
 # DRTools: HTML Web To API
 ## Contents
 <!-- TOC depthFrom:2 updateOnSave:true -->

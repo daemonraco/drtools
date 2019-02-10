@@ -1,6 +1,3 @@
-__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
-VERSION 0.5.0</span>__
-
 # DRTools: Middlewares
 ## Contents
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -10,12 +7,14 @@ VERSION 0.5.0</span>__
 - [How to invoke it](#how-to-invoke-it)
     - [How does it look](#how-does-it-look)
 - [Options](#options)
+- [Koa.js](#koajs)
 
 <!-- /TOC -->
 
 ## What is a middleware?
 Well this is easy to explain, just visit [this
-link](http://expressjs.com/en/guide/using-middleware.html) on ExpressJS documentation.
+link](http://expressjs.com/en/guide/using-middleware.html) on ExpressJS
+documentation.
 
 ## How to invoke it
 Considering that you have a directory where you store all your scripts files
@@ -50,6 +49,9 @@ argument:
 |-----------|:---------:|:------------:|-------------------------------------------------------------|
 | `suffix`  |  `string` | `middleware` | Suffix to be expected on each middleware file to be loaded. |
 | `verbose` | `boolean` |    `true`    | Whether to display loading log information or not.          |
+
+## Koa.js
+Yes there's support for [koa.js](https://koajs.com/) middlewares.
 
 ----
 [Back to README](../README.md)

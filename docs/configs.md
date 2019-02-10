@@ -1,3 +1,6 @@
+__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
+VERSION 0.7.0</span>__
+
 # DRTools: Configs
 ## Contents
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -100,10 +103,10 @@ As you can see, this loads the file `myconf.config.json` and then
 
 ### Environment variables
 You may change the environment to load using:
-* the environment variable `ENV_NAME` (used from `process.env.ENV_NAME`).
 * the environment variable `NODE_ENV` (used from `process.env.NODE_ENV`).
-* the global value `ENV_NAME` (used from `global.ENV_NAME`).
+* the environment variable `ENV_NAME` (used from `process.env.ENV_NAME`).
 * the global value `NODE_ENV` (used from `global.NODE_ENV`).
+* the global value `ENV_NAME` (used from `global.ENV_NAME`).
 
 If none of these is used, then the value is assume to be `default`.
 

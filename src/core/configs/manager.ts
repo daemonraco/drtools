@@ -192,7 +192,7 @@ export class ConfigsManager implements IManagerByKey {
         this._lastError = null;
         //
         // Loading environment names.
-        this._environmentName = process.env.ENV_NAME || process.env.NODE_ENV || global.ENV_NAME || global.NODE_ENV || 'default';
+        this._environmentName = process.env.NODE_ENV || process.env.ENV_NAME || global.NODE_ENV || global.ENV_NAME || 'default';
         if (this._options.verbose) {
             console.log(`Loading configs (environment: ${chalk.green(this._environmentName)}):`);
         }
