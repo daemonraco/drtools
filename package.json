@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.7.9",
+    "version": "0.7.10",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -52,7 +52,7 @@
         "suppose": "^0.6.2",
         "typescript": "^2.9.2"
     },
-    "peerDependencies": {
+    "dependencies": {
         "ajv": "^6.7.0",
         "body-parser": "^1.18.3",
         "chalk": "^2.4.2",
