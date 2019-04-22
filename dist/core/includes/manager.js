@@ -47,7 +47,7 @@ class GenericManager {
         return this.directory() === key;
     }
     suffix() {
-        return typeof this._options.suffix !== 'undefined' ? this._options.suffix : '';
+        return this._options.suffix !== undefined ? this._options.suffix : '';
     }
     valid() {
         return this._valid;
@@ -82,7 +82,7 @@ class GenericManager {
             // Basic patterns.
             let suffix = this.suffix();
             suffix = suffix ? `\\.${suffix}` : '';
-            const itemsPattern = new RegExp(`^(.*)${suffix}\\.(json|js)$`);
+            const itemsPattern = new RegExp(`^(.*)${suffix}\\.(json|js|ts)$`);
             this._itemSpecs = libraries_1.fs.readdirSync(this._directory)
                 .filter(x => x.match(itemsPattern))
                 .map(x => {

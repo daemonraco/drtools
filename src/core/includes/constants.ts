@@ -3,6 +3,5 @@
  * @author Alejandro D. Simi
  */
 
-export class BasicConstants {
-    private constructor() { }
-}
+export enum BasicConstants {
+};

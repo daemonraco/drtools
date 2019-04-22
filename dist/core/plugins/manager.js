@@ -95,7 +95,7 @@ class PluginsManager {
                                 console.log(`\t- '${libraries_1.chalk.green(dir.name)}'`);
                             }
                             global[_1.PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
-                            let library = require(libraries_1.path.join(dir.path, 'index.js'));
+                            let library = require(libraries_1.path.join(dir.path, 'index'));
                             delete global[_1.PluginsConstants.GlobalConfigPointer];
                             if (typeof library !== 'object' || Array.isArray(library)) {
                                 const aux = library;

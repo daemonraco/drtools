@@ -2,8 +2,7 @@
  * @file constants.ts
  * @author Alejandro D. Simi
  */
-export declare class RoutesConstants {
-    static readonly GlobalConfigPointer: string;
-    static readonly Suffix: string;
-    private constructor();
+export declare enum RoutesConstants {
+    GlobalConfigPointer = "DRTOOLS_ROUTES_CONFIG_POINTER",
+    Suffix = "route"
 }

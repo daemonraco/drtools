@@ -55,7 +55,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
         return this.directory() === key;
     }
     public suffix(): string {
-        return typeof (<any>this._options).suffix !== 'undefined' ? (<any>this._options).suffix : '';
+        return (<any>this._options).suffix !== undefined ? (<any>this._options).suffix : '';
     }
     public valid(): boolean {
         return this._valid;
@@ -92,7 +92,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
             // Basic patterns.
             let suffix: string = this.suffix();
             suffix = suffix ? `\\.${suffix}` : '';
-            const itemsPattern: RegExp = new RegExp(`^(.*)${suffix}\\.(json|js)$`);
+            const itemsPattern: RegExp = new RegExp(`^(.*)${suffix}\\.(json|js|ts)$`);
 
             this._itemSpecs = fs.readdirSync(this._directory)
                 .filter(x => x.match(itemsPattern))

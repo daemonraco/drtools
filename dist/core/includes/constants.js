@@ -4,7 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-class BasicConstants {
-    constructor() { }
-}
-exports.BasicConstants = BasicConstants;
+var BasicConstants;
+(function (BasicConstants) {
+})(BasicConstants = exports.BasicConstants || (exports.BasicConstants = {}));
+;

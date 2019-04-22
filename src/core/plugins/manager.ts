@@ -10,8 +10,10 @@ import { DRCollector, IAsyncManager, IManagerByKey } from '../drcollector';
 import { IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
 import { PluginsConstants, IPluginsOptions, IPluginSpecs, IPluginSpecsList } from '.';
 
+declare const Promise: any;
 declare const global: any;
 declare const process: any;
+declare const require: Function;
 
 export class PluginsManager implements IAsyncManager, IManagerByKey {
     //
@@ -104,7 +106,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
                         }
 
                         global[PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
-                        let library: any = require(path.join(dir.path, 'index.js'));
+                        let library: any = require(path.join(dir.path, 'index'));
                         delete global[PluginsConstants.GlobalConfigPointer];
 
                         if (typeof library !== 'object' || Array.isArray(library)) {
