@@ -20,6 +20,9 @@ class Hook {
     constructor(key) {
         //
         // Protected properties.
+        this._cache = null;
+        this._chainedCache = null;
+        this._isCached = false;
         this._key = null;
         this._listeners = {};
         this._listenersOrder = {};
@@ -34,14 +37,17 @@ class Hook {
     }
     //
     // Public methods.
+    activateCache() {
+        this._isCached = true;
+    }
     addListener(key, callback, order = constants_1.HookConstants.DefaultHookOrder) {
         //
         // Is it duplicated?
         //      if it is, it's ignored.
-        if (typeof this._listeners[key] === 'undefined') {
+        if (this._listeners[key] === undefined) {
             //
             // Finding the proper unique order.
-            while (typeof this._listenersOrder[order] !== 'undefined') {
+            while (this._listenersOrder[order] !== undefined) {
                 order++;
             }
             this._listenersOrder[order] = key;
@@ -50,16 +56,30 @@ class Hook {
         // Registering listener callback.
         this._listeners[key] = callback;
         //
+        // Clearing cache.
+        this._resetCache();
+        //
         // Telling everyone about it (A.K.A. 'bragging' ^__^).
         this._events.emit(constants_1.HookEvents.Hooked, { key });
     }
     chainedReelIn(bait) {
         return __awaiter(this, void 0, void 0, function* () {
-            for (const order of this.cleanOrders()) {
-                bait = yield this._listeners[this._listenersOrder[order]](bait);
+            if (!this.isCached() || this._chainedCache === null) {
+                for (const order of this._cleanOrders()) {
+                    bait = yield this._listeners[this._listenersOrder[order]](bait);
+                }
+                if (this.isCached()) {
+                    this._chainedCache = bait;
+                }
+            }
+            else {
+                bait = this._chainedCache;
             }
             return bait;
         });
+    }
+    isCached() {
+        return this._isCached;
     }
     key() {
         return this._key;
@@ -70,16 +90,25 @@ class Hook {
     reelIn(bait) {
         return __awaiter(this, void 0, void 0, function* () {
             let results = {};
-            for (const order of this.cleanOrders()) {
-                const key = this._listenersOrder[order];
-                results[key] = yield this._listeners[key](bait);
+            if (!this.isCached() || this._cache === null) {
+                for (const order of this._cleanOrders()) {
+                    const key = this._listenersOrder[order];
+                    results[key] = yield this._listeners[key](bait);
+                }
+                if (this.isCached()) {
+                    this._cache = results;
+                }
+            }
+            else {
+                results = this._cache;
             }
             return results;
         });
     }
     removeListener(key) {
-        if (typeof this._listeners[key] !== 'undefined') {
+        if (this._listeners[key] !== undefined) {
             delete this._listeners[key];
+            this._resetCache();
             this._events.emit(constants_1.HookEvents.Unhooked, { key });
         }
         for (const order of Object.keys(this._listenersOrder)) {
@@ -93,12 +122,16 @@ class Hook {
     }
     //
     // Protected methods.
-    cleanOrders() {
+    _cleanOrders() {
         let result = [];
         for (const order of Object.keys(this._listenersOrder)) {
             result.push(parseInt(order));
         }
         return result.sort((a, b) => a - b);
+    }
+    _resetCache() {
+        this._cache = null;
+        this._chainedCache = null;
     }
 }
 exports.Hook = Hook;
