@@ -19,7 +19,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
-    protected _directory: string = null;
+    protected _directories: string[] = null;
     protected _itemSpecs: IPluginSpecsList = null;
     protected _lastError: string = null;
     protected _loaded: boolean = false;
@@ -28,13 +28,13 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(directory: string, options: IPluginsOptions = null, configs: ConfigsManager = null) {
-        this._directory = directory;
+    constructor(directory: string | string[], options: IPluginsOptions = null, configs: ConfigsManager = null) {
+        this._directories = Array.isArray(directory) ? directory : [directory];
         this._options = options;
         this._configs = configs;
 
         this.cleanOptions();
-        this.checkDirectory();
+        this.checkDirectories();
         this.loadItemPaths();
 
         this._valid = !this._lastError;
@@ -58,21 +58,25 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     public configs(): ConfigsManager {
         return this._configs;
     }
+    /** @deprecated */
     public directory(): string {
-        return this._directory;
+        return this._directories[0];
+    }
+    public directories(): string[] {
+        return this._directories;
     }
     public get(code: string): any {
         let results: any = null;
 
         const codePieces = code.split('::');
-        if (typeof codePieces[1] === 'undefined') {
+        if (codePieces[1] === undefined) {
             codePieces[1] = PluginsConstants.DefaultMethod;
         }
 
-        if (typeof this._itemSpecs[codePieces[0]] !== 'undefined') {
+        if (this._itemSpecs[codePieces[0]] !== undefined) {
             const specs: IPluginSpecs = this._itemSpecs[codePieces[0]];
 
-            if (typeof specs.library[codePieces[1]] !== 'undefined') {
+            if (specs.library[codePieces[1]] !== undefined) {
                 results = specs.library[codePieces[1]];
             }
         }
@@ -103,6 +107,16 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
                     try {
                         if (this._options.verbose) {
                             console.log(`\t- '${chalk.green(dir.name)}'`);
+                        }
+                        //
+                        // Should it consider a distribution folder?
+                        if (this._options.dist) {
+                            const distPath: string = path.join(dir.path, 'dist');
+                            let stat: fs.Stats = null;
+                            try { stat = await fs.stat(distPath); } catch (e) { }
+                            if (stat && stat.isDirectory()) {
+                                dir.path = distPath;
+                            }
                         }
 
                         global[PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
@@ -147,34 +161,41 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
         return this.directory() === key;
     }
     public methodsOf(name: string): string[] {
-        return typeof this._itemSpecs[name] !== 'undefined' ? Object.keys(this._itemSpecs[name].library) : [];
+        return this._itemSpecs[name] !== undefined ? Object.keys(this._itemSpecs[name].library) : [];
     }
     public valid(): boolean {
         return this._valid;
     }
     //
     // Protected methods.
-    protected checkDirectory(): void {
+    protected checkDirectories(): void {
         //
         // Checking given directory paths.
         if (!this._lastError) {
-            const check: IToolsCheckPathResult = Tools.CheckDirectory(this._directory, process.cwd());
-            switch (check.status) {
-                case ToolsCheckPath.Ok:
-                    this._directory = check.path;
+            for (const index in this._directories) {
+                const check: IToolsCheckPathResult = Tools.CheckDirectory(this._directories[index], process.cwd());
+                switch (check.status) {
+                    case ToolsCheckPath.Ok:
+                        this._directories[index] = check.path;
+                        break;
+                    case ToolsCheckPath.WrongType:
+                        this._lastError = `'${this._directories[index]}' is not a directory.`;
+                        console.error(chalk.red(this._lastError));
+                    default:
+                        this._lastError = `'${this._directories[index]}' does not exist.`;
+                        console.error(chalk.red(this._lastError));
+                }
+
+                if (this._lastError) {
                     break;
-                case ToolsCheckPath.WrongType:
-                    this._lastError = `'${this._directory}' is not a directory.`;
-                    console.error(chalk.red(this._lastError));
-                default:
-                    this._lastError = `'${this._directory}' does not exist.`;
-                    console.error(chalk.red(this._lastError));
+                }
             }
         }
     }
     protected cleanOptions(): void {
         let defaultOptions: IPluginsOptions = {
-            verbose: true
+            dist: false,
+            verbose: true,
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
@@ -183,20 +204,18 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
         if (!this._lastError) {
             this._paths = [];
 
-            let dirs = fs.readdirSync(this._directory)
-                .map(x => {
-                    return {
-                        name: x,
-                        path: Tools.FullPath(path.join(this._directory, x))
-                    };
-                })
-                .filter(x => {
+            for (const directory of this._directories) {
+                let dirs = fs.readdirSync(directory).map((x: any) => ({
+                    name: x,
+                    path: Tools.FullPath(path.join(directory, x))
+                })).filter((x: any) => {
                     const check = Tools.CheckDirectory(x.path);
                     return check.status === ToolsCheckPath.Ok;
                 });
 
-            for (const dir of dirs) {
-                this._paths.push(dir);
+                for (const dir of dirs) {
+                    this._paths.push(dir);
+                }
             }
         }
     }

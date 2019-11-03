@@ -11,7 +11,7 @@ import * as cheerio from 'cheerio';
 import * as commander from 'commander';
 import * as ejs from 'ejs';
 import * as express from 'express';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as http from 'http';
 import * as httpStatusCodes from 'http-status-codes';

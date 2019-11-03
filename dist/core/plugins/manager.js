@@ -23,18 +23,18 @@ class PluginsManager {
         //
         // Protected properties.
         this._configs = null;
-        this._directory = null;
+        this._directories = null;
         this._itemSpecs = null;
         this._lastError = null;
         this._loaded = false;
         this._options = null;
         this._paths = null;
         this._valid = false;
-        this._directory = directory;
+        this._directories = Array.isArray(directory) ? directory : [directory];
         this._options = options;
         this._configs = configs;
         this.cleanOptions();
-        this.checkDirectory();
+        this.checkDirectories();
         this.loadItemPaths();
         this._valid = !this._lastError;
         drcollector_1.DRCollector.registerPluginsManager(this);
@@ -54,18 +54,22 @@ class PluginsManager {
     configs() {
         return this._configs;
     }
+    /** @deprecated */
     directory() {
-        return this._directory;
+        return this._directories[0];
+    }
+    directories() {
+        return this._directories;
     }
     get(code) {
         let results = null;
         const codePieces = code.split('::');
-        if (typeof codePieces[1] === 'undefined') {
+        if (codePieces[1] === undefined) {
             codePieces[1] = _1.PluginsConstants.DefaultMethod;
         }
-        if (typeof this._itemSpecs[codePieces[0]] !== 'undefined') {
+        if (this._itemSpecs[codePieces[0]] !== undefined) {
             const specs = this._itemSpecs[codePieces[0]];
-            if (typeof specs.library[codePieces[1]] !== 'undefined') {
+            if (specs.library[codePieces[1]] !== undefined) {
                 results = specs.library[codePieces[1]];
             }
         }
@@ -93,6 +97,19 @@ class PluginsManager {
                         try {
                             if (this._options.verbose) {
                                 console.log(`\t- '${libraries_1.chalk.green(dir.name)}'`);
+                            }
+                            //
+                            // Should it consider a distribution folder?
+                            if (this._options.dist) {
+                                const distPath = libraries_1.path.join(dir.path, 'dist');
+                                let stat = null;
+                                try {
+                                    stat = yield libraries_1.fs.stat(distPath);
+                                }
+                                catch (e) { }
+                                if (stat && stat.isDirectory()) {
+                                    dir.path = distPath;
+                                }
                             }
                             global[_1.PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
                             let library = require(libraries_1.path.join(dir.path, 'index'));
@@ -133,53 +150,57 @@ class PluginsManager {
         return this.directory() === key;
     }
     methodsOf(name) {
-        return typeof this._itemSpecs[name] !== 'undefined' ? Object.keys(this._itemSpecs[name].library) : [];
+        return this._itemSpecs[name] !== undefined ? Object.keys(this._itemSpecs[name].library) : [];
     }
     valid() {
         return this._valid;
     }
     //
     // Protected methods.
-    checkDirectory() {
+    checkDirectories() {
         //
         // Checking given directory paths.
         if (!this._lastError) {
-            const check = includes_1.Tools.CheckDirectory(this._directory, process.cwd());
-            switch (check.status) {
-                case includes_1.ToolsCheckPath.Ok:
-                    this._directory = check.path;
+            for (const index in this._directories) {
+                const check = includes_1.Tools.CheckDirectory(this._directories[index], process.cwd());
+                switch (check.status) {
+                    case includes_1.ToolsCheckPath.Ok:
+                        this._directories[index] = check.path;
+                        break;
+                    case includes_1.ToolsCheckPath.WrongType:
+                        this._lastError = `'${this._directories[index]}' is not a directory.`;
+                        console.error(libraries_1.chalk.red(this._lastError));
+                    default:
+                        this._lastError = `'${this._directories[index]}' does not exist.`;
+                        console.error(libraries_1.chalk.red(this._lastError));
+                }
+                if (this._lastError) {
                     break;
-                case includes_1.ToolsCheckPath.WrongType:
-                    this._lastError = `'${this._directory}' is not a directory.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
-                default:
-                    this._lastError = `'${this._directory}' does not exist.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
+                }
             }
         }
     }
     cleanOptions() {
         let defaultOptions = {
-            verbose: true
+            dist: false,
+            verbose: true,
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
     loadItemPaths() {
         if (!this._lastError) {
             this._paths = [];
-            let dirs = libraries_1.fs.readdirSync(this._directory)
-                .map(x => {
-                return {
+            for (const directory of this._directories) {
+                let dirs = libraries_1.fs.readdirSync(directory).map((x) => ({
                     name: x,
-                    path: includes_1.Tools.FullPath(libraries_1.path.join(this._directory, x))
-                };
-            })
-                .filter(x => {
-                const check = includes_1.Tools.CheckDirectory(x.path);
-                return check.status === includes_1.ToolsCheckPath.Ok;
-            });
-            for (const dir of dirs) {
-                this._paths.push(dir);
+                    path: includes_1.Tools.FullPath(libraries_1.path.join(directory, x))
+                })).filter((x) => {
+                    const check = includes_1.Tools.CheckDirectory(x.path);
+                    return check.status === includes_1.ToolsCheckPath.Ok;
+                });
+                for (const dir of dirs) {
+                    this._paths.push(dir);
+                }
             }
         }
     }

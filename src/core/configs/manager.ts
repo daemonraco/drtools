@@ -240,23 +240,19 @@ export class ConfigsManager implements IManagerByKey {
             //
             // Loading basic configuration files.
             this._items = fs.readdirSync(this._directory)
-                .filter(x => x.match(configPattern))
-                .map(x => {
-                    return {
-                        name: x.replace(configPattern, '$1'),
-                        path: path.resolve(path.join(this._directory, x))
-                    };
-                });
+                .filter((x: string) => x.match(configPattern))
+                .map((x: string) => ({
+                    name: x.replace(configPattern, '$1'),
+                    path: path.resolve(path.join(this._directory, x))
+                }));
             //
             // Loading evironment specific configuration files.
             const envFiles: IItemSpec[] = fs.readdirSync(this._directory)
-                .filter(x => x.match(envPattern))
-                .map(x => {
-                    return {
-                        name: x.replace(envPattern, '$1'),
-                        path: path.resolve(path.join(this._directory, x))
-                    };
-                });
+                .filter((x: string) => x.match(envPattern))
+                .map((x: string) => ({
+                    name: x.replace(envPattern, '$1'),
+                    path: path.resolve(path.join(this._directory, x))
+                }));
             //
             // Merging lists.
             for (let i in this._items) {

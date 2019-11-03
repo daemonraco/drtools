@@ -84,13 +84,11 @@ class GenericManager {
             suffix = suffix ? `\\.${suffix}` : '';
             const itemsPattern = new RegExp(`^(.*)${suffix}\\.(json|js|ts)$`);
             this._itemSpecs = libraries_1.fs.readdirSync(this._directory)
-                .filter(x => x.match(itemsPattern))
-                .map(x => {
-                return {
-                    name: x.replace(itemsPattern, '$1'),
-                    path: includes_1.Tools.FullPath(libraries_1.path.join(this._directory, x))
-                };
-            });
+                .filter((x) => x.match(itemsPattern))
+                .map((x) => ({
+                name: x.replace(itemsPattern, '$1'),
+                path: includes_1.Tools.FullPath(libraries_1.path.join(this._directory, x))
+            }));
             this._valid = !this._lastError;
         }
     }

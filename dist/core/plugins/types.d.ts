@@ -3,6 +3,7 @@
  * @author Alejandro D. Simi
  */
 export interface IPluginsOptions {
+    dist?: boolean;
     verbose?: boolean;
 }
 export interface IPluginSpecs {

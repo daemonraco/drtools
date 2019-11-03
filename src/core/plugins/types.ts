@@ -4,6 +4,7 @@
  */
 
 export interface IPluginsOptions {
+    dist?: boolean;
     verbose?: boolean;
 }
 

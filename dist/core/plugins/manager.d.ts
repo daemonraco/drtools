@@ -7,18 +7,20 @@ import { IAsyncManager, IManagerByKey } from '../drcollector';
 import { IPluginsOptions, IPluginSpecsList } from '.';
 export declare class PluginsManager implements IAsyncManager, IManagerByKey {
     protected _configs: ConfigsManager;
-    protected _directory: string;
+    protected _directories: string[];
     protected _itemSpecs: IPluginSpecsList;
     protected _lastError: string;
     protected _loaded: boolean;
     protected _options: IPluginsOptions;
     protected _paths: any[];
     protected _valid: boolean;
-    constructor(directory: string, options?: IPluginsOptions, configs?: ConfigsManager);
+    constructor(directory: string | string[], options?: IPluginsOptions, configs?: ConfigsManager);
     configNameOf(name: string): string;
     configOf(name: string): any;
     configs(): ConfigsManager;
+    /** @deprecated */
     directory(): string;
+    directories(): string[];
     get(code: string): any;
     items(): IPluginSpecsList;
     itemNames(): string[];
@@ -28,7 +30,7 @@ export declare class PluginsManager implements IAsyncManager, IManagerByKey {
     matchesKey(key: string): boolean;
     methodsOf(name: string): string[];
     valid(): boolean;
-    protected checkDirectory(): void;
+    protected checkDirectories(): void;
     protected cleanOptions(): void;
     protected loadItemPaths(): void;
 }

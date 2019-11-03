@@ -232,23 +232,19 @@ class ConfigsManager {
             //
             // Loading basic configuration files.
             this._items = libraries_1.fs.readdirSync(this._directory)
-                .filter(x => x.match(configPattern))
-                .map(x => {
-                return {
-                    name: x.replace(configPattern, '$1'),
-                    path: libraries_1.path.resolve(libraries_1.path.join(this._directory, x))
-                };
-            });
+                .filter((x) => x.match(configPattern))
+                .map((x) => ({
+                name: x.replace(configPattern, '$1'),
+                path: libraries_1.path.resolve(libraries_1.path.join(this._directory, x))
+            }));
             //
             // Loading evironment specific configuration files.
             const envFiles = libraries_1.fs.readdirSync(this._directory)
-                .filter(x => x.match(envPattern))
-                .map(x => {
-                return {
-                    name: x.replace(envPattern, '$1'),
-                    path: libraries_1.path.resolve(libraries_1.path.join(this._directory, x))
-                };
-            });
+                .filter((x) => x.match(envPattern))
+                .map((x) => ({
+                name: x.replace(envPattern, '$1'),
+                path: libraries_1.path.resolve(libraries_1.path.join(this._directory, x))
+            }));
             //
             // Merging lists.
             for (let i in this._items) {
