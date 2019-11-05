@@ -9,11 +9,11 @@ const includes_1 = require("../includes");
 class GenericManager {
     //
     // Constructor.
-    constructor(directory, options = null, configs = null) {
+    constructor(directories, options = null, configs = null) {
         //
         // Protected properties.
         this._configs = null;
-        this._directory = null;
+        this._directories = [];
         this._itemSpecs = [];
         this._lastError = null;
         this._loaded = false;
@@ -21,15 +21,19 @@ class GenericManager {
         this._valid = false;
         this._configs = configs;
         this._options = options;
-        this._directory = directory;
+        this._directories = Array.isArray(directories) ? directories : [directories];
         this.cleanOptions();
-        this.checkDirectory();
+        this.checkDirectories();
         this.loadItemPaths();
     }
     //
     // Public methods.
+    directories() {
+        return this._directories;
+    }
+    /** @deprecated */
     directory() {
-        return this._directory;
+        return this._directories[0];
     }
     items() {
         return includes_1.Tools.DeepCopy(this._itemSpecs);
@@ -54,23 +58,28 @@ class GenericManager {
     }
     //
     // Protected methods.
-    checkDirectory() {
+    checkDirectories() {
         //
         // Checking given directory path.
         if (!this._lastError) {
-            const check = includes_1.Tools.CheckDirectory(this._directory, process.cwd());
-            switch (check.status) {
-                case includes_1.ToolsCheckPath.Ok:
-                    this._directory = check.path;
+            for (const index in this._directories) {
+                const check = includes_1.Tools.CheckDirectory(this._directories[index], process.cwd());
+                switch (check.status) {
+                    case includes_1.ToolsCheckPath.Ok:
+                        this._directories[index] = check.path;
+                        break;
+                    case includes_1.ToolsCheckPath.WrongType:
+                        this._lastError = `'${this._directories[index]}' is not a directory.`;
+                        console.error(libraries_1.chalk.red(this._lastError));
+                        break;
+                    default:
+                        this._lastError = `'${this._directories[index]}' does not exist.`;
+                        console.error(libraries_1.chalk.red(this._lastError));
+                        break;
+                }
+                if (this._lastError) {
                     break;
-                case includes_1.ToolsCheckPath.WrongType:
-                    this._lastError = `'${this._directory}' is not a directory.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
-                    break;
-                default:
-                    this._lastError = `'${this._directory}' does not exist.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
-                    break;
+                }
             }
             this._valid = !this._lastError;
         }
@@ -82,13 +91,19 @@ class GenericManager {
             // Basic patterns.
             let suffix = this.suffix();
             suffix = suffix ? `\\.${suffix}` : '';
-            const itemsPattern = new RegExp(`^(.*)${suffix}\\.(json|js|ts)$`);
-            this._itemSpecs = libraries_1.fs.readdirSync(this._directory)
-                .filter((x) => x.match(itemsPattern))
-                .map((x) => ({
-                name: x.replace(itemsPattern, '$1'),
-                path: includes_1.Tools.FullPath(libraries_1.path.join(this._directory, x))
-            }));
+            const itemsPattern = new RegExp(`^(.*)/(.*)${suffix}\.(json|js|ts)$`);
+            for (const directory of this._directories) {
+                let paths = libraries_1.glob.sync(libraries_1.path.join(directory, `*${suffix}.*`), { absolute: true });
+                this._itemSpecs = [
+                    ...this._itemSpecs,
+                    ...paths
+                        .filter((x) => x.match(itemsPattern))
+                        .map((x) => ({
+                        name: x.replace(itemsPattern, '$2'),
+                        path: x,
+                    })),
+                ];
+            }
             this._valid = !this._lastError;
         }
     }

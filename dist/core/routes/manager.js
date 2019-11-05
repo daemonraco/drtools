@@ -19,8 +19,8 @@ const _1 = require(".");
 class RoutesManager extends includes_1.GenericManager {
     //
     // Constructor.
-    constructor(app, directory, options = {}, configs) {
-        super(directory, options, configs);
+    constructor(app, directories, options = {}, configs) {
+        super(directories, options, configs);
         //
         // Protected properties.
         this._app = null;

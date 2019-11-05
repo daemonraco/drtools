@@ -22,8 +22,8 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
     protected _routes: any[] = [];
     //
     // Constructor.
-    constructor(app: any, directory: string, options: IRouteOptions = {}, configs: ConfigsManager) {
-        super(directory, options, configs);
+    constructor(app: any, directories: string[] | string, options: IRouteOptions = {}, configs: ConfigsManager) {
+        super(directories, options, configs);
         this._app = app;
         this._isKoa = Tools.IsKoa(this._app);
         this._valid = !this._lastError;

@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import { chalk, fs, path } from '../../libraries';
+import { chalk, glob, path } from '../../libraries';
 
 import { ConfigsManager } from '../configs';
 import { IAsyncManager, IManagerByKey } from '../drcollector';
@@ -16,7 +16,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
     //
     // Protected properties.
     protected _configs: ConfigsManager = null;
-    protected _directory: string = null;
+    protected _directories: string[] = [];
     protected _itemSpecs: IItemSpec[] = [];
     protected _lastError: string = null;
     protected _loaded: boolean = false;
@@ -24,19 +24,23 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(directory: string, options: TOptions = null, configs: ConfigsManager = null) {
+    constructor(directories: string[] | string, options: TOptions = null, configs: ConfigsManager = null) {
         this._configs = configs;
         this._options = options;
-        this._directory = directory;
+        this._directories = Array.isArray(directories) ? directories : [directories];
 
         this.cleanOptions();
-        this.checkDirectory();
+        this.checkDirectories();
         this.loadItemPaths();
     }
     //
     // Public methods.
+    public directories(): string[] {
+        return this._directories;
+    }
+    /** @deprecated */
     public directory(): string {
-        return this._directory;
+        return this._directories[0];
     }
     public items(): IItemSpec[] {
         return Tools.DeepCopy(this._itemSpecs);
@@ -62,23 +66,29 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
     }
     //
     // Protected methods.
-    protected checkDirectory(): void {
+    protected checkDirectories(): void {
         //
         // Checking given directory path.
         if (!this._lastError) {
-            const check = Tools.CheckDirectory(this._directory, process.cwd());
-            switch (check.status) {
-                case ToolsCheckPath.Ok:
-                    this._directory = check.path;
+            for (const index in this._directories) {
+                const check = Tools.CheckDirectory(this._directories[index], process.cwd());
+                switch (check.status) {
+                    case ToolsCheckPath.Ok:
+                        this._directories[index] = check.path;
+                        break;
+                    case ToolsCheckPath.WrongType:
+                        this._lastError = `'${this._directories[index]}' is not a directory.`;
+                        console.error(chalk.red(this._lastError));
+                        break;
+                    default:
+                        this._lastError = `'${this._directories[index]}' does not exist.`;
+                        console.error(chalk.red(this._lastError));
+                        break;
+                }
+
+                if (this._lastError) {
                     break;
-                case ToolsCheckPath.WrongType:
-                    this._lastError = `'${this._directory}' is not a directory.`;
-                    console.error(chalk.red(this._lastError));
-                    break;
-                default:
-                    this._lastError = `'${this._directory}' does not exist.`;
-                    console.error(chalk.red(this._lastError));
-                    break;
+                }
             }
 
             this._valid = !this._lastError;
@@ -92,14 +102,21 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
             // Basic patterns.
             let suffix: string = this.suffix();
             suffix = suffix ? `\\.${suffix}` : '';
-            const itemsPattern: RegExp = new RegExp(`^(.*)${suffix}\\.(json|js|ts)$`);
+            const itemsPattern: RegExp = new RegExp(`^(.*)/(.*)${suffix}\.(json|js|ts)$`);
 
-            this._itemSpecs = fs.readdirSync(this._directory)
-                .filter((x: string) => x.match(itemsPattern))
-                .map((x: string) => ({
-                    name: x.replace(itemsPattern, '$1'),
-                    path: Tools.FullPath(path.join(this._directory, x))
-                }));
+            for (const directory of this._directories) {
+                let paths: string[] = glob.sync(path.join(directory, `*${suffix}.*`), { absolute: true });
+
+                this._itemSpecs = [
+                    ...this._itemSpecs,
+                    ...paths
+                        .filter((x: string) => x.match(itemsPattern))
+                        .map((x: string) => ({
+                            name: x.replace(itemsPattern, '$2'),
+                            path: x,
+                        })),
+                ];
+            }
 
             this._valid = !this._lastError;
         }
