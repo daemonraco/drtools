@@ -23,8 +23,11 @@ class TasksManager extends includes_1.GenericManager {
         super(directory, options, configs);
         //
         // Protected properties.
+        this._consumingQueue = false;
         this._intervals = [];
         this._items = null;
+        this._queue = [];
+        this._queueInterval = null;
         this._valid = !this._lastError;
         drcollector_1.DRCollector.registerTasksManager(this);
     }
@@ -67,16 +70,30 @@ class TasksManager extends includes_1.GenericManager {
                 name: task.name(),
                 description: task.description(),
                 interval: task.interval(),
-                path: item.path
+                path: item.path,
             };
         });
     }
     //
     // Protected methods.
+    consumeQueue() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this._consumingQueue) {
+                this._consumingQueue = true;
+                if (this._queue.length > 0) {
+                    const task = this._queue.shift();
+                    yield task();
+                }
+                this._consumingQueue = false;
+            }
+        });
+    }
     cleanOptions() {
         let defaultOptions = {
+            queueTick: 5000,
+            runAsQueue: false,
             suffix: _1.TasksConstants.Suffix,
-            verbose: true
+            verbose: true,
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
@@ -92,10 +109,24 @@ class TasksManager extends includes_1.GenericManager {
     }
     setIntervals() {
         if (this.valid()) {
-            Object.keys(this._items).forEach((key) => {
+            for (const key of Object.keys(this._items)) {
                 const task = this._items[key];
-                this._intervals.push(setInterval(task.run, task.interval()));
-            });
+                //
+                // Are task being run when their time comes up?, or when their
+                // time comes up are they being queue for the next queue tick is
+                // available?
+                if (!this._options.runAsQueue) {
+                    this._intervals.push(setInterval(task.run, task.interval()));
+                }
+                else {
+                    this._intervals.push(setInterval(() => this._queue.push(task.run), task.interval()));
+                }
+            }
+            //
+            // Setting a main interval to consume queued tasks.
+            if (this._options.runAsQueue) {
+                this._queueInterval = setInterval(() => this.consumeQueue(), this._options.queueTick);
+            }
         }
     }
 }

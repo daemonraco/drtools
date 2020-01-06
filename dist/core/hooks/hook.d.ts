@@ -2,7 +2,6 @@
  * @file hook.ts
  * @author Alejandro D. Simi
  */
-/// <reference types="node" />
 import { EventEmitter } from '../../libraries';
 import { BasicDictionary, BasicList } from '../includes';
 import { HookBait, HookRunFunction, HookFunctions, HookResults } from './types';

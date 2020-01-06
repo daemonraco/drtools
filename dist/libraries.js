@@ -4,6 +4,8 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+const jsonpath = require('jsonpath-plus');
+exports.jsonpath = jsonpath;
 const EventEmitter = require("events");
 exports.EventEmitter = EventEmitter;
 const KoaRouter = require("koa-router");
@@ -30,8 +32,6 @@ const http = require("http");
 exports.http = http;
 const httpStatusCodes = require("http-status-codes");
 exports.httpStatusCodes = httpStatusCodes;
-const jsonpath = require("jsonpath-plus");
-exports.jsonpath = jsonpath;
 const koa = require("koa");
 exports.koa = koa;
 const koaSend = require("koa-send");

@@ -3,6 +3,7 @@
  * @author Alejandro D. Simi
  */
 
+const jsonpath = require('jsonpath-plus');
 import * as EventEmitter from 'events';
 import * as KoaRouter from 'koa-router';
 import * as ajv from 'ajv';
@@ -16,7 +17,6 @@ import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as http from 'http';
 import * as httpStatusCodes from 'http-status-codes';
-import * as jsonpath from 'jsonpath-plus';
 import * as koa from 'koa';
 import * as koaSend from 'koa-send';
 import * as koaStatic from 'koa-static';

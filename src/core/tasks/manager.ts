@@ -8,13 +8,16 @@ import { chalk } from '../../libraries';
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
 import { GenericManager, IItemSpec, Tools } from '../includes';
-import { Task, TasksConstants, TasksList, ITasksManagerOptions } from '.';
+import { ITasksManagerOptions, ITasksManager_TasksResponse, Task, TasksConstants, TasksList } from '.';
 
 export class TasksManager extends GenericManager<ITasksManagerOptions> {
     //
     // Protected properties.
+    protected _consumingQueue: boolean = false;
     protected _intervals: any[] = [];
     protected _items: TasksList = null;
+    protected _queue: any[] = [];
+    protected _queueInterval: any = null;
     //
     // Constructor.
     constructor(directory: string, options: ITasksManagerOptions = null, configs: ConfigsManager = null) {
@@ -58,23 +61,37 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
 
         return this.valid();
     }
-    public tasks(): any[] {
+    public tasks(): ITasksManager_TasksResponse[] {
         return this._itemSpecs.map((item: IItemSpec) => {
             const task: Task = this._items[item.name];
             return {
                 name: task.name(),
                 description: task.description(),
                 interval: task.interval(),
-                path: item.path
+                path: item.path,
             }
         });
     }
     //
     // Protected methods.
+    protected async consumeQueue(): Promise<void> {
+        if (!this._consumingQueue) {
+            this._consumingQueue = true;
+
+            if (this._queue.length > 0) {
+                const task: Function = this._queue.shift();
+                await task();
+            }
+
+            this._consumingQueue = false;
+        }
+    }
     protected cleanOptions(): void {
         let defaultOptions: ITasksManagerOptions = {
+            queueTick: 5000,
+            runAsQueue: false,
             suffix: TasksConstants.Suffix,
-            verbose: true
+            verbose: true,
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
@@ -91,10 +108,23 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
     }
     protected setIntervals(): void {
         if (this.valid()) {
-            Object.keys(this._items).forEach((key: string) => {
+            for (const key of Object.keys(this._items)) {
                 const task: Task = this._items[key];
-                this._intervals.push(setInterval(task.run, task.interval()));
-            });
+                //
+                // Are task being run when their time comes up?, or when their
+                // time comes up are they being queue for the next queue tick is
+                // available?
+                if (!this._options.runAsQueue) {
+                    this._intervals.push(setInterval(task.run, task.interval()));
+                } else {
+                    this._intervals.push(setInterval(() => this._queue.push(task.run), task.interval()));
+                }
+            }
+            //
+            // Setting a main interval to consume queued tasks.
+            if (this._options.runAsQueue) {
+                this._queueInterval = setInterval(() => this.consumeQueue(), this._options.queueTick);
+            }
         }
     }
 }
