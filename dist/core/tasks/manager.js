@@ -112,9 +112,8 @@ class TasksManager extends includes_1.GenericManager {
             for (const key of Object.keys(this._items)) {
                 const task = this._items[key];
                 //
-                // Are task being run when their time comes up?, or when their
-                // time comes up are they being queue for the next queue tick is
-                // available?
+                // Are tasks being run when their time comes up?, or when their
+                // time comes up are they being queued for the next queue available tick?
                 if (!this._options.runAsQueue) {
                     this._intervals.push(setInterval(task.run, task.interval()));
                 }

@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.11.0",
+    "version": "0.11.1",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -40,11 +40,11 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/chai": "^4.2.7",
+        "@types/chai": "^4.2.9",
         "@types/cookies": "0.6.1",
         "@types/express": "^4.17.2",
         "@types/fs-extra": "^8.0.1",
-        "@types/koa": "^2.11.0",
+        "@types/koa": "^2.11.1",
         "@types/koa-static": "^4.0.1",
         "@types/node": "^8.10.59",
         "chai": "^4.2.0",
@@ -55,7 +55,7 @@
         "typescript": "^2.9.2"
     },
     "dependencies": {
-        "ajv": "^6.10.2",
+        "ajv": "^6.11.0",
         "body-parser": "^1.19.0",
         "chalk": "^2.4.2",
         "cheerio": "^1.0.0-rc.3",
@@ -70,10 +70,10 @@
         "koa-router": "^7.4.0",
         "koa-static": "^5.0.0",
         "lorem-ipsum": "^1.0.6",
-        "marked": "^0.3.19",
+        "marked": "^0.8.0",
         "md5": "^2.2.1",
         "mime-types": "^2.1.26",
-        "request": "^2.88.0",
+        "request": "^2.88.2",
         "request-promise-native": "^1.0.8"
     }
 }
