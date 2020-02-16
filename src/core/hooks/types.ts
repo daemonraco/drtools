@@ -6,12 +6,16 @@
 import { BasicDictionary } from '../includes';
 import { Hook } from './hook';
 
-export type HookBait = BasicDictionary<any>;
+export type HookBait<T = any> = BasicDictionary<T>;
 
-export type HookRunFunction = (data: HookBait) => Promise<any>;
+export type HookChainReelInFunction<T = HookBait> = (data: T) => Promise<T>;
 
-export type HookFunctions = BasicDictionary<HookRunFunction>;
+export type HookReelInFunction<B = HookBait, R = any> = (data: B) => Promise<HookResults<R>>;
 
-export type HookResults = BasicDictionary<any>;
+export type HookRunFunction<B = HookBait, R = any> = HookChainReelInFunction<B> | HookReelInFunction<B, R>;
+
+export type HookFunctions<B = HookBait, R = any> = BasicDictionary<HookRunFunction<B, R>>;
+
+export type HookResults<T = any> = BasicDictionary<T>;
 
 export type Hooks = BasicDictionary<Hook>;

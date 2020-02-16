@@ -66,14 +66,14 @@ class Hook {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isCached() || this._chainedCache === null) {
                 for (const order of this._cleanOrders()) {
-                    bait = yield this._listeners[this._listenersOrder[order]](bait);
+                    bait = (yield this._listeners[this._listenersOrder[order]](bait));
                 }
                 if (this.isCached()) {
                     this._chainedCache = bait;
                 }
             }
             else {
-                bait = this._chainedCache;
+                bait = (this._chainedCache);
             }
             return bait;
         });
@@ -93,7 +93,7 @@ class Hook {
             if (!this.isCached() || this._cache === null) {
                 for (const order of this._cleanOrders()) {
                     const key = this._listenersOrder[order];
-                    results[key] = yield this._listeners[key](bait);
+                    results[key] = (yield this._listeners[key](bait));
                 }
                 if (this.isCached()) {
                     this._cache = results;

@@ -14,6 +14,7 @@ export declare type ConfigsList = {
     [name: string]: any;
 };
 export interface IConfigOptions {
+    environmentVariable?: boolean;
     suffix?: string;
     verbose?: boolean;
 }

@@ -9,8 +9,6 @@ import { BasicDictionary, BasicList } from '../includes';
 import { HookConstants, HookEvents } from './constants';
 import { HookBait, HookRunFunction, HookFunctions, HookResults } from './types';
 
-declare const Promise: any;
-
 export class Hook {
     //
     // Protected properties.
@@ -18,7 +16,7 @@ export class Hook {
     protected _chainedCache: HookBait = null;
     protected _isCached: boolean = false;
     protected _key: string = null;
-    protected _listeners: HookFunctions = {};
+    protected _listeners: HookFunctions<any, any> = {};
     protected _listenersOrder: BasicDictionary<string> = {};
     //
     // Events.
@@ -33,7 +31,7 @@ export class Hook {
     public activateCache(): void {
         this._isCached = true;
     }
-    public addListener(key: string, callback: HookRunFunction, order: number = HookConstants.DefaultHookOrder): void {
+    public addListener<B = HookBait, R = any>(key: string, callback: HookRunFunction<B, R>, order: number = HookConstants.DefaultHookOrder): void {
         //
         // Is it duplicated?
         //      if it is, it's ignored.
@@ -55,17 +53,17 @@ export class Hook {
         // Telling everyone about it (A.K.A. 'bragging' ^__^).
         this._events.emit(HookEvents.Hooked, { key });
     }
-    public async chainedReelIn(bait: HookBait): Promise<HookBait> {
+    public async chainedReelIn<T = HookBait>(bait: T): Promise<T> {
         if (!this.isCached() || this._chainedCache === null) {
             for (const order of this._cleanOrders()) {
-                bait = await this._listeners[this._listenersOrder[order]](bait);
+                bait = <T>(await this._listeners[this._listenersOrder[order]](bait));
             }
 
             if (this.isCached()) {
                 this._chainedCache = bait;
             }
         } else {
-            bait = this._chainedCache;
+            bait = <T>(this._chainedCache);
         }
 
         return bait;
@@ -79,13 +77,13 @@ export class Hook {
     public listenerCodes(): BasicList<string> {
         return Object.keys(this._listeners);
     }
-    public async reelIn(bait: HookBait): Promise<HookResults> {
-        let results: HookResults = {};
+    public async reelIn<B = HookBait, R = any>(bait: B): Promise<HookResults<R>> {
+        let results: HookResults<R> = {};
 
         if (!this.isCached() || this._cache === null) {
             for (const order of this._cleanOrders()) {
                 const key: string = this._listenersOrder[order];
-                results[key] = await this._listeners[key](bait);
+                results[key] = <R>(await this._listeners[key](bait));
             }
 
             if (this.isCached()) {
@@ -114,8 +112,8 @@ export class Hook {
     }
     //
     // Public method aliases.
-    public espinel: (bait: HookBait) => Promise<HookResults> = this.reelIn;
-    public matryoshka: (bait: HookBait) => Promise<HookBait> = this.chainedReelIn;
+    public espinel: <B = HookBait, R = any>(bait: B) => Promise<HookResults<R>> = this.reelIn;
+    public matryoshka: <T = HookBait>(bait: T) => Promise<T> = this.chainedReelIn;
     //
     // Protected methods.
     protected _cleanOrders(): number[] {

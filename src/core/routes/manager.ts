@@ -10,7 +10,6 @@ import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
 import { RoutesConstants, IRouteOptions } from '.';
 
-declare const Promise: any;
 declare const global: any;
 declare const require: Function;
 

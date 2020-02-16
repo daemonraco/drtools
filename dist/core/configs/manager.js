@@ -22,6 +22,7 @@ var PublishExportsTypes;
     PublishExportsTypes["Koa"] = "koa";
 })(PublishExportsTypes || (PublishExportsTypes = {}));
 ;
+const ENV_PATTERN = /^ENV:(.+)$/;
 class ConfigsManager {
     //
     // Constructor.
@@ -100,10 +101,34 @@ class ConfigsManager {
     // Protected methods.
     cleanOptions() {
         let defaultOptions = {
+            environmentVariable: false,
             suffix: _1.ConfigsConstants.Suffix,
-            verbose: true
+            verbose: true,
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options);
+    }
+    expandEnvVariablesIn(data) {
+        switch (typeof data) {
+            case 'string':
+                const match = data.match(ENV_PATTERN);
+                if (match) {
+                    data = process.env[match[1]];
+                }
+                break;
+            case 'object':
+                if (Array.isArray(data)) {
+                    for (const idx in data) {
+                        data[idx] = this.expandEnvVariablesIn(data[idx]);
+                    }
+                }
+                else if (data) {
+                    for (const key of Object.keys(data)) {
+                        data[key] = this.expandEnvVariablesIn(data[key]);
+                    }
+                }
+                break;
+        }
+        return data;
     }
     genericPublishExports(type, uri = _1.ConfigsConstants.PublishUri) {
         //
@@ -261,39 +286,43 @@ class ConfigsManager {
         if (!this._lastError) {
             for (const item of this._items) {
                 let valid = true;
+                let name = item.name;
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${libraries_1.chalk.green(item.name)}'${item.specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`\t- '${libraries_1.chalk.green(name)}'${item.specific ? ` (has specific configuration)` : ''}`);
                     }
                     //
                     // Loading basic configuration.
-                    this._configs[item.name] = require(item.path);
+                    this._configs[name] = require(item.path);
                     //
                     // Merging with the environment specific configuration.
                     if (item.specific) {
-                        this._configs[item.name] = includes_1.Tools.DeepMergeObjects(this._configs[item.name], require(item.specific.path));
+                        this._configs[name] = includes_1.Tools.DeepMergeObjects(this._configs[name], require(item.specific.path));
                     }
                     //
                     // Does it have specs?
-                    item.specsPath = null;
+                    this._configs[name].specsPath = null;
                     if (this._specsDirectory) {
-                        item.specsPath = this.loadSpecsOf(item.name);
-                        if (item.specsPath !== null) {
-                            valid = this.validateSpecsOf(item.name, item.specsPath);
+                        this._configs[name].specsPath = this.loadSpecsOf(name);
+                        if (this._configs[name].specsPath !== null) {
+                            valid = this.validateSpecsOf(name, this._configs[name].specsPath);
                         }
                     }
                     //
                     // If there were no errors validating the config file, it can
                     // expose exports.
                     if (valid) {
-                        item.public = this.loadExportsOf(item.name);
+                        if (this._options.environmentVariable) {
+                            this._configs[name] = this.expandEnvVariablesIn(this._configs[name]);
+                        }
+                        this._configs[name].public = this.loadExportsOf(name);
                     }
                     else {
-                        this._configs[item.name] = {};
+                        this._configs[name] = {};
                     }
                 }
                 catch (err) {
-                    console.error(libraries_1.chalk.red(`Unable to load config '${item.name}'.`), err);
+                    console.error(libraries_1.chalk.red(`Unable to load config '${name}'.`), err);
                 }
             }
         }

@@ -10,7 +10,6 @@ import { DRCollector, IAsyncManager, IManagerByKey } from '../drcollector';
 import { IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
 import { PluginsConstants, IPluginsOptions, IPluginSpecs, IPluginSpecsList } from '.';
 
-declare const Promise: any;
 declare const global: any;
 declare const process: any;
 declare const require: Function;

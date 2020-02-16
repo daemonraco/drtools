@@ -18,7 +18,8 @@ enum PublishExportsTypes {
 
 declare const global: any;
 declare const process: any;
-declare var Promise: any;
+
+const ENV_PATTERN: RegExp = /^ENV:(.+)$/;
 
 export class ConfigsManager implements IManagerByKey {
     //
@@ -100,11 +101,35 @@ export class ConfigsManager implements IManagerByKey {
     // Protected methods.
     protected cleanOptions(): void {
         let defaultOptions: IConfigOptions = {
+            environmentVariable: false,
             suffix: ConfigsConstants.Suffix,
-            verbose: true
+            verbose: true,
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
+    }
+    protected expandEnvVariablesIn(data: any): any {
+        switch (typeof data) {
+            case 'string':
+                const match: RegExpMatchArray | null = data.match(ENV_PATTERN);
+                if (match) {
+                    data = process.env[match[1]];
+                }
+                break;
+            case 'object':
+                if (Array.isArray(data)) {
+                    for (const idx in data) {
+                        data[idx] = this.expandEnvVariablesIn(data[idx]);
+                    }
+                } else if (data) {
+                    for (const key of Object.keys(data)) {
+                        data[key] = this.expandEnvVariablesIn(data[key]);
+                    }
+                }
+                break;
+        }
+
+        return data;
     }
     protected genericPublishExports(type: PublishExportsTypes, uri: string = ConfigsConstants.PublishUri): ExpressMiddleware | KoaMiddleware {
         //
@@ -270,38 +295,42 @@ export class ConfigsManager implements IManagerByKey {
         if (!this._lastError) {
             for (const item of this._items) {
                 let valid: boolean = true;
+                let name: string = item.name;
 
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(item.name)}'${item.specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`\t- '${chalk.green(name)}'${item.specific ? ` (has specific configuration)` : ''}`);
                     }
                     //
                     // Loading basic configuration.
-                    this._configs[item.name] = require(item.path);
+                    this._configs[name] = require(item.path);
                     //
                     // Merging with the environment specific configuration.
                     if (item.specific) {
-                        this._configs[item.name] = Tools.DeepMergeObjects(this._configs[item.name], require(item.specific.path));
+                        this._configs[name] = Tools.DeepMergeObjects(this._configs[name], require(item.specific.path));
                     }
                     //
                     // Does it have specs?
-                    item.specsPath = null;
+                    this._configs[name].specsPath = null;
                     if (this._specsDirectory) {
-                        item.specsPath = this.loadSpecsOf(item.name);
-                        if (item.specsPath !== null) {
-                            valid = this.validateSpecsOf(item.name, item.specsPath);
+                        this._configs[name].specsPath = this.loadSpecsOf(name);
+                        if (this._configs[name].specsPath !== null) {
+                            valid = this.validateSpecsOf(name, this._configs[name].specsPath);
                         }
                     }
                     //
                     // If there were no errors validating the config file, it can
                     // expose exports.
                     if (valid) {
-                        item.public = this.loadExportsOf(item.name);
+                        if (this._options.environmentVariable) {
+                            this._configs[name] = this.expandEnvVariablesIn(this._configs[name]);
+                        }
+                        this._configs[name].public = this.loadExportsOf(name);
                     } else {
-                        this._configs[item.name] = {};
+                        this._configs[name] = {};
                     }
                 } catch (err) {
-                    console.error(chalk.red(`Unable to load config '${item.name}'.`), err);
+                    console.error(chalk.red(`Unable to load config '${name}'.`), err);
                 }
             }
         }

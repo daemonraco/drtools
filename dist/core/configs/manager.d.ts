@@ -40,6 +40,7 @@ export declare class ConfigsManager implements IManagerByKey {
     suffix(): string;
     valid(): boolean;
     protected cleanOptions(): void;
+    protected expandEnvVariablesIn(data: any): any;
     protected genericPublishExports(type: PublishExportsTypes, uri?: string): ExpressMiddleware | KoaMiddleware;
     protected load(): void;
     protected loadExportsOf(name: string): boolean;
