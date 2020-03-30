@@ -15,10 +15,21 @@ export interface IToolsCheckPathResult {
     path: string;
     stat: any;
 }
+export declare type TBlockRetryFuction = (params: {
+    [key: string]: any;
+}) => Promise<void>;
+export interface IBlockRetryOptions {
+    logPrefix?: string;
+    maxRetries?: number;
+    params?: {
+        [key: string]: any;
+    };
+}
 export declare class Tools {
     private static _IsBrowser;
     private static _IsNode;
     private constructor();
+    static BlockRetry(block: TBlockRetryFuction, options?: IBlockRetryOptions): Promise<void>;
     static CheckDirectory(dirPath: string, relativeTo?: string): IToolsCheckPathResult;
     static CheckFile(filePath: string, relativeTo?: string): IToolsCheckPathResult;
     /**
@@ -43,6 +54,7 @@ export declare class Tools {
      * @returns {any} Returns a merged object.
      */
     static DeepMergeObjects(left: any, right: any): any;
+    static Delay(ms?: number): Promise<void>;
     static FullErrors(): boolean;
     static FullPath(basicPath: string): string;
     static IsBrowser(): boolean;

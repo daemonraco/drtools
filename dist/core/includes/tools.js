@@ -3,6 +3,14 @@
  * @file tools.ts
  * @author Alejandro D. Simi
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 var ToolsCheckPath;
@@ -15,12 +23,38 @@ var ToolsCheckPath;
 })(ToolsCheckPath = exports.ToolsCheckPath || (exports.ToolsCheckPath = {}));
 ;
 ;
+;
 class Tools {
     //
     // Constructor.
     constructor() { }
     //
     // Public class methods.
+    static BlockRetry(block, options = {}) {
+        return __awaiter(this, void 0, void 0, function* () {
+            options = Object.assign({ logPrefix: '', maxRetries: 3, params: {} }, options);
+            options.logPrefix += !!options.logPrefix ? ' ' : '';
+            let done = false;
+            let lastException = null;
+            let retries = 0;
+            while (!done && retries < options.maxRetries) {
+                try {
+                    yield block(options.params);
+                    done = true;
+                }
+                catch (err) {
+                    lastException = err;
+                    console.error(libraries_1.chalk.red(`${options.logPrefix}${err}`));
+                    yield Tools.Delay();
+                    console.error(libraries_1.chalk.cyan(`${options.logPrefix}retrying...`));
+                }
+                retries++;
+            }
+            if (!done && lastException) {
+                throw lastException;
+            }
+        });
+    }
     static CheckDirectory(dirPath, relativeTo = null) {
         return Tools.CheckPathByType('isDirectory', dirPath, relativeTo);
     }
@@ -79,6 +113,11 @@ class Tools {
             }
         }
         return left;
+    }
+    static Delay(ms = 1000) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((r) => { setTimeout(r, ms); });
+        });
     }
     static FullErrors() {
         return typeof process.env.DRTOOLS_DEBUG !== 'undefined';

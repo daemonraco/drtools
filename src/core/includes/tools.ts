@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import { fs, path } from '../../libraries';
+import { chalk, fs, path } from '../../libraries';
 
 declare var process: any;
 
@@ -20,6 +20,12 @@ export interface IToolsCheckPathResult {
     path: string;
     stat: any;
 };
+export type TBlockRetryFuction = (params: { [key: string]: any }) => Promise<void>;
+export interface IBlockRetryOptions {
+    logPrefix?: string;
+    maxRetries?: number;
+    params?: { [key: string]: any };
+};
 
 export class Tools {
     //
@@ -31,6 +37,38 @@ export class Tools {
     private constructor() { }
     //
     // Public class methods.
+    public static async BlockRetry(block: TBlockRetryFuction, options: IBlockRetryOptions = {}): Promise<void> {
+        options = {
+            logPrefix: '',
+            maxRetries: 3,
+            params: {},
+            ...options,
+        };
+        options.logPrefix += !!options.logPrefix ? ' ' : '';
+
+        let done: boolean = false;
+        let lastException: any = null;
+        let retries: number = 0;
+
+        while (!done && retries < options.maxRetries) {
+            try {
+                await block(options.params);
+                done = true;
+            } catch (err) {
+                lastException = err;
+                console.error(chalk.red(`${options.logPrefix}${err}`));
+
+                await Tools.Delay();
+                console.error(chalk.cyan(`${options.logPrefix}retrying...`));
+            }
+
+            retries++;
+        }
+
+        if (!done && lastException) {
+            throw lastException;
+        }
+    }
     public static CheckDirectory(dirPath: string, relativeTo: string = null): IToolsCheckPathResult {
         return Tools.CheckPathByType('isDirectory', dirPath, relativeTo);
     }
@@ -88,6 +126,9 @@ export class Tools {
         }
 
         return left;
+    }
+    public static async Delay(ms: number = 1000): Promise<void> {
+        return new Promise<void>((r: Function): void => { setTimeout(r, ms) });
     }
     public static FullErrors(): boolean {
         return typeof process.env.DRTOOLS_DEBUG !== 'undefined';
