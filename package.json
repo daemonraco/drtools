@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.12.0",
+    "version": "0.12.1",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -50,7 +50,7 @@
         "chai": "^4.2.0",
         "chai-http": "^4.2.1",
         "mocha": "^5.2.0",
-        "nodemon": "^1.19.4",
+        "nodemon": "^2.0.2",
         "suppose": "^0.6.2",
         "typescript": "^2.9.2"
     },
