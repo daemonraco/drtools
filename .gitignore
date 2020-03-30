@@ -59,4 +59,3 @@ typings/
 
 # Internal
 /test/tmp
-package-lock.json
