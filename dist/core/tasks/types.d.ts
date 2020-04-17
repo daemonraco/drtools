@@ -7,6 +7,7 @@ export declare type TasksList = {
     [name: string]: Task;
 };
 export interface ITasksManagerOptions {
+    debug?: boolean;
     queueTick?: number;
     runAsQueue?: boolean;
     suffix?: string;

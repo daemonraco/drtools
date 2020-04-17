@@ -78,24 +78,28 @@ class TasksManager extends includes_1.GenericManager {
     // Protected methods.
     consumeQueue() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this._consumingQueue) {
+            if (this._options.debug) {
+                console.log(libraries_1.chalk.yellow(`DRTools::TasksManager: Consuming task from queue (queue count: ${this._queue.length})...`));
+            }
+            if (!this._consumingQueue && this._queue.length > 0) {
                 this._consumingQueue = true;
-                if (this._queue.length > 0) {
-                    const task = this._queue.shift();
-                    yield task();
+                if (this._options.debug) {
+                    console.log(libraries_1.chalk.yellow(`DRTools::TasksManager: Running task...`));
+                }
+                const task = this._queue.shift();
+                yield task();
+                if (this._options.debug) {
+                    console.log(libraries_1.chalk.yellow(`DRTools::TasksManager: Task done (queue count: ${this._queue.length}).`));
                 }
                 this._consumingQueue = false;
+            }
+            else if (this._consumingQueue && this._options.debug) {
+                console.log(libraries_1.chalk.yellow(`DRTools::TasksManager: A task is already running (queue count: ${this._queue.length}).`));
             }
         });
     }
     cleanOptions() {
-        let defaultOptions = {
-            queueTick: 5000,
-            runAsQueue: false,
-            suffix: _1.TasksConstants.Suffix,
-            verbose: true,
-        };
-        this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
+        this._options = Object.assign({ debug: false, queueTick: 5000, runAsQueue: false, suffix: _1.TasksConstants.Suffix, verbose: true }, this._options !== null ? this._options : {});
     }
     runAtStart() {
         if (this.valid()) {
@@ -115,10 +119,20 @@ class TasksManager extends includes_1.GenericManager {
                 // Are tasks being run when their time comes up?, or when their
                 // time comes up are they being queued for the next queue available tick?
                 if (!this._options.runAsQueue) {
-                    this._intervals.push(setInterval(task.run, task.interval()));
+                    this._intervals.push(setInterval(() => {
+                        if (this._options.debug) {
+                            console.log(libraries_1.chalk.yellow(`DRTools::TasksManager: Running task '${task.name()}'.`));
+                        }
+                        task.run();
+                    }, task.interval()));
                 }
                 else {
-                    this._intervals.push(setInterval(() => this._queue.push(task.run), task.interval()));
+                    this._intervals.push(setInterval(() => {
+                        this._queue.push(task.run);
+                        if (this._options.debug) {
+                            console.log(libraries_1.chalk.yellow(`DRTools::TasksManager: Task '${task.name()}' pushed into queue (queue count: ${this._queue.length}).`));
+                        }
+                    }, task.interval()));
                 }
             }
             //
