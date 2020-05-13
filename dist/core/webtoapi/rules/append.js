@@ -12,12 +12,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jsonpath = require('jsonpath-plus');
+const libraries_1 = require("../../../libraries");
 function WARuleAppend(rule, root) {
     return __awaiter(this, void 0, void 0, function* () {
         const finalList = [];
         for (const propPath of rule.fieldPaths) {
-            const results = jsonpath({
+            const results = libraries_1.jsonpath({
                 path: propPath,
                 json: root
             });

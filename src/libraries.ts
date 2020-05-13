@@ -3,6 +3,7 @@
  * @author Alejandro D. Simi
  */
 
+const jsonpath = require('jsonpath-plus');
 import * as EventEmitter from 'events';
 import * as KoaRouter from 'koa-router';
 import * as ajv from 'ajv';
@@ -30,6 +31,6 @@ import * as util from 'util';
 
 export {
     KoaRouter, EventEmitter, ajv, bodyParser, chalk, cheerio, commander, ejs,
-    express, fs, glob, http, httpStatusCodes, koa, koaSend, koaStatic,
+    express, fs, glob, http, httpStatusCodes, jsonpath, koa, koaSend, koaStatic,
     loremIpsum, marked, md5, mime, path, request, url, util
 };

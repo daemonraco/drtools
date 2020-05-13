@@ -12,7 +12,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jsonpath = require('jsonpath-plus');
 const libraries_1 = require("../../libraries");
 const _1 = require(".");
 const drcollector_1 = require("../drcollector");
@@ -341,7 +340,7 @@ class ConfigsManager {
         }
         if (config.$pathExports !== undefined) {
             for (let k in config.$pathExports) {
-                const results = jsonpath({
+                const results = libraries_1.jsonpath({
                     path: config.$pathExports[k],
                     json: config
                 });

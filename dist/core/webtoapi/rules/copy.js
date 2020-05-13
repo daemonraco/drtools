@@ -12,10 +12,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jsonpath = require('jsonpath-plus');
+const libraries_1 = require("../../../libraries");
 function WARuleCopy(rule, root) {
     return __awaiter(this, void 0, void 0, function* () {
-        const results = jsonpath({
+        const results = libraries_1.jsonpath({
             path: rule.from,
             json: root
         });

@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-const jsonpath = require('jsonpath-plus');
+import { jsonpath } from '../../../libraries';
 
 export async function WARuleCopy(rule: any, root: any): Promise<string> {
     const results: any = jsonpath({

@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-const jsonpath = require('jsonpath-plus');
+import { jsonpath } from '../../../libraries';
 
 export async function WARuleAppend(rule: any, root: any): Promise<string> {
     const finalList: any[] = [];
