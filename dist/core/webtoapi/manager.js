@@ -3,14 +3,6 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const drcollector_1 = require("../drcollector");
@@ -63,60 +55,58 @@ class WebToApi {
     endpoints() {
         return this._endpoints;
     }
-    get(type, params) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let results = {};
-            const key = this.genKey(type, params);
-            if (this.has(type)) {
-                const endpoint = this._endpoints[type];
-                let preRequest = new pre_processor_data_1.WAPreProcessorData();
-                preRequest.headers = includes_1.Tools.DeepCopy(endpoint.headers);
-                preRequest.endpoint = endpoint;
-                preRequest.params = params;
-                if (endpoint.preProcessor) {
-                    preRequest = yield endpoint.preProcessor(preRequest);
-                }
-                if (preRequest.forceDownloading) {
-                    preRequest.forceAnalysis = true;
-                }
-                let reAnalyze = false;
-                let raw = this.getRawCache(key, endpoint.cacheLifetime);
-                if (raw === null || preRequest.forceDownloading) {
-                    reAnalyze = true;
-                    raw = null;
-                    try {
-                        switch (endpoint.method.toUpperCase()) {
-                            case 'GET':
-                            default:
-                                const options = {
-                                    url: this.adaptUrl(endpoint.url, preRequest.params),
-                                    headers: preRequest.headers
-                                };
-                                try {
-                                    raw = yield libraries_1.request.get(options);
-                                }
-                                catch (he) {
-                                    throw new types_1.WAException(`${he.name}: Code: ${he.statusCode}. Url: ${options.url}`);
-                                }
-                                break;
-                        }
-                    }
-                    catch (err) {
-                        console.error(libraries_1.chalk.red(`Error: `), err);
-                    }
-                    this.saveRawCache(key, raw);
-                }
-                results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
-                if (!results || preRequest.forceAnalysis) {
-                    results = yield this.analyze(key, raw, endpoint, preRequest);
-                    this.saveJSONCache(key, results);
-                }
+    async get(type, params) {
+        let results = {};
+        const key = this.genKey(type, params);
+        if (this.has(type)) {
+            const endpoint = this._endpoints[type];
+            let preRequest = new pre_processor_data_1.WAPreProcessorData();
+            preRequest.headers = includes_1.Tools.DeepCopy(endpoint.headers);
+            preRequest.endpoint = endpoint;
+            preRequest.params = params;
+            if (endpoint.preProcessor) {
+                preRequest = await endpoint.preProcessor(preRequest);
             }
-            else {
-                throw new types_1.WAException(`Unknown type '${type}'`);
+            if (preRequest.forceDownloading) {
+                preRequest.forceAnalysis = true;
             }
-            return results;
-        });
+            let reAnalyze = false;
+            let raw = this.getRawCache(key, endpoint.cacheLifetime);
+            if (raw === null || preRequest.forceDownloading) {
+                reAnalyze = true;
+                raw = null;
+                try {
+                    switch (endpoint.method.toUpperCase()) {
+                        case 'GET':
+                        default:
+                            const options = {
+                                url: this.adaptUrl(endpoint.url, preRequest.params),
+                                headers: preRequest.headers
+                            };
+                            try {
+                                raw = await libraries_1.request.get(options);
+                            }
+                            catch (he) {
+                                throw new types_1.WAException(`${he.name}: Code: ${he.statusCode}. Url: ${options.url}`);
+                            }
+                            break;
+                    }
+                }
+                catch (err) {
+                    console.error(libraries_1.chalk.red(`Error: `), err);
+                }
+                this.saveRawCache(key, raw);
+            }
+            results = reAnalyze ? null : this.getJSONCache(key, endpoint.cacheLifetime);
+            if (!results || preRequest.forceAnalysis) {
+                results = await this.analyze(key, raw, endpoint, preRequest);
+                this.saveJSONCache(key, results);
+            }
+        }
+        else {
+            throw new types_1.WAException(`Unknown type '${type}'`);
+        }
+        return results;
     }
     has(type) {
         return typeof this._endpoints[type] !== 'undefined';
@@ -153,90 +143,84 @@ class WebToApi {
         }
         return url;
     }
-    analyze(key, data, endpoint, preRequest) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let results = {};
-            if (data) {
-                const doc = libraries_1.cheerio.load(data, {
-                    normalizeWhitespace: true,
-                    xmlMode: true
-                });
-                results = yield this.analyzeFields(endpoint.fields, doc, doc(endpoint.mainSelector));
-                results = yield this.applyRules(endpoint.rules, results);
-                if (endpoint.postProcessor) {
-                    let requestData = new post_processor_data_1.WAPostProcessorData();
-                    requestData.data = results;
-                    requestData.endpoint = endpoint;
-                    requestData.request = preRequest;
-                    requestData = yield endpoint.postProcessor(requestData);
-                    results = requestData.data;
-                }
-            }
-            return results;
-        });
-    }
-    analyzeFields(fields, mainDoc, mainElement) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let results = {};
-            const parse = (field, element) => __awaiter(this, void 0, void 0, function* () {
-                let out = null;
-                if (typeof field.fields !== 'undefined') {
-                    out = yield this.analyzeFields(field.fields, mainDoc, element);
-                }
-                else {
-                    out = yield this._parsers[field.parser](element, field.parserParams);
-                }
-                return out;
+    async analyze(key, data, endpoint, preRequest) {
+        let results = {};
+        if (data) {
+            const doc = libraries_1.cheerio.load(data, {
+                normalizeWhitespace: true,
+                xmlMode: true
             });
-            for (const field of fields) {
-                const findings = mainElement.find(field.path);
-                if (findings.length > 1) {
-                    results[field.name] = [];
-                    //
-                    // Why a copy to a list and two fors? well each doesn't seem to
-                    // allow async/await @{
-                    const elements = [];
-                    findings.each((index, element) => {
-                        if (field.index === null || field.index === index) {
-                            elements.push(element);
-                        }
-                    });
-                    for (const element of elements) {
-                        let aux = yield parse(field, mainDoc(element));
-                        results[field.name].push(aux);
-                    }
-                    // @}
-                    if (field.index !== null && results[field.name].length > 0) {
-                        results[field.name] = results[field.name][0];
-                    }
-                }
-                else {
-                    results[field.name] = yield parse(field, findings);
-                }
-                if (findings.length > 0 && field.forceArray) {
-                    if (!Array.isArray(results[field.name])) {
-                        if (results[field.name] !== null) {
-                            results[field.name] = [results[field.name]];
-                        }
-                        else {
-                            results[field.name] = [];
-                        }
-                    }
-                }
-                results[field.name] = yield this.applyRules(field.rules, results[field.name]);
+            results = await this.analyzeFields(endpoint.fields, doc, doc(endpoint.mainSelector));
+            results = await this.applyRules(endpoint.rules, results);
+            if (endpoint.postProcessor) {
+                let requestData = new post_processor_data_1.WAPostProcessorData();
+                requestData.data = results;
+                requestData.endpoint = endpoint;
+                requestData.request = preRequest;
+                requestData = await endpoint.postProcessor(requestData);
+                results = requestData.data;
             }
-            return results;
-        });
+        }
+        return results;
     }
-    applyRules(rules, root) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const rule of rules) {
-                if (typeof this._rules[rule.type] !== 'undefined') {
-                    root = yield this._rules[rule.type](rule, root);
+    async analyzeFields(fields, mainDoc, mainElement) {
+        let results = {};
+        const parse = async (field, element) => {
+            let out = null;
+            if (typeof field.fields !== 'undefined') {
+                out = await this.analyzeFields(field.fields, mainDoc, element);
+            }
+            else {
+                out = await this._parsers[field.parser](element, field.parserParams);
+            }
+            return out;
+        };
+        for (const field of fields) {
+            const findings = mainElement.find(field.path);
+            if (findings.length > 1) {
+                results[field.name] = [];
+                //
+                // Why a copy to a list and two fors? well each doesn't seem to
+                // allow async/await @{
+                const elements = [];
+                findings.each((index, element) => {
+                    if (field.index === null || field.index === index) {
+                        elements.push(element);
+                    }
+                });
+                for (const element of elements) {
+                    let aux = await parse(field, mainDoc(element));
+                    results[field.name].push(aux);
+                }
+                // @}
+                if (field.index !== null && results[field.name].length > 0) {
+                    results[field.name] = results[field.name][0];
                 }
             }
-            return root;
-        });
+            else {
+                results[field.name] = await parse(field, findings);
+            }
+            if (findings.length > 0 && field.forceArray) {
+                if (!Array.isArray(results[field.name])) {
+                    if (results[field.name] !== null) {
+                        results[field.name] = [results[field.name]];
+                    }
+                    else {
+                        results[field.name] = [];
+                    }
+                }
+            }
+            results[field.name] = await this.applyRules(field.rules, results[field.name]);
+        }
+        return results;
+    }
+    async applyRules(rules, root) {
+        for (const rule of rules) {
+            if (typeof this._rules[rule.type] !== 'undefined') {
+                root = await this._rules[rule.type](rule, root);
+            }
+        }
+        return root;
     }
     genKey(type, params) {
         return libraries_1.md5(`[${type}][${JSON.stringify(params)}]`);

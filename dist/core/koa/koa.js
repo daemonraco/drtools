@@ -3,14 +3,6 @@
  * @file koa.ts
  * @author Alejandro D. Simi
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const configs_1 = require("../configs");
@@ -59,7 +51,7 @@ class KoaConnector {
         if (this._options.webUi && !this._uiAttached) {
             this._uiAttached = true;
             this._koaApp.use(libraries_1.koaStatic(libraries_1.path.join(__dirname, '../../../web-ui/ui'), { hidden: true }));
-            this._koaApp.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
+            this._koaApp.use(async (ctx, next) => {
                 if (ctx.originalUrl.match(/^\/\.drtools/)) {
                     const parsedUrl = libraries_1.url.parse(ctx.originalUrl);
                     if (parsedUrl.pathname === '/.drtools.json') {
@@ -80,9 +72,9 @@ class KoaConnector {
                     }
                 }
                 else {
-                    yield next();
+                    await next();
                 }
-            }));
+            });
         }
     }
     //

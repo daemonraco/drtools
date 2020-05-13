@@ -3,14 +3,6 @@
  * @file router.ts
  * @author Alejandro D. Simi
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const types_1 = require("./types");
@@ -43,32 +35,30 @@ class WebToApiRouter {
     }
     //
     // Protected methods.
-    attendRequest(endpoint, map, url, urlParams, options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const results = {
-                body: null,
-                status: libraries_1.httpStatusCodes.INTERNAL_SERVER_ERROR,
-            };
-            const params = {};
-            for (const k of Object.keys(map)) {
-                if (typeof urlParams[map[k]] !== 'undefined') {
-                    params[k] = urlParams[map[k]];
-                }
+    async attendRequest(endpoint, map, url, urlParams, options = {}) {
+        const results = {
+            body: null,
+            status: libraries_1.httpStatusCodes.INTERNAL_SERVER_ERROR,
+        };
+        const params = {};
+        for (const k of Object.keys(map)) {
+            if (typeof urlParams[map[k]] !== 'undefined') {
+                params[k] = urlParams[map[k]];
             }
-            try {
-                const res = yield this._manager.get(endpoint.name, params);
-                results.status = libraries_1.httpStatusCodes.OK;
-                results.body = res;
+        }
+        try {
+            const res = await this._manager.get(endpoint.name, params);
+            results.status = libraries_1.httpStatusCodes.OK;
+            results.body = res;
+        }
+        catch (error) {
+            if (options.logErrors) {
+                console.error(`Error at '${url}'`, error);
             }
-            catch (error) {
-                if (options.logErrors) {
-                    console.error(`Error at '${url}'`, error);
-                }
-                results.status = libraries_1.httpStatusCodes.INTERNAL_SERVER_ERROR;
-                results.body = { error: `${error}` };
-            }
-            return results;
-        });
+            results.status = libraries_1.httpStatusCodes.INTERNAL_SERVER_ERROR;
+            results.body = { error: `${error}` };
+        }
+        return results;
     }
     buildExpressRouter() {
         if (!this._expressRouter) {
@@ -76,13 +66,13 @@ class WebToApiRouter {
             for (const route of this._config.routes) {
                 if (typeof this._endpoints[route.endpoint] !== 'undefined') {
                     this._knownPaths.push(route.path);
-                    this._expressRouter.get(route.path, (req, res) => __awaiter(this, void 0, void 0, function* () {
+                    this._expressRouter.get(route.path, async (req, res) => {
                         const options = {
                             logErrors: route.logErrors
                         };
-                        const result = yield this.attendRequest(this._endpoints[route.endpoint], route.map, req.url, req.params, options);
+                        const result = await this.attendRequest(this._endpoints[route.endpoint], route.map, req.url, req.params, options);
                         res.status(result.status).json(result.body);
-                    }));
+                    });
                 }
                 else {
                     throw new types_1.WAException(`WebToApiRouter::buildExpressRouter() Error: Unknown endpoint '${route.endpoint}'`);
@@ -101,29 +91,29 @@ class WebToApiRouter {
         for (const route of this._config.routes) {
             if (typeof this._endpoints[route.endpoint] !== 'undefined') {
                 this._knownPaths.push(route.path);
-                this._koaRouter.get(route.path, (ctx) => __awaiter(this, void 0, void 0, function* () {
+                this._koaRouter.get(route.path, async (ctx) => {
                     const options = {
                         logErrors: route.logErrors
                     };
-                    const result = yield this.attendRequest(this._endpoints[route.endpoint], route.map, ctx.url, ctx.params, options);
+                    const result = await this.attendRequest(this._endpoints[route.endpoint], route.map, ctx.url, ctx.params, options);
                     if (result.status === libraries_1.httpStatusCodes.OK) {
                         ctx.body = result.body;
                     }
                     else {
                         ctx.throw(result.status, result.body);
                     }
-                }));
+                });
             }
             else {
                 throw new types_1.WAException(`WebToApiRouter::buildKoaRouter() Error: Unknown endpoint '${route.endpoint}'`);
             }
         }
-        this._koaRouter.all('*', (ctx) => __awaiter(this, void 0, void 0, function* () {
+        this._koaRouter.all('*', async (ctx) => {
             ctx.throw(libraries_1.httpStatusCodes.BAD_REQUEST, {
                 message: `Unable to handle url '${ctx.originalUrl}'`,
                 knownPaths: this._knownPaths
             });
-        }));
+        });
     }
     load() {
         if (!this._loaded) {

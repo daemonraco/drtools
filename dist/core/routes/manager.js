@@ -3,14 +3,6 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const drcollector_1 = require("../drcollector");
@@ -33,15 +25,13 @@ class RoutesManager extends includes_1.GenericManager {
     }
     //
     // Public methods.
-    load() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this._loaded) {
-                this._loaded = true;
-                this.loadAndAttach();
-                this._valid = !this._lastError;
-            }
-            return this.valid();
-        });
+    async load() {
+        if (!this._loaded) {
+            this._loaded = true;
+            this.loadAndAttach();
+            this._valid = !this._lastError;
+        }
+        return this.valid();
     }
     routes() {
         return this._routes;

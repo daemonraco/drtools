@@ -3,14 +3,6 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const drcollector_1 = require("../drcollector");
@@ -101,7 +93,7 @@ class MockRoutesManager {
                 });
             }
             else if (includes_1.Tools.IsKoa(app)) {
-                app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
+                app.use(async (ctx, next) => {
                     const parsedUrl = libraries_1.url.parse(ctx.originalUrl);
                     const pathname = decodeURIComponent(parsedUrl.pathname);
                     const methodKey = `${ctx.method.toLowerCase()}:${pathname}`;
@@ -110,14 +102,14 @@ class MockRoutesManager {
                     rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
                     const route = rightKey ? this._routes[rightKey] : null;
                     if (route && route.valid) {
-                        route.guard(ctx, () => __awaiter(this, void 0, void 0, function* () {
-                            yield libraries_1.koaSend(ctx, route.path);
-                        }));
+                        route.guard(ctx, async () => {
+                            await libraries_1.koaSend(ctx, route.path);
+                        });
                     }
                     else {
-                        yield next();
+                        await next();
                     }
-                }));
+                });
             }
             else {
                 this._lastError = `Unknown app type`;

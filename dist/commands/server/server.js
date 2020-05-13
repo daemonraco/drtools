@@ -3,14 +3,6 @@
  * @file server.ts
  * @author Alejandro D. Simi
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const libraries_1 = require("../../libraries");
 const drtools_1 = require("../../core/drtools");
@@ -186,28 +178,28 @@ class DRToolsServer {
         let tasks = null;
         let mockRoutes = null;
         let endpoints = null;
-        const loadManagers = () => __awaiter(this, void 0, void 0, function* () {
+        const loadManagers = async () => {
             if (this.connectorOptions.configsDirectory) {
                 configs = new drtools_1.ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
             }
             if (this.connectorOptions.loadersDirectory) {
                 loaders = new drtools_1.LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
-                yield loaders.load();
+                await loaders.load();
             }
             if (this.connectorOptions.middlewaresDirectory) {
                 middlewares = new drtools_1.MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
-                yield middlewares.load();
+                await middlewares.load();
             }
             if (this.connectorOptions.routesDirectory) {
                 routes = new drtools_1.RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
-                yield routes.load();
+                await routes.load();
             }
             if (routes) {
                 routes.itemNames().forEach((r) => this.availableUrls.push(`/${r}`));
             }
             if (this.connectorOptions.tasksDirectory) {
                 tasks = new drtools_1.TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
-                yield tasks.load();
+                await tasks.load();
             }
             if (this.connectorOptions.mockRoutesConfig) {
                 mockRoutes = new drtools_1.MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
@@ -220,7 +212,7 @@ class DRToolsServer {
                 }, configs);
                 app.use(endpoints.provide());
             }
-        });
+        };
         const exitHandler = (options, err) => {
             process.exit();
         };
