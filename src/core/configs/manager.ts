@@ -3,7 +3,8 @@
  * @author Alejandro D. Simi
  */
 
-import { ajv, chalk, fs, httpStatusCodes, jsonpath, path } from '../../libraries';
+const jsonpath = require('jsonpath-plus');
+import { ajv, chalk, fs, httpStatusCodes, path } from '../../libraries';
 
 import { ConfigItemSpec, ConfigsConstants, ConfigsList, IConfigOptions, ConfigSpecsList } from '.';
 import { DRCollector, IManagerByKey } from '../drcollector';
