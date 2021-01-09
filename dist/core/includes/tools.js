@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tools = exports.ToolsCheckPath = void 0;
 const libraries_1 = require("../../libraries");
 var ToolsCheckPath;
 (function (ToolsCheckPath) {
@@ -168,8 +169,8 @@ class Tools {
         return result;
     }
 }
+exports.Tools = Tools;
 //
 // Private class properties.
 Tools._IsBrowser = new Function("try {return this===window;}catch(e){ return false;}");
 Tools._IsNode = new Function("try {return this===global;}catch(e){return false;}");
-exports.Tools = Tools;

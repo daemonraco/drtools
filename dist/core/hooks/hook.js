@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Hook = void 0;
 const libraries_1 = require("../../libraries");
 const constants_1 = require("./constants");
 class Hook {
@@ -49,14 +50,14 @@ class Hook {
         this._listeners[key] = callback;
         //
         // Clearing cache.
-        this._resetCache();
+        this.resetCache();
         //
         // Telling everyone about it (A.K.A. 'bragging' ^__^).
         this._events.emit(constants_1.HookEvents.Hooked, { key });
     }
     async chainedReelIn(bait) {
         if (!this.isCached() || this._chainedCache === null) {
-            for (const order of this._cleanOrders()) {
+            for (const order of this.cleanOrders()) {
                 bait = (await this._listeners[this._listenersOrder[order]](bait));
             }
             if (this.isCached()) {
@@ -80,7 +81,7 @@ class Hook {
     async reelIn(bait) {
         let results = {};
         if (!this.isCached() || this._cache === null) {
-            for (const order of this._cleanOrders()) {
+            for (const order of this.cleanOrders()) {
                 const key = this._listenersOrder[order];
                 results[key] = (await this._listeners[key](bait));
             }
@@ -96,7 +97,7 @@ class Hook {
     removeListener(key) {
         if (this._listeners[key] !== undefined) {
             delete this._listeners[key];
-            this._resetCache();
+            this.resetCache();
             this._events.emit(constants_1.HookEvents.Unhooked, { key });
         }
         for (const order of Object.keys(this._listenersOrder)) {
@@ -105,21 +106,21 @@ class Hook {
             }
         }
     }
+    resetCache() {
+        this._cache = null;
+        this._chainedCache = null;
+    }
     on(event, listener) {
         this._events.on(event, listener);
     }
     //
     // Protected methods.
-    _cleanOrders() {
+    cleanOrders() {
         let result = [];
         for (const order of Object.keys(this._listenersOrder)) {
             result.push(parseInt(order));
         }
         return result.sort((a, b) => a - b);
-    }
-    _resetCache() {
-        this._cache = null;
-        this._chainedCache = null;
     }
 }
 exports.Hook = Hook;

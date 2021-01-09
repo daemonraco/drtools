@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ExpressConnector = void 0;
 const libraries_1 = require("../../libraries");
 const configs_1 = require("../configs");
 const drcollector_1 = require("../drcollector");
@@ -89,7 +90,7 @@ class ExpressConnector {
         return ExpressConnector._Instance;
     }
 }
+exports.ExpressConnector = ExpressConnector;
 //
 // Private class properties.
 ExpressConnector._Instance = null;
-exports.ExpressConnector = ExpressConnector;

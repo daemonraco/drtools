@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WAParserAnchorFull = exports.WAParserAnchor = void 0;
 const tools_1 = require("../../includes/tools");
 async function WAParserAnchor(element, params) {
     const result = await WAParserAnchorFull(element, params);

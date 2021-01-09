@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WAException = void 0;
 class WAException {
     constructor(message, code = null) {
         this.code = null;

@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WAParserAttribute = void 0;
 async function WAParserAttribute(element, params) {
     return element.length > 0 ? element.attr(params) : '';
 }

@@ -6,8 +6,8 @@
 import { EventEmitter } from '../../libraries';
 
 import { BasicDictionary, BasicList } from '../includes';
+import { HookBait, HookFunctions, HookResults, HookRunFunction } from './types';
 import { HookConstants, HookEvents } from './constants';
-import { HookBait, HookRunFunction, HookFunctions, HookResults } from './types';
 
 export class Hook {
     //
@@ -48,14 +48,14 @@ export class Hook {
         this._listeners[key] = callback;
         //
         // Clearing cache.
-        this._resetCache();
+        this.resetCache();
         //
         // Telling everyone about it (A.K.A. 'bragging' ^__^).
         this._events.emit(HookEvents.Hooked, { key });
     }
     public async chainedReelIn<T = HookBait>(bait: T): Promise<T> {
         if (!this.isCached() || this._chainedCache === null) {
-            for (const order of this._cleanOrders()) {
+            for (const order of this.cleanOrders()) {
                 bait = <T>(await this._listeners[this._listenersOrder[order]](bait));
             }
 
@@ -81,7 +81,7 @@ export class Hook {
         let results: HookResults<R> = {};
 
         if (!this.isCached() || this._cache === null) {
-            for (const order of this._cleanOrders()) {
+            for (const order of this.cleanOrders()) {
                 const key: string = this._listenersOrder[order];
                 results[key] = <R>(await this._listeners[key](bait));
             }
@@ -98,7 +98,7 @@ export class Hook {
     public removeListener(key: string): void {
         if (this._listeners[key] !== undefined) {
             delete this._listeners[key];
-            this._resetCache();
+            this.resetCache();
             this._events.emit(HookEvents.Unhooked, { key });
         }
         for (const order of Object.keys(this._listenersOrder)) {
@@ -106,6 +106,10 @@ export class Hook {
                 delete this._listenersOrder[order];
             }
         }
+    }
+    public resetCache(): void {
+        this._cache = null;
+        this._chainedCache = null;
     }
     public on(event: string, listener: any): void {
         this._events.on(event, listener);
@@ -116,16 +120,12 @@ export class Hook {
     public matryoshka: <T = HookBait>(bait: T) => Promise<T> = this.chainedReelIn;
     //
     // Protected methods.
-    protected _cleanOrders(): number[] {
+    protected cleanOrders(): number[] {
         let result: number[] = [];
         for (const order of Object.keys(this._listenersOrder)) {
             result.push(parseInt(order));
         }
 
         return result.sort((a, b) => a - b);
-    }
-    protected _resetCache(): void {
-        this._cache = null;
-        this._chainedCache = null;
     }
 }

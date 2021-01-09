@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WARuleCopy = void 0;
 const libraries_1 = require("../../../libraries");
 async function WARuleCopy(rule, root) {
     const results = libraries_1.jsonpath({

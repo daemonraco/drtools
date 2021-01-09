@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MySQLRestManager = void 0;
 const drcollector_1 = require("../drcollector");
 const _1 = require(".");
 const includes_1 = require("../includes");

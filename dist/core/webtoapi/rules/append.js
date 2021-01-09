@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WARuleAppend = void 0;
 const libraries_1 = require("../../../libraries");
 async function WARuleAppend(rule, root) {
     const finalList = [];

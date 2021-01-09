@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.EndpointBehaviors = void 0;
 const libraries_1 = require("../../libraries");
 class EndpointBehaviors extends Object {
     //
@@ -102,9 +103,9 @@ class EndpointBehaviors extends Object {
         }
     }
 }
+exports.EndpointBehaviors = EndpointBehaviors;
 //
 // Protected class properties.
 EndpointBehaviors._PrivateBehaviors = [
     'importBehaviors'
 ];
-exports.EndpointBehaviors = EndpointBehaviors;

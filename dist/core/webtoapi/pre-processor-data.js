@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WAPreProcessorData = void 0;
 class WAPreProcessorData {
     constructor() {
         //

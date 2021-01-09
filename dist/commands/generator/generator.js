@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DRToolsGenerator = void 0;
 const libraries_1 = require("../../libraries");
 const drtools_1 = require("../../core/drtools");
 const tools_1 = require("../../core/includes/tools");

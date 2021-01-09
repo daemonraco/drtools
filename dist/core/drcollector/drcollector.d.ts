@@ -2,6 +2,7 @@
  * @file drcollector.ts
  * @author Alejandro D. Simi
  */
+/// <reference types="node" />
 import { EventEmitter } from '../../libraries';
 import { BasicList } from '../includes';
 import { ConfigsManager } from '../configs';

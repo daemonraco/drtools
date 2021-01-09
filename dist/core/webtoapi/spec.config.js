@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WebToApiConfigSpec = void 0;
 exports.WebToApiConfigSpec = {
     definitions: {
         any: {

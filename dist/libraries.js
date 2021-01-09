@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.util = exports.url = exports.request = exports.path = exports.mime = exports.md5 = exports.marked = exports.loremIpsum = exports.koaStatic = exports.koaSend = exports.koa = exports.jsonpath = exports.httpStatusCodes = exports.http = exports.glob = exports.fs = exports.express = exports.ejs = exports.commander = exports.cheerio = exports.chalk = exports.bodyParser = exports.ajv = exports.EventEmitter = exports.KoaRouter = void 0;
 const EventEmitter = require("events");
 exports.EventEmitter = EventEmitter;
 const KoaRouter = require("koa-router");
@@ -53,4 +54,4 @@ exports.url = url;
 const util = require("util");
 exports.util = util;
 const jsonpath_plus_1 = require("jsonpath-plus");
-exports.jsonpath = jsonpath_plus_1.JSONPath;
+Object.defineProperty(exports, "jsonpath", { enumerable: true, get: function () { return jsonpath_plus_1.JSONPath; } });

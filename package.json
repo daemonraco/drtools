@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.12.7",
+    "version": "0.13.0",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -40,25 +40,24 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/chai": "^4.2.9",
+        "@types/chai": "^4.2.14",
         "@types/cookies": "0.6.1",
-        "@types/express": "^4.17.2",
-        "@types/fs-extra": "^8.0.1",
-        "@types/koa": "^2.11.1",
+        "@types/express": "^4.17.9",
+        "@types/fs-extra": "^8.1.1",
         "@types/koa-static": "^4.0.1",
-        "@types/node": "^8.10.59",
+        "@types/node": "^8.10.66",
         "chai": "^4.2.0",
         "chai-http": "^4.2.1",
-        "mocha": "^5.2.0",
-        "nodemon": "^2.0.2",
+        "mocha": "^8.2.1",
+        "nodemon": "^2.0.7",
         "suppose": "^0.6.2",
-        "typescript": "^2.9.2"
+        "typescript": "^4.1.3"
     },
     "dependencies": {
-        "ajv": "^6.11.0",
+        "ajv": "^6.12.6",
         "body-parser": "^1.19.0",
         "chalk": "^2.4.2",
-        "cheerio": "^1.0.0-rc.3",
+        "cheerio": "^1.0.0-rc.5",
         "commander": "^2.20.3",
         "ejs": "^2.7.4",
         "express": "^4.17.1",
@@ -66,14 +65,14 @@
         "glob": "^7.1.6",
         "http-status-codes": "^1.4.0",
         "jsonpath-plus": "^4.0.0",
-        "koa": "^2.11.0",
-        "koa-router": "^7.4.0",
+        "koa": "^2.13.1",
+        "koa-router": "^10.0.0",
         "koa-static": "^5.0.0",
         "lorem-ipsum": "^1.0.6",
-        "marked": "^0.8.0",
-        "md5": "^2.2.1",
-        "mime-types": "^2.1.26",
+        "marked": "^0.8.2",
+        "md5": "^2.3.0",
+        "mime-types": "^2.1.28",
         "request": "^2.88.2",
-        "request-promise-native": "^1.0.8"
+        "request-promise-native": "^1.0.9"
     }
 }

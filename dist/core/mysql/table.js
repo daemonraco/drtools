@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MySQLTable = void 0;
 class MySQLTable {
     //
     // Constructor.

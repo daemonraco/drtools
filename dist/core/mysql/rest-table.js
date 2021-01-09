@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MySQLRestTable = void 0;
 const _1 = require(".");
 class MySQLRestTable {
     //

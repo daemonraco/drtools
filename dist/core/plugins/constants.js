@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PluginsConstants = void 0;
 var PluginsConstants;
 (function (PluginsConstants) {
     PluginsConstants["ConfigsPrefix"] = "plugin.";

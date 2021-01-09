@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Promisify = void 0;
 const builder_1 = require("./builder");
 const constants_1 = require("./constants");
 const libraries_1 = require("../../libraries");

@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.KoaConnector = void 0;
 const libraries_1 = require("../../libraries");
 const configs_1 = require("../configs");
 const drcollector_1 = require("../drcollector");
@@ -86,7 +87,7 @@ class KoaConnector {
         return KoaConnector._Instance;
     }
 }
+exports.KoaConnector = KoaConnector;
 //
 // Private class properties.
 KoaConnector._Instance = null;
-exports.KoaConnector = KoaConnector;

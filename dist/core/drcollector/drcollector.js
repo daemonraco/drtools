@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DRCollector = void 0;
 const libraries_1 = require("../../libraries");
 const includes_1 = require("../includes");
 const constants_1 = require("./constants");

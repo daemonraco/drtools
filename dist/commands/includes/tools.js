@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tools = void 0;
 const libraries_1 = require("../../libraries");
 class Tools {
     //
@@ -43,7 +44,7 @@ class Tools {
         return Tools._Instance;
     }
 }
+exports.Tools = Tools;
 //
 // Private class properties.
 Tools._Instance = null;
-exports.Tools = Tools;

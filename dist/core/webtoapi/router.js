@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WebToApiRouter = void 0;
 const libraries_1 = require("../../libraries");
 const types_1 = require("./types");
 class WebToApiRouter {

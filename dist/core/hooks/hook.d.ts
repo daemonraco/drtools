@@ -2,9 +2,10 @@
  * @file hook.ts
  * @author Alejandro D. Simi
  */
+/// <reference types="node" />
 import { EventEmitter } from '../../libraries';
 import { BasicDictionary, BasicList } from '../includes';
-import { HookBait, HookRunFunction, HookFunctions, HookResults } from './types';
+import { HookBait, HookFunctions, HookResults, HookRunFunction } from './types';
 export declare class Hook {
     protected _cache: HookBait;
     protected _chainedCache: HookBait;
@@ -22,9 +23,9 @@ export declare class Hook {
     listenerCodes(): BasicList<string>;
     reelIn<B = HookBait, R = any>(bait: B): Promise<HookResults<R>>;
     removeListener(key: string): void;
+    resetCache(): void;
     on(event: string, listener: any): void;
     espinel: <B = HookBait, R = any>(bait: B) => Promise<HookResults<R>>;
     matryoshka: <T = HookBait>(bait: T) => Promise<T>;
-    protected _cleanOrders(): number[];
-    protected _resetCache(): void;
+    protected cleanOrders(): number[];
 }

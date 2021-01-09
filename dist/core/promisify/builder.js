@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PromisifyBuilder = void 0;
 const constants_1 = require("./constants");
 /**
  * @class PromisifyBuilder
@@ -150,7 +151,7 @@ class PromisifyBuilder {
         return PromisifyBuilder.BuildersByType;
     }
 }
+exports.PromisifyBuilder = PromisifyBuilder;
 //
 // Protected class properties.
 PromisifyBuilder.BuildersByType = null;
-exports.PromisifyBuilder = PromisifyBuilder;

@@ -4,6 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HooksManager = void 0;
 const hook_1 = require("./hook");
 class HooksManagerClass {
     //
