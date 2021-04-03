@@ -31,7 +31,7 @@ Usage: drtools-generator [options] [command]
 
 Options:
   -v, --version                              output the version number
-  -h, --help                                 output usage information
+  -h, --help                                 display help for command
 
 Commands:
   mock-routes|mr [options] <directory>       generates a mock-up routes configuration based on the contents of a directory.
@@ -40,7 +40,6 @@ Commands:
   route|r [options] <name> <directory>       generates a route with an initial structure.
   task|t [options] <name> <directory>        generates a task with an initial structure.
   webtoapi|wa [options] <type> <name>        generates assets for HTML Web to API configuration asset.
-
 ```
 <!-- /AUTO -->
 
@@ -49,15 +48,15 @@ Commands:
 <!-- AUTO:generator-options:mock-routes -->
 ```
 DRTools Generator (v0.13.0):
-Usage: drtools-generator [options] <directory>
+Usage: cmd mock-routes|mr [options] <directory>
 
 generates a mock-up routes configuration based on the contents of a directory.
 
 Options:
   -c, --config-name [name]  name of the config file to generate.
-  --test-run                does almost everything except actually generate files.
-  -h, --help                output usage information
-
+  --test-run                does almost everything except actually generate
+                            files.
+  -h, --help                display help for command
 ```
 <!-- /AUTO -->
 
@@ -66,17 +65,18 @@ Options:
 <!-- AUTO:generator-options:middlewares -->
 ```
 DRTools Generator (v0.13.0):
-Usage: drtools-generator [options] <name> <directory>
+Usage: cmd middleware|m [options] <name> <directory>
 
 generates a middleware with an initial structure.
 
 Options:
-  -f, --force            in case the destination file exists, this option forces its replacement.
+  -f, --force            in case the destination file exists, this option
+                         forces its replacement.
   -k, --koa              creates a template for configurations using KoaJS.
-  -s, --suffix [suffix]  suffix to use when generating a file (default: 'middleware').
+  -s, --suffix [suffix]  suffix to use when generating a file (default:
+                         'middleware').
   --test-run             does almost everything except actually generate files.
-  -h, --help             output usage information
-
+  -h, --help             display help for command
 ```
 <!-- /AUTO -->
 
@@ -85,16 +85,17 @@ Options:
 <!-- AUTO:generator-options:plugins -->
 ```
 DRTools Generator (v0.13.0):
-Usage: drtools-generator [options] <name> <directory>
+Usage: cmd plugin|p [options] <name> <directory>
 
 generates a plugin directory with an initial structure.
 
 Options:
   -c, --configs [directory]  directory where configuration files are stored.
-  -f, --force                in case the destination assets exist, this option forces their replacement.
-  --test-run                 does almost everything except actually generate files.
-  -h, --help                 output usage information
-
+  -f, --force                in case the destination assets exist, this option
+                             forces their replacement.
+  --test-run                 does almost everything except actually generate
+                             files.
+  -h, --help                 display help for command
 ```
 <!-- /AUTO -->
 
@@ -103,17 +104,18 @@ Options:
 <!-- AUTO:generator-options:routes -->
 ```
 DRTools Generator (v0.13.0):
-Usage: drtools-generator [options] <name> <directory>
+Usage: cmd route|r [options] <name> <directory>
 
 generates a route with an initial structure.
 
 Options:
-  -f, --force            in case the destination file exists, this option forces its replacement.
+  -f, --force            in case the destination file exists, this option
+                         forces its replacement.
   -k, --koa              creates a template for configurations using KoaJS.
-  -s, --suffix [suffix]  suffix to use when generating a file (default: 'route').
+  -s, --suffix [suffix]  suffix to use when generating a file (default:
+                         'route').
   --test-run             does almost everything except actually generate files.
-  -h, --help             output usage information
-
+  -h, --help             display help for command
 ```
 <!-- /AUTO -->
 
@@ -122,18 +124,21 @@ Options:
 <!-- AUTO:generator-options:tasks -->
 ```
 DRTools Generator (v0.13.0):
-Usage: drtools-generator [options] <name> <directory>
+Usage: cmd task|t [options] <name> <directory>
 
 generates a task with an initial structure.
 
 Options:
-  -f, --force              in case the destination file exists, this option forces its replacement.
+  -f, --force              in case the destination file exists, this option
+                           forces its replacement.
   -i, --interval [number]  task interval in milliseconds (defalt: 2 minute).
-  -r, --run-on-start       whether the task should run on start or not (default: false).
-  -s, --suffix [suffix]    suffix to use when generating a file (default: 'task').
-  --test-run               does almost everything except actually generate files.
-  -h, --help               output usage information
-
+  -r, --run-on-start       whether the task should run on start or not
+                           (default: false).
+  -s, --suffix [suffix]    suffix to use when generating a file (default:
+                           'task').
+  --test-run               does almost everything except actually generate
+                           files.
+  -h, --help               display help for command
 ```
 <!-- /AUTO -->
 
@@ -142,15 +147,17 @@ Options:
 <!-- AUTO:generator-options:webtoapi -->
 ```
 DRTools Generator (v0.13.0):
-Usage: drtools-generator [options] <type> <name>
+Usage: cmd webtoapi|wa [options] <type> <name>
 
 generates assets for HTML Web to API configuration asset.
 
 Options:
-  -f, --force              in case the destination file exists, this option forces its replacement.
+  -f, --force              in case the destination file exists, this option
+                           forces its replacement.
   -c, --cache [directory]  directrory where downloads cache is stored.
-  --test-run               does almost everything except actually generate files.
-  -h, --help               output usage information
+  --test-run               does almost everything except actually generate
+                           files.
+  -h, --help               display help for command
 
   Types:
 
@@ -158,7 +165,6 @@ Options:
     'parser'    field parser script.
     'post'      post-processor script.
     'pre'       pre-processor script.
-
 ```
 <!-- /AUTO -->
 
