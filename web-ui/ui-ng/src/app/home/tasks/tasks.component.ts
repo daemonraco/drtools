@@ -1,17 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'ui-home-tasks',
+    selector: 'app-home-tasks',
     templateUrl: './tasks.component.html',
-    styles: []
 })
-export class PageHomeTasksComponent implements OnInit {
-    @Input('server') public server: string = '';
-    @Input('tasks') public tasks: any = null;
+export class TasksComponent implements OnInit {
+    //
+    // Properties.
 
+    //
+    // Construction.
     constructor() {
     }
-
-    ngOnInit() {
+    //
+    // Public methods.
+    public ngOnInit(): void {
     }
+    //
+    // Protected methods.
 }

@@ -1,16 +1,19 @@
 <div *ngIf="configs">
-    <hr/>
+    <hr />
 
     <div class="row">
         <h4 class="col">
-            <i class="fa fa-cogs"></i> Configs:
+            <fa-icon [icon]="icons.faCogs"></fa-icon>
+            Configs:
         </h4>
     </div>
 
     <div class="accordion">
         <div *ngFor="let conf of configs; let i = index" class="card">
-            <div class="card-header" style="cursor:pointer;" data-toggle="collapse" [attr.data-target]="'#configs_collapse_' + i">
-                <i class="fa fa-cogs text-info"></i> {{conf.directory}}
+            <div class="card-header" style="cursor:pointer;" data-toggle="collapse"
+                [attr.data-target]="'#configs_collapse_' + i">
+                <fa-icon [icon]="icons.faCogs" class="text-info"></fa-icon>
+                {{conf.directory}}
             </div>
 
             <div [id]="'configs_collapse_' + i" class="collapse">
@@ -49,7 +52,7 @@
                                     </tr>
                                     <tr>
                                         <th scope="col" class="text-center">
-                                            <i class="fa fa-cogs text-info"></i>
+                                            <fa-icon [icon]="icons.faCogs" class="text-info"></fa-icon>
                                         </th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Path</th>
@@ -62,25 +65,30 @@
                                 <tbody>
                                     <tr *ngFor="let config of conf.items">
                                         <td class="text-center">
-                                            <i class="fa fa-cogs text-info"></i>
+                                            <fa-icon [icon]="icons.faCogs" class="text-info"></fa-icon>
                                         </td>
                                         <td>{{config.name}}</td>
                                         <td>
                                             <code>{{config.path}}</code>
                                         </td>
                                         <td>
-                                            <a *ngIf="config.public" [href]="server + conf.publicUri + '/' + config.name" target="_blank">
+                                            <a *ngIf="config.public" [href]="conf.publicUri + '/' + config.name"
+                                                target="_blank">
                                                 <code>{{conf.publicUri}}/{{config.name}}</code>
                                             </a>
                                         </td>
-                                        <td class="text-center" [innerHTML]="config.specific | boolean:'icon-color'"></td>
+                                        <td class="text-center" [innerHTML]="config.specific | boolean:'icon-color'">
+                                        </td>
                                         <td class="text-center">
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <button type="button" class="btn btn-outline-secondary" (click)="display(config, conf)" title="Display">
-                                                    <i class="fa fa-eye"></i>
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    (click)="display(config, conf)" title="Display">
+                                                    <fa-icon [icon]="icons.faEye"></fa-icon>
                                                 </button>
-                                                <button type="button" class="btn btn-outline-secondary" [disabled]="!config.specsPath" (click)="displaySpecs(config, conf)" title="Display Specs">
-                                                    <i class="fa fa-code"></i>
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    [disabled]="!config.specsPath" (click)="displaySpecs(config, conf)"
+                                                    title="Display Specs">
+                                                    <fa-icon [icon]="icons.faCode"></fa-icon>
                                                 </button>
                                             </div>
                                         </td>
@@ -96,24 +104,25 @@
 
     <div class="row">
         <p class="col my-0">
-            <a [href]="server + '/public-configs'" target="_blank" class="float-right border-info">
-                <i class="fa fa-cogs text-success"></i>
+            <a href="/public-configs" target="_blank" class="float-right border-info">
+                <fa-icon [icon]="icons.faCogs" class="text-success"></fa-icon>
                 <code>list of public configs</code>
             </a>
         </p>
     </div>
 
-    <div class="modal fade" id="ConfigModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle" aria-hidden="true">
+    <div class="modal fade" id="ConfigModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 *ngIf="displayData.name" class="modal-title" id="ModalTitle">
-                        <i class="fa fa-cogs"></i>
+                        <fa-icon [icon]="icons.faCogs"></fa-icon>
                         Config:
                         <code>{{displayData.name}}</code>
                     </h5>
                     <h5 *ngIf="displayData.specsName" class="modal-title" id="ModalTitle">
-                        <i class="fa fa-cogs"></i>
+                        <fa-icon [icon]="icons.faCogs"></fa-icon>
                         Config Specs:
                         <code>{{displayData.specsName}}</code>
                     </h5>
@@ -129,7 +138,7 @@
                         </li>
                         <li *ngIf="configs.publicUri && displayData.name && displayData.public">
                             <strong>Public URI</strong>:
-                            <a [href]="server + configs.publicUri + '/' + displayData.name" target="_blank">
+                            <a [href]="configs.publicUri + '/' + displayData.name" target="_blank">
                                 <code>{{configs.publicUri}}/{{displayData.name}}</code>
                             </a>
                         </li>
@@ -138,7 +147,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">
-                        <i class="fa fa-times"></i> Close
+                        <fa-icon [icon]="icons.faTimes"></fa-icon>
+                        Close
                     </button>
                 </div>
             </div>

@@ -1,17 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'ui-home-endpoints',
+    selector: 'app-home-endpoints',
     templateUrl: './endpoints.component.html',
-    styles: []
 })
-export class PageHomeEndpointsComponent implements OnInit {
-    @Input('endpoints') public endpoints: any = null;
-    @Input('server') public server: string = '';
+export class EndpointsComponent implements OnInit {
+    //
+    // Properties.
 
+    //
+    // Construction.
     constructor() {
     }
-
-    ngOnInit() {
+    //
+    // Public methods.
+    public ngOnInit(): void {
     }
+    //
+    // Protected methods.
 }

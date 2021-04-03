@@ -1,34 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 
-import { DRToolsService } from '../services/drtools.service';
-import { LocationService } from '../services/location.service';
+import { DRToolsService } from '../services';
 
 declare var $: any;
 
 @Component({
-    selector: 'ui-home',
+    selector: 'app-home',
     templateUrl: './home.component.html',
-    styles: [],
-    providers: [DRToolsService]
 })
-export class PageHomeComponent implements OnInit {
+export class HomeComponent implements OnInit {
+    //
+    // Properties.
     public drtools: any = {};
     public serverUrl: string = '';
-
-    constructor(
-        private drtSrv: DRToolsService,
-        private lSrv: LocationService) {
+    //
+    // Construction.
+    constructor(protected drtSrv: DRToolsService) {
     }
-
+    //
+    // Public methods.
     public expandAll(): void {
         $('ui-home .collapse').collapse('show');
     }
     public hideAll(): void {
         $('ui-home .collapse').collapse('hide');
     }
-
-    ngOnInit() {
-        this.serverUrl = this.lSrv.serverUrl();
-        this.drtSrv.info().subscribe((data: any) => this.drtools = data);
+    public async ngOnInit(): Promise<void> {
+        this.drtools = await this.drtSrv.info();
     }
+    //
+    // Protected methods.
+
 }

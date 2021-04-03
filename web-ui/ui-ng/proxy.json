@@ -1,0 +1,12 @@
+{
+    "/.drtools": {
+        "changeOrigin": true,
+        "secure": false,
+        "target": "http://localhost:3000"
+    },
+    "/public-configs": {
+        "changeOrigin": true,
+        "secure": false,
+        "target": "http://localhost:3000"
+    }
+}

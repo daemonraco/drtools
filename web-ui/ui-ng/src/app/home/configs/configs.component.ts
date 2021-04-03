@@ -1,62 +1,60 @@
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 import { Component, Input, OnInit } from '@angular/core';
-
-import { DRToolsService } from '../../services/drtools.service';
+import { DRToolsService } from 'src/app/services';
 
 declare var $: any;
 
 @Component({
-    selector: 'ui-home-configs',
+    selector: 'app-home-configs',
     templateUrl: './configs.component.html',
-    styles: [],
-    providers: [DRToolsService]
 })
-export class PageHomeConfigsComponent implements OnInit {
-    @Input('configs') public configs: any = null;
-    @Input('server') public server: string = '';
-
+export class ConfigsComponent implements OnInit {
+    //
+    // Properties.
+    @Input() public configs: any = null;
     public configsAsLinks: any[] = [];
     public displayData: any = {};
-
-    constructor(private drtSrv: DRToolsService) {
+    public readonly icons = Icons;
+    //
+    // Construction.
+    constructor(protected drtSrv: DRToolsService) {
     }
-
-    public display(config: any, manager: any): void {
+    //
+    // Public methods.
+    public async display(config: any, manager: any): Promise<void> {
         this.displayData = {};
 
         this.displayData.name = config.name;
         this.displayData.contents = `loading...`;
         this.displayData.path = `loading...`;
 
-        this.drtSrv.config(config.name, manager.directory)
-            .subscribe((data: any) => {
-                this.displayData.contents = JSON.stringify(data.contents, null, 2)
-                this.displayData.public = data.public;
-                this.displayData.path = data.path;
-            });
+        const data: any = await this.drtSrv.config(config.name, manager.directory);
+        this.displayData.contents = JSON.stringify(data.contents, null, 2);
+        this.displayData.public = data.public;
+        this.displayData.path = data.path;
 
         $('#ConfigModal').modal('show');
     }
-    public displaySpecs(config: any, manager: any): void {
+    public async displaySpecs(config: any, manager: any): Promise<void> {
         this.displayData = {};
 
         this.displayData.specsName = config.name;
         this.displayData.contents = `loading...`;
         this.displayData.path = `loading...`;
 
-        this.drtSrv.configSpecs(config.name, manager.directory)
-            .subscribe((data: any) => {
-                this.displayData.contents = JSON.stringify(data.contents, null, 2)
-                this.displayData.path = data.specsPath;
-            });
+        const data: any = await this.drtSrv.configSpecs(config.name, manager.directory);
+        this.displayData.contents = JSON.stringify(data.contents, null, 2)
+        this.displayData.path = data.specsPath;
 
         $('#ConfigModal').modal('show');
+    }
+    public ngOnInit(): void {
     }
     public rejectLink(reject: boolean, event: any): void {
         if (reject) {
             event.preventDefault();
         }
     }
-
-    ngOnInit() {
-    }
+    //
+    // Protected methods.
 }

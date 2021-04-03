@@ -1,17 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'ui-home-routes',
+    selector: 'app-home-routes',
     templateUrl: './routes.component.html',
-    styles: []
 })
-export class PageHomeRoutesComponent implements OnInit {
-    @Input('routes') public routes: any = null;
-    @Input('server') public server: string = '';
+export class RoutesComponent implements OnInit {
+    //
+    // Properties.
 
+    //
+    // Construction.
     constructor() {
     }
-
-    ngOnInit() {
+    //
+    // Public methods.
+    public ngOnInit(): void {
     }
+    //
+    // Protected methods.
 }

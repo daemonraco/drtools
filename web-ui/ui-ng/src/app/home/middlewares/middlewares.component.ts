@@ -1,17 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'ui-home-middlewares',
+    selector: 'app-home-middlewares',
     templateUrl: './middlewares.component.html',
-    styles: []
 })
-export class PageHomeMiddlewaresComponent implements OnInit {
-    @Input('middlewares') public middlewares: any = null;
-    @Input('server') public server: string = '';
+export class MiddlewaresComponent implements OnInit {
+    //
+    // Properties.
 
+    //
+    // Construction.
     constructor() {
     }
-
-    ngOnInit() {
+    //
+    // Public methods.
+    public ngOnInit(): void {
     }
+    //
+    // Protected methods.
 }

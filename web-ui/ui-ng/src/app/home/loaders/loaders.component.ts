@@ -1,17 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'ui-home-loaders',
+    selector: 'app-home-loaders',
     templateUrl: './loaders.component.html',
-    styles: []
 })
-export class PageHomeLoadersComponent implements OnInit {
-    @Input('loaders') public loaders: any = null;
-    @Input('server') public server: string = '';
+export class LoadersComponent implements OnInit {
+    //
+    // Properties.
 
+    //
+    // Construction.
     constructor() {
     }
-
-    ngOnInit() {
+    //
+    // Public methods.
+    public ngOnInit(): void {
     }
+    //
+    // Protected methods.
 }

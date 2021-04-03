@@ -1,62 +1,59 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
+import { BasicsModule } from './basics';
 
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { FooterComponent } from './footer/footer.component';
-import { Page404Component } from './404/404.component';
-import { PageDocsComponent } from './docs/docs.component';
-import { PageHomeComponent } from './home/home.component';
-import { PageHomeConfigsComponent } from './home/configs/configs.component';
-import { PageHomeEndpointsComponent } from './home/endpoints/endpoints.component';
-import { PageHomeLoadersComponent } from './home/loaders/loaders.component';
-import { PageHomeMiddlewaresComponent } from './home/middlewares/middlewares.component';
-import { PageHomeMockRoutesComponent } from './home/mock-routes/mock-routes.component';
-import { PageHomeMysqlRestComponent } from './home/mysql-rest/mysql-rest.component';
-import { PageHomePluginsComponent } from './home/plugins/plugins.component';
-import { PageHomeRoutesComponent } from './home/routes/routes.component';
-import { PageHomeTasksComponent } from './home/tasks/tasks.component';
-import { PageHomeWebtoapiComponent } from './home/webtoapi/webtoapi.component';
-
-import { LocationService } from './services/location.service';
+import { ConfigsComponent } from './home/configs/configs.component';
+import { DocsComponent } from './docs/docs.component';
+import { EndpointsComponent } from './home/endpoints/endpoints.component';
+import { HomeComponent } from './home/home.component';
+import { LoadersComponent } from './home/loaders/loaders.component';
+import { MiddlewaresComponent } from './home/middlewares/middlewares.component';
+import { MockRoutesComponent } from './home/mock-routes/mock-routes.component';
+import { MysqlRestComponent } from './home/mysql-rest/mysql-rest.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { PluginsComponent } from './home/plugins/plugins.component';
+import { RoutesComponent } from './home/routes/routes.component';
+import { TasksComponent } from './home/tasks/tasks.component';
+import { WebtoapiComponent } from './home/webtoapi/webtoapi.component';
 
 import { BooleanPipe } from './pipes/boolean.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
 import { MillisecondsPipe } from './pipes/milliseconds.pipe';
-import { StringifyPipe } from './pipes/stringify.pipe';
 
 @NgModule({
     declarations: [
         AppComponent,
         BooleanPipe,
-        FooterComponent,
+        ConfigsComponent,
+        DocsComponent,
+        EndpointsComponent,
+        HomeComponent,
         KeysPipe,
+        LoadersComponent,
+        MiddlewaresComponent,
         MillisecondsPipe,
-        NavbarComponent,
-        Page404Component,
-        PageDocsComponent,
-        PageHomeComponent,
-        PageHomeConfigsComponent,
-        PageHomeEndpointsComponent,
-        PageHomeLoadersComponent,
-        PageHomeMiddlewaresComponent,
-        PageHomeMockRoutesComponent,
-        PageHomeMysqlRestComponent,
-        PageHomePluginsComponent,
-        PageHomeRoutesComponent,
-        PageHomeTasksComponent,
-        PageHomeWebtoapiComponent,
-        StringifyPipe
+        MockRoutesComponent,
+        MysqlRestComponent,
+        NotFoundComponent,
+        PluginsComponent,
+        RoutesComponent,
+        TasksComponent,
+        WebtoapiComponent,
     ],
     imports: [
-        BrowserModule,
         AppRoutingModule,
-        HttpModule
+        BasicsModule,
+        BrowserModule,
+        FontAwesomeModule,
+        HttpClientModule,
     ],
-    providers: [LocationService],
-    bootstrap: [AppComponent]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    providers: [],
+    bootstrap: [AppComponent],
 })
 export class AppModule { }

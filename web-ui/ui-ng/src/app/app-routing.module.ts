@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
-import { Page404Component } from './404/404.component';
-import { PageDocsComponent } from './docs/docs.component';
-import { PageHomeComponent } from './home/home.component';
+import { DocsComponent } from './docs/docs.component';
+import { HomeComponent } from './home/home.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
-    { path: '', component: PageHomeComponent },
-    { path: 'docs', component: PageDocsComponent },
-    { path: '**', component: Page404Component },
+    { path: 'docs', component: DocsComponent, },
+    { path: '', component: HomeComponent, },
+
+    { path: '**', component: NotFoundComponent, },
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
 export class AppRoutingModule { }

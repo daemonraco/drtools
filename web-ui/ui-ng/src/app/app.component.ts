@@ -1,26 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ConnectionService } from './services/connection.service';
-
 @Component({
-    selector: 'ui-root',
-    templateUrl: `app.component.html`,
-    styles: [],
-    providers: [ConnectionService]
+    selector: 'app-root',
+    templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
+    //
+    // Properties.
     public loading: boolean = true;
-    public online: boolean = false;
-
-    public constructor(private connSrv: ConnectionService) {
+    public title = 'DRTools';
+    //
+    // Construction.
+    constructor() {
     }
-
-    ngOnInit() {
-        this.connSrv.isOnline().subscribe((online: boolean) => {
-            this.online = online;
-            setTimeout(() => {
-                this.loading = false;
-            }, 500);
-        });
+    //
+    // Public methods.
+    public ngOnInit(): void {
+        setTimeout(() => {
+            this.loading = false;
+        }, 500);
     }
+    //
+    // Protected methods.
+
 }

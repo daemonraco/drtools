@@ -1,31 +1,32 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
 
-import { LocationService } from './location.service';
-
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class DRToolsService {
-    constructor(
-        private lSrv: LocationService,
-        private http: Http) {
+    //
+    // Properties.
+
+    //
+    // Construction.
+    constructor(protected http: HttpClient) {
     }
     //
     // Public methods.
-    public config(name: string, manager: string): Observable<any> {
-        return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json?config=${name}&manager=${manager}`).map(data => data.json());
+    public config(name: string, manager: string): Promise<any> {
+        return this.http.get(`/.drtools.json?config=${name}&manager=${manager}`).toPromise();
     }
-    public configSpecs(name: string, manager: string): Observable<any> {
-        return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json?configSpecs=${name}&manager=${manager}`).map(data => data.json());
+    public configSpecs(name: string, manager: string): Promise<any> {
+        return this.http.get(`/.drtools.json?configSpecs=${name}&manager=${manager}`).toPromise();
     }
-    public doc(path: string): Observable<any> {
-        return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json?doc=${path}`).map(data => data.json());
+    public doc(path: string): Promise<any> {
+        return this.http.get(`/.drtools.json?doc=${path}`).toPromise();
     }
-    public info(): Observable<any> {
-        return this.http.get(`${this.lSrv.serverUrl()}/.drtools.json`).map(data => data.json());
+    public info(): Promise<any> {
+        return this.http.get(`/.drtools.json`).toPromise();
     }
     public publicConfig(name: string): string {
-        return `${this.lSrv.serverUrl()}/public-configs/${name}`;
+        return `/public-configs/${name}`;
     }
 }
