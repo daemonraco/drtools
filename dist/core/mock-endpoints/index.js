@@ -3,19 +3,10 @@
  * @file index.ts
  * @author Alejandro D. Simi
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./endpoint"), exports);
-__exportStar(require("./endpoint-behaviors"), exports);
-__exportStar(require("./endpoint-data"), exports);
-__exportStar(require("./endpoint-types"), exports);
-__exportStar(require("./manager"), exports);
+const tslib_1 = require("tslib");
+tslib_1.__exportStar(require("./endpoint"), exports);
+tslib_1.__exportStar(require("./endpoint-behaviors"), exports);
+tslib_1.__exportStar(require("./endpoint-data"), exports);
+tslib_1.__exportStar(require("./endpoint-types"), exports);
+tslib_1.__exportStar(require("./manager"), exports);

@@ -5,8 +5,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MockRoutesConstants = void 0;
-class MockRoutesConstants {
-    constructor() { }
-}
-exports.MockRoutesConstants = MockRoutesConstants;
-MockRoutesConstants.DefaultGuard = 'default';
+var MockRoutesConstants;
+(function (MockRoutesConstants) {
+    MockRoutesConstants["DefaultGuard"] = "default";
+})(MockRoutesConstants = exports.MockRoutesConstants || (exports.MockRoutesConstants = {}));

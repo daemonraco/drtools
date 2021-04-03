@@ -3,15 +3,11 @@
  * @author Alejandro D. Simi
  */
 
-export  class HookConstants {
-    public static readonly DefaultHookOrder:number = 1000;
-
-    private constructor() { }
+export enum HookConstants {
+    DefaultHookOrder = 1000,
 }
 
-export class HookEvents {
-    public static readonly Hooked: string = 'hooked';
-    public static readonly Unhooked: string = 'unhooked';
-
-    private constructor() { }
+export enum HookEvents {
+    Hooked = 'hooked',
+    Unhooked = 'unhooked',
 }

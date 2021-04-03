@@ -59,6 +59,7 @@ class EndpointsManager {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     cleanOptions() {
         let defaultOptions = {
             directory: '',
@@ -67,6 +68,7 @@ class EndpointsManager {
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options);
     }
+    /* istanbul ignore next */
     load() {
         //
         // Checking given directory path.
@@ -93,12 +95,14 @@ class EndpointsManager {
         }
         this._valid = !this._lastError;
     }
+    /* istanbul ignore next */
     provideInvalidKoaMiddleware() {
         return async (ctx, next) => {
             console.error(libraries_1.chalk.red(`EndpointsManager Error: ${this._lastError}`));
             await next();
         };
     }
+    /* istanbul ignore next */
     provideInvalidMiddleware() {
         return (req, res, next) => {
             console.error(libraries_1.chalk.red(`EndpointsManager Error: ${this._lastError}`));

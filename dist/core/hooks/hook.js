@@ -115,6 +115,7 @@ class Hook {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     cleanOrders() {
         let result = [];
         for (const order of Object.keys(this._listenersOrder)) {

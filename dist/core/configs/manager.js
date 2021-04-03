@@ -92,6 +92,7 @@ class ConfigsManager {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     cleanOptions() {
         let defaultOptions = {
             environmentVariable: false,
@@ -100,6 +101,7 @@ class ConfigsManager {
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options);
     }
+    /* istanbul ignore next */
     expandEnvVariablesIn(data) {
         switch (typeof data) {
             case 'string':
@@ -123,6 +125,7 @@ class ConfigsManager {
         }
         return data;
     }
+    /* istanbul ignore next */
     genericPublishExports(type, uri = _1.ConfigsConstants.PublishUri) {
         //
         // Cleaning URI @{
@@ -199,6 +202,7 @@ class ConfigsManager {
         }
         return middlewareResult;
     }
+    /* istanbul ignore next */
     load() {
         this._lastError = null;
         //
@@ -321,6 +325,7 @@ class ConfigsManager {
         }
         this._valid = !this._lastError;
     }
+    /* istanbul ignore next */
     loadExportsOf(name) {
         let hasExports = false;
         const config = this._configs[name];
@@ -349,6 +354,7 @@ class ConfigsManager {
         }
         return hasExports;
     }
+    /* istanbul ignore next */
     loadSpecsOf(name) {
         let specsPath = libraries_1.path.join(this._specsDirectory, `${name}.json`);
         const check = includes_1.Tools.CheckFile(specsPath);
@@ -366,6 +372,7 @@ class ConfigsManager {
         }
         return specsPath;
     }
+    /* istanbul ignore next */
     validateSpecsOf(name, specsPath) {
         let valid = false;
         this._specs[name] = null;

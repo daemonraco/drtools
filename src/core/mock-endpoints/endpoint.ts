@@ -111,6 +111,7 @@ export class Endpoint {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected fixConstructorParams(): void {
         //
         // Cleaning URI @{
@@ -135,6 +136,7 @@ export class Endpoint {
             this._options.globalBehaviors = [];
         }
     }
+    /* istanbul ignore next */
     protected load(): void {
         if (!this._loaded) {
             this._loaded = true;
@@ -151,6 +153,7 @@ export class Endpoint {
             }
         }
     }
+    /* istanbul ignore next */
     protected loadAllEndpoints(): void {
         const paths: string[] = glob.sync(path.join(this.directory(), '**/*.json'));
         const directoryLength = this.directory().length;
@@ -173,6 +176,7 @@ export class Endpoint {
             this.loadEndpoint(u);
         });
     }
+    /* istanbul ignore next */
     protected loadEndpoint(endpoint: string): void {
         if (typeof this._loadedEndpoints[endpoint] === 'undefined') {
             this._loadedEndpoints[endpoint] = new EndpointData(this, endpoint, this._options);

@@ -74,6 +74,7 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected async consumeQueue(): Promise<void> {
         if (this._options.debug) {
             console.log(chalk.yellow(`DRTools::TasksManager: Consuming task from queue (queue count: ${this._queue.length})...`));
@@ -98,6 +99,7 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
             console.log(chalk.yellow(`DRTools::TasksManager: A task is already running (queue count: ${this._queue.length}).`));
         }
     }
+    /* istanbul ignore next */
     protected cleanOptions(): void {
         this._options = {
             debug: false,
@@ -109,6 +111,7 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
             ...this._options !== null ? this._options : {},
         };
     }
+    /* istanbul ignore next */
     protected runAtStart(): void {
         if (this.valid()) {
             Object.keys(this._items).forEach((key: string) => {
@@ -119,6 +122,7 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
             });
         }
     }
+    /* istanbul ignore next */
     protected setIntervals(): void {
         if (this.valid()) {
             for (const key of Object.keys(this._items)) {

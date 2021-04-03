@@ -59,6 +59,7 @@ class GenericManager {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     checkDirectories() {
         //
         // Checking given directory path.
@@ -85,6 +86,7 @@ class GenericManager {
             this._valid = !this._lastError;
         }
     }
+    /* istanbul ignore next */
     loadItemPaths() {
         if (!this._lastError) {
             this._itemSpecs = [];

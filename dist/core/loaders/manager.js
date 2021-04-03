@@ -56,6 +56,7 @@ class LoadersManager extends includes_1.GenericManager {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     cleanOptions() {
         let defaultOptions = {
             suffix: _1.LoadersConstants.Suffix,

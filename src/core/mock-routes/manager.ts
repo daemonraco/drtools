@@ -86,6 +86,7 @@ export class MockRoutesManager implements IManagerByKey {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected attach(app: any): void {
         if (!this.lastError()) {
             if (Tools.IsExpress(app)) {
@@ -130,6 +131,7 @@ export class MockRoutesManager implements IManagerByKey {
             }
         }
     }
+    /* istanbul ignore next */
     protected cleanParams(): void {
         let defaultOptions: IMockRoutesOptions = {
             verbose: true
@@ -138,6 +140,7 @@ export class MockRoutesManager implements IManagerByKey {
 
         this._routesConfigPath = this._routesConfigPath.match(/\.json$/) ? this._routesConfigPath : `${this._routesConfigPath}.json`;
     }
+    /* istanbul ignore next */
     protected fullPath(relativePath: string): string {
         let out: string = relativePath;
 
@@ -146,6 +149,7 @@ export class MockRoutesManager implements IManagerByKey {
 
         return out;
     }
+    /* istanbul ignore next */
     protected load(isExpress: boolean): void {
         try {
             if (this._options.verbose) {
@@ -173,6 +177,7 @@ export class MockRoutesManager implements IManagerByKey {
             console.error(chalk.red(this._lastError), err);
         }
     }
+    /* istanbul ignore next */
     protected loadGuard(guardSpec: any): IMockRoutesGuard {
         let out: IMockRoutesGuard = {
             name: guardSpec.name,
@@ -191,6 +196,7 @@ export class MockRoutesManager implements IManagerByKey {
 
         return out;
     }
+    /* istanbul ignore next */
     protected loadGuards(isExpress: boolean): void {
         //
         // Loading guards.
@@ -212,6 +218,7 @@ export class MockRoutesManager implements IManagerByKey {
             });
         }
     }
+    /* istanbul ignore next */
     protected loadRoutes(): void {
         //
         // Loading routes.
@@ -294,6 +301,7 @@ export class MockRoutesManager implements IManagerByKey {
     }
     //
     // Protected class methods.
+    /* istanbul ignore next */
     protected static RouteKey(route: any): string {
         return `${route.method.toLowerCase()}:${route.uri}`;
     }

@@ -190,6 +190,7 @@ class DRCollectorClass {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     findManager(managers, key) {
         let manager = null;
         for (const m of managers) {
@@ -200,6 +201,7 @@ class DRCollectorClass {
         }
         return manager;
     }
+    /* istanbul ignore next */
     infoReportConfigsManager() {
         const results = [];
         for (const manager of this._configsManagers) {
@@ -215,6 +217,7 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     infoReportEndpointsManager() {
         const results = [];
         for (const manager of this._endpointsManager) {
@@ -227,6 +230,7 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     infoReportLoadersManager() {
         const results = [];
         for (const manager of this._loadersManagers) {
@@ -238,6 +242,7 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     infoReportMiddlewaresManager() {
         const results = [];
         for (const manager of this._middlewaresManager) {
@@ -249,6 +254,7 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     infoReportMockRoutesManager() {
         const results = [];
         for (const manager of this._mockRoutesManager) {
@@ -260,6 +266,7 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     infoReportPluginsManager() {
         const results = [];
         for (const manager of this._pluginsManager) {
@@ -285,6 +292,7 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     infoReportRoutesManager() {
         const results = [];
         for (const manager of this._routesManager) {
@@ -296,6 +304,7 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     infoReportTasksManager() {
         const results = [];
         for (const manager of this._tasksManager) {
@@ -307,6 +316,7 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     monitorAsyncManagerLoading(type, manager) {
         setTimeout(() => {
             if (!manager.loaded()) {

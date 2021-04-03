@@ -66,6 +66,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected checkDirectories(): void {
         //
         // Checking given directory path.
@@ -95,6 +96,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
         }
     }
     protected abstract cleanOptions(): void;
+    /* istanbul ignore next */
     protected loadItemPaths(): void {
         if (!this._lastError) {
             this._itemSpecs = [];

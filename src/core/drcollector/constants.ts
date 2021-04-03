@@ -3,35 +3,29 @@
  * @author Alejandro D. Simi
  */
 
-export class DRCollectorConstants {
-    public static readonly AsyncLoadingTimeout: number = 10 * 1000;
-
-    private constructor() { }
+export enum DRCollectorConstants {
+    AsyncLoadingTimeout = 10 * 1000,
 }
 
-export class DRCollectorManagers {
-    public static readonly Configs: string = 'configs';
-    public static readonly Endpoints: string = 'endpoints';
-    public static readonly Loader: string = 'loaders';
-    public static readonly Middlewares: string = 'middlewares';
-    public static readonly MockRoutes: string = 'mock-routes';
-    public static readonly Plugins: string = 'plugins';
-    public static readonly Routes: string = 'routes';
-    public static readonly Tasks: string = 'tasks';
-
-    private constructor() { }
+export enum DRCollectorManagers {
+    Configs = 'configs',
+    Endpoints = 'endpoints',
+    Loader = 'loaders',
+    Middlewares = 'middlewares',
+    MockRoutes = 'mock-routes',
+    Plugins = 'plugins',
+    Routes = 'routes',
+    Tasks = 'tasks',
 }
 
-export class DRCollectorEvents {
-    public static readonly ConfigsManagerRegistered: string = 'configs_manager_registered';
-    public static readonly EndpointsManagerRegistered: string = 'endpoints_manager_registered';
-    public static readonly LoadersManagerRegistered: string = 'loaders_manager_registered';
-    public static readonly ManagerRegistered: string = 'manager_registered';
-    public static readonly MiddlewaresManagerRegistered: string = 'middlewares_manager_registered';
-    public static readonly MockRoutesManagerRegistered: string = 'mock_routes_manager_registered';
-    public static readonly PluginsManagerRegistered: string = 'plugins_manager_registered';
-    public static readonly RoutesManagerRegistered: string = 'routes_manager_registered';
-    public static readonly TasksManagerRegistered: string = 'tasks_manager_registered';
-
-    private constructor() { }
+export enum DRCollectorEvents {
+    ConfigsManagerRegistered = 'configs_manager_registered',
+    EndpointsManagerRegistered = 'endpoints_manager_registered',
+    LoadersManagerRegistered = 'loaders_manager_registered',
+    ManagerRegistered = 'manager_registered',
+    MiddlewaresManagerRegistered = 'middlewares_manager_registered',
+    MockRoutesManagerRegistered = 'mock_routes_manager_registered',
+    PluginsManagerRegistered = 'plugins_manager_registered',
+    RoutesManagerRegistered = 'routes_manager_registered',
+    TasksManagerRegistered = 'tasks_manager_registered',
 }

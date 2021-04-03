@@ -1,12 +1,10 @@
 'use strict';
-
-// ---------------------------------------------------------------------------- //
-// Dependences.
+//
+// Dependencies.
 const assert = require('chai').assert;
 const fs = require('fs');
 const path = require('path');
-
-// ---------------------------------------------------------------------------- //
+//
 // Testing.
 describe(`[002] drtools: Configs manager:`, () => {
     const { ConfigsManager } = require('..');

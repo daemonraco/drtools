@@ -216,6 +216,7 @@ class DRCollectorClass {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected findManager(managers: BasicList<IManagerByKey>, key: string): IManagerByKey {
         let manager: IManagerByKey = null;
 
@@ -228,6 +229,7 @@ class DRCollectorClass {
 
         return manager;
     }
+    /* istanbul ignore next */
     protected infoReportConfigsManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -245,6 +247,7 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     protected infoReportEndpointsManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -259,6 +262,7 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     protected infoReportLoadersManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -272,6 +276,7 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     protected infoReportMiddlewaresManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -285,6 +290,7 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     protected infoReportMockRoutesManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -298,6 +304,7 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     protected infoReportPluginsManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -328,6 +335,7 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     protected infoReportRoutesManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -341,6 +349,7 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     protected infoReportTasksManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -354,6 +363,7 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
+    /* istanbul ignore next */
     protected monitorAsyncManagerLoading(type: string, manager: IAsyncManager): void {
         setTimeout(() => {
             if (!manager.loaded()) {

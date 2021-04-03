@@ -5,14 +5,12 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HookEvents = exports.HookConstants = void 0;
-class HookConstants {
-    constructor() { }
-}
-exports.HookConstants = HookConstants;
-HookConstants.DefaultHookOrder = 1000;
-class HookEvents {
-    constructor() { }
-}
-exports.HookEvents = HookEvents;
-HookEvents.Hooked = 'hooked';
-HookEvents.Unhooked = 'unhooked';
+var HookConstants;
+(function (HookConstants) {
+    HookConstants[HookConstants["DefaultHookOrder"] = 1000] = "DefaultHookOrder";
+})(HookConstants = exports.HookConstants || (exports.HookConstants = {}));
+var HookEvents;
+(function (HookEvents) {
+    HookEvents["Hooked"] = "hooked";
+    HookEvents["Unhooked"] = "unhooked";
+})(HookEvents = exports.HookEvents || (exports.HookEvents = {}));

@@ -1,7 +1,6 @@
 'use strict';
-
-// ---------------------------------------------------------------------------- //
-// Dependences.
+//
+// Dependencies.
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const fs = require('fs');
@@ -9,10 +8,9 @@ const path = require('path');
 
 const assert = chai.assert;
 const port = process.env.PORT || 3005;
-
 chai.use(chaiHttp);
 
-// ---------------------------------------------------------------------------- //
+//
 // Testing.
 describe(`[005] drtools: Routes on the ExpressJS connector:`, () => {
     it(`requesting an exposed route`, done => {

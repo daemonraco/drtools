@@ -3,10 +3,8 @@
  * @author Alejandro D. Simi
  */
 
-export class ConfigsConstants {
-    public static readonly PublishUri: string = '/public-configs';
-    public static readonly SpecsDirectory: string = 'specs';
-    public static readonly Suffix: string = 'config';
-
-    private constructor() { }
+export enum ConfigsConstants {
+    PublishUri = '/public-configs',
+    SpecsDirectory = 'specs',
+    Suffix = 'config',
 }

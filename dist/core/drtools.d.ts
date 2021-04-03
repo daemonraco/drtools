@@ -12,7 +12,6 @@ export * from './mock-endpoints';
 export * from './mock-routes';
 export * from './plugins';
 export * from './hooks';
-export * from './promisify';
 export * from './drcollector';
 import { ExpressConnector as ExpressConnectorClass } from './express';
 export declare const ExpressConnector: ExpressConnectorClass;

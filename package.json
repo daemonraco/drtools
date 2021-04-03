@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -11,16 +11,18 @@
     "scripts": {
         "start": "npm run build:live",
         "prebuild": "rm -frv dist/*",
-        "build": "./node_modules/.bin/tsc --skipLibCheck",
+        "build": "tsc --skipLibCheck",
         "postbuild": "chmod -v +x dist/commands/*/cmd.js && npm run gen:docs",
-        "build:live": "./node_modules/.bin/tsc --skipLibCheck --watch",
+        "build:live": "tsc --skipLibCheck --watch",
         "gen:docs": "node .tools/gen-docs.js",
         "live:server": "./test/assets/start-live.sh",
         "live:serverui": "bash .tools/build-serverui.sh live",
         "build:serverui": "bash .tools/build-serverui.sh",
+        "mocha": "mocha",
         "pretest": "./test/assets/start.sh",
-        "test": "./node_modules/mocha/bin/mocha || true",
-        "posttest": "./test/assets/stop.sh"
+        "test": "nyc --reporter=lcov --reporter=text --reporter=html mocha || true",
+        "posttest": "./test/assets/stop.sh",
+        "test:view": "npx live-server --port=4201 --no-browser coverage"
     },
     "keywords": [
         "automatic loaders",
@@ -50,6 +52,7 @@
         "chai-http": "^4.3.0",
         "mocha": "^8.3.2",
         "nodemon": "^2.0.7",
+        "nyc": "^15.1.0",
         "shelljs": "^0.8.4",
         "typescript": "^4.2.3"
     },
@@ -73,6 +76,7 @@
         "md5": "^2.3.0",
         "mime-types": "^2.1.30",
         "request": "^2.88.2",
-        "request-promise-native": "^1.0.9"
+        "request-promise-native": "^1.0.9",
+        "tslib": "^2.1.0"
     }
 }

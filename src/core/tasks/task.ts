@@ -38,6 +38,7 @@ export abstract class Task {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected load(): void {
         throw `Subclass responsibility`;
     }

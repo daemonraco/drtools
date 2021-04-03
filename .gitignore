@@ -59,4 +59,5 @@ typings/
 
 # Internal
 /test/tmp
-.vscode
+/.vscode
+/coverage

@@ -48,6 +48,7 @@ export class KoaConnector {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected attachConfigsManager(manager: ConfigsManager): void {
         const options: any = manager.options();
 
@@ -56,6 +57,7 @@ export class KoaConnector {
             this._koaApp.use(manager.publishExportsForKoa(uri));
         }
     }
+    /* istanbul ignore next */
     protected attachWebUI(): void {
         if (this._options.webUi && !this._uiAttached) {
             this._uiAttached = true;

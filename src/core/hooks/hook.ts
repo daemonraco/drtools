@@ -120,6 +120,7 @@ export class Hook {
     public matryoshka: <T = HookBait>(bait: T) => Promise<T> = this.chainedReelIn;
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected cleanOrders(): number[] {
         let result: number[] = [];
         for (const order of Object.keys(this._listenersOrder)) {

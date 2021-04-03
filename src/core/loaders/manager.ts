@@ -67,6 +67,7 @@ export class LoadersManager extends GenericManager<ILoaderOptions> {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected cleanOptions(): void {
         let defaultOptions: ILoaderOptions = {
             suffix: LoadersConstants.Suffix,

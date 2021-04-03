@@ -167,6 +167,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected checkDirectories(): void {
         //
         // Checking given directory paths.
@@ -191,6 +192,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
             }
         }
     }
+    /* istanbul ignore next */
     protected cleanOptions(): void {
         let defaultOptions: IPluginsOptions = {
             dist: false,
@@ -199,6 +201,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
+    /* istanbul ignore next */
     protected loadItemPaths(): void {
         if (!this._lastError) {
             this._paths = [];

@@ -73,6 +73,7 @@ class MockRoutesManager {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     attach(app) {
         if (!this.lastError()) {
             if (includes_1.Tools.IsExpress(app)) {
@@ -118,6 +119,7 @@ class MockRoutesManager {
             }
         }
     }
+    /* istanbul ignore next */
     cleanParams() {
         let defaultOptions = {
             verbose: true
@@ -125,12 +127,14 @@ class MockRoutesManager {
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
         this._routesConfigPath = this._routesConfigPath.match(/\.json$/) ? this._routesConfigPath : `${this._routesConfigPath}.json`;
     }
+    /* istanbul ignore next */
     fullPath(relativePath) {
         let out = relativePath;
         const configDir = libraries_1.path.dirname(this.configPath());
         out = libraries_1.path.resolve(libraries_1.fs.existsSync(relativePath) ? relativePath : libraries_1.path.join(configDir, relativePath));
         return out;
     }
+    /* istanbul ignore next */
     load(isExpress) {
         try {
             if (this._options.verbose) {
@@ -159,6 +163,7 @@ class MockRoutesManager {
             console.error(libraries_1.chalk.red(this._lastError), err);
         }
     }
+    /* istanbul ignore next */
     loadGuard(guardSpec) {
         let out = {
             name: guardSpec.name,
@@ -175,6 +180,7 @@ class MockRoutesManager {
         }
         return out;
     }
+    /* istanbul ignore next */
     loadGuards(isExpress) {
         //
         // Loading guards.
@@ -194,6 +200,7 @@ class MockRoutesManager {
             });
         }
     }
+    /* istanbul ignore next */
     loadRoutes() {
         //
         // Loading routes.
@@ -272,6 +279,7 @@ class MockRoutesManager {
     }
     //
     // Protected class methods.
+    /* istanbul ignore next */
     static RouteKey(route) {
         return `${route.method.toLowerCase()}:${route.uri}`;
     }

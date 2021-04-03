@@ -148,6 +148,7 @@ class PluginsManager {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     checkDirectories() {
         //
         // Checking given directory paths.
@@ -171,6 +172,7 @@ class PluginsManager {
             }
         }
     }
+    /* istanbul ignore next */
     cleanOptions() {
         let defaultOptions = {
             dist: false,
@@ -178,6 +180,7 @@ class PluginsManager {
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
+    /* istanbul ignore next */
     loadItemPaths() {
         if (!this._lastError) {
             this._paths = [];

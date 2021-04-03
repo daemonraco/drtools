@@ -47,6 +47,7 @@ export class ExpressConnector {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected attachConfigsManager(manager: ConfigsManager): void {
         const options: any = manager.options();
 
@@ -55,6 +56,7 @@ export class ExpressConnector {
             this._expressApp.use(manager.publishExports(uri));
         }
     }
+    /* istanbul ignore next */
     protected attachWebUI(app: any, options: IExpressConnectorOptions): void {
         if (options.webUi && !this._uiAttached) {
             this._uiAttached = true;

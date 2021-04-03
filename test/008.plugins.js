@@ -1,12 +1,12 @@
 'use strict';
 
-// ---------------------------------------------------------------------------- //
-// Dependences.
+//
+// Dependencies.
 const assert = require('chai').assert;
 const fs = require('fs');
 const path = require('path');
 
-// ---------------------------------------------------------------------------- //
+//
 // Testing.
 describe(`[008] drtools: Plugins manager:`, () => {
     const checkPluginNames = manager => {

@@ -66,6 +66,7 @@ export class EndpointsManager implements IManagerByKey {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected cleanOptions(): void {
         let defaultOptions: IEndpointsManagerOptions = {
             directory: '',
@@ -75,6 +76,7 @@ export class EndpointsManager implements IManagerByKey {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
+    /* istanbul ignore next */
     protected load() {
         //
         // Checking given directory path.
@@ -102,12 +104,14 @@ export class EndpointsManager implements IManagerByKey {
 
         this._valid = !this._lastError;
     }
+    /* istanbul ignore next */
     protected provideInvalidKoaMiddleware(): KoaMiddleware {
         return async (ctx: any, next: () => void): Promise<void> => {
             console.error(chalk.red(`EndpointsManager Error: ${this._lastError}`));
             await next();
         }
     }
+    /* istanbul ignore next */
     protected provideInvalidMiddleware(): ExpressMiddleware {
         return (req: any, res: any, next: () => void) => {
             console.error(chalk.red(`EndpointsManager Error: ${this._lastError}`));

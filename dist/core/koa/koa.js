@@ -41,6 +41,7 @@ class KoaConnector {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     attachConfigsManager(manager) {
         const options = manager.options();
         if (manager.valid() && options.publishConfigs) {
@@ -48,6 +49,7 @@ class KoaConnector {
             this._koaApp.use(manager.publishExportsForKoa(uri));
         }
     }
+    /* istanbul ignore next */
     attachWebUI() {
         if (this._options.webUi && !this._uiAttached) {
             this._uiAttached = true;

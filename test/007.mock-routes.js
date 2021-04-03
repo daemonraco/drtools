@@ -1,7 +1,6 @@
 'use strict';
-
-// ---------------------------------------------------------------------------- //
-// Dependences.
+//
+// Dependencies.
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const fs = require('fs');
@@ -12,7 +11,7 @@ const port = process.env.PORT || 3005;
 
 chai.use(chaiHttp);
 
-// ---------------------------------------------------------------------------- //
+//
 // Testing.
 describe(`[007] drtools: Mock-up routes on the ExpressJS connector:`, () => {
     it(`requesting a route that returns a simple text`, done => {

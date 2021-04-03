@@ -46,6 +46,7 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected cleanOptions(): void {
         let defaultOptions: IRouteOptions = {
             suffix: RoutesConstants.Suffix,
@@ -55,6 +56,7 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
+    /* istanbul ignore next */
     protected loadAndAttach() {
         if (this._options.verbose) {
             const str: string = this._options.urlPrefix ? ` (prefix: '${this._options.urlPrefix}')` : '';

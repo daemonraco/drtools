@@ -75,25 +75,18 @@ loadingSteps.push(async () => {
     });
 });
 //
-// Steps loaders.
-const loadSteps = async () => {
-    const step = loadingSteps.shift();
-
-    if (step) {
+// Starting.
+(async () => {
+    for (const step of loadingSteps) {
         try {
             await step();
-            loadSteps();
         } catch (err) {
             console.error(chalk.red(err));
         }
-    } else {
-        //
-        // Starting server.
-        http.createServer(app).listen(port, () => {
-            console.log(`listening on port ${port}`);
-        });
     }
-};
-//
-// Loading...
-loadSteps();
+    //
+    // Starting server.
+    http.createServer(app).listen(port, () => {
+        console.log(`listening on port ${port}`);
+    });
+})();

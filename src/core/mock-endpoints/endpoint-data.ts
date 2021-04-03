@@ -76,6 +76,7 @@ export class EndpointData {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected expanded(out: any): any {
         const outType = typeof out;
 
@@ -105,6 +106,7 @@ export class EndpointData {
 
         return out;
     }
+    /* istanbul ignore next */
     protected fixOptions(): void {
         if (typeof this._options.globalBehaviors === 'string') {
             this._options.globalBehaviors = [this._options.globalBehaviors];
@@ -112,6 +114,7 @@ export class EndpointData {
             this._options.globalBehaviors = [];
         }
     }
+    /* istanbul ignore next */
     protected loadBehaviors(): void {
         const behaviorsPath: string = path.join(this._endpoint.directory(), `${this._uri}.js`);
 
@@ -126,6 +129,7 @@ export class EndpointData {
 
         this.loadGlobalBehaviors();
     }
+    /* istanbul ignore next */
     protected loadGlobalBehaviors(): void {
         (<string[]>this._options.globalBehaviors).forEach((globalBehaviorsPath: string): void => {
             try {
@@ -134,6 +138,7 @@ export class EndpointData {
             } catch (e) { }
         });
     }
+    /* istanbul ignore next */
     protected loadPaths(): void {
         const basicPath: string = path.join(this._endpoint.directory(), `${this._uri}.json`);
         const byMethodPattern: string = path.join(this._endpoint.directory(), `_METHODS/*/${this._uri}.json`);
@@ -164,6 +169,7 @@ export class EndpointData {
             };
         }
     }
+    /* istanbul ignore next */
     protected loadRaw(): void {
         Object.keys(this._brievesByMethod).forEach((method: string) => {
             this._raw[method] = fs.readFileSync(this._brievesByMethod[method].path).toString();

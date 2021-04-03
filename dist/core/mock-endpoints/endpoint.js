@@ -101,6 +101,7 @@ class Endpoint {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     fixConstructorParams() {
         //
         // Cleaning URI @{
@@ -125,6 +126,7 @@ class Endpoint {
             this._options.globalBehaviors = [];
         }
     }
+    /* istanbul ignore next */
     load() {
         if (!this._loaded) {
             this._loaded = true;
@@ -140,6 +142,7 @@ class Endpoint {
             }
         }
     }
+    /* istanbul ignore next */
     loadAllEndpoints() {
         const paths = libraries_1.glob.sync(libraries_1.path.join(this.directory(), '**/*.json'));
         const directoryLength = this.directory().length;
@@ -160,6 +163,7 @@ class Endpoint {
             this.loadEndpoint(u);
         });
     }
+    /* istanbul ignore next */
     loadEndpoint(endpoint) {
         if (typeof this._loadedEndpoints[endpoint] === 'undefined') {
             this._loadedEndpoints[endpoint] = new _1.EndpointData(this, endpoint, this._options);

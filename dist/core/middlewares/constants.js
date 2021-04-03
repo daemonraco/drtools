@@ -5,9 +5,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MiddlewaresConstants = void 0;
-class MiddlewaresConstants {
-    constructor() { }
-}
-exports.MiddlewaresConstants = MiddlewaresConstants;
-MiddlewaresConstants.GlobalConfigPointer = 'DRTOOLS_MIDDLEWARES_CONFIG_POINTER';
-MiddlewaresConstants.Suffix = 'middleware';
+var MiddlewaresConstants;
+(function (MiddlewaresConstants) {
+    MiddlewaresConstants["GlobalConfigPointer"] = "DRTOOLS_MIDDLEWARES_CONFIG_POINTER";
+    MiddlewaresConstants["Suffix"] = "middleware";
+})(MiddlewaresConstants = exports.MiddlewaresConstants || (exports.MiddlewaresConstants = {}));

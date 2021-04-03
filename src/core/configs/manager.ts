@@ -99,6 +99,7 @@ export class ConfigsManager implements IManagerByKey {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected cleanOptions(): void {
         let defaultOptions: IConfigOptions = {
             environmentVariable: false,
@@ -108,6 +109,7 @@ export class ConfigsManager implements IManagerByKey {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);
     }
+    /* istanbul ignore next */
     protected expandEnvVariablesIn(data: any): any {
         switch (typeof data) {
             case 'string':
@@ -131,6 +133,7 @@ export class ConfigsManager implements IManagerByKey {
 
         return data;
     }
+    /* istanbul ignore next */
     protected genericPublishExports(type: PublishExportsTypes, uri: string = ConfigsConstants.PublishUri): ExpressMiddleware | KoaMiddleware {
         //
         // Cleaning URI @{
@@ -213,6 +216,7 @@ export class ConfigsManager implements IManagerByKey {
 
         return middlewareResult;
     }
+    /* istanbul ignore next */
     protected load(): void {
         this._lastError = null;
         //
@@ -337,6 +341,7 @@ export class ConfigsManager implements IManagerByKey {
 
         this._valid = !this._lastError;
     }
+    /* istanbul ignore next */
     protected loadExportsOf(name: string): boolean {
         let hasExports: boolean = false;
 
@@ -371,6 +376,7 @@ export class ConfigsManager implements IManagerByKey {
 
         return hasExports;
     }
+    /* istanbul ignore next */
     protected loadSpecsOf(name: string): string {
         let specsPath: string = path.join(this._specsDirectory, `${name}.json`);
 
@@ -390,6 +396,7 @@ export class ConfigsManager implements IManagerByKey {
 
         return specsPath;
     }
+    /* istanbul ignore next */
     protected validateSpecsOf(name: string, specsPath: string): boolean {
         let valid: boolean = false;
 

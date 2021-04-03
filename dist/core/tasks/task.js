@@ -38,6 +38,7 @@ class Task {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     load() {
         throw `Subclass responsibility`;
     }

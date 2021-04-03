@@ -2,30 +2,27 @@
  * @file constants.ts
  * @author Alejandro D. Simi
  */
-export declare class DRCollectorConstants {
-    static readonly AsyncLoadingTimeout: number;
-    private constructor();
+export declare enum DRCollectorConstants {
+    AsyncLoadingTimeout = 10000
 }
-export declare class DRCollectorManagers {
-    static readonly Configs: string;
-    static readonly Endpoints: string;
-    static readonly Loader: string;
-    static readonly Middlewares: string;
-    static readonly MockRoutes: string;
-    static readonly Plugins: string;
-    static readonly Routes: string;
-    static readonly Tasks: string;
-    private constructor();
+export declare enum DRCollectorManagers {
+    Configs = "configs",
+    Endpoints = "endpoints",
+    Loader = "loaders",
+    Middlewares = "middlewares",
+    MockRoutes = "mock-routes",
+    Plugins = "plugins",
+    Routes = "routes",
+    Tasks = "tasks"
 }
-export declare class DRCollectorEvents {
-    static readonly ConfigsManagerRegistered: string;
-    static readonly EndpointsManagerRegistered: string;
-    static readonly LoadersManagerRegistered: string;
-    static readonly ManagerRegistered: string;
-    static readonly MiddlewaresManagerRegistered: string;
-    static readonly MockRoutesManagerRegistered: string;
-    static readonly PluginsManagerRegistered: string;
-    static readonly RoutesManagerRegistered: string;
-    static readonly TasksManagerRegistered: string;
-    private constructor();
+export declare enum DRCollectorEvents {
+    ConfigsManagerRegistered = "configs_manager_registered",
+    EndpointsManagerRegistered = "endpoints_manager_registered",
+    LoadersManagerRegistered = "loaders_manager_registered",
+    ManagerRegistered = "manager_registered",
+    MiddlewaresManagerRegistered = "middlewares_manager_registered",
+    MockRoutesManagerRegistered = "mock_routes_manager_registered",
+    PluginsManagerRegistered = "plugins_manager_registered",
+    RoutesManagerRegistered = "routes_manager_registered",
+    TasksManagerRegistered = "tasks_manager_registered"
 }

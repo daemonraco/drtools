@@ -33,6 +33,7 @@ class MiddlewaresManager extends includes_1.GenericManager {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     cleanOptions() {
         let defaultOptions = {
             suffix: _1.MiddlewaresConstants.Suffix,
@@ -40,6 +41,7 @@ class MiddlewaresManager extends includes_1.GenericManager {
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
+    /* istanbul ignore next */
     loadAndAttach() {
         if (this._options.verbose) {
             console.log(`Loading middlewares:`);

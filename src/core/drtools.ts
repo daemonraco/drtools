@@ -12,7 +12,7 @@ export * from './configs';
 // LoadersManager related exports.
 export * from './loaders';
 //
-// MiddlewaressManager related exports.
+// Middlewares Manager related exports.
 export * from './middlewares';
 //
 // RoutesManager related exports.
@@ -32,9 +32,6 @@ export * from './plugins';
 //
 // Hooks related exports.
 export * from './hooks';
-//
-// Promisify related exports.
-export * from './promisify';
 //
 // Exporting DRTools Collector singleton.
 export * from './drcollector';

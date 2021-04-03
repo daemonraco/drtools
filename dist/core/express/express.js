@@ -41,6 +41,7 @@ class ExpressConnector {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     attachConfigsManager(manager) {
         const options = manager.options();
         if (manager.valid() && options.publishConfigs) {
@@ -48,6 +49,7 @@ class ExpressConnector {
             this._expressApp.use(manager.publishExports(uri));
         }
     }
+    /* istanbul ignore next */
     attachWebUI(app, options) {
         if (options.webUi && !this._uiAttached) {
             this._uiAttached = true;

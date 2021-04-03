@@ -1,10 +1,10 @@
 {
-    "name": "config.specs",
+    "additionalProperties": false,
     "properties": {
         "guards": {
-            "type": "array",
+            "default": [],
             "items": {
-                "type": "object",
+                "additionalProperties": false,
                 "properties": {
                     "name": {
                         "type": "string"
@@ -13,29 +13,28 @@
                         "type": "string"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "path"
-                ]
+                ],
+                "type": "object"
             },
-            "default": []
+            "type": "array"
         },
         "routes": {
-            "type": "object",
+            "additionalProperties": false,
             "patternProperties": {
                 "^([a-z]+|\\*)$": {
-                    "type": "array",
                     "items": {
-                        "type": "object",
+                        "additionalProperties": false,
                         "properties": {
                             "guard": {
-                                "type": "string",
-                                "default": ""
+                                "default": "",
+                                "type": "string"
                             },
                             "guardName": {
-                                "type": "string",
-                                "default": ""
+                                "default": "",
+                                "type": "string"
                             },
                             "path": {
                                 "type": "string"
@@ -44,21 +43,22 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "guard",
                             "guardName",
                             "path",
                             "uri"
-                        ]
-                    }
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
                 }
             },
-            "additionalProperties": false
+            "type": "object"
         }
     },
-    "additionalProperties": false,
     "required": [
         "routes"
-    ]
+    ],
+    "type": "object"
 }

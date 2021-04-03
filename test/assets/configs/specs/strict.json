@@ -1,15 +1,15 @@
 {
-    "name": "strict",
     "properties": {
-        "aString": {
-            "type": "string"
-        },
         "aNumber": {
             "type": "integer"
+        },
+        "aString": {
+            "type": "string"
         }
     },
     "required": [
         "aString",
         "aNumber"
-    ]
+    ],
+    "type": "object"
 }

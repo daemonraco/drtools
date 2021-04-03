@@ -2,9 +2,8 @@
  * @file constants.ts
  * @author Alejandro D. Simi
  */
-export declare class ConfigsConstants {
-    static readonly PublishUri: string;
-    static readonly SpecsDirectory: string;
-    static readonly Suffix: string;
-    private constructor();
+export declare enum ConfigsConstants {
+    PublishUri = "/public-configs",
+    SpecsDirectory = "specs",
+    Suffix = "config"
 }

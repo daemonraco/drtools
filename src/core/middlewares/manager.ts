@@ -39,6 +39,7 @@ export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
     }
     //
     // Protected methods.
+    /* istanbul ignore next */
     protected cleanOptions(): void {
         let defaultOptions: IMiddlewareOptions = {
             suffix: MiddlewaresConstants.Suffix,
@@ -47,6 +48,7 @@ export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
     }
+    /* istanbul ignore next */
     protected loadAndAttach(): void {
         if (this._options.verbose) {
             console.log(`Loading middlewares:`);
