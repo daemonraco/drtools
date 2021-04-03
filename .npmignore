@@ -58,15 +58,20 @@ typings/
 .env
 
 # Internal
+/.codebeatignore
+/.codeclimate.yml
+/.editorconfig
+/.nyc_output
+/.nycrc.json
+/.tools
+/.travis.yml
+/.vscode
 /*.sh
 /*.tgz
 /*.txt
-/.codebeatignore
-/.codeclimate.yml
-/.tools
-/.travis.yml
-/web-ui/ui-ng
-/web-ui/tmp-*
+/coverage
 /src
 /test
 /tsconfig.json
+/web-ui/tmp-*
+/web-ui/ui-ng
