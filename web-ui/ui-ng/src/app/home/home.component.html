@@ -13,10 +13,7 @@
             <!-- <app-home-mock-routes id="mock-routes" [server]="serverUrl" [mockRoutes]="drtools.mockRoutes">
             </app-home-mock-routes> -->
             <!-- <app-home-tasks id="tasks" [server]="serverUrl" [tasks]="drtools.tasks"></app-home-tasks> -->
-            <!-- <app-home-mysql-rest id="mysqlRest" [server]="serverUrl" [mysqlRest]="drtools.mysqlRest">
-            </app-home-mysql-rest> -->
             <!-- <app-home-plugins id="plugins" [server]="serverUrl" [plugins]="drtools.plugins"></app-home-plugins> -->
-            <!-- <app-home-webtoapi id="webtoapi" [server]="serverUrl" [webtoapi]="drtools.webtoapi"></app-home-webtoapi> -->
         </div>
 
         <div class="col small">
@@ -57,19 +54,9 @@
                             <i class="fa fa-clock"></i> Tasks
                         </a>
                     </li>
-                    <li *ngIf="drtools.mysqlRest" class="nav-item">
-                        <a class="nav-link" href="#mysqlRest">
-                            <i class="fa fa-clock"></i> MySQL Rest
-                        </a>
-                    </li>
                     <li *ngIf="drtools.plugins" class="nav-item">
                         <a class="nav-link" href="#plugins">
                             <i class="fa fa-plug"></i> Plugins
-                        </a>
-                    </li>
-                    <li *ngIf="drtools.webtoapi" class="nav-item">
-                        <a class="nav-link" href="#webtoapi">
-                            <i class="fa fa-microchip"></i> Web to API
                         </a>
                     </li>
                 </ul>

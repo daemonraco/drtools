@@ -5,7 +5,6 @@ const port = process.env.PORT || 3005;
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
 const express = require('express');
-const fs = require('fs');
 const http = require('http');
 const path = require('path');
 //
@@ -20,7 +19,6 @@ const {
     RoutesManager,
     PluginsManager,
     TasksManager,
-    WebToApi
 } = require('../..');
 //
 // Creating an express application.
@@ -65,21 +63,11 @@ loadingSteps.push(async () => {
             globalBehaviors: path.join(__dirname, '../tmp/endpoints/.globals.js')
         }
     }, configs);
-
-    const webtoapi = new WebToApi(path.join(__dirname, '../tmp/webtoapi/config.json'));
-    app.use('/webtoapi', webtoapi.router());
 });
 // @}
 //
 // Defaults.
 loadingSteps.push(async () => {
-    app.get('/webtoapi-test/:title', (req, res) => {
-        const html = fs.readFileSync(path.join(__dirname, '../tmp/webtoapi/index.html'))
-            .toString()
-            .replace(/%TITLE%/g, req.params.title);
-        res.status(200).send(html);
-    });
-
     app.all('*', (req, res) => {
         res.status(404).json({
             message: `Path '${req.url}' was not found.`

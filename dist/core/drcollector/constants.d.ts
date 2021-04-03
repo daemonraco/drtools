@@ -12,11 +12,9 @@ export declare class DRCollectorManagers {
     static readonly Loader: string;
     static readonly Middlewares: string;
     static readonly MockRoutes: string;
-    static readonly MySQL: string;
     static readonly Plugins: string;
     static readonly Routes: string;
     static readonly Tasks: string;
-    static readonly WebToApi: string;
     private constructor();
 }
 export declare class DRCollectorEvents {
@@ -26,10 +24,8 @@ export declare class DRCollectorEvents {
     static readonly ManagerRegistered: string;
     static readonly MiddlewaresManagerRegistered: string;
     static readonly MockRoutesManagerRegistered: string;
-    static readonly MySQLRestManagerRegistered: string;
     static readonly PluginsManagerRegistered: string;
     static readonly RoutesManagerRegistered: string;
     static readonly TasksManagerRegistered: string;
-    static readonly WebToApiRegistered: string;
     private constructor();
 }

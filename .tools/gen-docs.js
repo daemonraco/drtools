@@ -107,22 +107,6 @@ const shell = require('shelljs');
             next();
         }
     });
-    piecesSteps.push({
-        name: 'generator-options:webtoapi',
-        function: (name, next) => {
-            const cmd = shell.exec(`node ${path.join(__dirname, '../dist/commands/generator/cmd.js')} webtoapi --help`, { silent: true });
-            pieces[name] = cleanCmdHelp(cmd.stdout);
-            next();
-        }
-    });
-    piecesSteps.push({
-        name: 'webtoapi:specs',
-        function: (name, next) => {
-            const { WebToApiConfigSpec } = require('../dist/core/webtoapi/spec.config.js');
-            pieces[name] = JSON.stringify(WebToApiConfigSpec, null, 4);
-            next();
-        }
-    });
 
     const steps = [];
     steps.push((mdPath, next) => {
@@ -145,12 +129,6 @@ const shell = require('shelljs');
     });
     steps.push((mdPath, next) => {
         inject({ mdPath, section: 'generator-options:tasks', data: pieces['generator-options:tasks'], isCode: true }, next);
-    });
-    steps.push((mdPath, next) => {
-        inject({ mdPath, section: 'generator-options:webtoapi', data: pieces['generator-options:webtoapi'], isCode: true }, next);
-    });
-    steps.push((mdPath, next) => {
-        inject({ mdPath, section: 'webtoapi:specs', data: pieces['webtoapi:specs'], isCode: true, codeType: 'json' }, next);
     });
     steps.push((mdPath, next) => {
         const readmeLines = fs.readFileSync(mdPath)

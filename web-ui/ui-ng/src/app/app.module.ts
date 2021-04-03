@@ -14,12 +14,10 @@ import { HomeComponent } from './home/home.component';
 import { LoadersComponent } from './home/loaders/loaders.component';
 import { MiddlewaresComponent } from './home/middlewares/middlewares.component';
 import { MockRoutesComponent } from './home/mock-routes/mock-routes.component';
-import { MysqlRestComponent } from './home/mysql-rest/mysql-rest.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { PluginsComponent } from './home/plugins/plugins.component';
 import { RoutesComponent } from './home/routes/routes.component';
 import { TasksComponent } from './home/tasks/tasks.component';
-import { WebtoapiComponent } from './home/webtoapi/webtoapi.component';
 
 import { BooleanPipe } from './pipes/boolean.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
@@ -38,12 +36,10 @@ import { MillisecondsPipe } from './pipes/milliseconds.pipe';
         MiddlewaresComponent,
         MillisecondsPipe,
         MockRoutesComponent,
-        MysqlRestComponent,
         NotFoundComponent,
         PluginsComponent,
         RoutesComponent,
         TasksComponent,
-        WebtoapiComponent,
     ],
     imports: [
         AppRoutingModule,

@@ -23,8 +23,6 @@ const pairs = [
     [path.join(__dirname, 'plugins/with-no-config'), path.join(__dirname, '../tmp/plugins/with-no-config')],
     [path.join(__dirname, 'routes'), path.join(__dirname, '../tmp/routes')],
     [path.join(__dirname, 'tasks'), path.join(__dirname, '../tmp/tasks')],
-    [path.join(__dirname, 'webtoapi'), path.join(__dirname, '../tmp/webtoapi')],
-    [path.join(__dirname, 'webtoapi/cache'), path.join(__dirname, '../tmp/webtoapi/cache')]
 ];
 
 pairs.forEach(pair => {

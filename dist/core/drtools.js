@@ -1,8 +1,4 @@
 "use strict";
-/**
- * @file drtools.ts
- * @author Alejandro D. Simi
- */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -15,6 +11,10 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KoaConnector = exports.ExpressConnector = void 0;
+/**
+ * @file drtools.ts
+ * @author Alejandro D. Simi
+ */
 //
 // Basic exports.
 __exportStar(require("./includes"), exports);
@@ -40,14 +40,8 @@ __exportStar(require("./mock-endpoints"), exports);
 // Mock-up routes related exports.
 __exportStar(require("./mock-routes"), exports);
 //
-// MySQL to RESTful tools.
-__exportStar(require("./mysql"), exports);
-//
 // PluginsManager related exports.
 __exportStar(require("./plugins"), exports);
-//
-// HTML Web to API related exports.
-__exportStar(require("./webtoapi"), exports);
 //
 // Hooks related exports.
 __exportStar(require("./hooks"), exports);

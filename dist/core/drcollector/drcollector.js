@@ -20,11 +20,9 @@ class DRCollectorClass {
         this._loadersManagers = [];
         this._middlewaresManager = [];
         this._mockRoutesManager = [];
-        this._mySQLRestManager = [];
         this._pluginsManager = [];
         this._routesManager = [];
         this._tasksManager = [];
-        this._webToApiManagers = [];
         //
         // Events.
         this._events = new libraries_1.EventEmitter();
@@ -51,11 +49,9 @@ class DRCollectorClass {
                 loaders: this.infoReportLoadersManager(),
                 middlewares: this.infoReportMiddlewaresManager(),
                 mockRoutes: this.infoReportMockRoutesManager(),
-                mysqlRest: this.infoReportMySQLRestManager(),
                 plugins: this.infoReportPluginsManager(),
                 routes: this.infoReportRoutesManager(),
                 tasks: this.infoReportTasksManager(),
-                webtoapi: this.infoReportWebToApi()
             };
         }
         return includes_1.Tools.DeepCopy(this._infoReport);
@@ -77,9 +73,6 @@ class DRCollectorClass {
     }
     mockRoutesManagers() {
         return this._mockRoutesManager;
-    }
-    mySQLRestManagers() {
-        return this._mySQLRestManager;
     }
     on(event, listener) {
         this._events.on(event, listener);
@@ -147,17 +140,6 @@ class DRCollectorClass {
             this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
-    registerMySQLRestManager(manager) {
-        if (this._mySQLRestManager.indexOf(manager) < 0) {
-            this._mySQLRestManager.push(manager);
-            this._infoReport = null;
-            const eventData = {
-                mySQLRestManager: manager
-            };
-            this._events.emit(constants_1.DRCollectorEvents.MySQLRestManagerRegistered, eventData);
-            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
-        }
-    }
     registerPluginsManager(manager) {
         if (this._pluginsManager.indexOf(manager) < 0) {
             this._pluginsManager.push(manager);
@@ -194,17 +176,6 @@ class DRCollectorClass {
             this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
-    registerWebToApiManager(manager) {
-        if (this._webToApiManagers.indexOf(manager) < 0) {
-            this._webToApiManagers.push(manager);
-            this._infoReport = null;
-            const eventData = {
-                webToApi: manager
-            };
-            this._events.emit(constants_1.DRCollectorEvents.WebToApiRegistered, eventData);
-            this._events.emit(constants_1.DRCollectorEvents.ManagerRegistered, eventData);
-        }
-    }
     routesManager(key) {
         return this.findManager(this.routesManagers(), key);
     }
@@ -216,12 +187,6 @@ class DRCollectorClass {
     }
     tasksManagers() {
         return this._tasksManager;
-    }
-    webToApiManager(key) {
-        return this.findManager(this.webToApiManagers(), key);
-    }
-    webToApiManagers() {
-        return this._webToApiManagers;
     }
     //
     // Protected methods.
@@ -295,13 +260,6 @@ class DRCollectorClass {
         }
         return results.length > 0 ? results : null;
     }
-    infoReportMySQLRestManager() {
-        const results = [];
-        for (const manager of this._mySQLRestManager) {
-            results.push(manager.config());
-        }
-        return results.length > 0 ? results : null;
-    }
     infoReportPluginsManager() {
         const results = [];
         for (const manager of this._pluginsManager) {
@@ -345,24 +303,6 @@ class DRCollectorClass {
                 directory: manager.directory(),
                 items: manager.tasks(),
                 suffix: manager.suffix()
-            });
-        }
-        return results.length > 0 ? results : null;
-    }
-    infoReportWebToApi() {
-        const results = [];
-        for (const manager of this._webToApiManagers) {
-            results.push({
-                name: manager.name(),
-                description: manager.description(),
-                configPath: manager.configPath(),
-                endpoints: manager.endpoints(),
-                cachePath: manager.cachePath(),
-                cacheLifetime: manager.cacheLifetime(),
-                relativePath: manager.relativePath(),
-                parsers: manager.parsers(),
-                customParsers: manager.customParsers(),
-                routes: manager.routes()
             });
         }
         return results.length > 0 ? results : null;

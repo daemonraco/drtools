@@ -39,7 +39,6 @@ Commands:
   plugin|p [options] <name> <directory>      generates a plugin directory with an initial structure.
   route|r [options] <name> <directory>       generates a route with an initial structure.
   task|t [options] <name> <directory>        generates a task with an initial structure.
-  webtoapi|wa [options] <type> <name>        generates assets for HTML Web to API configuration asset.
 ```
 <!-- /AUTO -->
 
@@ -139,32 +138,6 @@ Options:
   --test-run               does almost everything except actually generate
                            files.
   -h, --help               display help for command
-```
-<!-- /AUTO -->
-
-## HTML Web to API
-### Command options
-<!-- AUTO:generator-options:webtoapi -->
-```
-DRTools Generator (v0.13.0):
-Usage: cmd webtoapi|wa [options] <type> <name>
-
-generates assets for HTML Web to API configuration asset.
-
-Options:
-  -f, --force              in case the destination file exists, this option
-                           forces its replacement.
-  -c, --cache [directory]  directrory where downloads cache is stored.
-  --test-run               does almost everything except actually generate
-                           files.
-  -h, --help               display help for command
-
-  Types:
-
-    'config'    main configuration.
-    'parser'    field parser script.
-    'post'      post-processor script.
-    'pre'       pre-processor script.
 ```
 <!-- /AUTO -->
 

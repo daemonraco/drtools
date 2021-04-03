@@ -13,11 +13,9 @@ import { IAsyncManager, IManagerByKey } from './types';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
 import { MockRoutesManager } from '../mock-routes';
-import { MySQLRestManager } from '../mysql';
 import { PluginsManager, IPluginSpecsList } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
-import { WebToApi } from '../webtoapi';
 
 class DRCollectorClass {
     //
@@ -31,11 +29,9 @@ class DRCollectorClass {
     protected _loadersManagers: BasicList<LoadersManager> = [];
     protected _middlewaresManager: BasicList<MiddlewaresManager> = [];
     protected _mockRoutesManager: BasicList<MockRoutesManager> = [];
-    protected _mySQLRestManager: BasicList<MySQLRestManager> = [];
     protected _pluginsManager: BasicList<PluginsManager> = [];
     protected _routesManager: BasicList<RoutesManager> = [];
     protected _tasksManager: BasicList<TasksManager> = [];
-    protected _webToApiManagers: BasicList<WebToApi> = [];
     //
     // Events.
     protected _events: EventEmitter = new EventEmitter();
@@ -65,11 +61,9 @@ class DRCollectorClass {
                 loaders: this.infoReportLoadersManager(),
                 middlewares: this.infoReportMiddlewaresManager(),
                 mockRoutes: this.infoReportMockRoutesManager(),
-                mysqlRest: this.infoReportMySQLRestManager(),
                 plugins: this.infoReportPluginsManager(),
                 routes: this.infoReportRoutesManager(),
                 tasks: this.infoReportTasksManager(),
-                webtoapi: this.infoReportWebToApi()
             };
         }
 
@@ -92,9 +86,6 @@ class DRCollectorClass {
     }
     public mockRoutesManagers(): BasicList<MockRoutesManager> {
         return this._mockRoutesManager;
-    }
-    public mySQLRestManagers(): BasicList<MySQLRestManager> {
-        return this._mySQLRestManager;
     }
     public on(event: string, listener: any): void {
         this._events.on(event, listener);
@@ -169,18 +160,6 @@ class DRCollectorClass {
             this._events.emit(DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
-    public registerMySQLRestManager(manager: MySQLRestManager): void {
-        if (this._mySQLRestManager.indexOf(manager) < 0) {
-            this._mySQLRestManager.push(manager);
-            this._infoReport = null;
-
-            const eventData: any = {
-                mySQLRestManager: manager
-            };
-            this._events.emit(DRCollectorEvents.MySQLRestManagerRegistered, eventData);
-            this._events.emit(DRCollectorEvents.ManagerRegistered, eventData);
-        }
-    }
     public registerPluginsManager(manager: PluginsManager): void {
         if (this._pluginsManager.indexOf(manager) < 0) {
             this._pluginsManager.push(manager);
@@ -223,18 +202,6 @@ class DRCollectorClass {
             this._events.emit(DRCollectorEvents.ManagerRegistered, eventData);
         }
     }
-    public registerWebToApiManager(manager: WebToApi): void {
-        if (this._webToApiManagers.indexOf(manager) < 0) {
-            this._webToApiManagers.push(manager);
-            this._infoReport = null;
-
-            const eventData: any = {
-                webToApi: manager
-            };
-            this._events.emit(DRCollectorEvents.WebToApiRegistered, eventData);
-            this._events.emit(DRCollectorEvents.ManagerRegistered, eventData);
-        }
-    }
     public routesManager(key: string): RoutesManager {
         return <RoutesManager>this.findManager(this.routesManagers(), key);
     }
@@ -246,12 +213,6 @@ class DRCollectorClass {
     }
     public tasksManagers(): BasicList<TasksManager> {
         return this._tasksManager;
-    }
-    public webToApiManager(key: string): WebToApi {
-        return <WebToApi>this.findManager(this.webToApiManagers(), key);
-    }
-    public webToApiManagers(): BasicList<WebToApi> {
-        return this._webToApiManagers;
     }
     //
     // Protected methods.
@@ -337,15 +298,6 @@ class DRCollectorClass {
 
         return results.length > 0 ? results : null;
     }
-    protected infoReportMySQLRestManager(): BasicList<any> {
-        const results: BasicList<any> = [];
-
-        for (const manager of this._mySQLRestManager) {
-            results.push(manager.config());
-        }
-
-        return results.length > 0 ? results : null;
-    }
     protected infoReportPluginsManager(): BasicList<any> {
         const results: BasicList<any> = [];
 
@@ -397,26 +349,6 @@ class DRCollectorClass {
                 directory: manager.directory(),
                 items: manager.tasks(),
                 suffix: manager.suffix()
-            });
-        }
-
-        return results.length > 0 ? results : null;
-    }
-    protected infoReportWebToApi(): BasicList<any> {
-        const results: BasicList<any> = [];
-
-        for (const manager of this._webToApiManagers) {
-            results.push({
-                name: manager.name(),
-                description: manager.description(),
-                configPath: manager.configPath(),
-                endpoints: manager.endpoints(),
-                cachePath: manager.cachePath(),
-                cacheLifetime: manager.cacheLifetime(),
-                relativePath: manager.relativePath(),
-                parsers: manager.parsers(),
-                customParsers: manager.customParsers(),
-                routes: manager.routes()
             });
         }
 
