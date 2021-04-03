@@ -1,7 +1,7 @@
 @import "../node_modules/bootswatch/dist/united/bootstrap.min.css";
 
-html,
-body {
-    margin: 0px;
-    padding: 0px;
+app-home {
+    .collapse {
+        overflow-x: auto;
+    }
 }

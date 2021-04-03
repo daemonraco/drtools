@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-home-routes',
@@ -7,7 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class RoutesComponent implements OnInit {
     //
     // Properties.
-
+    @Input() public routes: any = null;
+    public readonly icons = Icons;
     //
     // Construction.
     constructor() {
@@ -18,4 +20,5 @@ export class RoutesComponent implements OnInit {
     }
     //
     // Protected methods.
+
 }

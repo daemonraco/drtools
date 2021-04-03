@@ -1,1 +1,119 @@
-<p>plugins works!</p>
+<div *ngIf="plugins">
+    <hr />
+
+    <div class="row">
+        <h4 class="col">
+            <fa-icon [icon]="icons.faPlug"></fa-icon>
+            Plugins:
+        </h4>
+    </div>
+
+    <div class="accordion">
+        <div *ngFor="let conf of plugins; let i = index" class="card">
+            <div class="card-header" style="cursor:pointer;" data-toggle="collapse"
+                [attr.data-target]="'#plugins_collapse_' + i">
+                <fa-icon [icon]="icons.faPlug" class="text-info"></fa-icon>
+                {{conf.directory}}
+            </div>
+
+            <div [id]="'plugins_collapse_' + i" class="collapse">
+                <div class="card-body p-2">
+                    <div class="row">
+                        <ul class="list-unstyled col small">
+                            <li>
+                                <strong>Directory</strong>:
+                                <code>{{conf.directory}}</code>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-striped table-bordered table-sm">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th colspan="6" scope="col">Plugins:</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col" class="text-center">
+                                            <fa-icon [icon]="icons.faPlug" class="text-info"></fa-icon>
+                                        </th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Path</th>
+                                        <th scope="col">Config Name</th>
+                                        <th scope="col">Methods</th>
+                                        <th scope="col" class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let plugin of conf.plugins">
+                                        <td class="text-center">
+                                            <fa-icon [icon]="icons.faPlug" class="text-info"></fa-icon>
+                                        </td>
+                                        <td>{{plugin.name}}</td>
+                                        <td>
+                                            <code>{{plugin.path}}</code>
+                                        </td>
+                                        <td>
+                                            <code>{{plugin.configName}}</code>
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                <li *ngFor="let method of plugin.methods">
+                                                    <code>{{method}}</code>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    [disabled]="plugin.config === null" (click)="displayConfig(plugin)"
+                                                    title="Display config">
+                                                    <fa-icon [icon]="icons.faEye"></fa-icon>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="PluginConfigModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalTitle">
+                        <fa-icon [icon]="icons.faPlug"></fa-icon>
+                        {{displayData.name}}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-2">
+                    <ul class="list-unstyled">
+                        <li>
+                            <strong>Config</strong>:
+                            <code>{{displayData.configName}}</code>
+                        </li>
+                    </ul>
+                    <pre class="border rounded text-info p-2"><code>{{displayData.contents}}</code></pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">
+                        <fa-icon [icon]="icons.faTimes"></fa-icon>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

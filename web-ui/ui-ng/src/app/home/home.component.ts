@@ -20,10 +20,10 @@ export class HomeComponent implements OnInit {
     //
     // Public methods.
     public expandAll(): void {
-        $('ui-home .collapse').collapse('show');
+        $('app-home .collapse').collapse('show');
     }
     public hideAll(): void {
-        $('ui-home .collapse').collapse('hide');
+        $('app-home .collapse').collapse('hide');
     }
     public async ngOnInit(): Promise<void> {
         this.drtools = await this.drtSrv.info();

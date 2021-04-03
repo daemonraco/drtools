@@ -1,8 +1,9 @@
 {
     "name": "ui-ng",
     "version": "0.0.0",
+    "license": "MIT",
     "scripts": {
-        "build": "ng build",
+        "build": "ng  build --prod --output-path ../ui/.drtools --base-href '/.drtools/'",
         "ng": "ng",
         "postinstall": "ngcc",
         "start": "ng serve --proxy-config proxy.json",

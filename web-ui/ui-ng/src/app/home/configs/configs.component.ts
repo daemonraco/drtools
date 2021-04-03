@@ -1,6 +1,6 @@
-import * as Icons from '@fortawesome/free-solid-svg-icons';
 import { Component, Input, OnInit } from '@angular/core';
 import { DRToolsService } from 'src/app/services';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 
 declare var $: any;
 

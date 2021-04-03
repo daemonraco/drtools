@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-home-loaders',
@@ -7,7 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class LoadersComponent implements OnInit {
     //
     // Properties.
-
+    @Input() public loaders: any = null;
+    public readonly icons = Icons;
     //
     // Construction.
     constructor() {

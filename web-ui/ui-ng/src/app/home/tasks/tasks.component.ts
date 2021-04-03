@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-home-tasks',
@@ -7,7 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class TasksComponent implements OnInit {
     //
     // Properties.
-
+    @Input() public tasks: any = null;
+    public readonly icons = Icons;
     //
     // Construction.
     constructor() {
@@ -18,4 +20,5 @@ export class TasksComponent implements OnInit {
     }
     //
     // Protected methods.
+
 }
