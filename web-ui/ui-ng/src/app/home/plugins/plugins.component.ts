@@ -7,7 +7,7 @@ declare var $: any;
     selector: 'app-home-plugins',
     templateUrl: './plugins.component.html',
 })
-export class PluginsComponent implements OnInit {
+export class HomePluginsComponent implements OnInit {
     //
     // Properties.
     @Input() public plugins: any = null;

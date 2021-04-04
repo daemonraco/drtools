@@ -1,19 +1,7 @@
-__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
+!>__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
 VERSION 0.7.0</span>__
 
 # DRTools: Configs
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [How to invoke it](#how-to-invoke-it)
-- [Retriving one](#retriving-one)
-- [JS instead of JSON](#js-instead-of-json)
-- [Environments](#environments)
-    - [Environment variables](#environment-variables)
-- [Options](#options)
-
-<!-- /TOC -->
 
 ## How to invoke it
 Considering that you have a directory where you store all your configuration files
@@ -117,6 +105,3 @@ When you create a new manager you may pass these options:
 |-----------|:---------:|:--------:|----------------------------------------------------------------|
 | `suffix`  |  `string` | `config` | Suffix to be expected on each configuration file to be loaded. |
 | `verbose` | `boolean` |  `true`  | Whether to display loading log information or not.             |
-
-----
-[Back to README](../README.md)

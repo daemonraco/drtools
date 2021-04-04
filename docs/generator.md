@@ -1,24 +1,4 @@
 # DRTools: Server
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [What is it?](#what-is-it)
-- [Command options](#command-options)
-- [Mock-up routes generator](#mock-up-routes-generator)
-    - [Command options](#command-options-1)
-- [Middlewares generator](#middlewares-generator)
-    - [Command options](#command-options-2)
-- [Plugins generator](#plugins-generator)
-    - [Command options](#command-options-3)
-- [Routes generator](#routes-generator)
-    - [Command options](#command-options-4)
-- [Tasks generator](#tasks-generator)
-    - [Command options](#command-options-5)
-- [HTML Web to API](#html-web-to-api)
-    - [Command options](#command-options-6)
-
-<!-- /TOC -->
 
 ## What is it?
 DRTools provides a simple tools that generates assets with some basic structure.
@@ -140,6 +120,3 @@ Options:
   -h, --help               display help for command
 ```
 <!-- /AUTO -->
-
-----
-[Back to README](../README.md)

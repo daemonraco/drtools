@@ -1,19 +1,8 @@
 # DRTools: Loaders
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [What is a loader?](#what-is-a-loader)
-- [How to invoke it](#how-to-invoke-it)
-    - [How does it look](#how-does-it-look)
-    - [Async loader](#async-loader)
-- [Options](#options)
-
-<!-- /TOC -->
 
 ## What is a loader?
 Loaders are JavaScript files that have to be _required_ and executed at certain
-point in a script, normally at the begining.
+point in a script, normally at the beginning.
 
 ## How to invoke it
 Considering that you have a directory where you store all your scripts files
@@ -70,6 +59,3 @@ argument:
 |-----------|:---------:|:--------:|---------------------------------------------------------|
 | `suffix`  |  `string` | `loader` | Suffix to be expected on each loader file to be loaded. |
 | `verbose` | `boolean` |  `true`  | Whether to display loading log information or not.      |
-
-----
-[Back to README](../README.md)

@@ -5,7 +5,7 @@ import * as Icons from '@fortawesome/free-solid-svg-icons';
     selector: 'app-home-endpoints',
     templateUrl: './endpoints.component.html',
 })
-export class EndpointsComponent implements OnInit {
+export class HomeEndpointsComponent implements OnInit {
     //
     // Properties.
     @Input() public endpoints: any = null;

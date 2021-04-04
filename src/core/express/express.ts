@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import { express, path } from '../../libraries';
+import { express, fs, path } from '../../libraries';
 
 import { ConfigsConstants, ConfigsManager } from '../configs';
 import { DRCollector, DRCollectorEvents } from '../drcollector';
@@ -66,7 +66,6 @@ export class ExpressConnector {
             app.all('*', (req: any, res: any, next: () => void) => {
                 if (req.originalUrl.match(/^\/\.drtools/)) {
                     if (req._parsedUrl.pathname === '/.drtools.json') {
-                        let response: ExpressResponseBuilder
                         let result: any = null;
 
                         if (req.query.config && req.query.manager) {
@@ -80,6 +79,16 @@ export class ExpressConnector {
                         }
 
                         res.status(200).json(result);
+                    } else if (req._parsedUrl.pathname.match(/^\/\.drtools-docs/)) {
+                        const basePath: string = path.join(__dirname, '../../../docs');
+                        const match: RegExpMatchArray | null = req._parsedUrl.pathname.match(/^\/\.drtools-docs\/(.*)$/);
+                        const subPath: string = match ? match[1] : '';
+                        const fullPath: string = path.join(basePath, subPath);
+                        const valid: boolean = fullPath.indexOf(basePath) === 0;
+
+                        res.sendFile(valid && subPath && fs.existsSync(fullPath)
+                            ? fullPath
+                            : path.join(__dirname, '../../../docs/index.html'));
                     } else {
                         res.sendFile(path.join(__dirname, '../../../web-ui/ui/.drtools/index.html'));
                     }

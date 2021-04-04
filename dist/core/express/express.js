@@ -57,7 +57,6 @@ class ExpressConnector {
             app.all('*', (req, res, next) => {
                 if (req.originalUrl.match(/^\/\.drtools/)) {
                     if (req._parsedUrl.pathname === '/.drtools.json') {
-                        let response;
                         let result = null;
                         if (req.query.config && req.query.manager) {
                             result = _1.ExpressResponseBuilder.ConfigContents(req.query.manager, req.query.config);
@@ -72,6 +71,16 @@ class ExpressConnector {
                             result = _1.ExpressResponseBuilder.FullInfoResponse();
                         }
                         res.status(200).json(result);
+                    }
+                    else if (req._parsedUrl.pathname.match(/^\/\.drtools-docs/)) {
+                        const basePath = libraries_1.path.join(__dirname, '../../../docs');
+                        const match = req._parsedUrl.pathname.match(/^\/\.drtools-docs\/(.*)$/);
+                        const subPath = match ? match[1] : '';
+                        const fullPath = libraries_1.path.join(basePath, subPath);
+                        const valid = fullPath.indexOf(basePath) === 0;
+                        res.sendFile(valid && subPath && libraries_1.fs.existsSync(fullPath)
+                            ? fullPath
+                            : libraries_1.path.join(__dirname, '../../../docs/index.html'));
                     }
                     else {
                         res.sendFile(libraries_1.path.join(__dirname, '../../../web-ui/ui/.drtools/index.html'));

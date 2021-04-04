@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 
-import { koaStatic, path, url } from '../../libraries';
+import { fs, koaStatic, path, url } from '../../libraries';
 
 import { ConfigsConstants, ConfigsManager } from '../configs';
 import { DRCollector, DRCollectorEvents } from '../drcollector';
@@ -82,6 +82,16 @@ export class KoaConnector {
                         }
 
                         ctx.body = result;
+                    } else if (parsedUrl.pathname.match(/^\/\.drtools-docs/)) {
+                        const basePath: string = path.join(__dirname, '../../../docs');
+                        const match: RegExpMatchArray | null = parsedUrl.pathname.match(/^\/\.drtools-docs\/(.*)$/);
+                        const subPath: string = match ? match[1] : '';
+                        const fullPath: string = path.join(basePath, subPath);
+                        const valid: boolean = fullPath.indexOf(basePath) === 0;
+
+                        ctx.body = await fs.readFile(valid && subPath && fs.existsSync(fullPath)
+                            ? fullPath
+                            : path.join(__dirname, '../../../docs/index.html')).toString();
                     }
                 } else {
                     await next();

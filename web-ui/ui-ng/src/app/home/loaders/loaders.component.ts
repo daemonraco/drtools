@@ -5,7 +5,7 @@ import * as Icons from '@fortawesome/free-solid-svg-icons';
     selector: 'app-home-loaders',
     templateUrl: './loaders.component.html',
 })
-export class LoadersComponent implements OnInit {
+export class HomeLoadersComponent implements OnInit {
     //
     // Properties.
     @Input() public loaders: any = null;

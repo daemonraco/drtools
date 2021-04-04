@@ -1,16 +1,4 @@
 # DRTools: Plugins
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [What is a plugin?](#what-is-a-plugin)
-- [How to invoke it](#how-to-invoke-it)
-- [Simple plugin](#simple-plugin)
-- [Simpler plugin](#simpler-plugin)
-- [With config](#with-config)
-- [Options](#options)
-
-<!-- /TOC -->
 
 ## What is a plugin?
 A plugin is a collection of logics, in the case of _DRTools_ it's a directories
@@ -95,6 +83,3 @@ argument:
 | Option    |    Type   | Default | Description                                        |
 |-----------|:---------:|:-------:|----------------------------------------------------|
 | `verbose` | `boolean` |  `true` | Whether to display loading log information or not. |
-
-----
-[Back to README](../README.md)

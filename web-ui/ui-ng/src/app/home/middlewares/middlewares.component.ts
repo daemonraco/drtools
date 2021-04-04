@@ -5,7 +5,7 @@ import * as Icons from '@fortawesome/free-solid-svg-icons';
     selector: 'app-home-middlewares',
     templateUrl: './middlewares.component.html',
 })
-export class MiddlewaresComponent implements OnInit {
+export class HomeMiddlewaresComponent implements OnInit {
     //
     // Properties.
     @Input() public middlewares: any = null;

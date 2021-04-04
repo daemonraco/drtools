@@ -73,6 +73,16 @@ class KoaConnector {
                         }
                         ctx.body = result;
                     }
+                    else if (parsedUrl.pathname.match(/^\/\.drtools-docs/)) {
+                        const basePath = libraries_1.path.join(__dirname, '../../../docs');
+                        const match = parsedUrl.pathname.match(/^\/\.drtools-docs\/(.*)$/);
+                        const subPath = match ? match[1] : '';
+                        const fullPath = libraries_1.path.join(basePath, subPath);
+                        const valid = fullPath.indexOf(basePath) === 0;
+                        ctx.body = await libraries_1.fs.readFile(valid && subPath && libraries_1.fs.existsSync(fullPath)
+                            ? fullPath
+                            : libraries_1.path.join(__dirname, '../../../docs/index.html')).toString();
+                    }
                 }
                 else {
                     await next();

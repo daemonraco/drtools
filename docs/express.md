@@ -1,18 +1,7 @@
-__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
+!>__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
 VERSION 0.4.0</span>__
 
 # DRTools: ExpressJS Tools
-
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [What does it do?](#what-does-it-do)
-- [How to invoke it](#how-to-invoke-it)
-- [Connector returned values](#connector-returned-values)
-- [Options](#options)
-
-<!-- /TOC -->
 
 ## What does it do?
 It provides a set of tools that can be automatically attached to a express server.
@@ -105,6 +94,3 @@ When you invoke `ExpressConnector.attach()` you may pass these options:
 | `endpoints`            | `EndpointsManagerOptions`, `EndpointsManagerOptions[]` |   `[]`  | Mock-up endpoints configuration                                                                                                                                    |
 | `verbose`              | `boolean`                                              |  `true` | Whether to display loading log information or not.                                                                                                                 |
 | `webUi`                | `boolean`                                              | `false` | Whether to load or not the DRTools information page at `/.drtools`.                                                                                                |
-
-----
-[Back to README](../README.md)

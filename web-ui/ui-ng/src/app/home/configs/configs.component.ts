@@ -8,7 +8,7 @@ declare var $: any;
     selector: 'app-home-configs',
     templateUrl: './configs.component.html',
 })
-export class ConfigsComponent implements OnInit {
+export class HomeConfigsComponent implements OnInit {
     //
     // Properties.
     @Input() public configs: any = null;

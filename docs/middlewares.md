@@ -1,15 +1,4 @@
 # DRTools: Middlewares
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [What is a middleware?](#what-is-a-middleware)
-- [How to invoke it](#how-to-invoke-it)
-    - [How does it look](#how-does-it-look)
-- [Options](#options)
-- [Koa.js](#koajs)
-
-<!-- /TOC -->
 
 ## What is a middleware?
 Well this is easy to explain, just visit [this
@@ -52,6 +41,3 @@ argument:
 
 ## Koa.js
 Yes there's support for [koa.js](https://koajs.com/) middlewares.
-
-----
-[Back to README](../README.md)

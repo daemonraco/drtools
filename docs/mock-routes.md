@@ -1,18 +1,4 @@
 # DRTools: Mock-up Routes
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [What are mock-up routes?](#what-are-mock-up-routes)
-- [How to invoke it](#how-to-invoke-it)
-    - [Configuration file](#configuration-file)
-    - [By method](#by-method)
-- [Guards](#guards)
-- [General guards](#general-guards)
-- [Default guard](#default-guard)
-- [Options](#options)
-
-<!-- /TOC -->
 
 ## What are mock-up routes?
 _Mock-up routes_ is a way to arbitrarily return certain file on a specific URI and
@@ -68,7 +54,7 @@ Something like this:
     ]
 }
 ```
-_Note:_ All this URIs will respond specified files on any request mehtod.
+_Note:_ All this URIs will respond specified files on any request method.
 
 ### By method
 If you want to respond all your files on any method, but `./simple-json.json` only
@@ -101,7 +87,7 @@ on `POST` method, you can a configuration like this one:
 ```
 
 ## Guards
-If a route requires some sort of prevalidation before it's returned, for example
+If a route requires some sort of pre-validation before it's returned, for example
 logged-in user privileges, you can create a simple validation module and then
 specify it on those routes that require it.
 
@@ -110,7 +96,7 @@ Let's also say we want to force a user to use the query parameter `guard` when
 requesting `/simple-json`.
 
 To achieve this we need to create a guard first.
-Firse we add file called `my-guard.js` inside `/path/to/stuff` with these
+First we add file called `my-guard.js` inside `/path/to/stuff` with these
 contents:
 ```js
 'use strict';
@@ -191,6 +177,3 @@ argument:
 | Option    |    Type   | Default | Description                                        |
 |-----------|:---------:|:-------:|----------------------------------------------------|
 | `verbose` | `boolean` |  `true` | Whether to display loading log information or not. |
-
-----
-[Back to README](../README.md)

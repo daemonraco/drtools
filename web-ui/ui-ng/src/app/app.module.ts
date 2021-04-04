@@ -7,17 +7,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { BasicsModule } from './basics';
 
 import { AppComponent } from './app.component';
-import { ConfigsComponent } from './home/configs/configs.component';
-import { DocsComponent } from './docs/docs.component';
-import { EndpointsComponent } from './home/endpoints/endpoints.component';
 import { HomeComponent } from './home/home.component';
-import { LoadersComponent } from './home/loaders/loaders.component';
-import { MiddlewaresComponent } from './home/middlewares/middlewares.component';
-import { MockRoutesComponent } from './home/mock-routes/mock-routes.component';
+import { HomeConfigsComponent } from './home/configs/configs.component';
+import { HomeEndpointsComponent } from './home/endpoints/endpoints.component';
+import { HomeLoadersComponent } from './home/loaders/loaders.component';
+import { HomeMiddlewaresComponent } from './home/middlewares/middlewares.component';
+import { HomeMockRoutesComponent } from './home/mock-routes/mock-routes.component';
+import { HomePluginsComponent } from './home/plugins/plugins.component';
+import { HomeRoutesComponent } from './home/routes/routes.component';
+import { HomeTasksComponent } from './home/tasks/tasks.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { PluginsComponent } from './home/plugins/plugins.component';
-import { RoutesComponent } from './home/routes/routes.component';
-import { TasksComponent } from './home/tasks/tasks.component';
 
 import { BooleanPipe } from './pipes/boolean.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
@@ -27,19 +26,18 @@ import { MillisecondsPipe } from './pipes/milliseconds.pipe';
     declarations: [
         AppComponent,
         BooleanPipe,
-        ConfigsComponent,
-        DocsComponent,
-        EndpointsComponent,
         HomeComponent,
+        HomeConfigsComponent,
+        HomeEndpointsComponent,
+        HomeLoadersComponent,
+        HomeMiddlewaresComponent,
+        HomeMockRoutesComponent,
+        HomePluginsComponent,
+        HomeRoutesComponent,
+        HomeTasksComponent,
         KeysPipe,
-        LoadersComponent,
-        MiddlewaresComponent,
         MillisecondsPipe,
-        MockRoutesComponent,
         NotFoundComponent,
-        PluginsComponent,
-        RoutesComponent,
-        TasksComponent,
     ],
     imports: [
         AppRoutingModule,

@@ -5,7 +5,7 @@ import * as Icons from '@fortawesome/free-solid-svg-icons';
     selector: 'app-home-mock-routes',
     templateUrl: './mock-routes.component.html',
 })
-export class MockRoutesComponent implements OnChanges, OnInit {
+export class HomeMockRoutesComponent implements OnChanges, OnInit {
     //
     // Properties.
     @Input() public mockRoutes: any = null;

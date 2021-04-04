@@ -4,4 +4,23 @@ app-home {
     .collapse {
         overflow-x: auto;
     }
+    table.table.table-sm.table-borderless.small {
+        td,
+        th {
+            padding: 0.1rem 0.3rem;
+        }
+    }
+}
+
+td.trim,
+th.trim {
+    width: 1px;
+}
+
+.overflow {
+    overflow-x: auto;
+}
+
+.nowrap {
+    white-space: nowrap;
 }

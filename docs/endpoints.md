@@ -1,24 +1,7 @@
 # DRTools: Endpoints
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [The idea](#the-idea)
-- [Example structure](#example-structure)
-- [Setting it up](#setting-it-up)
-- [Behaviors](#behaviors)
-- [Default behaviors](#default-behaviors)
-    - [randString](#randstring)
-    - [randNumber](#randnumber)
-    - [endpoint](#endpoint)
-- [Custom behaviors](#custom-behaviors)
-- [Global custom behaviors](#global-custom-behaviors)
-- [By method](#by-method)
-
-<!-- /TOC -->
 
 ## The idea
-This idea of this tools is to start developting something that makes use of an API
+This idea of this tools is to start developing something that makes use of an API
 endpoint before such endpoint is actually built.
 
 In a simple way, take a bunch of JSON files with the information you expect from
@@ -98,7 +81,7 @@ At this point you'll have these possible URLs:
 * `http://localhost:3000/api/v1.0/users`
 * `http://localhost:3000/api/v1.0/users/1`
 
-These URL will retrun the contents we showed before.
+These URL will return the contents we showed before.
 
 ## Behaviors
 _Behaviors_ are small functions that auto-complete fields in your mock data files.
@@ -130,8 +113,8 @@ Besides `lorem`, you have some more useful behaviors at your disposal.
 It provides a _string_ of random letter and it can be used in this way:
 ```json
 {
-    "string_with_10_charaters": "@@randString",
-    "string_with_30_charaters": "@@randString:30"
+    "string_with_10_characters": "@@randString",
+    "string_with_30_characters": "@@randString:30"
 }
 ```
 
@@ -231,6 +214,3 @@ requests, you can create the directory `/path/to/mock-ups/_METHODS/get` and move
 If you want a different answer for `POST` requests, you can create the directory
 `/path/to/mock-ups/_METHODS/post` and put another file called `books.json` with
 different contents.
-
-----
-[Back to README](../README.md)

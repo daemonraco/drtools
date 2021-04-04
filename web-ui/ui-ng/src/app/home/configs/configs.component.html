@@ -1,11 +1,11 @@
-<div *ngIf="configs">
+<ng-container *ngIf="configs">
     <hr />
 
     <div class="row">
-        <h4 class="col">
-            <fa-icon [icon]="icons.faCogs"></fa-icon>
-            Configs:
-        </h4>
+        <div class="col">
+            <fa-icon [icon]="icons.faCogs" class="float-right"></fa-icon>
+            <h4>Configs</h4>
+        </div>
     </div>
 
     <div class="accordion">
@@ -18,34 +18,39 @@
 
             <div [id]="'configs_collapse_' + i" class="collapse">
                 <div class="card-body p-2">
+
                     <div class="row">
-                        <ul class="list-unstyled col small">
-                            <li>
-                                <strong>Environment</strong>:
-                                <code>{{conf.environment}}</code>
-                            </li>
-                            <li>
-                                <strong>Directory</strong>:
-                                <code>{{conf.directory}}</code>
-                            </li>
-                            <li>
-                                <strong>Suffix</strong>:
-                                <code>.{{conf.suffix}}</code>
-                            </li>
-                            <li *ngIf="conf.publicUri">
-                                <strong>Public URI</strong>:
-                                <code>{{conf.publicUri}}</code>
-                            </li>
-                            <li *ngIf="conf.specsDirectory">
-                                <strong>Specs directory</strong>:
-                                <code>{{conf.specsDirectory}}</code>
-                            </li>
-                        </ul>
+                        <div class="col">
+                            <table class="table table-sm table-borderless small">
+                                <tbody>
+                                    <tr>
+                                        <th class="nowrap trim">Environment:</th>
+                                        <td><code>{{conf.environment}}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="nowrap trim">Directory:</th>
+                                        <td><code>{{conf.directory}}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="nowrap trim">Suffix:</th>
+                                        <td><code>.{{conf.suffix}}</code></td>
+                                    </tr>
+                                    <tr *ngIf="conf.publicUri">
+                                        <th class="nowrap trim">Public URI:</th>
+                                        <td><code>{{conf.publicUri}}</code></td>
+                                    </tr>
+                                    <tr *ngIf="conf.specsDirectory">
+                                        <th class="nowrap trim">Specs Directory:</th>
+                                        <td><code>.{{conf.specsDirectory}}</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <div class="row">
                         <div class="col">
-                            <table class="table table-striped table-bordered table-sm">
+                            <table class="table table-sm table-striped table-bordered small">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th colspan="6" scope="col">Configs:</th>
@@ -96,13 +101,14 @@
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row small">
         <p class="col my-0">
             <a href="/public-configs" target="_blank" class="float-right border-info">
                 <fa-icon [icon]="icons.faCogs" class="text-success"></fa-icon>
@@ -155,4 +161,4 @@
         </div>
     </div>
 
-</div>
+</ng-container>

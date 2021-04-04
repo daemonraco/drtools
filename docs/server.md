@@ -1,12 +1,4 @@
 # DRTools: Server
-## Contents
-<!-- TOC depthFrom:2 updateOnSave:true -->
-
-- [Contents](#contents)
-- [What is it?](#what-is-it)
-- [Command options](#command-options)
-
-<!-- /TOC -->
 
 ## What is it?
 DRTools provides a simple ExpressJS server that can be launched from command line.
@@ -47,6 +39,3 @@ Options:
   -h, --help                       display help for command
 ```
 <!-- /AUTO -->
-
-----
-[Back to README](../README.md)

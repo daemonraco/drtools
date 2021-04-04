@@ -5,7 +5,7 @@ import * as Icons from '@fortawesome/free-solid-svg-icons';
     selector: 'app-home-tasks',
     templateUrl: './tasks.component.html',
 })
-export class TasksComponent implements OnInit {
+export class HomeTasksComponent implements OnInit {
     //
     // Properties.
     @Input() public tasks: any = null;
