@@ -5,13 +5,12 @@ const path = require('path');
 
 const pairs = [
     [path.join(__dirname, 'configs'), path.join(__dirname, '../tmp/configs')],
-    [path.join(__dirname, 'configs/specs'), path.join(__dirname, '../tmp/configs/specs')],
     [path.join(__dirname, 'endpoints'), path.join(__dirname, '../tmp/endpoints')],
-    [path.join(__dirname, 'endpoints/roles'), path.join(__dirname, '../tmp/endpoints/roles')],
-    [path.join(__dirname, 'endpoints/users'), path.join(__dirname, '../tmp/endpoints/users')],
     [path.join(__dirname, 'endpoints/_METHODS'), path.join(__dirname, '../tmp/endpoints/_METHODS')],
     [path.join(__dirname, 'endpoints/_METHODS/get'), path.join(__dirname, '../tmp/endpoints/_METHODS/get')],
     [path.join(__dirname, 'endpoints/_METHODS/post'), path.join(__dirname, '../tmp/endpoints/_METHODS/post')],
+    [path.join(__dirname, 'endpoints/roles'), path.join(__dirname, '../tmp/endpoints/roles')],
+    [path.join(__dirname, 'endpoints/users'), path.join(__dirname, '../tmp/endpoints/users')],
     [path.join(__dirname, 'loaders'), path.join(__dirname, '../tmp/loaders')],
     [path.join(__dirname, 'middlewares'), path.join(__dirname, '../tmp/middlewares')],
     [path.join(__dirname, 'mock-routes'), path.join(__dirname, '../tmp/mock-routes')],
@@ -22,6 +21,8 @@ const pairs = [
     [path.join(__dirname, 'plugins/with-config'), path.join(__dirname, '../tmp/plugins/with-config')],
     [path.join(__dirname, 'plugins/with-no-config'), path.join(__dirname, '../tmp/plugins/with-no-config')],
     [path.join(__dirname, 'routes'), path.join(__dirname, '../tmp/routes')],
+    [path.join(__dirname, 'secondary-configs'), path.join(__dirname, '../tmp/secondary-configs')],
+    [path.join(__dirname, 'specs'), path.join(__dirname, '../tmp/specs')],
     [path.join(__dirname, 'tasks'), path.join(__dirname, '../tmp/tasks')],
 ];
 

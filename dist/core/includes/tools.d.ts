@@ -15,7 +15,7 @@ export interface IToolsCheckPathResult {
     path: string;
     stat: any;
 }
-export declare type TBlockRetryFuction = (params: {
+export declare type TBlockRetryFunction = (params: {
     [key: string]: any;
 }) => Promise<void>;
 export interface IBlockRetryOptions {
@@ -29,7 +29,7 @@ export declare class Tools {
     private static _IsBrowser;
     private static _IsNode;
     private constructor();
-    static BlockRetry(block: TBlockRetryFuction, options?: IBlockRetryOptions): Promise<void>;
+    static BlockRetry(block: TBlockRetryFunction, options?: IBlockRetryOptions): Promise<void>;
     static CheckDirectory(dirPath: string, relativeTo?: string): IToolsCheckPathResult;
     static CheckFile(filePath: string, relativeTo?: string): IToolsCheckPathResult;
     /**
@@ -61,5 +61,6 @@ export declare class Tools {
     static IsExpress(app: any): boolean;
     static IsKoa(app: any): boolean;
     static IsNode(): boolean;
+    static RandomKey(): string;
     protected static CheckPathByType(checker: string, filePath: string, relativeTo?: string): IToolsCheckPathResult;
 }

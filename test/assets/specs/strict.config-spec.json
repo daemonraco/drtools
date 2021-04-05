@@ -1,7 +1,7 @@
 {
     "properties": {
         "aNumber": {
-            "type": "integer"
+            "type": "number"
         },
         "aString": {
             "type": "string"

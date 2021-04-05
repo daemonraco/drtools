@@ -58,8 +58,8 @@ describe(`[002] drtools: Configs manager:`, () => {
 
         const dbConf = manager.get('db');
         assert.isObject(dbConf);
-        assert.strictEqual(dbConf.w, 0);
-        assert.strictEqual(dbConf.x, 11);
+        assert.strictEqual(dbConf.w, 555);
+        assert.strictEqual(dbConf.x, 666);
         assert.strictEqual(dbConf.y, 2);
         assert.strictEqual(dbConf.z, 3);
         assert.isObject(dbConf.$exports);
@@ -82,8 +82,8 @@ describe(`[002] drtools: Configs manager:`, () => {
 
         const dbConf = manager.get('db');
         assert.isObject(dbConf);
-        assert.strictEqual(dbConf.w, 0);
-        assert.strictEqual(dbConf.x, 11);
+        assert.strictEqual(dbConf.w, 555);
+        assert.strictEqual(dbConf.x, 666);
         assert.strictEqual(dbConf.y, 2);
         assert.strictEqual(dbConf.z, 3);
         assert.isObject(dbConf.$exports);

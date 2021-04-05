@@ -2,33 +2,36 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-import { ConfigItemSpec, ConfigsList, IConfigOptions, ConfigSpecsList } from '.';
+import { IConfigItem, IConfigOptions } from '.';
 import { IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
+import { BasicDictionary } from '../includes';
 import { KoaMiddleware } from '../koa';
+import { IConfigSpecItem } from './types';
 declare enum PublishExportsTypes {
     Express = "express",
     Koa = "koa"
 }
 export declare class ConfigsManager implements IManagerByKey {
-    protected _configs: ConfigsList;
-    protected _directory: string;
+    protected _directories: string[];
     protected _environmentName: string;
-    protected _items: ConfigItemSpec[];
-    protected _exports: ConfigsList;
+    protected _exports: BasicDictionary;
+    protected _items: BasicDictionary<IConfigItem>;
+    protected _key: string;
     protected _lastError: string;
     protected _options: IConfigOptions;
-    protected _specs: ConfigSpecsList;
-    protected _specsDirectory: string;
     protected _publicUri: string;
+    protected _specs: BasicDictionary<IConfigSpecItem>;
+    protected _specsDirectories: string[];
     protected _valid: boolean;
-    constructor(directory: string, options?: IConfigOptions);
-    directory(): string;
+    constructor(directory: string | string[], options?: IConfigOptions);
+    directories(): string[];
     environmentName(): string;
     get(name: string): any;
     getSpecs(name: string): any;
-    items(): ConfigItemSpec[];
+    items(): BasicDictionary<IConfigItem>;
     itemNames(): string[];
+    key(): string;
     lastError(): string;
     matchesKey(key: string): boolean;
     options(): IConfigOptions;
@@ -36,7 +39,9 @@ export declare class ConfigsManager implements IManagerByKey {
     publishExports(uri?: string): ExpressMiddleware;
     publishExportsForKoa(uri?: string): KoaMiddleware;
     publicUri(): string;
-    specsDirectory(): string;
+    specs(): BasicDictionary<IConfigSpecItem>;
+    specsDirectories(): string[];
+    specsSuffix(): string;
     suffix(): string;
     valid(): boolean;
     protected cleanOptions(): void;
@@ -45,6 +50,6 @@ export declare class ConfigsManager implements IManagerByKey {
     protected load(): void;
     protected loadExportsOf(name: string): boolean;
     protected loadSpecsOf(name: string): string;
-    protected validateSpecsOf(name: string, specsPath: string): boolean;
+    protected validateSpecsOf(name: string): boolean;
 }
 export {};

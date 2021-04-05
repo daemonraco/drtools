@@ -59,7 +59,7 @@ console.log(`Current date: ${func()}`);
 ## With config
 Let's say you have a configuration file called `plugin.example.config.json` with
 these contents:
-```json
+```js
 {
     "level": 9000
 }

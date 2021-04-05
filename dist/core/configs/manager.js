@@ -9,6 +9,7 @@ const libraries_1 = require("../../libraries");
 const _1 = require(".");
 const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
+const md5 = require("md5");
 var PublishExportsTypes;
 (function (PublishExportsTypes) {
     PublishExportsTypes["Express"] = "express";
@@ -22,49 +23,55 @@ class ConfigsManager {
     constructor(directory, options = {}) {
         //
         // Protected properties.
-        this._configs = {};
-        this._directory = null;
+        this._directories = [];
         this._environmentName = null;
-        this._items = [];
         this._exports = {};
+        this._items = {};
+        this._key = '';
         this._lastError = null;
         this._options = null;
-        this._specs = {};
-        this._specsDirectory = null;
         this._publicUri = null;
+        // protected _specItems: IConfigSpecItem[] = [];
+        this._specs = {};
+        this._specsDirectories = [];
         this._valid = false;
-        this._directory = directory;
-        this._specsDirectory = libraries_1.path.join(directory, _1.ConfigsConstants.SpecsDirectory);
         this._options = options;
         this.cleanOptions();
+        this._directories = Array.isArray(directory) ? directory : [directory];
+        this._specsDirectories = this._options.specs
+            ? Array.isArray(this._options.specs) ? this._options.specs : [this._options.specs]
+            : [];
         this.load();
         drcollector_1.DRCollector.registerConfigsManager(this);
     }
     //
     // Public methods.
-    directory() {
-        return this._directory;
+    directories() {
+        return this._directories;
     }
     environmentName() {
         return this._environmentName;
     }
     get(name) {
-        return this._configs[name] !== undefined ? this._configs[name] : {};
+        return this._items[name] !== undefined ? this._items[name].data : {};
     }
     getSpecs(name) {
-        return this._specs[name] !== undefined ? this._specs[name] : null;
+        return this._specs[name] !== undefined ? this._specs[name].specs : null;
     }
     items() {
         return this._items;
     }
     itemNames() {
-        return this._items.map((i) => i.name);
+        return Object.keys(this._items);
+    }
+    key() {
+        return this._key;
     }
     lastError() {
         return this._lastError;
     }
     matchesKey(key) {
-        return this.directory() === key;
+        return this._key === key;
     }
     options() {
         return includes_1.Tools.DeepCopy(this._options);
@@ -81,8 +88,14 @@ class ConfigsManager {
     publicUri() {
         return this._publicUri;
     }
-    specsDirectory() {
-        return this._specsDirectory;
+    specs() {
+        return this._specs;
+    }
+    specsDirectories() {
+        return this._specsDirectories;
+    }
+    specsSuffix() {
+        return this._options.specsSuffix;
     }
     suffix() {
         return this._options.suffix;
@@ -96,6 +109,9 @@ class ConfigsManager {
     cleanOptions() {
         let defaultOptions = {
             environmentVariable: false,
+            key: undefined,
+            specs: undefined,
+            specsSuffix: _1.ConfigsConstants.SpecsSuffix,
             suffix: _1.ConfigsConstants.Suffix,
             verbose: true,
         };
@@ -206,43 +222,50 @@ class ConfigsManager {
     load() {
         this._lastError = null;
         //
+        // Generating a unique key for this manager.
+        this._key = this._options.key ? this._options.key : md5(JSON.stringify(this._directories));
+        //
         // Loading environment names.
         this._environmentName = process.env.NODE_ENV || process.env.ENV_NAME || global.NODE_ENV || global.ENV_NAME || 'default';
-        if (this._options.verbose) {
-            console.log(`Loading configs (environment: ${libraries_1.chalk.green(this._environmentName)}):`);
-        }
         //
         // Checking given directory path.
-        if (!this._lastError) {
-            const check = includes_1.Tools.CheckDirectory(this._directory, process.cwd());
+        for (let i = 0; i < this._directories.length; i++) {
+            if (this._lastError) {
+                break;
+            }
+            const check = includes_1.Tools.CheckDirectory(this._directories[i], process.cwd());
             switch (check.status) {
                 case includes_1.ToolsCheckPath.Ok:
-                    this._directory = check.path;
+                    this._directories[i] = check.path;
                     break;
                 case includes_1.ToolsCheckPath.WrongType:
-                    this._lastError = `'${this._directory}' is not a directory.`;
+                    this._lastError = `'${this._directories[i]}' is not a directory.`;
                     console.error(libraries_1.chalk.red(this._lastError));
                     break;
                 default:
-                    this._lastError = `'${this._directory}' does not exist.`;
+                    this._lastError = `'${this._directories[i]}' does not exist.`;
                     console.error(libraries_1.chalk.red(this._lastError));
                     break;
             }
         }
         //
         // Checking specs directory.
-        if (!this._lastError) {
-            const check = includes_1.Tools.CheckDirectory(this._specsDirectory, process.cwd());
+        for (let i = 0; i < this._specsDirectories.length; i++) {
+            if (this._lastError) {
+                break;
+            }
+            const check = includes_1.Tools.CheckDirectory(this._specsDirectories[i], process.cwd());
             switch (check.status) {
                 case includes_1.ToolsCheckPath.Ok:
-                    this._specsDirectory = check.path;
+                    this._specsDirectories[i] = check.path;
                     break;
                 case includes_1.ToolsCheckPath.WrongType:
-                    this._lastError = `'${this._specsDirectory}' is not a directory.`;
+                    this._lastError = `'${this._specsDirectories[i]}' is not a directory.`;
                     console.error(libraries_1.chalk.red(this._lastError));
                     break;
                 default:
-                    this._specsDirectory = null;
+                    this._lastError = `'${this._specsDirectories[i]}' does not exist.`;
+                    console.error(libraries_1.chalk.red(this._lastError));
                     break;
             }
         }
@@ -250,72 +273,118 @@ class ConfigsManager {
             //
             // Basic patterns.
             const configPattern = new RegExp(`^(.*)\\.${this._options.suffix}\\.(json|js)$`);
+            const configSpecPattern = new RegExp(`^(.*)\\.${this._options.specsSuffix}\\.(json|js)$`);
             const envPattern = new RegExp(`^(.*)\\.${this._options.suffix}\\.${this._environmentName}\\.(json|js)$`);
             //
+            // Loading specs files.
+            this._specs = {};
+            for (const directory of this._specsDirectories) {
+                for (const p of libraries_1.fs.readdirSync(directory).filter((x) => x.match(configSpecPattern))) {
+                    const name = p.replace(configSpecPattern, '$1');
+                    this._specs[name] = {
+                        name,
+                        path: libraries_1.path.resolve(libraries_1.path.join(directory, p)),
+                        valid: false,
+                    };
+                }
+            }
+            //
             // Loading basic configuration files.
-            this._items = libraries_1.fs.readdirSync(this._directory)
-                .filter((x) => x.match(configPattern))
-                .map((x) => ({
-                name: x.replace(configPattern, '$1'),
-                path: libraries_1.path.resolve(libraries_1.path.join(this._directory, x))
-            }));
+            this._items = {};
+            for (const directory of this._directories) {
+                for (const p of libraries_1.fs.readdirSync(directory).filter((x) => x.match(configPattern))) {
+                    const name = p.replace(configPattern, '$1');
+                    this._items[name] = {
+                        name,
+                        path: libraries_1.path.resolve(libraries_1.path.join(directory, p)),
+                        data: null,
+                        valid: false,
+                    };
+                }
+            }
             //
-            // Loading evironment specific configuration files.
-            const envFiles = libraries_1.fs.readdirSync(this._directory)
-                .filter((x) => x.match(envPattern))
-                .map((x) => ({
-                name: x.replace(envPattern, '$1'),
-                path: libraries_1.path.resolve(libraries_1.path.join(this._directory, x))
-            }));
-            //
-            // Merging lists.
-            for (let i in this._items) {
-                for (let j in envFiles) {
-                    if (this._items[i].name === envFiles[j].name) {
-                        this._items[i].specific = envFiles[j];
-                        break;
+            // Loading environment specific configuration files.
+            for (const directory of this._directories) {
+                for (const x of libraries_1.fs.readdirSync(directory).filter((x) => x.match(envPattern))) {
+                    const name = x.replace(envPattern, '$1');
+                    if (this._items[name] !== undefined) {
+                        this._items[name].specific = {
+                            name,
+                            path: libraries_1.path.resolve(libraries_1.path.join(directory, x)),
+                        };
                     }
                 }
             }
         }
-        this._configs = {};
         this._exports = {};
         if (!this._lastError) {
-            for (const item of this._items) {
-                let valid = true;
-                let name = item.name;
+            //
+            // Loading specs.
+            if (this._options.verbose) {
+                console.log(`Loading config specs:`);
+            }
+            for (const name of Object.keys(this._specs)) {
+                this._specs[name].valid = true;
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${libraries_1.chalk.green(name)}'${item.specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`\t- '${libraries_1.chalk.green(name)}'`);
                     }
                     //
                     // Loading basic configuration.
-                    this._configs[name] = require(item.path);
-                    //
-                    // Merging with the environment specific configuration.
-                    if (item.specific) {
-                        this._configs[name] = includes_1.Tools.DeepMergeObjects(this._configs[name], require(item.specific.path));
+                    try {
+                        this._specs[name].specs = require(this._specs[name].path);
+                    }
+                    catch (e) {
+                        this._lastError = `'${this._specs[name].path}' is not valid specification file. ${e}`;
+                        console.error(libraries_1.chalk.red(this._lastError));
+                        this._specs[name].valid = false;
                     }
                     //
-                    // Does it have specs?
-                    this._configs[name].specsPath = null;
-                    if (this._specsDirectory) {
-                        this._configs[name].specsPath = this.loadSpecsOf(name);
-                        if (this._configs[name].specsPath !== null) {
-                            valid = this.validateSpecsOf(name, this._configs[name].specsPath);
-                        }
+                    // Creating a validator.
+                    try {
+                        const ajvObj = new libraries_1.ajv({ useDefaults: true });
+                        this._specs[name].validator = ajvObj.compile(this._specs[name].specs);
+                    }
+                    catch (e) {
+                        this._lastError = `Unable to compile '${this._specs[name].path}'. ${e}`;
+                        console.error(libraries_1.chalk.red(this._lastError));
+                        this._specs[name].valid = false;
+                    }
+                }
+                catch (err) {
+                    console.error(libraries_1.chalk.red(`Unable to load config '${name}'.`), err);
+                }
+            }
+            //
+            // Loading configurations.
+            if (this._options.verbose) {
+                console.log(`Loading configs (environment: ${libraries_1.chalk.green(this._environmentName)}):`);
+            }
+            for (const itemKey of Object.keys(this._items)) {
+                let name = this._items[itemKey].name;
+                try {
+                    if (this._options.verbose) {
+                        console.log(`\t- '${libraries_1.chalk.green(name)}'${this._items[itemKey].specific ? ` (has specific configuration)` : ''}`);
+                    }
+                    //
+                    // Loading basic configuration.
+                    this._items[itemKey].data = require(this._items[itemKey].path);
+                    //
+                    // Merging with the environment specific configuration.
+                    if (this._items[itemKey].specific) {
+                        this._items[itemKey].data = includes_1.Tools.DeepMergeObjects(this._items[itemKey].data, require(this._items[itemKey].specific.path));
                     }
                     //
                     // If there were no errors validating the config file, it can
                     // expose exports.
-                    if (valid) {
+                    if (this.validateSpecsOf(name)) {
                         if (this._options.environmentVariable) {
-                            this._configs[name] = this.expandEnvVariablesIn(this._configs[name]);
+                            this._items[itemKey].data = this.expandEnvVariablesIn(this._items[itemKey].data);
                         }
-                        this._configs[name].public = this.loadExportsOf(name);
+                        this._items[itemKey].public = this.loadExportsOf(name);
                     }
                     else {
-                        this._configs[name] = {};
+                        this._items[itemKey].valid = false;
                     }
                 }
                 catch (err) {
@@ -328,7 +397,7 @@ class ConfigsManager {
     /* istanbul ignore next */
     loadExportsOf(name) {
         let hasExports = false;
-        const config = this._configs[name];
+        const config = this._items[name].data;
         if (config.$exports !== undefined || config.$pathExports !== undefined) {
             this._exports[name] = {};
         }
@@ -356,49 +425,43 @@ class ConfigsManager {
     }
     /* istanbul ignore next */
     loadSpecsOf(name) {
-        let specsPath = libraries_1.path.join(this._specsDirectory, `${name}.json`);
-        const check = includes_1.Tools.CheckFile(specsPath);
-        switch (check.status) {
-            case includes_1.ToolsCheckPath.Ok:
-                specsPath = check.path;
-                break;
-            case includes_1.ToolsCheckPath.WrongType:
-                this._lastError = `'${specsPath}' is not a file.`;
-                console.error(libraries_1.chalk.red(this._lastError));
-                break;
-            default:
-                specsPath = null;
-                break;
+        let specsPath = null;
+        for (const specsDirectory of this._specsDirectories) {
+            const tmpSpecsPath = libraries_1.path.join(specsDirectory, `${name}.json`);
+            const check = includes_1.Tools.CheckFile(tmpSpecsPath);
+            switch (check.status) {
+                case includes_1.ToolsCheckPath.Ok:
+                    specsPath = check.path;
+                    break;
+                case includes_1.ToolsCheckPath.WrongType:
+                    this._lastError = `'${tmpSpecsPath}' is not a file.`;
+                    console.error(libraries_1.chalk.red(this._lastError));
+                    break;
+                default:
+                    specsPath = null;
+                    break;
+            }
         }
         return specsPath;
     }
     /* istanbul ignore next */
-    validateSpecsOf(name, specsPath) {
+    validateSpecsOf(name) {
         let valid = false;
-        this._specs[name] = null;
-        try {
-            this._specs[name] = require(specsPath);
-        }
-        catch (e) {
-            this._lastError = `'${this._directory}' is not valid specification file. ${e}`;
-            console.error(libraries_1.chalk.red(this._lastError));
-        }
-        //
-        // Creating a validator.
-        try {
-            const ajvObj = new libraries_1.ajv({
-                useDefaults: true
-            });
-            const validator = ajvObj.compile(this._specs[name]);
-            if (!validator(this._configs[name])) {
-                throw `'\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`;
+        if (this._specs[name] && this._specs[name].valid) {
+            try {
+                if (!this._specs[name].validator(this._items[name].data)) {
+                    throw `'\$${this._specs[name].validator.errors[0].dataPath}' ${this._specs[name].validator.errors[0].message}`;
+                }
+                else {
+                    valid = true;
+                }
             }
-            else {
-                valid = true;
+            catch (e) {
+                console.error(libraries_1.chalk.red(`Config '${name}' is not valid.\n\t${e}`));
             }
         }
-        catch (e) {
-            console.error(libraries_1.chalk.red(`Config '${name}' is not valid.\n\t${e}`));
+        else {
+            valid = true;
         }
         return valid;
     }

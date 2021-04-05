@@ -13,7 +13,7 @@
             <div class="card-header" style="cursor:pointer;" data-toggle="collapse"
                 [attr.data-target]="'#configs_collapse_' + i">
                 <fa-icon [icon]="icons.faCogs" class="text-info"></fa-icon>
-                {{conf.directory}}
+                {{conf.key}}
             </div>
 
             <div [id]="'configs_collapse_' + i" class="collapse">
@@ -28,8 +28,14 @@
                                         <td><code>{{conf.environment}}</code></td>
                                     </tr>
                                     <tr>
-                                        <th class="nowrap trim">Directory:</th>
-                                        <td><code>{{conf.directory}}</code></td>
+                                        <th class="nowrap trim">Directories:</th>
+                                        <td>
+                                            <ul class="m-0 py-0">
+                                                <li *ngFor="let directory of conf.directories">
+                                                    <code>{{directory}}</code>
+                                                </li>
+                                            </ul>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th class="nowrap trim">Suffix:</th>
@@ -39,9 +45,19 @@
                                         <th class="nowrap trim">Public URI:</th>
                                         <td><code>{{conf.publicUri}}</code></td>
                                     </tr>
-                                    <tr *ngIf="conf.specsDirectory">
-                                        <th class="nowrap trim">Specs Directory:</th>
-                                        <td><code>.{{conf.specsDirectory}}</code></td>
+                                    <tr *ngIf="conf.specsDirectories">
+                                        <th class="nowrap trim">Specs Directories:</th>
+                                        <td>
+                                            <ul class="m-0 py-0">
+                                                <li *ngFor="let directory of conf.specsDirectories">
+                                                    <code>{{directory}}</code>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="nowrap trim">Specs Suffix:</th>
+                                        <td><code>.{{conf.specsSuffix}}</code></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -63,12 +79,12 @@
                                         <th scope="col">Path</th>
                                         <th scope="col">Public URI</th>
                                         <th scope="col text-center">Env Specific</th>
-                                        <th scope="col" class="text-center">Actions</th>
+                                        <th scope="col" class="trim"></th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    <tr *ngFor="let config of conf.items">
+                                    <tr *ngFor="let config of conf._items">
                                         <td class="text-center">
                                             <fa-icon [icon]="icons.faCogs" class="text-info"></fa-icon>
                                         </td>
@@ -82,17 +98,54 @@
                                                 <code>{{conf.publicUri}}/{{config.name}}</code>
                                             </a>
                                         </td>
-                                        <td class="text-center" [innerHTML]="config.specific | boolean:'icon-color'">
+                                        <td class="text-center" [title]="config.specific ? config.specific.path : ''">
+                                            <app-boolean [value]="config.specific"
+                                                [type]="BooleanComponentTypes.IconColor"></app-boolean>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center trim">
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <button type="button" class="btn btn-outline-secondary"
                                                     (click)="display(config, conf)" title="Display">
                                                     <fa-icon [icon]="icons.faEye"></fa-icon>
                                                 </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div *ngIf="conf._specs.length > 0" class="row">
+                        <div class="col">
+                            <table class="table table-sm table-striped table-bordered small">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th colspan="6" scope="col">Config Specs:</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col" class="text-center">
+                                            <fa-icon [icon]="icons.faCogs" class="text-warning"></fa-icon>
+                                        </th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Path</th>
+                                        <th scope="col" class="trim"></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let config of conf._specs">
+                                        <td class="text-center">
+                                            <fa-icon [icon]="icons.faCogs" class="text-warning"></fa-icon>
+                                        </td>
+                                        <td>{{config.name}}</td>
+                                        <td>
+                                            <code>{{config.path}}</code>
+                                        </td>
+                                        <td class="text-center trim">
+                                            <div class="btn-group btn-group-sm" role="group">
                                                 <button type="button" class="btn btn-outline-secondary"
-                                                    [disabled]="!config.specsPath" (click)="displaySpecs(config, conf)"
-                                                    title="Display Specs">
+                                                    (click)="displaySpecs(config, conf)" title="Display Specs">
                                                     <fa-icon [icon]="icons.faCode"></fa-icon>
                                                 </button>
                                             </div>
@@ -101,8 +154,8 @@
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
+
                 </div>
             </div>
         </div>
@@ -119,7 +172,7 @@
 
     <div class="modal fade" id="ConfigModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 *ngIf="displayData.name" class="modal-title" id="ModalTitle">

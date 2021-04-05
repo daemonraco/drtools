@@ -52,7 +52,7 @@ describe(`[004] drtools: Configs on the ExpressJS connector:`, () => {
 
                 assert.isObject(body);
                 assert.strictEqual(body.e, 'exported value');
-                assert.strictEqual(body.exportedX, 1);
+                assert.strictEqual(body.exportedX, 11);
                 assert.strictEqual(body.exportedY, 2);
 
                 done();

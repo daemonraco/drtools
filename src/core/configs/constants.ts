@@ -5,6 +5,6 @@
 
 export enum ConfigsConstants {
     PublishUri = '/public-configs',
-    SpecsDirectory = 'specs',
+    SpecsSuffix = 'config-spec',
     Suffix = 'config',
 }

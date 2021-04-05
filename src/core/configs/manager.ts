@@ -5,11 +5,13 @@
 
 import { ajv, chalk, fs, httpStatusCodes, jsonpath, path } from '../../libraries';
 
-import { ConfigItemSpec, ConfigsConstants, ConfigsList, IConfigOptions, ConfigSpecsList } from '.';
+import { ConfigsConstants, IConfigItem, IConfigOptions } from '.';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-import { IItemSpec, Tools, ToolsCheckPath } from '../includes';
+import { BasicDictionary, IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
 import { KoaMiddleware } from '../koa';
+import * as md5 from 'md5';
+import { IConfigSpecItem } from './types';
 
 enum PublishExportsTypes {
     Express = 'express',
@@ -24,24 +26,28 @@ const ENV_PATTERN: RegExp = /^ENV:(.+)$/;
 export class ConfigsManager implements IManagerByKey {
     //
     // Protected properties.
-    protected _configs: ConfigsList = {};
-    protected _directory: string = null;
+    protected _directories: string[] = [];
     protected _environmentName: string = null;
-    protected _items: ConfigItemSpec[] = [];
-    protected _exports: ConfigsList = {};
+    protected _exports: BasicDictionary = {};
+    protected _items: BasicDictionary<IConfigItem> = {};
+    protected _key: string = '';
     protected _lastError: string = null;
     protected _options: IConfigOptions = null;
-    protected _specs: ConfigSpecsList = {};
-    protected _specsDirectory: string = null;
     protected _publicUri: string = null;
+    // protected _specItems: IConfigSpecItem[] = [];
+    protected _specs: BasicDictionary<IConfigSpecItem> = {};
+    protected _specsDirectories: string[] = [];
     protected _valid: boolean = false;
     //
     // Constructor.
-    public constructor(directory: string, options: IConfigOptions = {}) {
-        this._directory = directory;
-        this._specsDirectory = path.join(directory, ConfigsConstants.SpecsDirectory);
+    public constructor(directory: string | string[], options: IConfigOptions = {}) {
         this._options = options;
         this.cleanOptions();
+
+        this._directories = Array.isArray(directory) ? directory : [directory];
+        this._specsDirectories = this._options.specs
+            ? Array.isArray(this._options.specs) ? this._options.specs : [this._options.specs]
+            : [];
 
         this.load();
 
@@ -49,29 +55,32 @@ export class ConfigsManager implements IManagerByKey {
     }
     //
     // Public methods.
-    public directory(): string {
-        return this._directory;
+    public directories(): string[] {
+        return this._directories;
     }
     public environmentName(): string {
         return this._environmentName;
     }
     public get(name: string): any {
-        return this._configs[name] !== undefined ? this._configs[name] : {};
+        return this._items[name] !== undefined ? this._items[name].data : {};
     }
     public getSpecs(name: string): any {
-        return this._specs[name] !== undefined ? this._specs[name] : null;
+        return this._specs[name] !== undefined ? this._specs[name].specs : null;
     }
-    public items(): ConfigItemSpec[] {
+    public items(): BasicDictionary<IConfigItem> {
         return this._items;
     }
     public itemNames(): string[] {
-        return this._items.map((i: ConfigItemSpec) => i.name);
+        return Object.keys(this._items);
+    }
+    public key(): string {
+        return this._key;
     }
     public lastError(): string {
         return this._lastError;
     }
     public matchesKey(key: string): boolean {
-        return this.directory() === key;
+        return this._key === key;
     }
     public options(): IConfigOptions {
         return Tools.DeepCopy(this._options);
@@ -88,8 +97,14 @@ export class ConfigsManager implements IManagerByKey {
     public publicUri(): string {
         return this._publicUri;
     }
-    public specsDirectory(): string {
-        return this._specsDirectory;
+    public specs(): BasicDictionary<IConfigSpecItem> {
+        return this._specs;
+    }
+    public specsDirectories(): string[] {
+        return this._specsDirectories;
+    }
+    public specsSuffix(): string {
+        return this._options.specsSuffix;
     }
     public suffix(): string {
         return this._options.suffix;
@@ -103,6 +118,9 @@ export class ConfigsManager implements IManagerByKey {
     protected cleanOptions(): void {
         let defaultOptions: IConfigOptions = {
             environmentVariable: false,
+            key: undefined,
+            specs: undefined,
+            specsSuffix: ConfigsConstants.SpecsSuffix,
             suffix: ConfigsConstants.Suffix,
             verbose: true,
         };
@@ -220,43 +238,52 @@ export class ConfigsManager implements IManagerByKey {
     protected load(): void {
         this._lastError = null;
         //
+        // Generating a unique key for this manager.
+        this._key = this._options.key ? this._options.key : md5(JSON.stringify(this._directories));
+        //
         // Loading environment names.
         this._environmentName = process.env.NODE_ENV || process.env.ENV_NAME || global.NODE_ENV || global.ENV_NAME || 'default';
-        if (this._options.verbose) {
-            console.log(`Loading configs (environment: ${chalk.green(this._environmentName)}):`);
-        }
         //
         // Checking given directory path.
-        if (!this._lastError) {
-            const check = Tools.CheckDirectory(this._directory, process.cwd());
+        for (let i = 0; i < this._directories.length; i++) {
+            if (this._lastError) {
+                break;
+            }
+
+            const check = Tools.CheckDirectory(this._directories[i], process.cwd());
             switch (check.status) {
                 case ToolsCheckPath.Ok:
-                    this._directory = check.path;
+                    this._directories[i] = check.path;
                     break;
                 case ToolsCheckPath.WrongType:
-                    this._lastError = `'${this._directory}' is not a directory.`;
+                    this._lastError = `'${this._directories[i]}' is not a directory.`;
                     console.error(chalk.red(this._lastError));
                     break;
                 default:
-                    this._lastError = `'${this._directory}' does not exist.`;
+                    this._lastError = `'${this._directories[i]}' does not exist.`;
                     console.error(chalk.red(this._lastError));
                     break;
             }
         }
         //
         // Checking specs directory.
-        if (!this._lastError) {
-            const check = Tools.CheckDirectory(this._specsDirectory, process.cwd());
+        for (let i = 0; i < this._specsDirectories.length; i++) {
+            if (this._lastError) {
+                break;
+            }
+
+            const check = Tools.CheckDirectory(this._specsDirectories[i], process.cwd());
             switch (check.status) {
                 case ToolsCheckPath.Ok:
-                    this._specsDirectory = check.path;
+                    this._specsDirectories[i] = check.path;
                     break;
                 case ToolsCheckPath.WrongType:
-                    this._lastError = `'${this._specsDirectory}' is not a directory.`;
+                    this._lastError = `'${this._specsDirectories[i]}' is not a directory.`;
                     console.error(chalk.red(this._lastError));
                     break;
                 default:
-                    this._specsDirectory = null;
+                    this._lastError = `'${this._specsDirectories[i]}' does not exist.`;
+                    console.error(chalk.red(this._lastError));
                     break;
             }
         }
@@ -265,73 +292,117 @@ export class ConfigsManager implements IManagerByKey {
             //
             // Basic patterns.
             const configPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.(json|js)$`);
+            const configSpecPattern: RegExp = new RegExp(`^(.*)\\.${this._options.specsSuffix}\\.(json|js)$`);
             const envPattern: RegExp = new RegExp(`^(.*)\\.${this._options.suffix}\\.${this._environmentName}\\.(json|js)$`);
             //
+            // Loading specs files.
+            this._specs = {};
+            for (const directory of this._specsDirectories) {
+                for (const p of fs.readdirSync(directory).filter((x: string) => x.match(configSpecPattern))) {
+                    const name: string = p.replace(configSpecPattern, '$1');
+                    this._specs[name] = {
+                        name,
+                        path: path.resolve(path.join(directory, p)),
+                        valid: false,
+                    };
+                }
+            }
+            //
             // Loading basic configuration files.
-            this._items = fs.readdirSync(this._directory)
-                .filter((x: string) => x.match(configPattern))
-                .map((x: string) => ({
-                    name: x.replace(configPattern, '$1'),
-                    path: path.resolve(path.join(this._directory, x))
-                }));
+            this._items = {};
+            for (const directory of this._directories) {
+                for (const p of fs.readdirSync(directory).filter((x: string) => x.match(configPattern))) {
+                    const name: string = p.replace(configPattern, '$1');
+                    this._items[name] = {
+                        name,
+                        path: path.resolve(path.join(directory, p)),
+                        data: null,
+                        valid: false,
+                    };
+                }
+            }
             //
-            // Loading evironment specific configuration files.
-            const envFiles: IItemSpec[] = fs.readdirSync(this._directory)
-                .filter((x: string) => x.match(envPattern))
-                .map((x: string) => ({
-                    name: x.replace(envPattern, '$1'),
-                    path: path.resolve(path.join(this._directory, x))
-                }));
-            //
-            // Merging lists.
-            for (let i in this._items) {
-                for (let j in envFiles) {
-                    if (this._items[i].name === envFiles[j].name) {
-                        this._items[i].specific = envFiles[j];
-                        break;
+            // Loading environment specific configuration files.
+            for (const directory of this._directories) {
+                for (const x of fs.readdirSync(directory).filter((x: string) => x.match(envPattern))) {
+                    const name: string = x.replace(envPattern, '$1');
+                    if (this._items[name] !== undefined) {
+                        this._items[name].specific = {
+                            name,
+                            path: path.resolve(path.join(directory, x)),
+                        };
                     }
                 }
             }
         }
 
-        this._configs = {};
         this._exports = {};
         if (!this._lastError) {
-            for (const item of this._items) {
-                let valid: boolean = true;
-                let name: string = item.name;
+            //
+            // Loading specs.
+            if (this._options.verbose) {
+                console.log(`Loading config specs:`);
+            }
+            for (const name of Object.keys(this._specs)) {
+                this._specs[name].valid = true;
 
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(name)}'${item.specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`\t- '${chalk.green(name)}'`);
                     }
                     //
                     // Loading basic configuration.
-                    this._configs[name] = require(item.path);
-                    //
-                    // Merging with the environment specific configuration.
-                    if (item.specific) {
-                        this._configs[name] = Tools.DeepMergeObjects(this._configs[name], require(item.specific.path));
+                    try {
+                        this._specs[name].specs = require(this._specs[name].path);
+                    } catch (e) {
+                        this._lastError = `'${this._specs[name].path}' is not valid specification file. ${e}`;
+                        console.error(chalk.red(this._lastError));
+                        this._specs[name].valid = false;
                     }
                     //
-                    // Does it have specs?
-                    this._configs[name].specsPath = null;
-                    if (this._specsDirectory) {
-                        this._configs[name].specsPath = this.loadSpecsOf(name);
-                        if (this._configs[name].specsPath !== null) {
-                            valid = this.validateSpecsOf(name, this._configs[name].specsPath);
-                        }
+                    // Creating a validator.
+                    try {
+                        const ajvObj: any = new ajv({ useDefaults: true });
+                        this._specs[name].validator = ajvObj.compile(this._specs[name].specs);
+                    } catch (e) {
+                        this._lastError = `Unable to compile '${this._specs[name].path}'. ${e}`;
+                        console.error(chalk.red(this._lastError));
+                        this._specs[name].valid = false;
+                    }
+                } catch (err) {
+                    console.error(chalk.red(`Unable to load config '${name}'.`), err);
+                }
+            }
+            //
+            // Loading configurations.
+            if (this._options.verbose) {
+                console.log(`Loading configs (environment: ${chalk.green(this._environmentName)}):`);
+            }
+            for (const itemKey of Object.keys(this._items)) {
+                let name: string = this._items[itemKey].name;
+
+                try {
+                    if (this._options.verbose) {
+                        console.log(`\t- '${chalk.green(name)}'${this._items[itemKey].specific ? ` (has specific configuration)` : ''}`);
+                    }
+                    //
+                    // Loading basic configuration.
+                    this._items[itemKey].data = require(this._items[itemKey].path);
+                    //
+                    // Merging with the environment specific configuration.
+                    if (this._items[itemKey].specific) {
+                        this._items[itemKey].data = Tools.DeepMergeObjects(this._items[itemKey].data, require(this._items[itemKey].specific.path));
                     }
                     //
                     // If there were no errors validating the config file, it can
                     // expose exports.
-                    if (valid) {
+                    if (this.validateSpecsOf(name)) {
                         if (this._options.environmentVariable) {
-                            this._configs[name] = this.expandEnvVariablesIn(this._configs[name]);
+                            this._items[itemKey].data = this.expandEnvVariablesIn(this._items[itemKey].data);
                         }
-                        this._configs[name].public = this.loadExportsOf(name);
+                        this._items[itemKey].public = this.loadExportsOf(name);
                     } else {
-                        this._configs[name] = {};
+                        this._items[itemKey].valid = false;
                     }
                 } catch (err) {
                     console.error(chalk.red(`Unable to load config '${name}'.`), err);
@@ -345,7 +416,7 @@ export class ConfigsManager implements IManagerByKey {
     protected loadExportsOf(name: string): boolean {
         let hasExports: boolean = false;
 
-        const config: any = this._configs[name];
+        const config: any = this._items[name].data;
 
         if (config.$exports !== undefined || config.$pathExports !== undefined) {
             this._exports[name] = {};
@@ -378,49 +449,44 @@ export class ConfigsManager implements IManagerByKey {
     }
     /* istanbul ignore next */
     protected loadSpecsOf(name: string): string {
-        let specsPath: string = path.join(this._specsDirectory, `${name}.json`);
+        let specsPath: string | null = null
 
-        const check = Tools.CheckFile(specsPath);
-        switch (check.status) {
-            case ToolsCheckPath.Ok:
-                specsPath = check.path;
-                break;
-            case ToolsCheckPath.WrongType:
-                this._lastError = `'${specsPath}' is not a file.`;
-                console.error(chalk.red(this._lastError));
-                break;
-            default:
-                specsPath = null;
-                break;
+        for (const specsDirectory of this._specsDirectories) {
+            const tmpSpecsPath: string = path.join(specsDirectory, `${name}.json`);
+            const check: IToolsCheckPathResult = Tools.CheckFile(tmpSpecsPath);
+
+            switch (check.status) {
+                case ToolsCheckPath.Ok:
+                    specsPath = check.path;
+                    break;
+                case ToolsCheckPath.WrongType:
+                    this._lastError = `'${tmpSpecsPath}' is not a file.`;
+                    console.error(chalk.red(this._lastError));
+                    break;
+                default:
+                    specsPath = null;
+                    break;
+            }
         }
 
         return specsPath;
     }
     /* istanbul ignore next */
-    protected validateSpecsOf(name: string, specsPath: string): boolean {
+    protected validateSpecsOf(name: string): boolean {
         let valid: boolean = false;
 
-        this._specs[name] = null;
-        try {
-            this._specs[name] = require(specsPath);
-        } catch (e) {
-            this._lastError = `'${this._directory}' is not valid specification file. ${e}`;
-            console.error(chalk.red(this._lastError));
-        }
-        //
-        // Creating a validator.
-        try {
-            const ajvObj: any = new ajv({
-                useDefaults: true
-            });
-            const validator: any = ajvObj.compile(this._specs[name]);
-            if (!validator(this._configs[name])) {
-                throw `'\$${validator.errors[0].dataPath}' ${validator.errors[0].message}`;
-            } else {
-                valid = true;
+        if (this._specs[name] && this._specs[name].valid) {
+            try {
+                if (!this._specs[name].validator(this._items[name].data)) {
+                    throw `'\$${this._specs[name].validator.errors[0].dataPath}' ${this._specs[name].validator.errors[0].message}`;
+                } else {
+                    valid = true;
+                }
+            } catch (e) {
+                console.error(chalk.red(`Config '${name}' is not valid.\n\t${e}`));
             }
-        } catch (e) {
-            console.error(chalk.red(`Config '${name}' is not valid.\n\t${e}`));
+        } else {
+            valid = true;
         }
 
         return valid;

@@ -14,7 +14,7 @@ const manager = new ConfigsManager('directory/with/configuration/files');
 ## Retriving one
 Let's say you have a configuration file named `myconf.config.json` looking like
 this in your configurations directory:
-```json
+```js
 {
     "min": {
         "height": 768,
@@ -64,7 +64,7 @@ console.log(`Minimum geometry: ${myconf.minGeometry()}`); // --> Minimum geometr
 Now let's say your file `myconf.config.json` has the right values for minimum
 height, except when it's in production in which case it should be `720`.
 In this case you can create a file called `myconf.config.prod.json`, also in the same directory with this inside:
-```json
+```js
 {
     "min": {
         "height": 720

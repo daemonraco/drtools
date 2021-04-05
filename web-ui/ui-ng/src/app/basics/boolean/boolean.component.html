@@ -1,0 +1,16 @@
+<ng-container *ngIf="type === BooleanComponentTypes.Default">{{!!value | json}}</ng-container>
+
+<ng-container *ngIf="type === BooleanComponentTypes.Icon">
+    <fa-icon *ngIf="value" [icon]="icons.faCheck"></fa-icon>
+    <fa-icon *ngIf="!value" [icon]="icons.faTimes"></fa-icon>
+</ng-container>
+
+<ng-container *ngIf="type === BooleanComponentTypes.IconColor">
+    <fa-icon *ngIf="value" [icon]="icons.faCheck" class="text-success"></fa-icon>
+    <fa-icon *ngIf="!value" [icon]="icons.faTimes" class="text-muted"></fa-icon>
+</ng-container>
+
+<ng-container *ngIf="type === BooleanComponentTypes.Text">
+    <span *ngIf="value">yes</span>
+    <span *ngIf="!value">no</span>
+</ng-container>

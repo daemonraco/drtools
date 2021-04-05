@@ -4,7 +4,7 @@
  * @author Alejandro D. Simi
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.util = exports.url = exports.request = exports.path = exports.mime = exports.md5 = exports.marked = exports.loremIpsum = exports.koaStatic = exports.koaSend = exports.koa = exports.jsonpath = exports.httpStatusCodes = exports.http = exports.glob = exports.fs = exports.express = exports.ejs = exports.commander = exports.cheerio = exports.chalk = exports.bodyParser = exports.ajv = exports.EventEmitter = exports.KoaRouter = void 0;
+exports.util = exports.url = exports.request = exports.path = exports.mime = exports.marked = exports.loremIpsum = exports.koaStatic = exports.koaSend = exports.koa = exports.jsonpath = exports.httpStatusCodes = exports.http = exports.glob = exports.fs = exports.express = exports.ejs = exports.commander = exports.cheerio = exports.chalk = exports.bodyParser = exports.ajv = exports.EventEmitter = exports.KoaRouter = void 0;
 const EventEmitter = require("events");
 exports.EventEmitter = EventEmitter;
 const KoaRouter = require("koa-router");
@@ -41,8 +41,6 @@ const loremIpsum = require("lorem-ipsum");
 exports.loremIpsum = loremIpsum;
 const marked = require("marked");
 exports.marked = marked;
-const md5 = require("md5");
-exports.md5 = md5;
 const mime = require("mime-types");
 exports.mime = mime;
 const path = require("path");

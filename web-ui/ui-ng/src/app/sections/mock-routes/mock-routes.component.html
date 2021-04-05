@@ -79,8 +79,10 @@
                                                 class="badge badge-secondary">{{route.guardName}}</span>
                                             <code *ngIf="route.guardPath">{{route.guardPath}}</code>
                                         </td>
-                                        <td class="text-center" [innerHTML]="route.valid | boolean:'icon-color'"
-                                            [title]="route.error ? route.error : ''"></td>
+                                        <td class="text-center" [title]="route.error ? route.error : ''">
+                                            <app-boolean [value]="route.valid" [type]="BooleanComponentTypes.IconColor">
+                                            </app-boolean>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -116,8 +118,11 @@
                                         <td>
                                             <code>{{guard.path}}</code>
                                         </td>
-                                        <td class="text-center" [innerHTML]="!guard.error | boolean:'icon-color'"
-                                            [title]="guard.error ? guard.error : ''"></td>
+                                        <td class="text-center" [title]="guard.error ? guard.error : ''">
+                                            <app-boolean [value]="!guard.error"
+                                                [type]="BooleanComponentTypes.IconColor">
+                                            </app-boolean>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -2,13 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-    selector: 'app-home-endpoints',
-    templateUrl: './endpoints.component.html',
+    selector: 'app-section-middlewares',
+    templateUrl: './middlewares.component.html',
 })
-export class HomeEndpointsComponent implements OnInit {
+export class MiddlewaresComponent implements OnInit {
     //
     // Properties.
-    @Input() public endpoints: any = null;
+    @Input() public middlewares: any = null;
     public readonly icons = Icons;
     //
     // Construction.
@@ -20,5 +20,4 @@ export class HomeEndpointsComponent implements OnInit {
     }
     //
     // Protected methods.
-
 }

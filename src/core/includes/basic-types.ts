@@ -3,8 +3,8 @@
  * @author Alejandro D. Simi
  */
 
-export type BasicDictionary<T> = { [key: string]: T };
-export type BasicList<T> = T[];
+export type BasicDictionary<T = any> = { [key: string]: T };
+export type BasicList<T = any> = T[];
 
 export interface IItemSpec {
     name: string;

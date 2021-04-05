@@ -5,8 +5,8 @@
 
 import { fs, marked, path } from '../../libraries';
 
-import { BasicList } from '../includes';
-import { ConfigItemSpec, ConfigsManager } from '../configs';
+import { BasicDictionary, BasicList } from '../includes';
+import { IConfigItem, ConfigsManager, IConfigSpecItem } from '../configs';
 import { DRCollector } from '../drcollector';
 import { Tools } from '../includes';
 
@@ -17,25 +17,28 @@ export class KoaResponseBuilder {
     }
     //
     // Public class methods.
-    public static ConfigContents(managerId: string, name: string): any {
+    public static ConfigContents(managerKey: string, name: string): any {
         let result: any = {};
 
         const managers: BasicList<ConfigsManager> = DRCollector.configsManagers();
         let manager: ConfigsManager = null;
         for (const m of managers) {
-            if (m.directory() === managerId) {
+            if (m.matchesKey(managerKey)) {
                 manager = m;
                 break;
             }
         }
 
         if (manager) {
-            let item: ConfigItemSpec = null;
-            manager.items().forEach((auxItem: ConfigItemSpec) => {
-                if (auxItem.name === name) {
-                    item = auxItem;
+            let item: IConfigItem = null;
+
+            const items: BasicDictionary<IConfigItem> = manager.items();
+            for (const key of Object.keys(items)) {
+                if (key === name) {
+                    item = items[key];
                 }
-            });
+            }
+
             if (item) {
                 result = Tools.DeepCopy(item);
                 result.contents = manager.get(item.name);
@@ -44,26 +47,29 @@ export class KoaResponseBuilder {
 
         return result;
     }
-    public static ConfigSpecsContents(managerId: string, name: string): any {
+    public static ConfigSpecsContents(managerKey: string, name: string): any {
         let result: any = {};
 
         const managers: BasicList<ConfigsManager> = DRCollector.configsManagers();
         let manager: ConfigsManager = null;
         for (const m of managers) {
-            if (m.directory() === managerId) {
+            if (m.matchesKey(managerKey)) {
                 manager = m;
                 break;
             }
         }
 
         if (manager) {
-            let item: ConfigItemSpec = null;
-            manager.items().forEach((auxItem: ConfigItemSpec) => {
-                if (auxItem.name === name) {
-                    item = auxItem;
+            let item: IConfigSpecItem = null;
+
+            const items: BasicDictionary<IConfigSpecItem> = manager.specs();
+            for (const key of Object.keys(items)) {
+                if (key === name) {
+                    item = items[key];
                 }
-            });
-            if (item && item.specsPath) {
+            }
+
+            if (item) {
                 result = Tools.DeepCopy(item);
                 result.contents = manager.getSpecs(item.name);
             }

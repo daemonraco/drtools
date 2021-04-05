@@ -4,10 +4,10 @@ import * as Icons from '@fortawesome/free-solid-svg-icons';
 declare var $: any;
 
 @Component({
-    selector: 'app-home-plugins',
+    selector: 'app-section-plugins',
     templateUrl: './plugins.component.html',
 })
-export class HomePluginsComponent implements OnInit {
+export class PluginsComponent implements OnInit {
     //
     // Properties.
     @Input() public plugins: any = null;

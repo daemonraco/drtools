@@ -1,19 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { DRToolsService } from 'src/app/services';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
+
+import { BooleanComponentTypes } from 'src/app/basics';
+import { DRToolsService } from 'src/app/services';
 
 declare var $: any;
 
 @Component({
-    selector: 'app-home-configs',
+    selector: 'app-section-configs',
     templateUrl: './configs.component.html',
 })
-export class HomeConfigsComponent implements OnInit {
+export class ConfigsComponent implements OnChanges, OnInit {
     //
     // Properties.
-    @Input() public configs: any = null;
+    @Input() public configs: any;
     public configsAsLinks: any[] = [];
     public displayData: any = {};
+    public readonly BooleanComponentTypes = BooleanComponentTypes;
     public readonly icons = Icons;
     //
     // Construction.
@@ -28,7 +31,7 @@ export class HomeConfigsComponent implements OnInit {
         this.displayData.contents = `loading...`;
         this.displayData.path = `loading...`;
 
-        const data: any = await this.drtSrv.config(config.name, manager.directory);
+        const data: any = await this.drtSrv.config(config.name, manager.key);
         this.displayData.contents = JSON.stringify(data.contents, null, 2);
         this.displayData.public = data.public;
         this.displayData.path = data.path;
@@ -42,13 +45,17 @@ export class HomeConfigsComponent implements OnInit {
         this.displayData.contents = `loading...`;
         this.displayData.path = `loading...`;
 
-        const data: any = await this.drtSrv.configSpecs(config.name, manager.directory);
+        const data: any = await this.drtSrv.configSpecs(config.name, manager.key);
         this.displayData.contents = JSON.stringify(data.contents, null, 2)
         this.displayData.path = data.specsPath;
 
         $('#ConfigModal').modal('show');
     }
+    public ngOnChanges(): void {
+        this.load();
+    }
     public ngOnInit(): void {
+        this.load();
     }
     public rejectLink(reject: boolean, event: any): void {
         if (reject) {
@@ -57,4 +64,12 @@ export class HomeConfigsComponent implements OnInit {
     }
     //
     // Protected methods.
+    protected load(): void {
+        if (this.configs) {
+            for (const item of this.configs) {
+                item._items = Object.entries(item.items).map((x: [string, any]) => x[1]);
+                item._specs = Object.entries(item.specs).map((x: [string, any]) => x[1]);
+            }
+        }
+    }
 }

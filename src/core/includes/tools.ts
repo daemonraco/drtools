@@ -20,7 +20,7 @@ export interface IToolsCheckPathResult {
     path: string;
     stat: any;
 };
-export type TBlockRetryFuction = (params: { [key: string]: any }) => Promise<void>;
+export type TBlockRetryFunction = (params: { [key: string]: any }) => Promise<void>;
 export interface IBlockRetryOptions {
     logPrefix?: string;
     maxRetries?: number;
@@ -37,7 +37,7 @@ export class Tools {
     private constructor() { }
     //
     // Public class methods.
-    public static async BlockRetry(block: TBlockRetryFuction, options: IBlockRetryOptions = {}): Promise<void> {
+    public static async BlockRetry(block: TBlockRetryFunction, options: IBlockRetryOptions = {}): Promise<void> {
         options = {
             logPrefix: '',
             maxRetries: 3,
@@ -147,6 +147,9 @@ export class Tools {
     }
     public static IsNode(): boolean {
         return Tools._IsNode();
+    }
+    public static RandomKey(): string {
+        return Math.random().toString(36).replace(/[^a-z]+/g, '');
     }
     //
     // Protected class methods.

@@ -21,7 +21,6 @@ import * as koaSend from 'koa-send';
 import * as koaStatic from 'koa-static';
 import * as loremIpsum from 'lorem-ipsum';
 import * as marked from 'marked';
-import * as md5 from 'md5';
 import * as mime from 'mime-types';
 import * as path from 'path';
 import * as request from 'request-promise-native';
@@ -32,5 +31,5 @@ import { JSONPath } from 'jsonpath-plus';
 export {
     KoaRouter, EventEmitter, ajv, bodyParser, chalk, cheerio, commander, ejs,
     express, fs, glob, http, httpStatusCodes, JSONPath as jsonpath, koa, koaSend, koaStatic,
-    loremIpsum, marked, md5, mime, path, request, url, util
+    loremIpsum, marked, mime, path, request, url, util
 };

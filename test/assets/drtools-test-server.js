@@ -35,7 +35,14 @@ loadingSteps.push(async () => {
 //
 // Section to be tested @{
 loadingSteps.push(async () => {
-    const configs = new ConfigsManager(path.join(__dirname, '../tmp/configs'), { publishConfigs: true });
+    const configs = new ConfigsManager([
+        path.join(__dirname, '../tmp/configs'),
+        path.join(__dirname, '../tmp/secondary-configs'),
+    ], {
+        publishConfigs: true,
+        key: 'main-configs',
+        specs: path.join(__dirname, '../tmp/specs'),
+    });
 
     ExpressConnector.attach(app, { webUi: true });
 

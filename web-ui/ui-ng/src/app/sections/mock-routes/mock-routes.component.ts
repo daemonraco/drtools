@@ -1,14 +1,16 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
+import { BooleanComponentTypes } from 'src/app/basics';
 
 @Component({
-    selector: 'app-home-mock-routes',
+    selector: 'app-section-mock-routes',
     templateUrl: './mock-routes.component.html',
 })
-export class HomeMockRoutesComponent implements OnChanges, OnInit {
+export class MockRoutesComponent implements OnChanges, OnInit {
     //
     // Properties.
     @Input() public mockRoutes: any = null;
+    public readonly BooleanComponentTypes = BooleanComponentTypes;
     public readonly icons = Icons;
     //
     // Construction.
@@ -32,4 +34,5 @@ export class HomeMockRoutesComponent implements OnChanges, OnInit {
     }
     //
     // Protected methods.
+
 }

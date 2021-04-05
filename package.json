@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.14.0",
+    "version": "0.15.0",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -46,6 +46,7 @@
         "@types/express": "^4.17.11",
         "@types/fs-extra": "^9.0.10",
         "@types/koa-static": "^4.0.1",
+        "@types/md5": "^2.3.0",
         "@types/node": "^14.14.37",
         "chai": "^4.3.4",
         "chai-http": "^4.3.0",

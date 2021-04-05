@@ -131,6 +131,9 @@ class Tools {
     static IsNode() {
         return Tools._IsNode();
     }
+    static RandomKey() {
+        return Math.random().toString(36).replace(/[^a-z]+/g, '');
+    }
     //
     // Protected class methods.
     static CheckPathByType(checker, filePath, relativeTo = null) {

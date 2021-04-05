@@ -1,14 +1,12 @@
 @import "../node_modules/bootswatch/dist/united/bootstrap.min.css";
 
-app-home {
-    .collapse {
-        overflow-x: auto;
-    }
-    table.table.table-sm.table-borderless.small {
-        td,
-        th {
-            padding: 0.1rem 0.3rem;
-        }
+.collapse {
+    overflow-x: auto;
+}
+table.table.table-sm.table-borderless.small {
+    td,
+    th {
+        padding: 0.1rem 0.3rem;
     }
 }
 

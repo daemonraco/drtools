@@ -235,13 +235,17 @@ class DRCollectorClass {
 
         for (const manager of this._configsManagers) {
             results.push({
-                directory: manager.directory(),
+                key: manager.key(),
+                directories: manager.directories(),
                 environment: manager.environmentName(),
                 items: manager.items(),
                 publicUri: manager.publicUri(),
-                specsDirectory: manager.specsDirectory(),
+                specsDirectories: manager.specsDirectories(),
+                specs: manager.specs(),
                 suffix: manager.suffix(),
-                publicItemNames: manager.publicItemNames()
+                specsSuffix: manager.specsSuffix(),
+                publicItemNames: manager.publicItemNames(),
+                options: manager.options(),
             });
         }
 

@@ -2,13 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-    selector: 'app-home-loaders',
-    templateUrl: './loaders.component.html',
+    selector: 'app-section-tasks',
+    templateUrl: './tasks.component.html',
 })
-export class HomeLoadersComponent implements OnInit {
+export class TasksComponent implements OnInit {
     //
     // Properties.
-    @Input() public loaders: any = null;
+    @Input() public tasks: any = null;
     public readonly icons = Icons;
     //
     // Construction.
@@ -20,4 +20,5 @@ export class HomeLoadersComponent implements OnInit {
     }
     //
     // Protected methods.
+
 }

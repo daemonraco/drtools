@@ -32,7 +32,7 @@ const manager = new MockRoutesManager(app, '/path/to/stuff/config.json');
 _How does the configuration looks like?_
 
 Something like this:
-```json
+```js
 {
     "routes": [
         {
@@ -59,7 +59,7 @@ _Note:_ All this URIs will respond specified files on any request method.
 ### By method
 If you want to respond all your files on any method, but `./simple-json.json` only
 on `POST` method, you can a configuration like this one:
-```json
+```js
 {
     "routes": {
         "*": [
@@ -113,7 +113,7 @@ module.exports = (req, res, next) => {
 ```
 
 Then, we need to change our configuration:
-```json
+```js
 {
     "routes": [
         {
@@ -128,7 +128,7 @@ Then, we need to change our configuration:
 ## General guards
 The previous way requires you to specify a guard path on each route, but that's
 not the only way, you can write something like this in your configuration:
-```json
+```js
 {
     "guards": [
         {
@@ -153,7 +153,7 @@ need a change in such path, you just change it in one place.
 Maybe you already guest it, all routes have a default guard that checks nothing
 but it's there.
 If you want to apply a your guard to all routes you can do this:
-```json
+```js
 {
     "guards": [
         {

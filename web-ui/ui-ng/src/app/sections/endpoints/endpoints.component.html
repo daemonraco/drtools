@@ -101,7 +101,9 @@
                                         <td>
                                             <code>{{mockup.path}}</code>
                                         </td>
-                                        <td class="text-center" [innerHTML]="mockup.behaviors | boolean:'icon-color'">
+                                        <td class="text-center">
+                                            <app-boolean [value]="mockup.behaviors"
+                                                [type]="BooleanComponentTypes.IconColor"></app-boolean>
                                         </td>
                                     </tr>
                                 </tbody>

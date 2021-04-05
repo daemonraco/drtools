@@ -15,23 +15,24 @@ class ExpressResponseBuilder {
     }
     //
     // Public class methods.
-    static ConfigContents(managerId, name) {
+    static ConfigContents(managerKey, name) {
         let result = {};
         const managers = drcollector_1.DRCollector.configsManagers();
         let manager = null;
         for (const m of managers) {
-            if (m.directory() === managerId) {
+            if (m.matchesKey(managerKey)) {
                 manager = m;
                 break;
             }
         }
         if (manager) {
             let item = null;
-            manager.items().forEach((auxItem) => {
-                if (auxItem.name === name) {
-                    item = auxItem;
+            const items = manager.items();
+            for (const key of Object.keys(items)) {
+                if (key === name) {
+                    item = items[key];
                 }
-            });
+            }
             if (item) {
                 result = includes_1.Tools.DeepCopy(item);
                 result.contents = manager.get(item.name);
@@ -39,24 +40,25 @@ class ExpressResponseBuilder {
         }
         return result;
     }
-    static ConfigSpecsContents(managerId, name) {
+    static ConfigSpecsContents(managerKey, name) {
         let result = {};
         const managers = drcollector_1.DRCollector.configsManagers();
         let manager = null;
         for (const m of managers) {
-            if (m.directory() === managerId) {
+            if (m.matchesKey(managerKey)) {
                 manager = m;
                 break;
             }
         }
         if (manager) {
             let item = null;
-            manager.items().forEach((auxItem) => {
-                if (auxItem.name === name) {
-                    item = auxItem;
+            const items = manager.specs();
+            for (const key of Object.keys(items)) {
+                if (key === name) {
+                    item = items[key];
                 }
-            });
-            if (item && item.specsPath) {
+            }
+            if (item) {
                 result = includes_1.Tools.DeepCopy(item);
                 result.contents = manager.getSpecs(item.name);
             }

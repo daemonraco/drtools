@@ -3,21 +3,26 @@
  * @author Alejandro D. Simi
  */
 import { IItemSpec } from '../includes';
-export interface ConfigItemSpec {
+export interface IConfigItem {
+    data: any;
     name: string;
     path: string;
     public?: boolean;
     specific?: IItemSpec;
-    specsPath?: string;
+    valid: boolean;
 }
-export declare type ConfigsList = {
-    [name: string]: any;
-};
+export interface IConfigSpecItem {
+    name: string;
+    path: string;
+    specs?: any;
+    valid: boolean;
+    validator?: any;
+}
 export interface IConfigOptions {
     environmentVariable?: boolean;
+    key?: string;
+    specs?: string | string[];
+    specsSuffix?: string;
     suffix?: string;
     verbose?: boolean;
 }
-export declare type ConfigSpecsList = {
-    [name: string]: any;
-};

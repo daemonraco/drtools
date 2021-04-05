@@ -3,14 +3,14 @@
         <div class="col-10">
             <p class="text-right small">These are the tools you have loaded.</p>
 
-            <app-home-configs id="configs" [configs]="drtools.configs"></app-home-configs>
-            <app-home-endpoints id="endpoints" [endpoints]="drtools.endpoints"></app-home-endpoints>
-            <app-home-loaders id="loaders" [loaders]="drtools.loaders"></app-home-loaders>
-            <app-home-middlewares id="middlewares" [middlewares]="drtools.middlewares"></app-home-middlewares>
-            <app-home-routes id="routes" [routes]="drtools.routes"></app-home-routes>
-            <app-home-mock-routes id="mock-routes" [mockRoutes]="drtools.mockRoutes"></app-home-mock-routes>
-            <app-home-tasks id="tasks" [tasks]="drtools.tasks"></app-home-tasks>
-            <app-home-plugins id="plugins" [plugins]="drtools.plugins"></app-home-plugins>
+            <app-section-configs id="configs" [configs]="drtools.configs"></app-section-configs>
+            <app-section-endpoints id="endpoints" [endpoints]="drtools.endpoints"></app-section-endpoints>
+            <app-section-loaders id="loaders" [loaders]="drtools.loaders"></app-section-loaders>
+            <app-section-middlewares id="middlewares" [middlewares]="drtools.middlewares"></app-section-middlewares>
+            <app-section-routes id="routes" [routes]="drtools.routes"></app-section-routes>
+            <app-section-mock-routes id="mock-routes" [mockRoutes]="drtools.mockRoutes"></app-section-mock-routes>
+            <app-section-tasks id="tasks" [tasks]="drtools.tasks"></app-section-tasks>
+            <app-section-plugins id="plugins" [plugins]="drtools.plugins"></app-section-plugins>
         </div>
 
         <div class="col small">
@@ -62,12 +62,12 @@
 
                 <ul class="nav flex-column border-left">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" (click)="expandAll()">
+                        <a class="nav-link" href="#" (click)="expandAll($event)">
                             <i class="fa fa-expand"></i> Expand all
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" (click)="hideAll()">
+                        <a class="nav-link" href="#" (click)="hideAll($event)">
                             <i class="fa fa-compress"></i> Collapse all
                         </a>
                     </li>
