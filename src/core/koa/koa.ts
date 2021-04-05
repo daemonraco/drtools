@@ -85,9 +85,11 @@ export class KoaConnector {
                         const fullPath: string = path.join(basePath, subPath);
                         const valid: boolean = fullPath.indexOf(basePath) === 0;
 
-                        ctx.body = await fs.readFile(valid && subPath && fs.existsSync(fullPath)
+                        ctx.body = (await fs.readFile(valid && subPath && fs.existsSync(fullPath)
                             ? fullPath
-                            : path.join(__dirname, '../../../docs/index.html')).toString();
+                            : path.join(__dirname, '../../../docs/index.html'))).toString();
+                    } else {
+                        ctx.body = (await fs.readFile(path.join(__dirname, '../../../web-ui/ui/.drtools/index.html'))).toString();
                     }
                 } else {
                     await next();

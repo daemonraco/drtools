@@ -1,11 +1,14 @@
 'use strict';
 
+const chalk = require('chalk');
 const fs = require('fs-extra');
 const glob = require('glob');
 const path = require('path');
 const semver = require('semver');
 const shell = require('shelljs');
 const version = require('../package.json').version;
+
+let outdatedMds = [];
 
 const cleanCmdHelp = text => {
     let lines = text
@@ -112,7 +115,7 @@ const versionWarnings = mdPath => {
     // Checking version tags.
     let needsWarning = false;
     if (mdVersion) {
-        needsWarning = !semver.diff(mdVersion, version);
+        needsWarning = semver.diff(mdVersion, version) !== null;
     } else {
         mdLines = [
             ...mdLines,
@@ -121,12 +124,18 @@ const versionWarnings = mdPath => {
         ];
         needsWarning = true;
     }
+    if (needsWarning) {
+        outdatedMds.push({
+            path: mdPath,
+            since: mdVersion,
+        });
+    }
     //
     // Building warning.
-    const warningLines = needsWarning ? [] : [
-        '!>__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE',
-        `VERSION ${mdVersion}</span>__`,
-    ];
+    const warningLines = needsWarning ? [
+        '!>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION',
+        `${mdVersion}</span>__`,
+    ] : [];
     //
     // Injecting.
     let newMdLines = [];
@@ -191,14 +200,23 @@ const versionWarnings = mdPath => {
     mdPaths = mdPaths.sort();
 
     for (const piece of piecesSteps) {
-        console.log(`Loading piece '${piece.name}'`);
+        console.log(`Loading piece '${chalk.green(piece.name)}'`);
         await piece.function(piece.name);
     }
 
+    console.log('');
     for (const mdPath of mdPaths) {
-        console.log(`Updating '${mdPath}'`);
+        console.log(`Updating '${chalk.green(mdPath)}'`);
         for (const step of steps) {
             await step(mdPath);
+        }
+    }
+
+    console.log('');
+    if (outdatedMds.length > 0) {
+        console.log(chalk.red(`These docs are out of date:`));
+        for (const entry of outdatedMds) {
+            console.log(chalk.red(`\t'${entry.path}' since '${entry.since}'`));
         }
     }
 

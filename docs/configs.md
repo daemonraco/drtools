@@ -204,4 +204,4 @@ When you create a new manager you may pass these options:
 | `suffix`               | `string`            | `config`         | Suffix to be expected on each configuration file to be loaded.               |
 | `verbose`              | `boolean`           |  `true`          | Whether to display loading log information or not.                           |
 
-<!-- version-check:0.15.0 -->
+<!-- version-check:0.15.1 -->

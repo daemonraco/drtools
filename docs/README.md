@@ -30,4 +30,4 @@ _Long answer?_ Well, if you want, you can give it a try, but it's up to you.
 ## Licence
 MIT &copy; 2021 [Alejandro Dario Simi](http://daemonraco.com)
 
-<!-- version-check:0.15.0 -->
+<!-- version-check:0.15.1 -->

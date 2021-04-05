@@ -2,35 +2,34 @@
 
 const port = parseInt(process.env.PORT || '3005', 10);
 
-const bodyParser = require('body-parser');
 const chalk = require('chalk');
-const express = require('express');
 const http = require('http');
+const Koa = require('koa');
+const koaBody = require('koa-body');
 const path = require('path');
 //
 // Importing DRTools.
 const {
     ConfigsManager,
     EndpointsManager,
-    ExpressConnector,
+    KoaConnector,
     LoadersManager,
     MiddlewaresManager,
     MockRoutesManager,
-    RoutesManager,
     PluginsManager,
+    RoutesManager,
     TasksManager,
 } = require('../..');
 //
-// Creating an express application.
-const app = express();
+// Creating a KoaJS application.
+const app = new Koa();
 //
 // Loading steps.
 const loadingSteps = [];
 //
 // Loading parser.
 loadingSteps.push(async () => {
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(koaBody());
 });
 //
 // Section to be tested @{
@@ -44,12 +43,14 @@ loadingSteps.push(async () => {
         specs: path.join(__dirname, '../tmp/specs'),
     });
 
-    ExpressConnector.attach(app, { webUi: true });
+    KoaConnector.attach(app, { webUi: true });
 
     const loaders = new LoadersManager(path.join(__dirname, '../tmp/loaders'), {}, configs);
     await loaders.load();
 
-    const middlewares = new MiddlewaresManager(app, path.join(__dirname, '../tmp/middlewares'), {}, configs);
+    const middlewares = new MiddlewaresManager(app, path.join(__dirname, '../tmp/middlewares'), {
+        suffix: 'middleware.koa',
+    }, configs);
     await middlewares.load();
 
     new MockRoutesManager(app, path.join(__dirname, '../tmp/mock-routes/mockup-routes.json'), {}, configs);
@@ -57,7 +58,9 @@ loadingSteps.push(async () => {
     const plugins = new PluginsManager(path.join(__dirname, '../tmp/plugins'), {}, configs);
     await plugins.load();
 
-    const routes = new RoutesManager(app, path.join(__dirname, '../tmp/routes'), {}, configs);
+    const routes = new RoutesManager(app, path.join(__dirname, '../tmp/routes'), {
+        suffix: 'route.koa',
+    }, configs);
     await routes.load();
 
     const tasks = new TasksManager(path.join(__dirname, '../tmp/tasks'), {}, configs);
@@ -70,16 +73,17 @@ loadingSteps.push(async () => {
             globalBehaviors: path.join(__dirname, '../tmp/endpoints/.globals.js')
         }
     }, configs);
-    app.use(endpoints.provide());
+    app.use(endpoints.provideForKoa());
 });
 // @}
 //
 // Defaults.
 loadingSteps.push(async () => {
-    app.all('*', (req, res) => {
-        res.status(404).json({
-            message: `Path '${req.url}' was not found.`
-        });
+    app.use(async ctx => {
+        ctx.status = 404
+        ctx.body = {
+            message: `Path '${ctx.url}' was not found.`
+        };
     });
 });
 //
@@ -94,7 +98,8 @@ loadingSteps.push(async () => {
     }
     //
     // Starting server.
-    http.createServer(app).listen(port, () => {
+    const server = http.createServer(app.callback());
+    server.listen(port, async () => {
         console.log(`listening on port ${port}`);
     });
 })();

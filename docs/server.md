@@ -1,6 +1,6 @@
 <!-- version-warning -->
-!>__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
-VERSION 0.0.1</span>__
+!>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
+0.0.1</span>__
 <!-- /version-warning -->
 
 # DRTools: Server
@@ -14,7 +14,7 @@ ExpressJS server).
 ## Command options
 <!-- AUTO:server-options -->
 ```
-DRTools Server (v0.15.0):
+DRTools Server (v0.15.1):
 Usage: drtools-generator [options]
 
 Options:

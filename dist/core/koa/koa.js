@@ -80,9 +80,12 @@ class KoaConnector {
                         const subPath = match ? match[1] : '';
                         const fullPath = path.join(basePath, subPath);
                         const valid = fullPath.indexOf(basePath) === 0;
-                        ctx.body = yield fs.readFile(valid && subPath && fs.existsSync(fullPath)
+                        ctx.body = (yield fs.readFile(valid && subPath && fs.existsSync(fullPath)
                             ? fullPath
-                            : path.join(__dirname, '../../../docs/index.html')).toString();
+                            : path.join(__dirname, '../../../docs/index.html'))).toString();
+                    }
+                    else {
+                        ctx.body = (yield fs.readFile(path.join(__dirname, '../../../web-ui/ui/.drtools/index.html'))).toString();
                     }
                 }
                 else {

@@ -1,6 +1,6 @@
 <!-- version-warning -->
-!>__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
-VERSION 0.5.0</span>__
+!>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
+0.5.0</span>__
 <!-- /version-warning -->
 
 # DRTools: Tasks
