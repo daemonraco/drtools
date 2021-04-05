@@ -2,12 +2,12 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
+import { BasicDictionary } from '../includes';
 import { IConfigItem, IConfigOptions } from '.';
 import { IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-import { BasicDictionary } from '../includes';
-import { KoaMiddleware } from '../koa';
 import { IConfigSpecItem } from './types';
+import { KoaMiddleware } from '../koa';
 declare enum PublishExportsTypes {
     Express = "express",
     Koa = "koa"
@@ -18,7 +18,7 @@ export declare class ConfigsManager implements IManagerByKey {
     protected _exports: BasicDictionary;
     protected _items: BasicDictionary<IConfigItem>;
     protected _key: string;
-    protected _lastError: string;
+    protected _lastError: string | null;
     protected _options: IConfigOptions;
     protected _publicUri: string;
     protected _specs: BasicDictionary<IConfigSpecItem>;
@@ -32,7 +32,7 @@ export declare class ConfigsManager implements IManagerByKey {
     items(): BasicDictionary<IConfigItem>;
     itemNames(): string[];
     key(): string;
-    lastError(): string;
+    lastError(): string | null;
     matchesKey(key: string): boolean;
     options(): IConfigOptions;
     publicItemNames(): string[];
@@ -49,7 +49,7 @@ export declare class ConfigsManager implements IManagerByKey {
     protected genericPublishExports(type: PublishExportsTypes, uri?: string): ExpressMiddleware | KoaMiddleware;
     protected load(): void;
     protected loadExportsOf(name: string): boolean;
-    protected loadSpecsOf(name: string): string;
+    protected loadSpecsOf(name: string): string | null;
     protected validateSpecsOf(name: string): boolean;
 }
 export {};

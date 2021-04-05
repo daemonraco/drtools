@@ -1,11 +1,8 @@
 "use strict";
-/**
- * @file hook.ts
- * @author Alejandro D. Simi
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Hook = void 0;
-const libraries_1 = require("../../libraries");
+const tslib_1 = require("tslib");
+const events_1 = require("events");
 const constants_1 = require("./constants");
 class Hook {
     //
@@ -16,12 +13,12 @@ class Hook {
         this._cache = null;
         this._chainedCache = null;
         this._isCached = false;
-        this._key = null;
+        this._key = '';
         this._listeners = {};
         this._listenersOrder = {};
         //
         // Events.
-        this._events = new libraries_1.EventEmitter();
+        this._events = new events_1.EventEmitter();
         //
         // Public method aliases.
         this.espinel = this.reelIn;
@@ -55,19 +52,21 @@ class Hook {
         // Telling everyone about it (A.K.A. 'bragging' ^__^).
         this._events.emit(constants_1.HookEvents.Hooked, { key });
     }
-    async chainedReelIn(bait) {
-        if (!this.isCached() || this._chainedCache === null) {
-            for (const order of this.cleanOrders()) {
-                bait = (await this._listeners[this._listenersOrder[order]](bait));
+    chainedReelIn(bait) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!this.isCached() || this._chainedCache === null) {
+                for (const order of this.cleanOrders()) {
+                    bait = (yield this._listeners[this._listenersOrder[order]](bait));
+                }
+                if (this.isCached()) {
+                    this._chainedCache = bait;
+                }
             }
-            if (this.isCached()) {
-                this._chainedCache = bait;
+            else {
+                bait = (this._chainedCache);
             }
-        }
-        else {
-            bait = (this._chainedCache);
-        }
-        return bait;
+            return bait;
+        });
     }
     isCached() {
         return this._isCached;
@@ -78,21 +77,23 @@ class Hook {
     listenerCodes() {
         return Object.keys(this._listeners);
     }
-    async reelIn(bait) {
-        let results = {};
-        if (!this.isCached() || this._cache === null) {
-            for (const order of this.cleanOrders()) {
-                const key = this._listenersOrder[order];
-                results[key] = (await this._listeners[key](bait));
+    reelIn(bait) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let results = {};
+            if (!this.isCached() || this._cache === null) {
+                for (const order of this.cleanOrders()) {
+                    const key = this._listenersOrder[order];
+                    results[key] = (yield this._listeners[key](bait));
+                }
+                if (this.isCached()) {
+                    this._cache = results;
+                }
             }
-            if (this.isCached()) {
-                this._cache = results;
+            else {
+                results = this._cache;
             }
-        }
-        else {
-            results = this._cache;
-        }
-        return results;
+            return results;
+        });
     }
     removeListener(key) {
         if (this._listeners[key] !== undefined) {

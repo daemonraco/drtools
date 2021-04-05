@@ -2,12 +2,12 @@
  * @file endpoint-data.ts
  * @author Alejandro D. Simi
  */
-
-import { fs, glob, path } from '../../libraries';
-
 import { Endpoint, EndpointBehaviors, IEndpointBrievesByMethod } from '.';
 import { IEndpointOptions, EndpointPathPattern, EndpointRawByMethod } from '.';
 import { Tools } from '../includes';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import glob from 'glob';
 
 export class EndpointData {
     //
@@ -15,13 +15,13 @@ export class EndpointData {
     readonly BehaviorPattern = /^@@([a-z_0-9]+)(|:(.*))$/i;
     //
     // Protected properties.
-    protected _behaviors: EndpointBehaviors = null;
+    protected _behaviors: EndpointBehaviors | null = null;
     protected _brievesByMethod: IEndpointBrievesByMethod = {};
-    protected _endpoint: Endpoint = null;
+    protected _endpoint: Endpoint | null = null;
     protected _exists: boolean = false;
     protected _options: IEndpointOptions = {};
     protected _raw: EndpointRawByMethod = {};
-    protected _uri: string = null;
+    protected _uri: string = '';
     //
     // Constructor.
     constructor(endpoint: Endpoint, uri: string, options: IEndpointOptions = {}) {
@@ -41,7 +41,7 @@ export class EndpointData {
     public brievesByMethod(): IEndpointBrievesByMethod {
         return this._brievesByMethod;
     }
-    public data(method: string = null): any {
+    public data(method?: string): any {
         let out: any = {
             status: 404,
             message: `Not found.`,
@@ -49,12 +49,12 @@ export class EndpointData {
         };
 
         if (this._exists) {
-            method = method ? method.toLowerCase() : null;
-            if (typeof this._raw['*'] !== 'undefined') {
+            method = method ? method.toLowerCase() : undefined;
+            if (this._raw['*'] !== undefined) {
                 method = '*';
             }
 
-            if (typeof this._raw[method] !== 'undefined') {
+            if (method && this._raw[method] !== undefined) {
                 try {
                     out.data = JSON.parse(JSON.stringify(this._raw[method]));
                     out.data = this.expanded(out.data);
@@ -92,10 +92,10 @@ export class EndpointData {
             const match = out.match(this.BehaviorPattern);
             if (match) {
                 const behavior = match[1];
-                let params = typeof match[3] !== 'undefined' ? match[3] : null;
+                let params = match[3] !== undefined ? match[3] : null;
                 try { params = JSON.parse(match[3]); } catch (e) { }
 
-                const func = this._behaviors[behavior];
+                const func = (<EndpointBehaviors>this._behaviors)[behavior];
                 if (typeof func === 'function') {
                     out = func.apply(this._behaviors, Array.isArray(params) ? params : [params]);
                 } else {
@@ -116,12 +116,12 @@ export class EndpointData {
     }
     /* istanbul ignore next */
     protected loadBehaviors(): void {
-        const behaviorsPath: string = path.join(this._endpoint.directory(), `${this._uri}.js`);
+        const behaviorsPath: string = path.join((<Endpoint>this._endpoint).directory(), `${this._uri}.js`);
 
         if (fs.existsSync(behaviorsPath)) {
             try {
                 const extraBehaviors = require(behaviorsPath);
-                this._behaviors.importBehaviors(extraBehaviors);
+                (<EndpointBehaviors>this._behaviors).importBehaviors(extraBehaviors);
 
                 Object.keys(this._brievesByMethod).forEach((method: string) => this._brievesByMethod[method].behaviors = true);
             } catch (e) { }
@@ -134,21 +134,21 @@ export class EndpointData {
         (<string[]>this._options.globalBehaviors).forEach((globalBehaviorsPath: string): void => {
             try {
                 const globalBehaviors = require(globalBehaviorsPath);
-                this._behaviors.importBehaviors(globalBehaviors);
+                (<EndpointBehaviors>this._behaviors).importBehaviors(globalBehaviors);
             } catch (e) { }
         });
     }
     /* istanbul ignore next */
     protected loadPaths(): void {
-        const basicPath: string = path.join(this._endpoint.directory(), `${this._uri}.json`);
-        const byMethodPattern: string = path.join(this._endpoint.directory(), `_METHODS/*/${this._uri}.json`);
+        const basicPath: string = path.join((<Endpoint>this._endpoint).directory(), `${this._uri}.json`);
+        const byMethodPattern: string = path.join((<Endpoint>this._endpoint).directory(), `_METHODS/*/${this._uri}.json`);
         const byMethodPaths: string[] = glob.sync(byMethodPattern);
 
         if (byMethodPaths.length) {
             this._exists = true;
 
             byMethodPaths.forEach((p: string) => {
-                const matches: string[] = p.match(EndpointPathPattern);
+                const matches: RegExpMatchArray | null = p.match(EndpointPathPattern);
                 if (matches) {
                     this._brievesByMethod[matches[3]] = {
                         behaviors: false,
@@ -163,7 +163,6 @@ export class EndpointData {
 
             this._brievesByMethod['*'] = {
                 behaviors: false,
-                method: null,
                 path: basicPath,
                 uri: this._uri
             };

@@ -2,13 +2,11 @@
  * @file drcollector.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk, EventEmitter } from '../../libraries';
-
 import { BasicList, Tools } from '../includes';
 import { ConfigsManager } from '../configs';
 import { DRCollectorConstants, DRCollectorManagers, DRCollectorEvents } from './constants';
 import { EndpointsManager } from '../mock-endpoints';
+import { EventEmitter } from 'events';
 import { IAsyncManager, IManagerByKey } from './types';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
@@ -16,11 +14,12 @@ import { MockRoutesManager } from '../mock-routes';
 import { PluginsManager, IPluginSpecsList } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
+import chalk from 'chalk';
 
 class DRCollectorClass {
     //
     // Protected class properties.
-    protected static _Instance: DRCollectorClass = null;
+    protected static _Instance: DRCollectorClass | null = null;
     //
     // Protected properties.
     protected _configsManagers: BasicList<ConfigsManager> = [];
@@ -217,8 +216,8 @@ class DRCollectorClass {
     //
     // Protected methods.
     /* istanbul ignore next */
-    protected findManager(managers: BasicList<IManagerByKey>, key: string): IManagerByKey {
-        let manager: IManagerByKey = null;
+    protected findManager(managers: BasicList<IManagerByKey>, key: string): IManagerByKey | null {
+        let manager: IManagerByKey | null = null;
 
         for (const m of managers) {
             if (m.matchesKey(key)) {
@@ -230,7 +229,7 @@ class DRCollectorClass {
         return manager;
     }
     /* istanbul ignore next */
-    protected infoReportConfigsManager(): BasicList<any> {
+    protected infoReportConfigsManager(): BasicList<any> | null {
         const results: BasicList<any> = [];
 
         for (const manager of this._configsManagers) {
@@ -252,7 +251,7 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportEndpointsManager(): BasicList<any> {
+    protected infoReportEndpointsManager(): BasicList<any> | null {
         const results: BasicList<any> = [];
 
         for (const manager of this._endpointsManager) {
@@ -267,7 +266,7 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportLoadersManager(): BasicList<any> {
+    protected infoReportLoadersManager(): BasicList<any> | null {
         const results: BasicList<any> = [];
 
         for (const manager of this._loadersManagers) {
@@ -281,7 +280,7 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportMiddlewaresManager(): BasicList<any> {
+    protected infoReportMiddlewaresManager(): BasicList<any> | null {
         const results: BasicList<any> = [];
 
         for (const manager of this._middlewaresManager) {
@@ -295,7 +294,7 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportMockRoutesManager(): BasicList<any> {
+    protected infoReportMockRoutesManager(): BasicList<any> | null {
         const results: BasicList<any> = [];
 
         for (const manager of this._mockRoutesManager) {
@@ -309,7 +308,7 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportPluginsManager(): BasicList<any> {
+    protected infoReportPluginsManager(): BasicList<any> | null {
         const results: BasicList<any> = [];
 
         for (const manager of this._pluginsManager) {
@@ -340,7 +339,7 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportRoutesManager(): BasicList<any> {
+    protected infoReportRoutesManager(): BasicList<any> | null {
         const results: BasicList<any> = [];
 
         for (const manager of this._routesManager) {
@@ -354,7 +353,7 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportTasksManager(): BasicList<any> {
+    protected infoReportTasksManager(): BasicList<any> | null {
         const results: BasicList<any> = [];
 
         for (const manager of this._tasksManager) {

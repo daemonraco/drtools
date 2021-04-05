@@ -1,14 +1,20 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DRToolsGenerator = void 0;
+const tslib_1 = require("tslib");
 /**
  * @file generator.ts
  * @author Alejandro D. Simi
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DRToolsGenerator = void 0;
-const libraries_1 = require("../../libraries");
+const commander = require('commander');
 const drtools_1 = require("../../core/drtools");
-const tools_1 = require("../../core/includes/tools");
-const tools_2 = require("../includes/tools");
+const tools_1 = require("../includes/tools");
+const tools_2 = require("../../core/includes/tools");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
+const ejs_1 = tslib_1.__importDefault(require("ejs"));
+const glob_1 = tslib_1.__importDefault(require("glob"));
 class DRToolsGenerator {
     //
     // Constructor
@@ -27,15 +33,15 @@ class DRToolsGenerator {
     // Public methods.
     run() {
         this.setCommands();
-        libraries_1.commander.parse(process.argv);
-        if (libraries_1.commander.args < 1) {
-            libraries_1.commander.help();
+        commander.parse(process.argv);
+        if (commander.args < 1) {
+            commander.help();
         }
     }
     //
     // Protected methods.
     promptHeader() {
-        console.log(`DRTools Generator (v${tools_2.Tools.Instance().version()}):`);
+        console.log(`DRTools Generator (v${tools_1.Tools.Instance().version()}):`);
     }
     generateMiddleware(name, directory, options) {
         let error = null;
@@ -46,14 +52,14 @@ class DRToolsGenerator {
         };
         cleanOptions.fullName = `${name}.${cleanOptions.suffix}.js`;
         console.log(`Generating middleware`);
-        console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
+        console.log(`\tWorking directory:  '${chalk_1.default.green(directory)}'`);
         if (!error) {
-            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            const check = tools_2.Tools.CheckDirectory(directory, process.cwd());
             switch (check.status) {
-                case tools_1.ToolsCheckPath.Ok:
+                case tools_2.ToolsCheckPath.Ok:
                     directory = check.path;
                     break;
-                case tools_1.ToolsCheckPath.WrongType:
+                case tools_2.ToolsCheckPath.WrongType:
                     error = `'${directory}' is not a directory.`;
                     break;
                 default:
@@ -62,20 +68,20 @@ class DRToolsGenerator {
             }
         }
         if (!error) {
-            cleanOptions.fullPath = libraries_1.path.join(directory, cleanOptions.fullName);
-            console.log(`\tMiddleware file: '${libraries_1.chalk.green(cleanOptions.fullPath)}'`);
+            cleanOptions.fullPath = path.join(directory, cleanOptions.fullName);
+            console.log(`\tMiddleware file: '${chalk_1.default.green(cleanOptions.fullPath)}'`);
         }
         if (!error) {
             console.log(`Generating middleware file...`);
             if (!cleanOptions.testRun) {
-                const exists = libraries_1.fs.existsSync(cleanOptions.fullPath);
+                const exists = fs.existsSync(cleanOptions.fullPath);
                 if (cleanOptions.force || !exists) {
                     try {
                         const templatePath = options.koa
-                            ? libraries_1.path.join(__dirname, '../../../assets/template.middleware.koa.ejs')
-                            : libraries_1.path.join(__dirname, '../../../assets/template.middleware.ejs');
-                        const template = libraries_1.fs.readFileSync(templatePath).toString();
-                        libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {
+                            ? path.join(__dirname, '../../../assets/template.middleware.koa.ejs')
+                            : path.join(__dirname, '../../../assets/template.middleware.ejs');
+                        const template = fs.readFileSync(templatePath).toString();
+                        fs.writeFileSync(cleanOptions.fullPath, ejs_1.default.render(template, {
                             name,
                             globalConstant: drtools_1.MiddlewaresConstants.GlobalConfigPointer
                         }, {}));
@@ -89,7 +95,7 @@ class DRToolsGenerator {
         }
         if (error) {
             console.log();
-            console.error(libraries_1.chalk.red(error));
+            console.error(chalk_1.default.red(error));
         }
     }
     generateRoute(name, directory, options) {
@@ -101,14 +107,14 @@ class DRToolsGenerator {
         };
         cleanOptions.fullName = `${name}.${cleanOptions.suffix}.js`;
         console.log(`Generating route`);
-        console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
+        console.log(`\tWorking directory:  '${chalk_1.default.green(directory)}'`);
         if (!error) {
-            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            const check = tools_2.Tools.CheckDirectory(directory, process.cwd());
             switch (check.status) {
-                case tools_1.ToolsCheckPath.Ok:
+                case tools_2.ToolsCheckPath.Ok:
                     directory = check.path;
                     break;
-                case tools_1.ToolsCheckPath.WrongType:
+                case tools_2.ToolsCheckPath.WrongType:
                     error = `'${directory}' is not a directory.`;
                     break;
                 default:
@@ -117,20 +123,20 @@ class DRToolsGenerator {
             }
         }
         if (!error) {
-            cleanOptions.fullPath = libraries_1.path.join(directory, cleanOptions.fullName);
-            console.log(`\tRoute file: '${libraries_1.chalk.green(cleanOptions.fullPath)}'`);
+            cleanOptions.fullPath = path.join(directory, cleanOptions.fullName);
+            console.log(`\tRoute file: '${chalk_1.default.green(cleanOptions.fullPath)}'`);
         }
         if (!error) {
             console.log(`Generating route file...`);
             if (!cleanOptions.testRun) {
-                const exists = libraries_1.fs.existsSync(cleanOptions.fullPath);
+                const exists = fs.existsSync(cleanOptions.fullPath);
                 if (cleanOptions.force || !exists) {
                     try {
                         const templatePath = options.koa
-                            ? libraries_1.path.join(__dirname, '../../../assets/template.route.koa.ejs')
-                            : libraries_1.path.join(__dirname, '../../../assets/template.route.ejs');
-                        const template = libraries_1.fs.readFileSync(templatePath).toString();
-                        libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {
+                            ? path.join(__dirname, '../../../assets/template.route.koa.ejs')
+                            : path.join(__dirname, '../../../assets/template.route.ejs');
+                        const template = fs.readFileSync(templatePath).toString();
+                        fs.writeFileSync(cleanOptions.fullPath, ejs_1.default.render(template, {
                             name,
                             globalConstant: drtools_1.RoutesConstants.GlobalConfigPointer
                         }, {}));
@@ -144,7 +150,7 @@ class DRToolsGenerator {
         }
         if (error) {
             console.log();
-            console.error(libraries_1.chalk.red(error));
+            console.error(chalk_1.default.red(error));
         }
     }
     generateMockUpRoutes(directory, options) {
@@ -156,14 +162,14 @@ class DRToolsGenerator {
         };
         cleanOptions.configName += cleanOptions.configName.match(/\.json$/) ? '' : '.json';
         console.log(`Generating a mock-up routes`);
-        console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
+        console.log(`\tWorking directory:  '${chalk_1.default.green(directory)}'`);
         if (!error) {
-            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            const check = tools_2.Tools.CheckDirectory(directory, process.cwd());
             switch (check.status) {
-                case tools_1.ToolsCheckPath.Ok:
+                case tools_2.ToolsCheckPath.Ok:
                     directory = check.path;
                     break;
-                case tools_1.ToolsCheckPath.WrongType:
+                case tools_2.ToolsCheckPath.WrongType:
                     error = `'${directory}' is not a directory.`;
                     break;
                 default:
@@ -172,17 +178,17 @@ class DRToolsGenerator {
             }
         }
         if (!error) {
-            cleanOptions.configPath = libraries_1.path.join(directory, cleanOptions.configName);
-            console.log(`\tConfiguration file: '${libraries_1.chalk.green(cleanOptions.configPath)}'`);
+            cleanOptions.configPath = path.join(directory, cleanOptions.configName);
+            console.log(`\tConfiguration file: '${chalk_1.default.green(cleanOptions.configPath)}'`);
         }
         let routes = [];
         if (!error) {
-            routes = libraries_1.glob.sync(libraries_1.path.join(directory, '**/*'))
+            routes = glob_1.default.sync(path.join(directory, '**/*'))
                 .sort()
                 .filter((p) => {
                 let stat = null;
                 try {
-                    stat = libraries_1.fs.statSync(p);
+                    stat = fs.statSync(p);
                 }
                 catch (e) { }
                 return stat && stat.isFile();
@@ -197,14 +203,14 @@ class DRToolsGenerator {
             });
             console.log(`\tLoaded routes:`);
             routes.forEach((r) => {
-                console.log(`\t\t- '${libraries_1.chalk.green(r.uri)}' (file: '${libraries_1.chalk.magenta(r.path)}')`);
+                console.log(`\t\t- '${chalk_1.default.green(r.uri)}' (file: '${chalk_1.default.magenta(r.path)}')`);
             });
         }
         if (!error) {
             console.log(`Generating configuration file...`);
             if (!cleanOptions.testRun) {
                 try {
-                    libraries_1.fs.writeFileSync(cleanOptions.configPath, JSON.stringify({
+                    fs.writeFileSync(cleanOptions.configPath, JSON.stringify({
                         guards: [],
                         routes
                     }, null, 2));
@@ -214,7 +220,7 @@ class DRToolsGenerator {
         }
         if (error) {
             console.log();
-            console.error(libraries_1.chalk.red(error));
+            console.error(chalk_1.default.red(error));
         }
     }
     generatePlugin(name, directory, options) {
@@ -225,16 +231,16 @@ class DRToolsGenerator {
             testRun: options.testRun == true
         };
         console.log(`Generating plugin`);
-        console.log(`\tName:              '${libraries_1.chalk.green(name)}'`);
+        console.log(`\tName:              '${chalk_1.default.green(name)}'`);
         //
         // Checking plugins directory.
         if (!error) {
-            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            const check = tools_2.Tools.CheckDirectory(directory, process.cwd());
             switch (check.status) {
-                case tools_1.ToolsCheckPath.Ok:
+                case tools_2.ToolsCheckPath.Ok:
                     directory = check.path;
                     break;
-                case tools_1.ToolsCheckPath.WrongType:
+                case tools_2.ToolsCheckPath.WrongType:
                     error = `'${directory}' is not a directory.`;
                     break;
                 default:
@@ -242,19 +248,19 @@ class DRToolsGenerator {
                     break;
             }
         }
-        cleanOptions.pluginDirectory = libraries_1.path.join(directory, name);
-        cleanOptions.pluginIndex = libraries_1.path.join(cleanOptions.pluginDirectory, 'index.js');
-        console.log(`\tWorking directory: '${libraries_1.chalk.green(directory)}'`);
-        console.log(`\tPlugin directory:  '${libraries_1.chalk.green(cleanOptions.pluginDirectory)}'`);
+        cleanOptions.pluginDirectory = path.join(directory, name);
+        cleanOptions.pluginIndex = path.join(cleanOptions.pluginDirectory, 'index.js');
+        console.log(`\tWorking directory: '${chalk_1.default.green(directory)}'`);
+        console.log(`\tPlugin directory:  '${chalk_1.default.green(cleanOptions.pluginDirectory)}'`);
         //
         // Checking configurations directory.
         if (!error && cleanOptions.configs) {
-            const check = tools_1.Tools.CheckDirectory(cleanOptions.configs, process.cwd());
+            const check = tools_2.Tools.CheckDirectory(cleanOptions.configs, process.cwd());
             switch (check.status) {
-                case tools_1.ToolsCheckPath.Ok:
+                case tools_2.ToolsCheckPath.Ok:
                     cleanOptions.configs = check.path;
                     break;
-                case tools_1.ToolsCheckPath.WrongType:
+                case tools_2.ToolsCheckPath.WrongType:
                     error = `'${cleanOptions.configs}' is not a directory.`;
                     break;
                 default:
@@ -263,9 +269,9 @@ class DRToolsGenerator {
             }
         }
         if (!error && cleanOptions.configs) {
-            cleanOptions.configFile = libraries_1.path.join(cleanOptions.configs, `${drtools_1.PluginsConstants.ConfigsPrefix}${name}.json`);
-            console.log(`\tConfigs directory: '${libraries_1.chalk.green(cleanOptions.configs)}'`);
-            console.log(`\tConfig file:       '${libraries_1.chalk.green(cleanOptions.configFile)}'`);
+            cleanOptions.configFile = path.join(cleanOptions.configs, `${drtools_1.PluginsConstants.ConfigsPrefix}${name}.json`);
+            console.log(`\tConfigs directory: '${chalk_1.default.green(cleanOptions.configs)}'`);
+            console.log(`\tConfig file:       '${chalk_1.default.green(cleanOptions.configFile)}'`);
         }
         if (!error) {
             console.log();
@@ -275,16 +281,16 @@ class DRToolsGenerator {
         if (!error) {
             let stat = null;
             try {
-                stat = libraries_1.fs.statSync(cleanOptions.pluginDirectory);
+                stat = fs.statSync(cleanOptions.pluginDirectory);
             }
             catch (e) { }
             if (stat && stat.isDirectory()) {
                 // Nothing.
             }
             else if (!stat) {
-                console.log(`Creating directory: '${libraries_1.chalk.green(cleanOptions.pluginDirectory)}'`);
+                console.log(`Creating directory: '${chalk_1.default.green(cleanOptions.pluginDirectory)}'`);
                 if (!cleanOptions.testRun) {
-                    libraries_1.fs.mkdirSync(cleanOptions.pluginDirectory);
+                    fs.mkdirSync(cleanOptions.pluginDirectory);
                 }
             }
             else {
@@ -296,7 +302,7 @@ class DRToolsGenerator {
         if (!error) {
             let stat = null;
             try {
-                stat = libraries_1.fs.statSync(cleanOptions.pluginIndex);
+                stat = fs.statSync(cleanOptions.pluginIndex);
             }
             catch (e) { }
             if (!stat) {
@@ -311,11 +317,11 @@ class DRToolsGenerator {
                 }
             }
             if (!error) {
-                console.log(`Creating file: '${libraries_1.chalk.green(cleanOptions.pluginIndex)}'`);
+                console.log(`Creating file: '${chalk_1.default.green(cleanOptions.pluginIndex)}'`);
                 if (!cleanOptions.testRun) {
                     try {
-                        const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.plugin-index.ejs')).toString();
-                        libraries_1.fs.writeFileSync(cleanOptions.pluginIndex, libraries_1.ejs.render(template, {
+                        const template = fs.readFileSync(path.join(__dirname, '../../../assets/template.plugin-index.ejs')).toString();
+                        fs.writeFileSync(cleanOptions.pluginIndex, ejs_1.default.render(template, {
                             name,
                             defaultMethod: drtools_1.PluginsConstants.DefaultMethod,
                             globalConstant: drtools_1.PluginsConstants.GlobalConfigPointer
@@ -330,7 +336,7 @@ class DRToolsGenerator {
         if (!error && cleanOptions.configs) {
             let stat = null;
             try {
-                stat = libraries_1.fs.statSync(cleanOptions.configFile);
+                stat = fs.statSync(cleanOptions.configFile);
             }
             catch (e) { }
             if (!stat) {
@@ -345,11 +351,11 @@ class DRToolsGenerator {
                 }
             }
             if (!error) {
-                console.log(`Creating file: '${libraries_1.chalk.green(cleanOptions.configFile)}'`);
+                console.log(`Creating file: '${chalk_1.default.green(cleanOptions.configFile)}'`);
                 if (!cleanOptions.testRun) {
                     try {
-                        const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.plugin-config.ejs')).toString();
-                        libraries_1.fs.writeFileSync(cleanOptions.configFile, libraries_1.ejs.render(template, {
+                        const template = fs.readFileSync(path.join(__dirname, '../../../assets/template.plugin-config.ejs')).toString();
+                        fs.writeFileSync(cleanOptions.configFile, ejs_1.default.render(template, {
                             name,
                             defaultMethod: drtools_1.PluginsConstants.DefaultMethod,
                             globalConstant: drtools_1.PluginsConstants.GlobalConfigPointer
@@ -361,7 +367,7 @@ class DRToolsGenerator {
         }
         if (error) {
             console.log();
-            console.error(libraries_1.chalk.red(error));
+            console.error(chalk_1.default.red(error));
         }
     }
     generateTask(name, directory, options) {
@@ -375,14 +381,14 @@ class DRToolsGenerator {
         };
         cleanOptions.fullName = `${name}.${cleanOptions.suffix}.js`;
         console.log(`Generating task`);
-        console.log(`\tWorking directory:  '${libraries_1.chalk.green(directory)}'`);
+        console.log(`\tWorking directory:  '${chalk_1.default.green(directory)}'`);
         if (!error) {
-            const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
+            const check = tools_2.Tools.CheckDirectory(directory, process.cwd());
             switch (check.status) {
-                case tools_1.ToolsCheckPath.Ok:
+                case tools_2.ToolsCheckPath.Ok:
                     directory = check.path;
                     break;
-                case tools_1.ToolsCheckPath.WrongType:
+                case tools_2.ToolsCheckPath.WrongType:
                     error = `'${directory}' is not a directory.`;
                     break;
                 default:
@@ -391,13 +397,13 @@ class DRToolsGenerator {
             }
         }
         if (!error) {
-            cleanOptions.fullPath = libraries_1.path.join(directory, cleanOptions.fullName);
-            console.log(`\tTask file: '${libraries_1.chalk.green(cleanOptions.fullPath)}'`);
+            cleanOptions.fullPath = path.join(directory, cleanOptions.fullName);
+            console.log(`\tTask file: '${chalk_1.default.green(cleanOptions.fullPath)}'`);
         }
         if (!error) {
             console.log(`Generating task file...`);
             if (!cleanOptions.testRun) {
-                const exists = libraries_1.fs.existsSync(cleanOptions.fullPath);
+                const exists = fs.existsSync(cleanOptions.fullPath);
                 if (cleanOptions.force || !exists) {
                     const properName = name.replace(/[-_\.]/g, ' ')
                         .split(' ')
@@ -405,8 +411,8 @@ class DRToolsGenerator {
                         .join(' ');
                     const properClassName = properName.replace(/ /g, '');
                     try {
-                        const template = libraries_1.fs.readFileSync(libraries_1.path.join(__dirname, '../../../assets/template.task.ejs')).toString();
-                        libraries_1.fs.writeFileSync(cleanOptions.fullPath, libraries_1.ejs.render(template, {
+                        const template = fs.readFileSync(path.join(__dirname, '../../../assets/template.task.ejs')).toString();
+                        fs.writeFileSync(cleanOptions.fullPath, ejs_1.default.render(template, {
                             interval: cleanOptions.interval,
                             name,
                             properClassName,
@@ -423,13 +429,13 @@ class DRToolsGenerator {
         }
         if (error) {
             console.log();
-            console.error(libraries_1.chalk.red(error));
+            console.error(chalk_1.default.red(error));
         }
     }
     setCommands() {
-        libraries_1.commander
-            .version(tools_2.Tools.Instance().version(), `-v, --version`);
-        libraries_1.commander
+        commander
+            .version(tools_1.Tools.Instance().version(), `-v, --version`);
+        commander
             .command(`mock-routes <directory>`)
             .alias(`mr`)
             .description(`generates a mock-up routes configuration based on the contents of a directory.`)
@@ -438,7 +444,7 @@ class DRToolsGenerator {
             .action((directory, options) => {
             this.generateMockUpRoutes(directory, options);
         });
-        libraries_1.commander
+        commander
             .command(`middleware <name> <directory>`)
             .alias(`m`)
             .description(`generates a middleware with an initial structure.`)
@@ -449,7 +455,7 @@ class DRToolsGenerator {
             .action((name, directory, options) => {
             this.generateMiddleware(name, directory, options);
         });
-        libraries_1.commander
+        commander
             .command(`plugin <name> <directory>`)
             .alias(`p`)
             .description(`generates a plugin directory with an initial structure.`)
@@ -459,7 +465,7 @@ class DRToolsGenerator {
             .action((name, directory, options) => {
             this.generatePlugin(name, directory, options);
         });
-        libraries_1.commander
+        commander
             .command(`route <name> <directory>`)
             .alias(`r`)
             .description(`generates a route with an initial structure.`)
@@ -470,7 +476,7 @@ class DRToolsGenerator {
             .action((name, directory, options) => {
             this.generateRoute(name, directory, options);
         });
-        libraries_1.commander
+        commander
             .command(`task <name> <directory>`)
             .alias(`t`)
             .description(`generates a task with an initial structure.`)
@@ -482,12 +488,12 @@ class DRToolsGenerator {
             .action((name, directory, options) => {
             this.generateTask(name, directory, options);
         });
-        libraries_1.commander
+        commander
             .action((cmd, options) => {
-            console.error(libraries_1.chalk.red(`\nNo valid command specified.`));
-            libraries_1.commander.help();
+            console.error(chalk_1.default.red(`\nNo valid command specified.`));
+            commander.help();
         });
-        libraries_1.commander.outputHelp((text) => {
+        commander.outputHelp((text) => {
             this.promptHeader();
             return ``;
         });

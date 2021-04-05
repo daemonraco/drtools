@@ -2,31 +2,27 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk } from '../../libraries';
-
 import { ConfigsManager } from '../configs';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { Endpoint, IEndpointBrief, IEndpointsManagerOptions, IEndpointOptions } from '.';
 import { ExpressMiddleware } from '../express';
 import { KoaMiddleware } from '../koa';
 import { Tools, ToolsCheckPath } from '../includes';
-
-declare const process: any;
+import chalk from 'chalk';
 
 export class EndpointsManager implements IManagerByKey {
     //
     // Protected properties.
-    protected _configs: ConfigsManager = null;
-    protected _endpointsDirectory: string = null;
-    protected _endpointsUri: string = null;
-    protected _lastError: string = null;
-    protected _options: IEndpointsManagerOptions = null;
-    protected _provider: Endpoint = null;
+    protected _configs: ConfigsManager | null = null;
+    protected _endpointsDirectory: string = '';
+    protected _endpointsUri: string = '';
+    protected _lastError: string | null = null;
+    protected _options: IEndpointsManagerOptions = { directory: '', uri: '' };
+    protected _provider: Endpoint | null = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(options: IEndpointsManagerOptions, configs: ConfigsManager = null) {
+    constructor(options: IEndpointsManagerOptions, configs: ConfigsManager | null = null) {
         this._configs = configs;
         this._options = options;
         this.cleanOptions();
@@ -40,23 +36,23 @@ export class EndpointsManager implements IManagerByKey {
     public directory(): string {
         return this._endpointsDirectory;
     }
-    public lastError(): string {
+    public lastError(): string | null {
         return this._lastError;
     }
     public matchesKey(key: string): boolean {
         return this.directory() === key;
     }
-    public options(): IEndpointOptions {
-        return this._options.options;
+    public options(): IEndpointOptions | null {
+        return this._options.options || null;
     }
     public paths(): IEndpointBrief[] {
-        return this._provider.paths();
+        return this._provider ? this._provider.paths() : [];
     }
     public provide(): ExpressMiddleware {
-        return this.valid() ? this._provider.expressMiddleware() : this.provideInvalidMiddleware();
+        return this.valid() && this._provider ? this._provider.expressMiddleware() : this.provideInvalidMiddleware();
     }
     public provideForKoa(): KoaMiddleware {
-        return this.valid() ? this._provider.koaMiddleware() : this.provideInvalidKoaMiddleware();
+        return this.valid() && this._provider ? this._provider.koaMiddleware() : this.provideInvalidKoaMiddleware();
     }
     public valid(): boolean {
         return this._valid;

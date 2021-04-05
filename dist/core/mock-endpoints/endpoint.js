@@ -1,13 +1,12 @@
 "use strict";
-/**
- * @file endpoint.ts
- * @author Alejandro D. Simi
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Endpoint = void 0;
-const libraries_1 = require("../../libraries");
+const tslib_1 = require("tslib");
 const _1 = require(".");
+const http_status_codes_1 = require("http-status-codes");
 const includes_1 = require("../includes");
+const path = tslib_1.__importStar(require("path"));
+const glob_1 = tslib_1.__importDefault(require("glob"));
 class Endpoint {
     //
     // Constructor.
@@ -19,7 +18,7 @@ class Endpoint {
         this._loadedEndpoints = {};
         this._restPath = '';
         this._restPattern = null;
-        this._options = null;
+        this._options = {};
         this._dirPath = dirPath;
         this._restPath = restPath;
         this._options = options;
@@ -48,7 +47,7 @@ class Endpoint {
             if (match) {
                 const result = this.responseFor(match[2], req.method);
                 res.header('Content-Type', 'application/json');
-                if (result.status === libraries_1.httpStatusCodes.OK) {
+                if (result.status === http_status_codes_1.StatusCodes.OK) {
                     res.status(result.status).json(result.data);
                 }
                 else {
@@ -65,12 +64,12 @@ class Endpoint {
         };
     }
     koaMiddleware() {
-        return async (ctx, next) => {
+        return (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, function* () {
             const match = ctx.url.match(this._restPattern);
             if (match) {
                 const result = this.responseFor(match[2], ctx.method);
                 ctx.set('Content-Type', 'application/json');
-                if (result.status === libraries_1.httpStatusCodes.OK) {
+                if (result.status === http_status_codes_1.StatusCodes.OK) {
                     ctx.body = result.data;
                 }
                 else {
@@ -82,13 +81,13 @@ class Endpoint {
                 }
             }
             else {
-                await next();
+                yield next();
             }
-        };
+        });
     }
     responseFor(endpoint, method, simple = false) {
         let out = {
-            status: libraries_1.httpStatusCodes.OK,
+            status: http_status_codes_1.StatusCodes.OK,
             message: null,
             data: {}
         };
@@ -144,13 +143,12 @@ class Endpoint {
     }
     /* istanbul ignore next */
     loadAllEndpoints() {
-        const paths = libraries_1.glob.sync(libraries_1.path.join(this.directory(), '**/*.json'));
+        const paths = glob_1.default.sync(path.join(this.directory(), '**/*.json'));
         const directoryLength = this.directory().length;
         let uris = [];
         paths.forEach((p) => {
             const matches = p.match(_1.EndpointPathPattern);
             if (matches) {
-                let uri;
                 if (matches[2] === '_METHODS') {
                     uris.push(matches[4]);
                 }
@@ -165,7 +163,7 @@ class Endpoint {
     }
     /* istanbul ignore next */
     loadEndpoint(endpoint) {
-        if (typeof this._loadedEndpoints[endpoint] === 'undefined') {
+        if (this._loadedEndpoints[endpoint] === undefined) {
             this._loadedEndpoints[endpoint] = new _1.EndpointData(this, endpoint, this._options);
         }
     }

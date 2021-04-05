@@ -9,7 +9,7 @@ export declare class RoutesManager extends GenericManager<IRouteOptions> {
     protected _app: any;
     protected _isKoa: boolean;
     protected _routes: any[];
-    constructor(app: any, directories: string[] | string, options: IRouteOptions, configs: ConfigsManager);
+    constructor(app: any, directories: string[] | string, options: IRouteOptions | undefined, configs: ConfigsManager);
     load(): Promise<boolean>;
     routes(): any[];
     protected cleanOptions(): void;

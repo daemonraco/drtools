@@ -2,20 +2,18 @@
  * @file hook.ts
  * @author Alejandro D. Simi
  */
-
-import { EventEmitter } from '../../libraries';
-
 import { BasicDictionary, BasicList } from '../includes';
+import { EventEmitter } from 'events';
 import { HookBait, HookFunctions, HookResults, HookRunFunction } from './types';
 import { HookConstants, HookEvents } from './constants';
 
 export class Hook {
     //
     // Protected properties.
-    protected _cache: HookBait = null;
-    protected _chainedCache: HookBait = null;
+    protected _cache: HookBait | null = null;
+    protected _chainedCache: HookBait | null = null;
     protected _isCached: boolean = false;
-    protected _key: string = null;
+    protected _key: string = '';
     protected _listeners: HookFunctions<any, any> = {};
     protected _listenersOrder: BasicDictionary<string> = {};
     //

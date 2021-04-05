@@ -8,18 +8,18 @@ import { Endpoint, IEndpointBrief, IEndpointsManagerOptions, IEndpointOptions } 
 import { ExpressMiddleware } from '../express';
 import { KoaMiddleware } from '../koa';
 export declare class EndpointsManager implements IManagerByKey {
-    protected _configs: ConfigsManager;
+    protected _configs: ConfigsManager | null;
     protected _endpointsDirectory: string;
     protected _endpointsUri: string;
-    protected _lastError: string;
+    protected _lastError: string | null;
     protected _options: IEndpointsManagerOptions;
-    protected _provider: Endpoint;
+    protected _provider: Endpoint | null;
     protected _valid: boolean;
-    constructor(options: IEndpointsManagerOptions, configs?: ConfigsManager);
+    constructor(options: IEndpointsManagerOptions, configs?: ConfigsManager | null);
     directory(): string;
-    lastError(): string;
+    lastError(): string | null;
     matchesKey(key: string): boolean;
-    options(): IEndpointOptions;
+    options(): IEndpointOptions | null;
     paths(): IEndpointBrief[];
     provide(): ExpressMiddleware;
     provideForKoa(): KoaMiddleware;

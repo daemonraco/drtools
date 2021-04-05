@@ -1,14 +1,11 @@
 "use strict";
-/**
- * @file manager.ts
- * @author Alejandro D. Simi
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MiddlewaresManager = void 0;
-const libraries_1 = require("../../libraries");
+const tslib_1 = require("tslib");
 const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const _1 = require(".");
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
 class MiddlewaresManager extends includes_1.GenericManager {
     //
     // Constructor.
@@ -23,13 +20,15 @@ class MiddlewaresManager extends includes_1.GenericManager {
     }
     //
     // Public methods.
-    async load() {
-        if (!this._loaded) {
-            this._loaded = true;
-            this.loadAndAttach();
-            this._valid = !this._lastError;
-        }
-        return this.valid();
+    load() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!this._loaded) {
+                this._loaded = true;
+                this.loadAndAttach();
+                this._valid = !this._lastError;
+            }
+            return this.valid();
+        });
     }
     //
     // Protected methods.
@@ -43,21 +42,22 @@ class MiddlewaresManager extends includes_1.GenericManager {
     }
     /* istanbul ignore next */
     loadAndAttach() {
-        if (this._options.verbose) {
+        var _a, _b;
+        if ((_a = this._options) === null || _a === void 0 ? void 0 : _a.verbose) {
             console.log(`Loading middlewares:`);
         }
         if (!this._lastError && this._itemSpecs.length > 0) {
             for (let item of this._itemSpecs) {
                 try {
-                    if (this._options.verbose) {
-                        console.log(`\t- '${libraries_1.chalk.green(item.name)}'`);
+                    if ((_b = this._options) === null || _b === void 0 ? void 0 : _b.verbose) {
+                        console.log(`\t- '${chalk_1.default.green(item.name)}'`);
                     }
                     global.configs = this._configs;
                     this._app.use(require(item.path));
                     delete global.configs;
                 }
                 catch (err) {
-                    console.error(libraries_1.chalk.red(`Unable to load middleware '${item.name}'.`), err);
+                    console.error(chalk_1.default.red(`Unable to load middleware '${item.name}'.`), err);
                 }
             }
         }

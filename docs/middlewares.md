@@ -1,3 +1,8 @@
+<!-- version-warning -->
+!>__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
+VERSION 0.0.1</span>__
+<!-- /version-warning -->
+
 # DRTools: Middlewares
 
 ## What is a middleware?
@@ -41,3 +46,5 @@ argument:
 
 ## Koa.js
 Yes there's support for [koa.js](https://koajs.com/) middlewares.
+
+<!-- version-check:0.0.1 -->

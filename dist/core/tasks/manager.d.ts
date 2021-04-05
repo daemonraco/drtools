@@ -8,10 +8,10 @@ import { ITasksManagerOptions, ITasksManager_TasksResponse, TasksList } from '.'
 export declare class TasksManager extends GenericManager<ITasksManagerOptions> {
     protected _consumingQueue: boolean;
     protected _intervals: any[];
-    protected _items: TasksList;
+    protected _items: TasksList | null;
     protected _queue: any[];
     protected _queueInterval: any;
-    constructor(directory: string, options?: ITasksManagerOptions, configs?: ConfigsManager);
+    constructor(directory: string, options?: ITasksManagerOptions | null, configs?: ConfigsManager | null);
     load(): Promise<boolean>;
     tasks(): ITasksManager_TasksResponse[];
     protected consumeQueue(): Promise<void>;

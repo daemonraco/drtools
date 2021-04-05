@@ -1,12 +1,12 @@
+/// <reference types="node" />
 /**
  * @file drcollector.ts
  * @author Alejandro D. Simi
  */
-/// <reference types="node" />
-import { EventEmitter } from '../../libraries';
 import { BasicList } from '../includes';
 import { ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';
+import { EventEmitter } from 'events';
 import { IAsyncManager, IManagerByKey } from './types';
 import { LoadersManager } from '../loaders';
 import { MiddlewaresManager } from '../middlewares';
@@ -15,7 +15,7 @@ import { PluginsManager } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
 declare class DRCollectorClass {
-    protected static _Instance: DRCollectorClass;
+    protected static _Instance: DRCollectorClass | null;
     protected _configsManagers: BasicList<ConfigsManager>;
     protected _endpointsManager: BasicList<EndpointsManager>;
     protected _infoReport: any;
@@ -53,15 +53,15 @@ declare class DRCollectorClass {
     routesManagers(): BasicList<RoutesManager>;
     tasksManager(key: string): TasksManager;
     tasksManagers(): BasicList<TasksManager>;
-    protected findManager(managers: BasicList<IManagerByKey>, key: string): IManagerByKey;
-    protected infoReportConfigsManager(): BasicList<any>;
-    protected infoReportEndpointsManager(): BasicList<any>;
-    protected infoReportLoadersManager(): BasicList<any>;
-    protected infoReportMiddlewaresManager(): BasicList<any>;
-    protected infoReportMockRoutesManager(): BasicList<any>;
-    protected infoReportPluginsManager(): BasicList<any>;
-    protected infoReportRoutesManager(): BasicList<any>;
-    protected infoReportTasksManager(): BasicList<any>;
+    protected findManager(managers: BasicList<IManagerByKey>, key: string): IManagerByKey | null;
+    protected infoReportConfigsManager(): BasicList<any> | null;
+    protected infoReportEndpointsManager(): BasicList<any> | null;
+    protected infoReportLoadersManager(): BasicList<any> | null;
+    protected infoReportMiddlewaresManager(): BasicList<any> | null;
+    protected infoReportMockRoutesManager(): BasicList<any> | null;
+    protected infoReportPluginsManager(): BasicList<any> | null;
+    protected infoReportRoutesManager(): BasicList<any> | null;
+    protected infoReportTasksManager(): BasicList<any> | null;
     protected monitorAsyncManagerLoading(type: string, manager: IAsyncManager): void;
     static Instance(): DRCollectorClass;
 }

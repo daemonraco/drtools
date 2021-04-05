@@ -6,9 +6,9 @@ import { Endpoint, EndpointBehaviors, IEndpointBrievesByMethod } from '.';
 import { IEndpointOptions, EndpointRawByMethod } from '.';
 export declare class EndpointData {
     readonly BehaviorPattern: RegExp;
-    protected _behaviors: EndpointBehaviors;
+    protected _behaviors: EndpointBehaviors | null;
     protected _brievesByMethod: IEndpointBrievesByMethod;
-    protected _endpoint: Endpoint;
+    protected _endpoint: Endpoint | null;
     protected _exists: boolean;
     protected _options: IEndpointOptions;
     protected _raw: EndpointRawByMethod;

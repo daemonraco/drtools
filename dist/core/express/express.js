@@ -1,14 +1,17 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ExpressConnector = void 0;
+const tslib_1 = require("tslib");
 /**
  * @file express.ts
  * @author Alejandro D. Simi
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExpressConnector = void 0;
-const libraries_1 = require("../../libraries");
 const configs_1 = require("../configs");
 const drcollector_1 = require("../drcollector");
 const _1 = require(".");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
+const express_1 = tslib_1.__importDefault(require("express"));
 class ExpressConnector {
     //
     // Constructor.
@@ -17,7 +20,7 @@ class ExpressConnector {
         // Protected properties.
         this._attached = false;
         this._expressApp = null;
-        this._options = null;
+        this._options = {};
         this._uiAttached = false;
     }
     //
@@ -53,7 +56,7 @@ class ExpressConnector {
     attachWebUI(app, options) {
         if (options.webUi && !this._uiAttached) {
             this._uiAttached = true;
-            app.use(libraries_1.express.static(libraries_1.path.join(__dirname, '../../../web-ui/ui')));
+            app.use(express_1.default.static(path.join(__dirname, '../../../web-ui/ui')));
             app.all('*', (req, res, next) => {
                 if (req.originalUrl.match(/^\/\.drtools/)) {
                     if (req._parsedUrl.pathname === '/.drtools.json') {
@@ -64,26 +67,23 @@ class ExpressConnector {
                         else if (req.query.configSpecs && req.query.manager) {
                             result = _1.ExpressResponseBuilder.ConfigSpecsContents(req.query.manager, req.query.configSpecs);
                         }
-                        else if (req.query.doc) {
-                            result = _1.ExpressResponseBuilder.DocsContents(req.query.doc, req.query.baseUrl);
-                        }
                         else {
                             result = _1.ExpressResponseBuilder.FullInfoResponse();
                         }
                         res.status(200).json(result);
                     }
                     else if (req._parsedUrl.pathname.match(/^\/\.drtools-docs/)) {
-                        const basePath = libraries_1.path.join(__dirname, '../../../docs');
+                        const basePath = path.join(__dirname, '../../../docs');
                         const match = req._parsedUrl.pathname.match(/^\/\.drtools-docs\/(.*)$/);
                         const subPath = match ? match[1] : '';
-                        const fullPath = libraries_1.path.join(basePath, subPath);
+                        const fullPath = path.join(basePath, subPath);
                         const valid = fullPath.indexOf(basePath) === 0;
-                        res.sendFile(valid && subPath && libraries_1.fs.existsSync(fullPath)
+                        res.sendFile(valid && subPath && fs.existsSync(fullPath)
                             ? fullPath
-                            : libraries_1.path.join(__dirname, '../../../docs/index.html'));
+                            : path.join(__dirname, '../../../docs/index.html'));
                     }
                     else {
-                        res.sendFile(libraries_1.path.join(__dirname, '../../../web-ui/ui/.drtools/index.html'));
+                        res.sendFile(path.join(__dirname, '../../../web-ui/ui/.drtools/index.html'));
                     }
                 }
                 else {

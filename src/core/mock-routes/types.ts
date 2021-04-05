@@ -12,9 +12,9 @@ export interface IMockRoutesOptions {
 
 export interface IMockRoutesGuard {
     error?: string;
-    guard: ExpressMiddleware | KoaMiddleware;
+    guard?: ExpressMiddleware | KoaMiddleware;
     name: string;
-    path: string;
+    path?: string;
 }
 
 export interface IMockRoutesRoute {

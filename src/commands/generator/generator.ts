@@ -2,15 +2,15 @@
  * @file generator.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk, commander, ejs, fs, glob, path } from '../../libraries';
-
+const commander = require('commander');
 import { MiddlewaresConstants, PluginsConstants, RoutesConstants, TasksConstants } from '../../core/drtools';
-import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath, IToolsCheckPathResult as ICoreToolsCheckPathResult } from '../../core/includes/tools';
 import { Tools } from '../includes/tools';
-
-declare const __dirname: string;
-declare const process: any;
+import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath } from '../../core/includes/tools';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import chalk from 'chalk';
+import ejs from 'ejs';
+import glob from 'glob';
 
 export class DRToolsGenerator {
     //
@@ -25,7 +25,7 @@ export class DRToolsGenerator {
     protected generatorOptions: any = {
         verbose: true
     };
-    protected error: string = null;
+    protected error: string | null = null;
     //
     // Public methods.
     public run(): void {
@@ -42,7 +42,7 @@ export class DRToolsGenerator {
         console.log(`DRTools Generator (v${Tools.Instance().version()}):`);
     }
     protected generateMiddleware(name: string, directory: string, options: any): void {
-        let error: string = null;
+        let error: string | null = null;
 
         let cleanOptions: any = {
             force: options.force == true,
@@ -101,7 +101,7 @@ export class DRToolsGenerator {
         }
     }
     protected generateRoute(name: string, directory: string, options: any): void {
-        let error: string = null;
+        let error: string | null = null;
 
         let cleanOptions: any = {
             force: options.force == true,
@@ -160,7 +160,7 @@ export class DRToolsGenerator {
         }
     }
     protected generateMockUpRoutes(directory: string, options: any): void {
-        let error: string = null;
+        let error: string | null = null;
 
         let cleanOptions: any = {
             configName: options.configName ? options.configName : 'routes.json',
@@ -192,7 +192,7 @@ export class DRToolsGenerator {
             console.log(`\tConfiguration file: '${chalk.green(cleanOptions.configPath)}'`);
         }
 
-        let routes: string[] = [];
+        let routes: { uri: string; path: string; }[] = [];
         if (!error) {
             routes = glob.sync(path.join(directory, '**/*'))
                 .sort()
@@ -234,7 +234,7 @@ export class DRToolsGenerator {
         }
     }
     protected generatePlugin(name: string, directory: string, options: any): void {
-        let error: string = null;
+        let error: string | null = null;
 
         let cleanOptions: any = {
             configs: options.configs ? options.configs : null,
@@ -373,7 +373,7 @@ export class DRToolsGenerator {
         }
     }
     protected generateTask(name: string, directory: string, options: any): void {
-        let error: string = null;
+        let error: string | null = null;
 
         let cleanOptions: any = {
             force: options.force == true,

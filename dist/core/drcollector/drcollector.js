@@ -1,13 +1,15 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DRCollector = void 0;
+const tslib_1 = require("tslib");
 /**
  * @file drcollector.ts
  * @author Alejandro D. Simi
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DRCollector = void 0;
-const libraries_1 = require("../../libraries");
 const includes_1 = require("../includes");
 const constants_1 = require("./constants");
+const events_1 = require("events");
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
 class DRCollectorClass {
     //
     // Constructor.
@@ -25,7 +27,7 @@ class DRCollectorClass {
         this._tasksManager = [];
         //
         // Events.
-        this._events = new libraries_1.EventEmitter();
+        this._events = new events_1.EventEmitter();
     }
     //
     // Public methods.
@@ -324,7 +326,7 @@ class DRCollectorClass {
     monitorAsyncManagerLoading(type, manager) {
         setTimeout(() => {
             if (!manager.loaded()) {
-                console.error(libraries_1.chalk.red(`A manager of type '${type}' is still waiting to be initialized`));
+                console.error(chalk_1.default.red(`A manager of type '${type}' is still waiting to be initialized`));
             }
         }, constants_1.DRCollectorConstants.AsyncLoadingTimeout);
     }

@@ -2,15 +2,13 @@
  * @file drtools.ts
  * @author Alejandro D. Simi
  */
-
-import { fs, path } from '../../libraries';
-
-declare const process: any;
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
 export class Tools {
     //
     // Private class properties.
-    private static _Instance: Tools = null;
+    private static _Instance: Tools | null = null;
     //
     // Private properties.
     private _loaded: boolean = false;

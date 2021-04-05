@@ -2,13 +2,12 @@
  * @file task.ts
  * @author Alejandro D. Simi
  */
-
 import { ConfigsManager } from '../configs';
 
 export abstract class Task {
     //
     // Protected properties.
-    protected _configs: ConfigsManager = null;
+    protected _configs: ConfigsManager | null = null;
     protected _interval: number = 5000;
     protected _runAtStart: boolean = false;
     //
@@ -18,7 +17,7 @@ export abstract class Task {
     }
     //
     // Public methods.
-    public description(): string {
+    public description(): string | null {
         return null;
     }
     public interval(): number {
@@ -33,7 +32,7 @@ export abstract class Task {
     public runAtStart(): boolean {
         return this._runAtStart;
     }
-    public setConfigs(configs: ConfigsManager): void {
+    public setConfigs(configs: ConfigsManager | null): void {
         this._configs = configs;
     }
     //

@@ -19,7 +19,7 @@ export interface IConfigSpecItem {
     validator?: any;
 }
 export interface IConfigOptions {
-    environmentVariable?: boolean;
+    environmentVariables?: boolean;
     key?: string;
     specs?: string | string[];
     specsSuffix?: string;

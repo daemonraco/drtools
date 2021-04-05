@@ -1,12 +1,11 @@
 "use strict";
-/**
- * @file manager.ts
- * @author Alejandro D. Simi
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GenericManager = void 0;
-const libraries_1 = require("../../libraries");
+const tslib_1 = require("tslib");
 const includes_1 = require("../includes");
+const path = tslib_1.__importStar(require("path"));
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
+const glob_1 = tslib_1.__importDefault(require("glob"));
 class GenericManager {
     //
     // Constructor.
@@ -72,11 +71,11 @@ class GenericManager {
                         break;
                     case includes_1.ToolsCheckPath.WrongType:
                         this._lastError = `'${this._directories[index]}' is not a directory.`;
-                        console.error(libraries_1.chalk.red(this._lastError));
+                        console.error(chalk_1.default.red(this._lastError));
                         break;
                     default:
                         this._lastError = `'${this._directories[index]}' does not exist.`;
-                        console.error(libraries_1.chalk.red(this._lastError));
+                        console.error(chalk_1.default.red(this._lastError));
                         break;
                 }
                 if (this._lastError) {
@@ -96,7 +95,7 @@ class GenericManager {
             suffix = suffix ? `\\.${suffix}` : '';
             const itemsPattern = new RegExp(`^(.*)/(.*)${suffix}\.(json|js|ts)$`);
             for (const directory of this._directories) {
-                let paths = libraries_1.glob.sync(libraries_1.path.join(directory, `*${suffix}.*`), { absolute: true });
+                let paths = glob_1.default.sync(path.join(directory, `*${suffix}.*`), { absolute: true });
                 this._itemSpecs = [
                     ...this._itemSpecs,
                     ...paths

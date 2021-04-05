@@ -1,7 +1,3 @@
-/**
- * @file tools.ts
- * @author Alejandro D. Simi
- */
 export declare enum ToolsCheckPath {
     Unknown = 0,
     Ok = 1,
@@ -30,8 +26,8 @@ export declare class Tools {
     private static _IsNode;
     private constructor();
     static BlockRetry(block: TBlockRetryFunction, options?: IBlockRetryOptions): Promise<void>;
-    static CheckDirectory(dirPath: string, relativeTo?: string): IToolsCheckPathResult;
-    static CheckFile(filePath: string, relativeTo?: string): IToolsCheckPathResult;
+    static CheckDirectory(dirPath: string, relativeTo?: string | null): IToolsCheckPathResult;
+    static CheckFile(filePath: string, relativeTo?: string | null): IToolsCheckPathResult;
     /**
      * Takes an object and returns a clone of if. It avoids using the same
      * pointer.
@@ -62,5 +58,5 @@ export declare class Tools {
     static IsKoa(app: any): boolean;
     static IsNode(): boolean;
     static RandomKey(): string;
-    protected static CheckPathByType(checker: string, filePath: string, relativeTo?: string): IToolsCheckPathResult;
+    protected static CheckPathByType(checker: string, filePath: string, relativeTo?: string | null): IToolsCheckPathResult;
 }

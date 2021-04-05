@@ -2,24 +2,24 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-
-import { ajv, chalk, fs, httpStatusCodes, jsonpath, path } from '../../libraries';
-
+import { BasicDictionary, IItemSpec, IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
 import { ConfigsConstants, IConfigItem, IConfigOptions } from '.';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
-import { BasicDictionary, IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
-import { KoaMiddleware } from '../koa';
-import * as md5 from 'md5';
 import { IConfigSpecItem } from './types';
+import { JSONPath } from 'jsonpath-plus';
+import { KoaMiddleware } from '../koa';
+import { StatusCodes } from 'http-status-codes';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import Ajv from 'ajv';
+import chalk from 'chalk';
+import md5 from 'md5';
 
 enum PublishExportsTypes {
     Express = 'express',
     Koa = 'koa',
 };
-
-declare const global: any;
-declare const process: any;
 
 const ENV_PATTERN: RegExp = /^ENV:(.+)$/;
 
@@ -27,14 +27,13 @@ export class ConfigsManager implements IManagerByKey {
     //
     // Protected properties.
     protected _directories: string[] = [];
-    protected _environmentName: string = null;
+    protected _environmentName: string = '';
     protected _exports: BasicDictionary = {};
     protected _items: BasicDictionary<IConfigItem> = {};
     protected _key: string = '';
-    protected _lastError: string = null;
-    protected _options: IConfigOptions = null;
-    protected _publicUri: string = null;
-    // protected _specItems: IConfigSpecItem[] = [];
+    protected _lastError: string | null = null;
+    protected _options: IConfigOptions = {};
+    protected _publicUri: string = '';
     protected _specs: BasicDictionary<IConfigSpecItem> = {};
     protected _specsDirectories: string[] = [];
     protected _valid: boolean = false;
@@ -76,7 +75,7 @@ export class ConfigsManager implements IManagerByKey {
     public key(): string {
         return this._key;
     }
-    public lastError(): string {
+    public lastError(): string | null {
         return this._lastError;
     }
     public matchesKey(key: string): boolean {
@@ -104,10 +103,10 @@ export class ConfigsManager implements IManagerByKey {
         return this._specsDirectories;
     }
     public specsSuffix(): string {
-        return this._options.specsSuffix;
+        return this._options.specsSuffix || ConfigsConstants.SpecsSuffix;
     }
     public suffix(): string {
-        return this._options.suffix;
+        return this._options.suffix || ConfigsConstants.Suffix;
     }
     public valid(): boolean {
         return this._valid;
@@ -117,7 +116,7 @@ export class ConfigsManager implements IManagerByKey {
     /* istanbul ignore next */
     protected cleanOptions(): void {
         let defaultOptions: IConfigOptions = {
-            environmentVariable: false,
+            environmentVariables: false,
             key: undefined,
             specs: undefined,
             specsSuffix: ConfigsConstants.SpecsSuffix,
@@ -169,7 +168,7 @@ export class ConfigsManager implements IManagerByKey {
 
         const pattern: RegExp = new RegExp(`^${uriForPattern}([\\/]?)(.*)$`);
 
-        let middlewareResult: ExpressMiddleware | KoaMiddleware = null;
+        let middlewareResult: ExpressMiddleware | KoaMiddleware | null = null;
 
         switch (type) {
             case PublishExportsTypes.Express:
@@ -182,7 +181,7 @@ export class ConfigsManager implements IManagerByKey {
                             if (this._exports[name] !== undefined) {
                                 res.json(this._exports[name]);
                             } else {
-                                res.status(httpStatusCodes.NOT_FOUND).json({
+                                res.status(StatusCodes.NOT_FOUND).json({
                                     error: true,
                                     message: `Unknown exported configuration '${name}'.`
                                 });
@@ -211,7 +210,7 @@ export class ConfigsManager implements IManagerByKey {
                             if (this._exports[name] !== undefined) {
                                 ctx.body = this._exports[name];
                             } else {
-                                ctx.throw(httpStatusCodes.NOT_FOUND, {
+                                ctx.throw(StatusCodes.NOT_FOUND, {
                                     error: true,
                                     message: `Unknown exported configuration '${name}'.`
                                 });
@@ -242,7 +241,7 @@ export class ConfigsManager implements IManagerByKey {
         this._key = this._options.key ? this._options.key : md5(JSON.stringify(this._directories));
         //
         // Loading environment names.
-        this._environmentName = process.env.NODE_ENV || process.env.ENV_NAME || global.NODE_ENV || global.ENV_NAME || 'default';
+        this._environmentName = process.env.NODE_ENV || process.env.ENV_NAME || (<any>global).NODE_ENV || (<any>global).ENV_NAME || 'default';
         //
         // Checking given directory path.
         for (let i = 0; i < this._directories.length; i++) {
@@ -362,7 +361,7 @@ export class ConfigsManager implements IManagerByKey {
                     //
                     // Creating a validator.
                     try {
-                        const ajvObj: any = new ajv({ useDefaults: true });
+                        const ajvObj: any = new Ajv({ useDefaults: true });
                         this._specs[name].validator = ajvObj.compile(this._specs[name].specs);
                     } catch (e) {
                         this._lastError = `Unable to compile '${this._specs[name].path}'. ${e}`;
@@ -391,13 +390,13 @@ export class ConfigsManager implements IManagerByKey {
                     //
                     // Merging with the environment specific configuration.
                     if (this._items[itemKey].specific) {
-                        this._items[itemKey].data = Tools.DeepMergeObjects(this._items[itemKey].data, require(this._items[itemKey].specific.path));
+                        this._items[itemKey].data = Tools.DeepMergeObjects(this._items[itemKey].data, require((<IItemSpec>this._items[itemKey].specific).path));
                     }
                     //
                     // If there were no errors validating the config file, it can
                     // expose exports.
                     if (this.validateSpecsOf(name)) {
-                        if (this._options.environmentVariable) {
+                        if (this._options.environmentVariables) {
                             this._items[itemKey].data = this.expandEnvVariablesIn(this._items[itemKey].data);
                         }
                         this._items[itemKey].public = this.loadExportsOf(name);
@@ -429,7 +428,7 @@ export class ConfigsManager implements IManagerByKey {
 
         if (config.$pathExports !== undefined) {
             for (let k in config.$pathExports) {
-                const results: any = jsonpath({
+                const results: any = JSONPath({
                     path: config.$pathExports[k],
                     json: config
                 });
@@ -448,8 +447,8 @@ export class ConfigsManager implements IManagerByKey {
         return hasExports;
     }
     /* istanbul ignore next */
-    protected loadSpecsOf(name: string): string {
-        let specsPath: string | null = null
+    protected loadSpecsOf(name: string): string | null {
+        let specsPath: string | null = null;
 
         for (const specsDirectory of this._specsDirectories) {
             const tmpSpecsPath: string = path.join(specsDirectory, `${name}.json`);

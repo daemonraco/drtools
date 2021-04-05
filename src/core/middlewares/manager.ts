@@ -2,15 +2,11 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk } from '../../libraries';
-
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
 import { IMiddlewareOptions, MiddlewaresConstants } from '.';
-
-declare const global: any;
+import chalk from 'chalk';
 
 export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
     //
@@ -18,7 +14,7 @@ export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
     protected _app: any = null;
     //
     // Constructor.
-    constructor(app: any, directory: string, options: IMiddlewareOptions = null, configs: ConfigsManager = null) {
+    constructor(app: any, directory: string, options: IMiddlewareOptions | null = null, configs: ConfigsManager | null = null) {
         super(directory, options, configs);
         this._app = app;
         this._valid = !this._lastError;
@@ -50,20 +46,20 @@ export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
     }
     /* istanbul ignore next */
     protected loadAndAttach(): void {
-        if (this._options.verbose) {
+        if (this._options?.verbose) {
             console.log(`Loading middlewares:`);
         }
 
         if (!this._lastError && this._itemSpecs.length > 0) {
             for (let item of this._itemSpecs) {
                 try {
-                    if (this._options.verbose) {
+                    if (this._options?.verbose) {
                         console.log(`\t- '${chalk.green(item.name)}'`);
                     }
 
-                    global.configs = this._configs;
+                    (<any>global).configs = this._configs;
                     this._app.use(require(item.path));
-                    delete global.configs;
+                    delete (<any>global).configs;
                 } catch (err) {
                     console.error(chalk.red(`Unable to load middleware '${item.name}'.`), err);
                 }

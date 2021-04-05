@@ -2,10 +2,9 @@
  * @file tools.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk, fs, path } from '../../libraries';
-
-declare var process: any;
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import chalk from 'chalk';
 
 export enum ToolsCheckPath {
     Unknown,
@@ -50,9 +49,9 @@ export class Tools {
         let lastException: any = null;
         let retries: number = 0;
 
-        while (!done && retries < options.maxRetries) {
+        while (!done && options && options.maxRetries !== undefined && retries < options.maxRetries) {
             try {
-                await block(options.params);
+                await block(options.params || {});
                 done = true;
             } catch (err) {
                 lastException = err;
@@ -69,10 +68,10 @@ export class Tools {
             throw lastException;
         }
     }
-    public static CheckDirectory(dirPath: string, relativeTo: string = null): IToolsCheckPathResult {
+    public static CheckDirectory(dirPath: string, relativeTo: string | null = null): IToolsCheckPathResult {
         return Tools.CheckPathByType('isDirectory', dirPath, relativeTo);
     }
-    public static CheckFile(filePath: string, relativeTo: string = null): IToolsCheckPathResult {
+    public static CheckFile(filePath: string, relativeTo: string | null = null): IToolsCheckPathResult {
         return Tools.CheckPathByType('isFile', filePath, relativeTo);
     }
     /**
@@ -120,7 +119,7 @@ export class Tools {
         } else {
             //
             // At this point, if the right one exist, it overwrites the left one.
-            if (typeof right !== 'undefined') {
+            if (right !== undefined) {
                 left = right;
             }
         }
@@ -131,7 +130,7 @@ export class Tools {
         return new Promise<void>((r: Function): void => { setTimeout(r, ms) });
     }
     public static FullErrors(): boolean {
-        return typeof process.env.DRTOOLS_DEBUG !== 'undefined';
+        return process.env.DRTOOLS_DEBUG !== undefined;
     }
     public static FullPath(basicPath: string): string {
         return fs.existsSync(basicPath) ? path.resolve(basicPath) : path.join(process.cwd(), basicPath);
@@ -153,7 +152,7 @@ export class Tools {
     }
     //
     // Protected class methods.
-    protected static CheckPathByType(checker: string, filePath: string, relativeTo: string = null): IToolsCheckPathResult {
+    protected static CheckPathByType(checker: string, filePath: string, relativeTo: string | null = null): IToolsCheckPathResult {
         let result: IToolsCheckPathResult = {
             status: ToolsCheckPath.Unknown,
             originalPath: filePath,

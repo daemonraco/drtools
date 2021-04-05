@@ -1,11 +1,13 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tools = void 0;
+const tslib_1 = require("tslib");
 /**
  * @file drtools.ts
  * @author Alejandro D. Simi
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tools = void 0;
-const libraries_1 = require("../../libraries");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
 class Tools {
     //
     // Constructor
@@ -29,13 +31,13 @@ class Tools {
     load() {
         if (!this._loaded) {
             this._loaded = true;
-            this._packageData = require(libraries_1.path.join(__dirname, '../../../package.json'));
+            this._packageData = require(path.join(__dirname, '../../../package.json'));
         }
     }
     //
     // Public class methods.
     static CompletePath(incompletePath) {
-        return libraries_1.fs.existsSync(incompletePath) ? incompletePath : libraries_1.path.join(process.cwd(), incompletePath);
+        return fs.existsSync(incompletePath) ? incompletePath : path.join(process.cwd(), incompletePath);
     }
     static Instance() {
         if (!Tools._Instance) {

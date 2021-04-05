@@ -1,7 +1,3 @@
-/**
- * @file drtools.ts
- * @author Alejandro D. Simi
- */
 export declare class Tools {
     private static _Instance;
     private _loaded;

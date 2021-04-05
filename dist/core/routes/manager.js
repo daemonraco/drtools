@@ -1,14 +1,11 @@
 "use strict";
-/**
- * @file manager.ts
- * @author Alejandro D. Simi
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoutesManager = void 0;
-const libraries_1 = require("../../libraries");
+const tslib_1 = require("tslib");
 const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const _1 = require(".");
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
 class RoutesManager extends includes_1.GenericManager {
     //
     // Constructor.
@@ -26,13 +23,15 @@ class RoutesManager extends includes_1.GenericManager {
     }
     //
     // Public methods.
-    async load() {
-        if (!this._loaded) {
-            this._loaded = true;
-            this.loadAndAttach();
-            this._valid = !this._lastError;
-        }
-        return this.valid();
+    load() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!this._loaded) {
+                this._loaded = true;
+                this.loadAndAttach();
+                this._valid = !this._lastError;
+            }
+            return this.valid();
+        });
     }
     routes() {
         return this._routes;
@@ -50,15 +49,16 @@ class RoutesManager extends includes_1.GenericManager {
     }
     /* istanbul ignore next */
     loadAndAttach() {
-        if (this._options.verbose) {
-            const str = this._options.urlPrefix ? ` (prefix: '${this._options.urlPrefix}')` : '';
+        var _a, _b, _c, _d, _e, _f;
+        if ((_a = this._options) === null || _a === void 0 ? void 0 : _a.verbose) {
+            const str = ((_b = this._options) === null || _b === void 0 ? void 0 : _b.urlPrefix) ? ` (prefix: '${(_c = this._options) === null || _c === void 0 ? void 0 : _c.urlPrefix}')` : '';
             console.log(`Loading routes${str}:`);
         }
         if (!this._lastError && this._itemSpecs.length > 0) {
             for (let i in this._itemSpecs) {
                 try {
-                    if (this._options.verbose) {
-                        console.log(`\t- '${libraries_1.chalk.green(this._itemSpecs[i].name)}'`);
+                    if ((_d = this._options) === null || _d === void 0 ? void 0 : _d.verbose) {
+                        console.log(`\t- '${chalk_1.default.green(this._itemSpecs[i].name)}'`);
                     }
                     global[_1.RoutesConstants.GlobalConfigPointer] = this._configs;
                     const router = require(this._itemSpecs[i].path);
@@ -79,16 +79,16 @@ class RoutesManager extends includes_1.GenericManager {
                         })
                     });
                     if (this._isKoa) {
-                        router.prefix(`${this._options.urlPrefix}/${this._itemSpecs[i].name}`);
+                        router.prefix(`${(_e = this._options) === null || _e === void 0 ? void 0 : _e.urlPrefix}/${this._itemSpecs[i].name}`);
                         this._app.use(router.routes());
                     }
                     else {
-                        this._app.use(`${this._options.urlPrefix}/${this._itemSpecs[i].name}`, router);
+                        this._app.use(`${(_f = this._options) === null || _f === void 0 ? void 0 : _f.urlPrefix}/${this._itemSpecs[i].name}`, router);
                     }
                     delete global[_1.RoutesConstants.GlobalConfigPointer];
                 }
                 catch (err) {
-                    console.error(libraries_1.chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.`), err);
+                    console.error(chalk_1.default.red(`Unable to load route '${this._itemSpecs[i].name}'.`), err);
                 }
             }
         }

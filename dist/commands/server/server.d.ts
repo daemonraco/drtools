@@ -1,12 +1,8 @@
-/**
- * @file server.ts
- * @author Alejandro D. Simi
- */
 export declare class DRToolsServer {
     protected availableUrls: any[];
     protected chalkForMethods: any;
     protected connectorOptions: any;
-    protected error: string;
+    protected error: string | null;
     protected port: boolean;
     protected webUI: boolean;
     run(): void;

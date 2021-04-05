@@ -1,29 +1,25 @@
-/**
- * @file manager.ts
- * @author Alejandro D. Simi
- */
 import { ConfigsManager } from '../configs';
 import { IManagerByKey } from '../drcollector';
 import { IMockRoutesGuard, IMockRoutesOptions, IMockRoutesRoute } from '.';
 export declare class MockRoutesManager implements IManagerByKey {
-    protected _configs: ConfigsManager;
+    protected _configs: ConfigsManager | null;
     protected _configsValidator: any;
     protected _guards: {
         [name: string]: IMockRoutesGuard;
     };
-    protected _lastError: string;
-    protected _options: IMockRoutesOptions;
+    protected _lastError: string | null;
+    protected _options: IMockRoutesOptions | null;
     protected _routes: {
         [uri: string]: IMockRoutesRoute;
     };
     protected _routesConfig: any;
-    protected _routesConfigPath: string;
+    protected _routesConfigPath: string | null;
     protected _valid: boolean;
-    constructor(app: any, routesConfigPath: string, options?: IMockRoutesOptions, configs?: ConfigsManager);
+    constructor(app: any, routesConfigPath: string, options?: IMockRoutesOptions | null, configs?: ConfigsManager | null);
     config(): any;
-    configPath(): string;
+    configPath(): string | null;
     guards(): IMockRoutesGuard[];
-    lastError(): string;
+    lastError(): string | null;
     matchesKey(key: string): boolean;
     routes(): IMockRoutesRoute[];
     valid(): boolean;

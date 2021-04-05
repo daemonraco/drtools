@@ -2,29 +2,27 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk, glob, path } from '../../libraries';
-
 import { ConfigsManager } from '../configs';
 import { IAsyncManager, IManagerByKey } from '../drcollector';
 import { IItemSpec } from '.';
 import { Tools, ToolsCheckPath } from '../includes';
-
-declare const process: any;
+import * as path from 'path';
+import chalk from 'chalk';
+import glob from 'glob';
 
 export abstract class GenericManager<TOptions> implements IAsyncManager, IManagerByKey {
     //
     // Protected properties.
-    protected _configs: ConfigsManager = null;
+    protected _configs: ConfigsManager | null = null;
     protected _directories: string[] = [];
     protected _itemSpecs: IItemSpec[] = [];
-    protected _lastError: string = null;
+    protected _lastError: string | null = null;
     protected _loaded: boolean = false;
-    protected _options: TOptions = null;
+    protected _options: TOptions | null = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(directories: string[] | string, options: TOptions = null, configs: ConfigsManager = null) {
+    constructor(directories: string[] | string, options: TOptions | null = null, configs: ConfigsManager | null = null) {
         this._configs = configs;
         this._options = options;
         this._directories = Array.isArray(directories) ? directories : [directories];
@@ -48,7 +46,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
     public itemNames(): string[] {
         return this._itemSpecs.map(i => i.name);
     }
-    public lastError(): string {
+    public lastError(): string | null {
         return this._lastError;
     }
     public abstract load(): Promise<boolean>;

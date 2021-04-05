@@ -10,7 +10,7 @@ import { Hooks } from './types';
 class HooksManagerClass {
     //
     // Protected class properties.
-    protected static _Instance: HooksManagerClass = null;
+    protected static _Instance: HooksManagerClass | null = null;
     //
     // Protected properties.
     protected _hooks: Hooks = {};
@@ -21,7 +21,7 @@ class HooksManagerClass {
     //
     // Public methods.
     public get(key: string): Hook {
-        if (typeof this._hooks[key] === 'undefined') {
+        if (this._hooks[key] === undefined) {
             this._hooks[key] = new Hook(key);
         }
 

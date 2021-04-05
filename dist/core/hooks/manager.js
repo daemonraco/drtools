@@ -17,7 +17,7 @@ class HooksManagerClass {
     //
     // Public methods.
     get(key) {
-        if (typeof this._hooks[key] === 'undefined') {
+        if (this._hooks[key] === undefined) {
             this._hooks[key] = new hook_1.Hook(key);
         }
         return this._hooks[key];

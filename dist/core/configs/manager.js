@@ -1,15 +1,21 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ConfigsManager = void 0;
+const tslib_1 = require("tslib");
 /**
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConfigsManager = void 0;
-const libraries_1 = require("../../libraries");
+const includes_1 = require("../includes");
 const _1 = require(".");
 const drcollector_1 = require("../drcollector");
-const includes_1 = require("../includes");
-const md5 = require("md5");
+const jsonpath_plus_1 = require("jsonpath-plus");
+const http_status_codes_1 = require("http-status-codes");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
+const ajv_1 = tslib_1.__importDefault(require("ajv"));
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
+const md5_1 = tslib_1.__importDefault(require("md5"));
 var PublishExportsTypes;
 (function (PublishExportsTypes) {
     PublishExportsTypes["Express"] = "express";
@@ -24,14 +30,13 @@ class ConfigsManager {
         //
         // Protected properties.
         this._directories = [];
-        this._environmentName = null;
+        this._environmentName = '';
         this._exports = {};
         this._items = {};
         this._key = '';
         this._lastError = null;
-        this._options = null;
-        this._publicUri = null;
-        // protected _specItems: IConfigSpecItem[] = [];
+        this._options = {};
+        this._publicUri = '';
         this._specs = {};
         this._specsDirectories = [];
         this._valid = false;
@@ -95,10 +100,10 @@ class ConfigsManager {
         return this._specsDirectories;
     }
     specsSuffix() {
-        return this._options.specsSuffix;
+        return this._options.specsSuffix || _1.ConfigsConstants.SpecsSuffix;
     }
     suffix() {
-        return this._options.suffix;
+        return this._options.suffix || _1.ConfigsConstants.Suffix;
     }
     valid() {
         return this._valid;
@@ -108,7 +113,7 @@ class ConfigsManager {
     /* istanbul ignore next */
     cleanOptions() {
         let defaultOptions = {
-            environmentVariable: false,
+            environmentVariables: false,
             key: undefined,
             specs: undefined,
             specsSuffix: _1.ConfigsConstants.SpecsSuffix,
@@ -169,7 +174,7 @@ class ConfigsManager {
                                 res.json(this._exports[name]);
                             }
                             else {
-                                res.status(libraries_1.httpStatusCodes.NOT_FOUND).json({
+                                res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
                                     error: true,
                                     message: `Unknown exported configuration '${name}'.`
                                 });
@@ -188,7 +193,7 @@ class ConfigsManager {
                 };
                 break;
             case PublishExportsTypes.Koa:
-                middlewareResult = async (ctx, next) => {
+                middlewareResult = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                     let responded = false;
                     if (ctx.originalUrl.match(pattern)) {
                         const name = ctx.originalUrl.replace(pattern, '$2');
@@ -197,7 +202,7 @@ class ConfigsManager {
                                 ctx.body = this._exports[name];
                             }
                             else {
-                                ctx.throw(libraries_1.httpStatusCodes.NOT_FOUND, {
+                                ctx.throw(http_status_codes_1.StatusCodes.NOT_FOUND, {
                                     error: true,
                                     message: `Unknown exported configuration '${name}'.`
                                 });
@@ -211,9 +216,9 @@ class ConfigsManager {
                         responded = true;
                     }
                     if (!responded) {
-                        await next();
+                        yield next();
                     }
-                };
+                });
                 break;
         }
         return middlewareResult;
@@ -223,7 +228,7 @@ class ConfigsManager {
         this._lastError = null;
         //
         // Generating a unique key for this manager.
-        this._key = this._options.key ? this._options.key : md5(JSON.stringify(this._directories));
+        this._key = this._options.key ? this._options.key : md5_1.default(JSON.stringify(this._directories));
         //
         // Loading environment names.
         this._environmentName = process.env.NODE_ENV || process.env.ENV_NAME || global.NODE_ENV || global.ENV_NAME || 'default';
@@ -240,11 +245,11 @@ class ConfigsManager {
                     break;
                 case includes_1.ToolsCheckPath.WrongType:
                     this._lastError = `'${this._directories[i]}' is not a directory.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
+                    console.error(chalk_1.default.red(this._lastError));
                     break;
                 default:
                     this._lastError = `'${this._directories[i]}' does not exist.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
+                    console.error(chalk_1.default.red(this._lastError));
                     break;
             }
         }
@@ -261,11 +266,11 @@ class ConfigsManager {
                     break;
                 case includes_1.ToolsCheckPath.WrongType:
                     this._lastError = `'${this._specsDirectories[i]}' is not a directory.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
+                    console.error(chalk_1.default.red(this._lastError));
                     break;
                 default:
                     this._lastError = `'${this._specsDirectories[i]}' does not exist.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
+                    console.error(chalk_1.default.red(this._lastError));
                     break;
             }
         }
@@ -279,11 +284,11 @@ class ConfigsManager {
             // Loading specs files.
             this._specs = {};
             for (const directory of this._specsDirectories) {
-                for (const p of libraries_1.fs.readdirSync(directory).filter((x) => x.match(configSpecPattern))) {
+                for (const p of fs.readdirSync(directory).filter((x) => x.match(configSpecPattern))) {
                     const name = p.replace(configSpecPattern, '$1');
                     this._specs[name] = {
                         name,
-                        path: libraries_1.path.resolve(libraries_1.path.join(directory, p)),
+                        path: path.resolve(path.join(directory, p)),
                         valid: false,
                     };
                 }
@@ -292,11 +297,11 @@ class ConfigsManager {
             // Loading basic configuration files.
             this._items = {};
             for (const directory of this._directories) {
-                for (const p of libraries_1.fs.readdirSync(directory).filter((x) => x.match(configPattern))) {
+                for (const p of fs.readdirSync(directory).filter((x) => x.match(configPattern))) {
                     const name = p.replace(configPattern, '$1');
                     this._items[name] = {
                         name,
-                        path: libraries_1.path.resolve(libraries_1.path.join(directory, p)),
+                        path: path.resolve(path.join(directory, p)),
                         data: null,
                         valid: false,
                     };
@@ -305,12 +310,12 @@ class ConfigsManager {
             //
             // Loading environment specific configuration files.
             for (const directory of this._directories) {
-                for (const x of libraries_1.fs.readdirSync(directory).filter((x) => x.match(envPattern))) {
+                for (const x of fs.readdirSync(directory).filter((x) => x.match(envPattern))) {
                     const name = x.replace(envPattern, '$1');
                     if (this._items[name] !== undefined) {
                         this._items[name].specific = {
                             name,
-                            path: libraries_1.path.resolve(libraries_1.path.join(directory, x)),
+                            path: path.resolve(path.join(directory, x)),
                         };
                     }
                 }
@@ -327,7 +332,7 @@ class ConfigsManager {
                 this._specs[name].valid = true;
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${libraries_1.chalk.green(name)}'`);
+                        console.log(`\t- '${chalk_1.default.green(name)}'`);
                     }
                     //
                     // Loading basic configuration.
@@ -336,35 +341,35 @@ class ConfigsManager {
                     }
                     catch (e) {
                         this._lastError = `'${this._specs[name].path}' is not valid specification file. ${e}`;
-                        console.error(libraries_1.chalk.red(this._lastError));
+                        console.error(chalk_1.default.red(this._lastError));
                         this._specs[name].valid = false;
                     }
                     //
                     // Creating a validator.
                     try {
-                        const ajvObj = new libraries_1.ajv({ useDefaults: true });
+                        const ajvObj = new ajv_1.default({ useDefaults: true });
                         this._specs[name].validator = ajvObj.compile(this._specs[name].specs);
                     }
                     catch (e) {
                         this._lastError = `Unable to compile '${this._specs[name].path}'. ${e}`;
-                        console.error(libraries_1.chalk.red(this._lastError));
+                        console.error(chalk_1.default.red(this._lastError));
                         this._specs[name].valid = false;
                     }
                 }
                 catch (err) {
-                    console.error(libraries_1.chalk.red(`Unable to load config '${name}'.`), err);
+                    console.error(chalk_1.default.red(`Unable to load config '${name}'.`), err);
                 }
             }
             //
             // Loading configurations.
             if (this._options.verbose) {
-                console.log(`Loading configs (environment: ${libraries_1.chalk.green(this._environmentName)}):`);
+                console.log(`Loading configs (environment: ${chalk_1.default.green(this._environmentName)}):`);
             }
             for (const itemKey of Object.keys(this._items)) {
                 let name = this._items[itemKey].name;
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${libraries_1.chalk.green(name)}'${this._items[itemKey].specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`\t- '${chalk_1.default.green(name)}'${this._items[itemKey].specific ? ` (has specific configuration)` : ''}`);
                     }
                     //
                     // Loading basic configuration.
@@ -378,7 +383,7 @@ class ConfigsManager {
                     // If there were no errors validating the config file, it can
                     // expose exports.
                     if (this.validateSpecsOf(name)) {
-                        if (this._options.environmentVariable) {
+                        if (this._options.environmentVariables) {
                             this._items[itemKey].data = this.expandEnvVariablesIn(this._items[itemKey].data);
                         }
                         this._items[itemKey].public = this.loadExportsOf(name);
@@ -388,7 +393,7 @@ class ConfigsManager {
                     }
                 }
                 catch (err) {
-                    console.error(libraries_1.chalk.red(`Unable to load config '${name}'.`), err);
+                    console.error(chalk_1.default.red(`Unable to load config '${name}'.`), err);
                 }
             }
         }
@@ -407,7 +412,7 @@ class ConfigsManager {
         }
         if (config.$pathExports !== undefined) {
             for (let k in config.$pathExports) {
-                const results = libraries_1.jsonpath({
+                const results = jsonpath_plus_1.JSONPath({
                     path: config.$pathExports[k],
                     json: config
                 });
@@ -427,7 +432,7 @@ class ConfigsManager {
     loadSpecsOf(name) {
         let specsPath = null;
         for (const specsDirectory of this._specsDirectories) {
-            const tmpSpecsPath = libraries_1.path.join(specsDirectory, `${name}.json`);
+            const tmpSpecsPath = path.join(specsDirectory, `${name}.json`);
             const check = includes_1.Tools.CheckFile(tmpSpecsPath);
             switch (check.status) {
                 case includes_1.ToolsCheckPath.Ok:
@@ -435,7 +440,7 @@ class ConfigsManager {
                     break;
                 case includes_1.ToolsCheckPath.WrongType:
                     this._lastError = `'${tmpSpecsPath}' is not a file.`;
-                    console.error(libraries_1.chalk.red(this._lastError));
+                    console.error(chalk_1.default.red(this._lastError));
                     break;
                 default:
                     specsPath = null;
@@ -457,7 +462,7 @@ class ConfigsManager {
                 }
             }
             catch (e) {
-                console.error(libraries_1.chalk.red(`Config '${name}' is not valid.\n\t${e}`));
+                console.error(chalk_1.default.red(`Config '${name}' is not valid.\n\t${e}`));
             }
         }
         else {

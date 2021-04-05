@@ -2,38 +2,40 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-
-import { ajv, chalk, fs, koaSend, mime, path, url } from '../../libraries';
-
+const mime = require('mime');
 import { ConfigsManager } from '../configs';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
 import { IMockRoutesGuard, IMockRoutesOptions, IMockRoutesRoute, MockRoutesConstants } from '.';
 import { Tools } from '../includes';
-
-declare var Promise: any;
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as url from 'url';
+import Ajv from 'ajv';
+import chalk from 'chalk';
+import koaSend from 'koa-send';
 
 export class MockRoutesManager implements IManagerByKey {
     //
     // Protected properties.
-    protected _configs: ConfigsManager = null;
+    protected _configs: ConfigsManager | null = null;
     protected _configsValidator: any = null;
     protected _guards: { [name: string]: IMockRoutesGuard } = {};
-    protected _lastError: string = null;
-    protected _options: IMockRoutesOptions = null;
+    protected _lastError: string | null = null;
+    protected _options: IMockRoutesOptions | null = null;
     protected _routes: { [uri: string]: IMockRoutesRoute } = {};
     protected _routesConfig: any = {};
-    protected _routesConfigPath: string = null;
+    protected _routesConfigPath: string | null = null;
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(app: any, routesConfigPath: string, options: IMockRoutesOptions = null, configs: ConfigsManager = null) {
+    constructor(app: any, routesConfigPath: string, options: IMockRoutesOptions | null = null, configs: ConfigsManager | null = null) {
         this._routesConfigPath = routesConfigPath;
         this._options = options;
         this._configs = configs;
         this.cleanParams();
 
-        const ajvObj: any = new ajv({
+        const ajvObj: any = new Ajv({
             useDefaults: true
         });
         this._configsValidator = ajvObj.compile(require('../../../assets/mock-routes.specs.json'));
@@ -54,7 +56,7 @@ export class MockRoutesManager implements IManagerByKey {
     public config(): any {
         return this._routesConfig;
     }
-    public configPath(): string {
+    public configPath(): string | null {
         return this._routesConfigPath;
     }
     public guards(): IMockRoutesGuard[] {
@@ -66,7 +68,7 @@ export class MockRoutesManager implements IManagerByKey {
 
         return out;
     }
-    public lastError(): string {
+    public lastError(): string | null {
         return this._lastError;
     }
     public matchesKey(key: string): boolean {
@@ -94,10 +96,10 @@ export class MockRoutesManager implements IManagerByKey {
                     const pathname: string = decodeURIComponent(req._parsedUrl.pathname);
                     const methodKey: string = `${req.method.toLowerCase()}:${pathname}`;
                     const allMethodsKey: string = `*:${pathname}`;
-                    let rightKey: string = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
-                    rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
+                    let rightKey: string | null = this._routes[methodKey] !== undefined ? methodKey : null;
+                    rightKey = rightKey ? rightKey : this._routes[allMethodsKey] !== undefined ? allMethodsKey : null;
 
-                    const route: IMockRoutesRoute = rightKey ? this._routes[rightKey] : null;
+                    const route: IMockRoutesRoute | null = rightKey ? this._routes[rightKey] : null;
                     if (route && route.valid) {
                         route.guard(req, res, () => {
                             res.sendFile(route.path);
@@ -108,15 +110,15 @@ export class MockRoutesManager implements IManagerByKey {
                 });
             } else if (Tools.IsKoa(app)) {
                 app.use(async (ctx: any, next: () => void): Promise<any> => {
-                    const parsedUrl = url.parse(ctx.originalUrl);
+                    const parsedUrl: any = url.parse(ctx.originalUrl);
 
                     const pathname: string = decodeURIComponent(parsedUrl.pathname);
                     const methodKey: string = `${ctx.method.toLowerCase()}:${pathname}`;
                     const allMethodsKey: string = `*:${pathname}`;
-                    let rightKey: string = typeof this._routes[methodKey] !== 'undefined' ? methodKey : null;
-                    rightKey = rightKey ? rightKey : typeof this._routes[allMethodsKey] !== 'undefined' ? allMethodsKey : null;
+                    let rightKey: string | null = this._routes[methodKey] !== undefined ? methodKey : null;
+                    rightKey = rightKey ? rightKey : this._routes[allMethodsKey] !== undefined ? allMethodsKey : null;
 
-                    const route: IMockRoutesRoute = rightKey ? this._routes[rightKey] : null;
+                    const route: IMockRoutesRoute | null = rightKey ? this._routes[rightKey] : null;
                     if (route && route.valid) {
                         route.guard(ctx, async (): Promise<any> => {
                             await koaSend(ctx, route.path);
@@ -138,13 +140,19 @@ export class MockRoutesManager implements IManagerByKey {
         };
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});
 
-        this._routesConfigPath = this._routesConfigPath.match(/\.json$/) ? this._routesConfigPath : `${this._routesConfigPath}.json`;
+        this._routesConfigPath = this._routesConfigPath && this._routesConfigPath.match(/\.json$/)
+            ? this._routesConfigPath
+            : `${this._routesConfigPath}.json`;
     }
     /* istanbul ignore next */
     protected fullPath(relativePath: string): string {
         let out: string = relativePath;
 
-        const configDir: string = path.dirname(this.configPath());
+        if (!this.configPath()) {
+            throw new Error('No config path given.');
+        }
+
+        const configDir: string = path.dirname(<string>this.configPath());
         out = path.resolve(fs.existsSync(relativePath) ? relativePath : path.join(configDir, relativePath));
 
         return out;
@@ -152,13 +160,17 @@ export class MockRoutesManager implements IManagerByKey {
     /* istanbul ignore next */
     protected load(isExpress: boolean): void {
         try {
-            if (this._options.verbose) {
+            if (!this.configPath()) {
+                throw new Error('No config path given.');
+            }
+
+            if (this._options?.verbose) {
                 console.log(`Loading mock-up routes:`);
                 console.log(`\tConfig file: '${chalk.green(this.configPath())}'`);
             }
             //
             // Loading configuration.
-            this._routesConfig = require(path.resolve(this.configPath()));
+            this._routesConfig = require(path.resolve(<string>this.configPath()));
             //
             // Fixing parameters.
             if (typeof this._routesConfig.routes === 'object' && Array.isArray(this._routesConfig.routes)) {
@@ -182,14 +194,15 @@ export class MockRoutesManager implements IManagerByKey {
         let out: IMockRoutesGuard = {
             name: guardSpec.name,
             path: guardSpec.path,
-            guard: undefined
         };
 
-        out.path = out.path.match(/\.js$/) ? out.path : `${out.path}.js`;
-        out.path = this.fullPath(out.path);
+        out.path = (<string>out.path).match(/\.js$/) ? out.path : `${out.path}.js`;
+        if (out.path) {
+            out.path = this.fullPath(out.path);
+        }
 
         try {
-            out.guard = require(out.path);
+            out.guard = require(<string>out.path);
         } catch (e) {
             out.error = `Unable to load '${out.path}'. ${e}`;
         }
@@ -203,7 +216,6 @@ export class MockRoutesManager implements IManagerByKey {
         if (!this.lastError()) {
             this._guards[MockRoutesConstants.DefaultGuard] = {
                 name: MockRoutesConstants.DefaultGuard,
-                path: null,
                 guard: isExpress
                     ? (req: any, res: any, next: () => void) => next()
                     : (ctx: any, next: () => void) => next(),
@@ -229,10 +241,10 @@ export class MockRoutesManager implements IManagerByKey {
                 this._routesConfig.routes[method].forEach((spec: any) => {
                     const filePath: string = this.fullPath(spec.path);
 
-                    let error: string = undefined;
-                    let guard: ExpressMiddleware = null;
-                    let guardPath: string = null;
-                    let guardName: string = null;
+                    let error: string | undefined = undefined;
+                    let guard: ExpressMiddleware | undefined = undefined;
+                    let guardPath: string | undefined = undefined;
+                    let guardName: string | undefined = undefined;
                     let valid: boolean = true;
 
                     if (!fs.existsSync(filePath)) {
@@ -259,7 +271,7 @@ export class MockRoutesManager implements IManagerByKey {
                         } else if (spec.guardName) {
                             guardName = spec.guardName;
 
-                            if (typeof this._guards[guardName] !== 'undefined') {
+                            if (guardName && this._guards[guardName] !== undefined) {
                                 guard = this._guards[guardName].guard;
                             } else {
                                 error = `Unknown guard name '${guardName}'`;
@@ -275,14 +287,14 @@ export class MockRoutesManager implements IManagerByKey {
                         uri: spec.uri,
                         path: filePath,
                         originalPath: spec.path,
-                        mime: mime.lookup(filePath),
+                        mime: mime.lookup(filePath) || '',
                         guard, guardName, guardPath, method, valid, error
                     };
                     this._routes[MockRoutesManager.RouteKey(route)] = route;
                 });
             });
 
-            if (this._options.verbose) {
+            if (this._options?.verbose) {
                 const keys: string[] = Object.keys(this._routes);
 
                 if (keys.length) {

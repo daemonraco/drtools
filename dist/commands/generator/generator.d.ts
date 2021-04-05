@@ -1,12 +1,8 @@
-/**
- * @file generator.ts
- * @author Alejandro D. Simi
- */
 export declare class DRToolsGenerator {
     protected _options: any;
     constructor();
     protected generatorOptions: any;
-    protected error: string;
+    protected error: string | null;
     run(): void;
     protected promptHeader(): void;
     protected generateMiddleware(name: string, directory: string, options: any): void;

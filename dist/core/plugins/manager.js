@@ -1,14 +1,13 @@
 "use strict";
-/**
- * @file manager.ts
- * @author Alejandro D. Simi
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PluginsManager = void 0;
-const libraries_1 = require("../../libraries");
+const tslib_1 = require("tslib");
 const drcollector_1 = require("../drcollector");
 const includes_1 = require("../includes");
 const _1 = require(".");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
 class PluginsManager {
     //
     // Constructor.
@@ -16,12 +15,12 @@ class PluginsManager {
         //
         // Protected properties.
         this._configs = null;
-        this._directories = null;
+        this._directories = [];
         this._itemSpecs = null;
         this._lastError = null;
         this._loaded = false;
         this._options = null;
-        this._paths = null;
+        this._paths = [];
         this._valid = false;
         this._directories = Array.isArray(directory) ? directory : [directory];
         this._options = options;
@@ -60,7 +59,7 @@ class PluginsManager {
         if (codePieces[1] === undefined) {
             codePieces[1] = _1.PluginsConstants.DefaultMethod;
         }
-        if (this._itemSpecs[codePieces[0]] !== undefined) {
+        if (this._itemSpecs && this._itemSpecs[codePieces[0]] !== undefined) {
             const specs = this._itemSpecs[codePieces[0]];
             if (specs.library[codePieces[1]] !== undefined) {
                 results = specs.library[codePieces[1]];
@@ -77,62 +76,65 @@ class PluginsManager {
     lastError() {
         return this._lastError;
     }
-    async load() {
-        if (!this._loaded) {
-            this._loaded = true;
-            if (!this._lastError) {
-                this._itemSpecs = {};
-                if (this._options.verbose) {
-                    console.log(`Loading plugins:`);
-                }
-                for (const dir of this._paths) {
-                    try {
-                        if (this._options.verbose) {
-                            console.log(`\t- '${libraries_1.chalk.green(dir.name)}'`);
-                        }
-                        //
-                        // Should it consider a distribution folder?
-                        if (this._options.dist) {
-                            const distPath = libraries_1.path.join(dir.path, 'dist');
-                            let stat = null;
-                            try {
-                                stat = await libraries_1.fs.stat(distPath);
-                            }
-                            catch (e) { }
-                            if (stat && stat.isDirectory()) {
-                                dir.path = distPath;
-                            }
-                        }
-                        global[_1.PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
-                        let library = require(libraries_1.path.join(dir.path, 'index'));
-                        delete global[_1.PluginsConstants.GlobalConfigPointer];
-                        if (typeof library !== 'object' || Array.isArray(library)) {
-                            const aux = library;
-                            library = {};
-                            library[`${_1.PluginsConstants.DefaultMethod}`] = aux;
-                        }
-                        let prom = null;
-                        switch (typeof library[`${_1.PluginsConstants.InitializationMethod}`]) {
-                            case 'function':
-                                prom = library[`${_1.PluginsConstants.InitializationMethod}`]();
-                                break;
-                            case 'object':
-                                prom = library[`${_1.PluginsConstants.InitializationMethod}`];
-                                break;
-                        }
-                        if (prom && prom instanceof Promise) {
-                            await prom;
-                        }
-                        this._itemSpecs[dir.name] = { name: dir.name, path: dir.path, library };
+    load() {
+        var _a, _b, _c;
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!this._loaded) {
+                this._loaded = true;
+                if (!this._lastError) {
+                    this._itemSpecs = {};
+                    if ((_a = this._options) === null || _a === void 0 ? void 0 : _a.verbose) {
+                        console.log(`Loading plugins:`);
                     }
-                    catch (err) {
-                        console.error(libraries_1.chalk.red(`Unable to load plugin '${dir.name}'.`), err);
+                    for (const dir of this._paths) {
+                        try {
+                            if ((_b = this._options) === null || _b === void 0 ? void 0 : _b.verbose) {
+                                console.log(`\t- '${chalk_1.default.green(dir.name)}'`);
+                            }
+                            //
+                            // Should it consider a distribution folder?
+                            if ((_c = this._options) === null || _c === void 0 ? void 0 : _c.dist) {
+                                const distPath = path.join(dir.path, 'dist');
+                                let stat = null;
+                                try {
+                                    stat = yield fs.stat(distPath);
+                                }
+                                catch (e) { }
+                                if (stat && stat.isDirectory()) {
+                                    dir.path = distPath;
+                                }
+                            }
+                            global[_1.PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
+                            let library = require(path.join(dir.path, 'index'));
+                            delete global[_1.PluginsConstants.GlobalConfigPointer];
+                            if (typeof library !== 'object' || Array.isArray(library)) {
+                                const aux = library;
+                                library = {};
+                                library[`${_1.PluginsConstants.DefaultMethod}`] = aux;
+                            }
+                            let prom = null;
+                            switch (typeof library[`${_1.PluginsConstants.InitializationMethod}`]) {
+                                case 'function':
+                                    prom = library[`${_1.PluginsConstants.InitializationMethod}`]();
+                                    break;
+                                case 'object':
+                                    prom = library[`${_1.PluginsConstants.InitializationMethod}`];
+                                    break;
+                            }
+                            if (prom && prom instanceof Promise) {
+                                yield prom;
+                            }
+                            this._itemSpecs[dir.name] = { name: dir.name, path: dir.path, library };
+                        }
+                        catch (err) {
+                            console.error(chalk_1.default.red(`Unable to load plugin '${dir.name}'.`), err);
+                        }
                     }
                 }
+                this._valid = !this._lastError;
             }
-            this._valid = !this._lastError;
-        }
-        return this.valid();
+            return this.valid();
+        });
     }
     loaded() {
         return this._loaded;
@@ -141,7 +143,7 @@ class PluginsManager {
         return this.directory() === key;
     }
     methodsOf(name) {
-        return this._itemSpecs[name] !== undefined ? Object.keys(this._itemSpecs[name].library) : [];
+        return this._itemSpecs && this._itemSpecs[name] !== undefined ? Object.keys(this._itemSpecs[name].library) : [];
     }
     valid() {
         return this._valid;
@@ -161,10 +163,10 @@ class PluginsManager {
                         break;
                     case includes_1.ToolsCheckPath.WrongType:
                         this._lastError = `'${this._directories[index]}' is not a directory.`;
-                        console.error(libraries_1.chalk.red(this._lastError));
+                        console.error(chalk_1.default.red(this._lastError));
                     default:
                         this._lastError = `'${this._directories[index]}' does not exist.`;
-                        console.error(libraries_1.chalk.red(this._lastError));
+                        console.error(chalk_1.default.red(this._lastError));
                 }
                 if (this._lastError) {
                     break;
@@ -185,9 +187,9 @@ class PluginsManager {
         if (!this._lastError) {
             this._paths = [];
             for (const directory of this._directories) {
-                let dirs = libraries_1.fs.readdirSync(directory).map((x) => ({
+                let dirs = fs.readdirSync(directory).map((x) => ({
                     name: x,
-                    path: includes_1.Tools.FullPath(libraries_1.path.join(directory, x))
+                    path: includes_1.Tools.FullPath(path.join(directory, x))
                 })).filter((x) => {
                     const check = includes_1.Tools.CheckDirectory(x.path);
                     return check.status === includes_1.ToolsCheckPath.Ok;

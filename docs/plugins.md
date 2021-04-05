@@ -1,3 +1,8 @@
+<!-- version-warning -->
+!>__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
+VERSION 0.0.1</span>__
+<!-- /version-warning -->
+
 # DRTools: Plugins
 
 ## What is a plugin?
@@ -59,7 +64,7 @@ console.log(`Current date: ${func()}`);
 ## With config
 Let's say you have a configuration file called `plugin.example.config.json` with
 these contents:
-```js
+```json
 {
     "level": 9000
 }
@@ -83,3 +88,5 @@ argument:
 | Option    |    Type   | Default | Description                                        |
 |-----------|:---------:|:-------:|----------------------------------------------------|
 | `verbose` | `boolean` |  `true` | Whether to display loading log information or not. |
+
+<!-- version-check:0.0.1 -->

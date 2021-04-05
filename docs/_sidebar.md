@@ -1,3 +1,6 @@
+<!-- version-warning -->
+<!-- /version-warning -->
+
 - Main Topics:
     - [Home](README.md)
     - [Configs](configs.md)
@@ -12,3 +15,5 @@
 - Commands:
     - [Server](server.md)
     - [Generator](generator.md)
+
+<!-- version-check:0.15.0 -->

@@ -2,10 +2,11 @@
  * @file endpoint-behaviors.ts
  * @author Alejandro D. Simi
  */
-
-import { fs, glob, loremIpsum, path } from '../../libraries';
-
 import { Endpoint } from '.';
+import { loremIpsum } from 'lorem-ipsum';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import glob from 'glob';
 
 export class EndpointBehaviors extends Object {
     [key: string]: any;
@@ -16,7 +17,7 @@ export class EndpointBehaviors extends Object {
     ]
     //
     // Protected properties.
-    protected _endpoint: Endpoint = null;
+    protected _endpoint: Endpoint | null = null;
     //
     // Constructor.
     constructor(endpoint: Endpoint) {
@@ -26,24 +27,24 @@ export class EndpointBehaviors extends Object {
     }
     //
     // Basic behaviors.
-    public endpoint(endpointPath: string, method: string = null): any {
+    public endpoint(endpointPath: string, method?: string): any {
         let out: any = undefined;
 
-        const fullPath: string = path.join(this._endpoint.directory(), `${endpointPath}.json`);
+        const fullPath: string = path.join((<Endpoint>this._endpoint).directory(), `${endpointPath}.json`);
         if (fs.existsSync(fullPath)) {
-            out = this._endpoint.responseFor(endpointPath, method, true);
+            out = (<Endpoint>this._endpoint).responseFor(endpointPath, method, true);
         } else {
-            const rootPath = this._endpoint.directory();
+            const rootPath = (<Endpoint>this._endpoint).directory();
             const filter = /^(.*)\.json$/i;
             out = glob.sync(fullPath)
                 .filter((p: string) => p.match(filter))
                 .filter((p: string) => p.indexOf(rootPath) === 0)
                 .map((p: string) => p.substr(rootPath.length + 1))
                 .map((p: string) => p.replace(filter, '$1'))
-                .map((ep: string) => this._endpoint.responseFor(ep, method, true));
+                .map((ep: string) => (<Endpoint>this._endpoint).responseFor(ep, method, true));
 
             if (out.length === 0) {
-                out = this._endpoint.responseFor(endpointPath, method);
+                out = (<Endpoint>this._endpoint).responseFor(endpointPath, method);
             }
         }
 
@@ -69,17 +70,17 @@ export class EndpointBehaviors extends Object {
                 min = parseInt(args[0][1]);
             }
         } else if (typeof args[0] === 'object') {
-            if (typeof args[0].max !== 'undefined') {
+            if (args[0].max !== undefined) {
                 max = parseInt(args[0].max);
             }
-            if (typeof args[0].min !== 'undefined') {
+            if (args[0].min !== undefined) {
                 min = parseInt(args[0].min);
             }
         } else {
-            if (typeof args[0] !== 'undefined') {
+            if (args[0] !== undefined) {
                 max = parseInt(args[0]);
             }
-            if (typeof args[1] !== 'undefined') {
+            if (args[1] !== undefined) {
                 min = parseInt(args[1]);
             }
         }
@@ -94,11 +95,7 @@ export class EndpointBehaviors extends Object {
 
         return out;
     }
-    public randString(length: number = null): string {
-        if (length === null) {
-            length = 10;
-        }
-
+    public randString(length: number = 10): string {
         let out: string = '';
 
         while (out.length < length) {
@@ -112,7 +109,7 @@ export class EndpointBehaviors extends Object {
     public importBehaviors(behaviors: any): void {
         if (behaviors && typeof behaviors === 'object' && !Array.isArray(behaviors)) {
             Object.keys(behaviors).forEach((key: string) => {
-                if (EndpointBehaviors._PrivateBehaviors.indexOf(key) < 0 && typeof behaviors[key] !== 'undefined') {
+                if (EndpointBehaviors._PrivateBehaviors.indexOf(key) < 0 && behaviors[key] !== undefined) {
                     this[key] = behaviors[key];
                 }
             });

@@ -2,16 +2,11 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk } from '../../libraries';
-
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
 import { RoutesConstants, IRouteOptions } from '.';
-
-declare const global: any;
-declare const require: Function;
+import chalk from 'chalk';
 
 export class RoutesManager extends GenericManager<IRouteOptions> {
     //
@@ -58,19 +53,19 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
     }
     /* istanbul ignore next */
     protected loadAndAttach() {
-        if (this._options.verbose) {
-            const str: string = this._options.urlPrefix ? ` (prefix: '${this._options.urlPrefix}')` : '';
+        if (this._options?.verbose) {
+            const str: string = this._options?.urlPrefix ? ` (prefix: '${this._options?.urlPrefix}')` : '';
             console.log(`Loading routes${str}:`);
         }
 
         if (!this._lastError && this._itemSpecs.length > 0) {
             for (let i in this._itemSpecs) {
                 try {
-                    if (this._options.verbose) {
+                    if (this._options?.verbose) {
                         console.log(`\t- '${chalk.green(this._itemSpecs[i].name)}'`);
                     }
 
-                    global[RoutesConstants.GlobalConfigPointer] = this._configs;
+                    (<any>global)[RoutesConstants.GlobalConfigPointer] = this._configs;
 
                     const router: any = require(this._itemSpecs[i].path);
                     this._routes.push({
@@ -90,13 +85,13 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
                             })
                     });
                     if (this._isKoa) {
-                        router.prefix(`${this._options.urlPrefix}/${this._itemSpecs[i].name}`);
+                        router.prefix(`${this._options?.urlPrefix}/${this._itemSpecs[i].name}`);
                         this._app.use(router.routes());
                     } else {
-                        this._app.use(`${this._options.urlPrefix}/${this._itemSpecs[i].name}`, router);
+                        this._app.use(`${this._options?.urlPrefix}/${this._itemSpecs[i].name}`, router);
                     }
 
-                    delete global[RoutesConstants.GlobalConfigPointer];
+                    delete (<any>global)[RoutesConstants.GlobalConfigPointer];
                 } catch (err) {
                     console.error(chalk.red(`Unable to load route '${this._itemSpecs[i].name}'.`), err);
                 }

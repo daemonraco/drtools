@@ -1,14 +1,18 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.KoaConnector = void 0;
+const tslib_1 = require("tslib");
 /**
  * @file koa.ts
  * @author Alejandro D. Simi
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.KoaConnector = void 0;
-const libraries_1 = require("../../libraries");
 const configs_1 = require("../configs");
 const drcollector_1 = require("../drcollector");
 const _1 = require(".");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
+const url = tslib_1.__importStar(require("url"));
+const koa_static_1 = tslib_1.__importDefault(require("koa-static"));
 class KoaConnector {
     //
     // Constructor.
@@ -17,7 +21,7 @@ class KoaConnector {
         // Protected properties.
         this._attached = false;
         this._koaApp = null;
-        this._options = null;
+        this._options = {};
         this._uiAttached = false;
     }
     //
@@ -53,10 +57,10 @@ class KoaConnector {
     attachWebUI() {
         if (this._options.webUi && !this._uiAttached) {
             this._uiAttached = true;
-            this._koaApp.use(libraries_1.koaStatic(libraries_1.path.join(__dirname, '../../../web-ui/ui'), { hidden: true }));
-            this._koaApp.use(async (ctx, next) => {
+            this._koaApp.use(koa_static_1.default(path.join(__dirname, '../../../web-ui/ui'), { hidden: true }));
+            this._koaApp.use((ctx, next) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                 if (ctx.originalUrl.match(/^\/\.drtools/)) {
-                    const parsedUrl = libraries_1.url.parse(ctx.originalUrl);
+                    const parsedUrl = url.parse(ctx.originalUrl);
                     if (parsedUrl.pathname === '/.drtools.json') {
                         let result = null;
                         if (ctx.query.config && ctx.query.manager) {
@@ -65,29 +69,26 @@ class KoaConnector {
                         else if (ctx.query.configSpecs && ctx.query.manager) {
                             result = _1.KoaResponseBuilder.ConfigSpecsContents(ctx.query.manager, ctx.query.configSpecs);
                         }
-                        else if (ctx.query.doc) {
-                            result = _1.KoaResponseBuilder.DocsContents(ctx.query.doc, ctx.query.baseUrl);
-                        }
                         else {
                             result = _1.KoaResponseBuilder.FullInfoResponse();
                         }
                         ctx.body = result;
                     }
                     else if (parsedUrl.pathname.match(/^\/\.drtools-docs/)) {
-                        const basePath = libraries_1.path.join(__dirname, '../../../docs');
+                        const basePath = path.join(__dirname, '../../../docs');
                         const match = parsedUrl.pathname.match(/^\/\.drtools-docs\/(.*)$/);
                         const subPath = match ? match[1] : '';
-                        const fullPath = libraries_1.path.join(basePath, subPath);
+                        const fullPath = path.join(basePath, subPath);
                         const valid = fullPath.indexOf(basePath) === 0;
-                        ctx.body = await libraries_1.fs.readFile(valid && subPath && libraries_1.fs.existsSync(fullPath)
+                        ctx.body = yield fs.readFile(valid && subPath && fs.existsSync(fullPath)
                             ? fullPath
-                            : libraries_1.path.join(__dirname, '../../../docs/index.html')).toString();
+                            : path.join(__dirname, '../../../docs/index.html')).toString();
                     }
                 }
                 else {
-                    await next();
+                    yield next();
                 }
-            });
+            }));
         }
     }
     //

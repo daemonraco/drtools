@@ -1,11 +1,14 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tools = exports.ToolsCheckPath = void 0;
+const tslib_1 = require("tslib");
 /**
  * @file tools.ts
  * @author Alejandro D. Simi
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tools = exports.ToolsCheckPath = void 0;
-const libraries_1 = require("../../libraries");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
 var ToolsCheckPath;
 (function (ToolsCheckPath) {
     ToolsCheckPath[ToolsCheckPath["Unknown"] = 0] = "Unknown";
@@ -23,33 +26,30 @@ class Tools {
     constructor() { }
     //
     // Public class methods.
-    static async BlockRetry(block, options = {}) {
-        options = {
-            logPrefix: '',
-            maxRetries: 3,
-            params: {},
-            ...options,
-        };
-        options.logPrefix += !!options.logPrefix ? ' ' : '';
-        let done = false;
-        let lastException = null;
-        let retries = 0;
-        while (!done && retries < options.maxRetries) {
-            try {
-                await block(options.params);
-                done = true;
+    static BlockRetry(block, options = {}) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            options = Object.assign({ logPrefix: '', maxRetries: 3, params: {} }, options);
+            options.logPrefix += !!options.logPrefix ? ' ' : '';
+            let done = false;
+            let lastException = null;
+            let retries = 0;
+            while (!done && options && options.maxRetries !== undefined && retries < options.maxRetries) {
+                try {
+                    yield block(options.params || {});
+                    done = true;
+                }
+                catch (err) {
+                    lastException = err;
+                    console.error(chalk_1.default.red(`${options.logPrefix}${err}`));
+                    yield Tools.Delay();
+                    console.error(chalk_1.default.cyan(`${options.logPrefix}retrying...`));
+                }
+                retries++;
             }
-            catch (err) {
-                lastException = err;
-                console.error(libraries_1.chalk.red(`${options.logPrefix}${err}`));
-                await Tools.Delay();
-                console.error(libraries_1.chalk.cyan(`${options.logPrefix}retrying...`));
+            if (!done && lastException) {
+                throw lastException;
             }
-            retries++;
-        }
-        if (!done && lastException) {
-            throw lastException;
-        }
+        });
     }
     static CheckDirectory(dirPath, relativeTo = null) {
         return Tools.CheckPathByType('isDirectory', dirPath, relativeTo);
@@ -104,20 +104,22 @@ class Tools {
         else {
             //
             // At this point, if the right one exist, it overwrites the left one.
-            if (typeof right !== 'undefined') {
+            if (right !== undefined) {
                 left = right;
             }
         }
         return left;
     }
-    static async Delay(ms = 1000) {
-        return new Promise((r) => { setTimeout(r, ms); });
+    static Delay(ms = 1000) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return new Promise((r) => { setTimeout(r, ms); });
+        });
     }
     static FullErrors() {
-        return typeof process.env.DRTOOLS_DEBUG !== 'undefined';
+        return process.env.DRTOOLS_DEBUG !== undefined;
     }
     static FullPath(basicPath) {
-        return libraries_1.fs.existsSync(basicPath) ? libraries_1.path.resolve(basicPath) : libraries_1.path.join(process.cwd(), basicPath);
+        return fs.existsSync(basicPath) ? path.resolve(basicPath) : path.join(process.cwd(), basicPath);
     }
     static IsBrowser() {
         return Tools._IsBrowser();
@@ -144,14 +146,14 @@ class Tools {
             stat: null
         };
         try {
-            result.stat = libraries_1.fs.statSync(filePath);
+            result.stat = fs.statSync(filePath);
         }
         catch (e) { }
         if (result.stat) {
             if (typeof result.stat[checker] === 'function') {
                 if ((result.stat[checker])()) {
                     result.status = ToolsCheckPath.Ok;
-                    result.path = libraries_1.path.resolve(result.path);
+                    result.path = path.resolve(result.path);
                 }
                 else {
                     result.status = ToolsCheckPath.WrongType;
@@ -166,7 +168,7 @@ class Tools {
         }
         if (relativeTo && result.status === ToolsCheckPath.DoesntExist) {
             const aux = result.originalPath;
-            result = Tools.CheckPathByType(checker, libraries_1.path.join(relativeTo, filePath), null);
+            result = Tools.CheckPathByType(checker, path.join(relativeTo, filePath), null);
             result.originalPath = aux;
         }
         return result;

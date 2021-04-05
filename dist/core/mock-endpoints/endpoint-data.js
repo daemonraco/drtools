@@ -1,14 +1,17 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EndpointData = void 0;
+const tslib_1 = require("tslib");
 /**
  * @file endpoint-data.ts
  * @author Alejandro D. Simi
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.EndpointData = void 0;
-const libraries_1 = require("../../libraries");
 const _1 = require(".");
 const _2 = require(".");
 const includes_1 = require("../includes");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
+const glob_1 = tslib_1.__importDefault(require("glob"));
 class EndpointData {
     //
     // Constructor.
@@ -24,7 +27,7 @@ class EndpointData {
         this._exists = false;
         this._options = {};
         this._raw = {};
-        this._uri = null;
+        this._uri = '';
         this._endpoint = endpoint;
         this._uri = uri;
         this._options = includes_1.Tools.DeepMergeObjects(this._options, options);
@@ -39,18 +42,18 @@ class EndpointData {
     brievesByMethod() {
         return this._brievesByMethod;
     }
-    data(method = null) {
+    data(method) {
         let out = {
             status: 404,
             message: `Not found.`,
             data: {}
         };
         if (this._exists) {
-            method = method ? method.toLowerCase() : null;
-            if (typeof this._raw['*'] !== 'undefined') {
+            method = method ? method.toLowerCase() : undefined;
+            if (this._raw['*'] !== undefined) {
                 method = '*';
             }
-            if (typeof this._raw[method] !== 'undefined') {
+            if (method && this._raw[method] !== undefined) {
                 try {
                     out.data = JSON.parse(JSON.stringify(this._raw[method]));
                     out.data = this.expanded(out.data);
@@ -89,7 +92,7 @@ class EndpointData {
             const match = out.match(this.BehaviorPattern);
             if (match) {
                 const behavior = match[1];
-                let params = typeof match[3] !== 'undefined' ? match[3] : null;
+                let params = match[3] !== undefined ? match[3] : null;
                 try {
                     params = JSON.parse(match[3]);
                 }
@@ -116,8 +119,8 @@ class EndpointData {
     }
     /* istanbul ignore next */
     loadBehaviors() {
-        const behaviorsPath = libraries_1.path.join(this._endpoint.directory(), `${this._uri}.js`);
-        if (libraries_1.fs.existsSync(behaviorsPath)) {
+        const behaviorsPath = path.join(this._endpoint.directory(), `${this._uri}.js`);
+        if (fs.existsSync(behaviorsPath)) {
             try {
                 const extraBehaviors = require(behaviorsPath);
                 this._behaviors.importBehaviors(extraBehaviors);
@@ -139,9 +142,9 @@ class EndpointData {
     }
     /* istanbul ignore next */
     loadPaths() {
-        const basicPath = libraries_1.path.join(this._endpoint.directory(), `${this._uri}.json`);
-        const byMethodPattern = libraries_1.path.join(this._endpoint.directory(), `_METHODS/*/${this._uri}.json`);
-        const byMethodPaths = libraries_1.glob.sync(byMethodPattern);
+        const basicPath = path.join(this._endpoint.directory(), `${this._uri}.json`);
+        const byMethodPattern = path.join(this._endpoint.directory(), `_METHODS/*/${this._uri}.json`);
+        const byMethodPaths = glob_1.default.sync(byMethodPattern);
         if (byMethodPaths.length) {
             this._exists = true;
             byMethodPaths.forEach((p) => {
@@ -156,11 +159,10 @@ class EndpointData {
                 }
             });
         }
-        else if (libraries_1.fs.existsSync(basicPath)) {
+        else if (fs.existsSync(basicPath)) {
             this._exists = true;
             this._brievesByMethod['*'] = {
                 behaviors: false,
-                method: null,
                 path: basicPath,
                 uri: this._uri
             };
@@ -169,7 +171,7 @@ class EndpointData {
     /* istanbul ignore next */
     loadRaw() {
         Object.keys(this._brievesByMethod).forEach((method) => {
-            this._raw[method] = libraries_1.fs.readFileSync(this._brievesByMethod[method].path).toString();
+            this._raw[method] = fs.readFileSync(this._brievesByMethod[method].path).toString();
             try {
                 this._raw[method] = JSON.parse(this._raw[method]);
             }

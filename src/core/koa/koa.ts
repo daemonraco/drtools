@@ -2,25 +2,23 @@
  * @file koa.ts
  * @author Alejandro D. Simi
  */
-
-import { fs, koaStatic, path, url } from '../../libraries';
-
 import { ConfigsConstants, ConfigsManager } from '../configs';
 import { DRCollector, DRCollectorEvents } from '../drcollector';
 import { IKoaConnectorOptions, KoaResponseBuilder } from '.';
-
-declare const __dirname: string;
-declare var Promise: any;
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as url from 'url';
+import koaStatic from 'koa-static';
 
 export class KoaConnector {
     //
     // Private class properties.
-    private static _Instance: KoaConnector = null;
+    private static _Instance: KoaConnector | null = null;
     //
     // Protected properties.
     protected _attached: boolean = false;
     protected _koaApp: any = null;
-    protected _options: IKoaConnectorOptions = null;
+    protected _options: IKoaConnectorOptions = {};
     protected _uiAttached: boolean = false;
     //
     // Constructor.
@@ -66,7 +64,7 @@ export class KoaConnector {
 
             this._koaApp.use(async (ctx: any, next: () => void): Promise<any> => {
                 if (ctx.originalUrl.match(/^\/\.drtools/)) {
-                    const parsedUrl = url.parse(ctx.originalUrl);
+                    const parsedUrl: any = url.parse(ctx.originalUrl);
 
                     if (parsedUrl.pathname === '/.drtools.json') {
                         let result: any = null;
@@ -75,8 +73,6 @@ export class KoaConnector {
                             result = KoaResponseBuilder.ConfigContents(ctx.query.manager, ctx.query.config);
                         } else if (ctx.query.configSpecs && ctx.query.manager) {
                             result = KoaResponseBuilder.ConfigSpecsContents(ctx.query.manager, ctx.query.configSpecs);
-                        } else if (ctx.query.doc) {
-                            result = KoaResponseBuilder.DocsContents(ctx.query.doc, ctx.query.baseUrl);
                         } else {
                             result = KoaResponseBuilder.FullInfoResponse();
                         }

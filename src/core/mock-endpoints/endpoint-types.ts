@@ -9,7 +9,7 @@ export const EndpointPathPattern: RegExp = /^(.*)\/(_METHODS)\/([a-z]+)\/(.+)\.j
 
 export interface IEndpointBrief {
     behaviors: boolean;
-    method: string;
+    method?: string;
     path: string;
     uri: string;
 }

@@ -1,3 +1,8 @@
+<!-- version-warning -->
+!>__<span style="color:red">WARNING: THIS DOCUMENT IS REALLY OUT OF DATE SINCE
+VERSION 0.0.1</span>__
+<!-- /version-warning -->
+
 # DRTools: Endpoints
 
 ## The idea
@@ -31,7 +36,7 @@ The file `users.json` will have these contents:
 ```
 
 And `1.json` these:
-```js
+```json
 {
     "id": 1,
     "name": "John Doe",
@@ -86,7 +91,7 @@ These URL will return the contents we showed before.
 ## Behaviors
 _Behaviors_ are small functions that auto-complete fields in your mock data files.
 For example, you can change the file `1.json` for something like this:
-```js
+```json
 {
     "id": 1,
     "name": "John Doe",
@@ -111,7 +116,7 @@ Besides `lorem`, you have some more useful behaviors at your disposal.
 
 ### randString
 It provides a _string_ of random letter and it can be used in this way:
-```js
+```json
 {
     "string_with_10_characters": "@@randString",
     "string_with_30_characters": "@@randString:30"
@@ -120,7 +125,7 @@ It provides a _string_ of random letter and it can be used in this way:
 
 ### randNumber
 It provides a random _integer_ and it can be used in this way:
-```js
+```json
 {
     "between_0_and_100": "@@randNumber",
     "between_0_and_15": {
@@ -138,7 +143,7 @@ It provides a random _integer_ and it can be used in this way:
 If one of your mock-up has to incorporate another route as a field, you can
 automatically do so with something like this (assuming that `sub/route.json` is a
 valid file inside your provided directory):
-```js
+```json
 {
     "subRoute": "@@endpoint:sub/route",
     "subMultipleRoutes": "@@endpoint:sub/multi/*"
@@ -159,7 +164,7 @@ module.exports = {
 ```
 
 Then change your file `1.json` into this:
-```js
+```json
 {
     "id": 1,
     "name": "John Doe",
@@ -170,7 +175,7 @@ Then change your file `1.json` into this:
 
 Now, when you go to `http://localhost:3000/api/v1.0/users/1`, you'll get something
 like this:
-```js
+```json
 {
     "id": 1,
     "name": "John Doe",
@@ -214,3 +219,5 @@ requests, you can create the directory `/path/to/mock-ups/_METHODS/get` and move
 If you want a different answer for `POST` requests, you can create the directory
 `/path/to/mock-ups/_METHODS/post` and put another file called `books.json` with
 different contents.
+
+<!-- version-check:0.0.1 -->

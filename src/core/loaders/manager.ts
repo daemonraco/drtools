@@ -2,21 +2,16 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk } from '../../libraries';
-
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
 import { GenericManager, Tools } from '../includes';
 import { LoadersConstants, ILoaderOptions } from '.';
-
-declare const global: any;
-declare const require: (p: string) => any;
+import chalk from 'chalk';
 
 export class LoadersManager extends GenericManager<ILoaderOptions> {
     //
     // Constructor.
-    constructor(directory: string, options: ILoaderOptions = null, configs: ConfigsManager = null) {
+    constructor(directory: string, options: ILoaderOptions | null = null, configs: ConfigsManager | null = null) {
         super(directory, options, configs);
         this._valid = !this._lastError;
 
@@ -28,18 +23,18 @@ export class LoadersManager extends GenericManager<ILoaderOptions> {
         if (!this._loaded) {
             this._loaded = true;
 
-            if (this._options.verbose) {
+            if (this._options?.verbose) {
                 console.log(`Loading loaders:`);
             }
 
             if (!this._lastError && this._itemSpecs.length > 0) {
                 for (let item of this._itemSpecs) {
                     try {
-                        if (this._options.verbose) {
+                        if (this._options?.verbose) {
                             console.log(`\t- '${chalk.green(item.name)}'`);
                         }
 
-                        global[LoadersConstants.GlobalConfigsPointer] = this._configs;
+                        (<any>global)[LoadersConstants.GlobalConfigsPointer] = this._configs;
 
                         const lib: any = require(item.path);
                         let prom: any = null
@@ -53,7 +48,7 @@ export class LoadersManager extends GenericManager<ILoaderOptions> {
                             await prom;
                         }
 
-                        delete global[LoadersConstants.GlobalConfigsPointer];
+                        delete (<any>global)[LoadersConstants.GlobalConfigsPointer];
                     } catch (err) {
                         console.error(chalk.red(`Unable to load loader '${item.name}'.`), err);
                     }

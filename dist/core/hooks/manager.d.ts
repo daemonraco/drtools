@@ -6,7 +6,7 @@ import { BasicList } from '../includes';
 import { Hook } from './hook';
 import { Hooks } from './types';
 declare class HooksManagerClass {
-    protected static _Instance: HooksManagerClass;
+    protected static _Instance: HooksManagerClass | null;
     protected _hooks: Hooks;
     constructor();
     get(key: string): Hook;

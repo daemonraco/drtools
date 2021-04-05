@@ -2,16 +2,13 @@
  * @file endpoint.ts
  * @author Alejandro D. Simi
  */
-
-import { glob, httpStatusCodes, path } from '../../libraries';
-
 import { ExpressMiddleware } from '../express';
 import { IEndpointBrief, IEndpointBrievesByMethod, EndpointData, IEndpointOptions, EndpointPathPattern } from '.';
 import { KoaMiddleware } from '../koa';
+import { StatusCodes } from 'http-status-codes';
 import { Tools, ToolsCheckPath } from '../includes';
-
-declare var Promise: any;
-declare var process: any;
+import * as path from 'path';
+import glob from 'glob';
 
 export class Endpoint {
     //
@@ -20,8 +17,8 @@ export class Endpoint {
     protected _loaded: boolean = false;
     protected _loadedEndpoints: { [path: string]: EndpointData } = {};
     protected _restPath: string = '';
-    protected _restPattern: RegExp = null;
-    protected _options: IEndpointOptions = null;
+    protected _restPattern: RegExp | null = null;
+    protected _options: IEndpointOptions = {};
     //
     // Constructor.
     public constructor(dirPath: string, restPath: string, options: IEndpointOptions = {}) {
@@ -58,7 +55,7 @@ export class Endpoint {
 
                 res.header('Content-Type', 'application/json');
 
-                if (result.status === httpStatusCodes.OK) {
+                if (result.status === StatusCodes.OK) {
                     res.status(result.status).json(result.data);
                 } else {
                     res.status(result.status).json({
@@ -80,7 +77,7 @@ export class Endpoint {
 
                 ctx.set('Content-Type', 'application/json');
 
-                if (result.status === httpStatusCodes.OK) {
+                if (result.status === StatusCodes.OK) {
                     ctx.body = result.data;
                 } else {
                     ctx.throw(result.status, {
@@ -94,9 +91,9 @@ export class Endpoint {
             }
         };
     }
-    public responseFor(endpoint: string, method: string, simple: boolean = false): { [name: string]: any } {
+    public responseFor(endpoint: string, method?: string, simple: boolean = false): { [name: string]: any } {
         let out: { [name: string]: any } = {
-            status: httpStatusCodes.OK,
+            status: StatusCodes.OK,
             message: null,
             data: {}
         };
@@ -160,10 +157,8 @@ export class Endpoint {
 
         let uris: string[] = [];
         paths.forEach((p: string) => {
-            const matches: string[] = p.match(EndpointPathPattern);
+            const matches: RegExpMatchArray | null = p.match(EndpointPathPattern);
             if (matches) {
-                let uri: string;
-
                 if (matches[2] === '_METHODS') {
                     uris.push(matches[4]);
                 } else {
@@ -178,7 +173,7 @@ export class Endpoint {
     }
     /* istanbul ignore next */
     protected loadEndpoint(endpoint: string): void {
-        if (typeof this._loadedEndpoints[endpoint] === 'undefined') {
+        if (this._loadedEndpoints[endpoint] === undefined) {
             this._loadedEndpoints[endpoint] = new EndpointData(this, endpoint, this._options);
         }
     }

@@ -8,7 +8,7 @@ export declare type EndpointRawByMethod = {
 export declare const EndpointPathPattern: RegExp;
 export interface IEndpointBrief {
     behaviors: boolean;
-    method: string;
+    method?: string;
     path: string;
     uri: string;
 }

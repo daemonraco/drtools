@@ -1,14 +1,14 @@
+/// <reference types="node" />
 /**
  * @file hook.ts
  * @author Alejandro D. Simi
  */
-/// <reference types="node" />
-import { EventEmitter } from '../../libraries';
 import { BasicDictionary, BasicList } from '../includes';
+import { EventEmitter } from 'events';
 import { HookBait, HookFunctions, HookResults, HookRunFunction } from './types';
 export declare class Hook {
-    protected _cache: HookBait;
-    protected _chainedCache: HookBait;
+    protected _cache: HookBait | null;
+    protected _chainedCache: HookBait | null;
     protected _isCached: boolean;
     protected _key: string;
     protected _listeners: HookFunctions<any, any>;

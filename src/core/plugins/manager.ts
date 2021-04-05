@@ -2,32 +2,28 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-
-import { chalk, fs, path } from '../../libraries';
-
 import { ConfigsManager } from '../configs';
 import { DRCollector, IAsyncManager, IManagerByKey } from '../drcollector';
 import { IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
 import { PluginsConstants, IPluginsOptions, IPluginSpecs, IPluginSpecsList } from '.';
-
-declare const global: any;
-declare const process: any;
-declare const require: Function;
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import chalk from 'chalk';
 
 export class PluginsManager implements IAsyncManager, IManagerByKey {
     //
     // Protected properties.
-    protected _configs: ConfigsManager = null;
-    protected _directories: string[] = null;
-    protected _itemSpecs: IPluginSpecsList = null;
-    protected _lastError: string = null;
+    protected _configs: ConfigsManager | null = null;
+    protected _directories: string[] = [];
+    protected _itemSpecs: IPluginSpecsList | null = null;
+    protected _lastError: string | null = null;
     protected _loaded: boolean = false;
-    protected _options: IPluginsOptions = null;
-    protected _paths: any[] = null;
+    protected _options: IPluginsOptions | null = null;
+    protected _paths: any[] = [];
     protected _valid: boolean = false;
     //
     // Constructor.
-    constructor(directory: string | string[], options: IPluginsOptions = null, configs: ConfigsManager = null) {
+    constructor(directory: string | string[], options: IPluginsOptions | null = null, configs: ConfigsManager | null = null) {
         this._directories = Array.isArray(directory) ? directory : [directory];
         this._options = options;
         this._configs = configs;
@@ -54,7 +50,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
 
         return results;
     }
-    public configs(): ConfigsManager {
+    public configs(): ConfigsManager | null {
         return this._configs;
     }
     /** @deprecated */
@@ -72,7 +68,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
             codePieces[1] = PluginsConstants.DefaultMethod;
         }
 
-        if (this._itemSpecs[codePieces[0]] !== undefined) {
+        if (this._itemSpecs && this._itemSpecs[codePieces[0]] !== undefined) {
             const specs: IPluginSpecs = this._itemSpecs[codePieces[0]];
 
             if (specs.library[codePieces[1]] !== undefined) {
@@ -86,9 +82,9 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
         return Tools.DeepCopy(this._itemSpecs);
     }
     public itemNames(): string[] {
-        return Object.keys(this._itemSpecs);
+        return Object.keys(<IPluginSpecsList>this._itemSpecs);
     }
-    public lastError(): string {
+    public lastError(): string | null {
         return this._lastError;
     }
     public async load(): Promise<boolean> {
@@ -98,29 +94,29 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
             if (!this._lastError) {
                 this._itemSpecs = {};
 
-                if (this._options.verbose) {
+                if (this._options?.verbose) {
                     console.log(`Loading plugins:`);
                 }
 
                 for (const dir of this._paths) {
                     try {
-                        if (this._options.verbose) {
+                        if (this._options?.verbose) {
                             console.log(`\t- '${chalk.green(dir.name)}'`);
                         }
                         //
                         // Should it consider a distribution folder?
-                        if (this._options.dist) {
+                        if (this._options?.dist) {
                             const distPath: string = path.join(dir.path, 'dist');
-                            let stat: fs.Stats = null;
+                            let stat: fs.Stats | null = null;
                             try { stat = await fs.stat(distPath); } catch (e) { }
                             if (stat && stat.isDirectory()) {
                                 dir.path = distPath;
                             }
                         }
 
-                        global[PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
+                        (<any>global)[PluginsConstants.GlobalConfigPointer] = this.configOf(dir.name);
                         let library: any = require(path.join(dir.path, 'index'));
-                        delete global[PluginsConstants.GlobalConfigPointer];
+                        delete (<any>global)[PluginsConstants.GlobalConfigPointer];
 
                         if (typeof library !== 'object' || Array.isArray(library)) {
                             const aux = library;
@@ -160,7 +156,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
         return this.directory() === key;
     }
     public methodsOf(name: string): string[] {
-        return this._itemSpecs[name] !== undefined ? Object.keys(this._itemSpecs[name].library) : [];
+        return this._itemSpecs && this._itemSpecs[name] !== undefined ? Object.keys(this._itemSpecs[name].library) : [];
     }
     public valid(): boolean {
         return this._valid;

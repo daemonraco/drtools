@@ -1,11 +1,11 @@
 "use strict";
-/**
- * @file endpoint-behaviors.ts
- * @author Alejandro D. Simi
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EndpointBehaviors = void 0;
-const libraries_1 = require("../../libraries");
+const tslib_1 = require("tslib");
+const lorem_ipsum_1 = require("lorem-ipsum");
+const fs = tslib_1.__importStar(require("fs-extra"));
+const path = tslib_1.__importStar(require("path"));
+const glob_1 = tslib_1.__importDefault(require("glob"));
 class EndpointBehaviors extends Object {
     //
     // Constructor.
@@ -18,16 +18,16 @@ class EndpointBehaviors extends Object {
     }
     //
     // Basic behaviors.
-    endpoint(endpointPath, method = null) {
+    endpoint(endpointPath, method) {
         let out = undefined;
-        const fullPath = libraries_1.path.join(this._endpoint.directory(), `${endpointPath}.json`);
-        if (libraries_1.fs.existsSync(fullPath)) {
+        const fullPath = path.join(this._endpoint.directory(), `${endpointPath}.json`);
+        if (fs.existsSync(fullPath)) {
             out = this._endpoint.responseFor(endpointPath, method, true);
         }
         else {
             const rootPath = this._endpoint.directory();
             const filter = /^(.*)\.json$/i;
-            out = libraries_1.glob.sync(fullPath)
+            out = glob_1.default.sync(fullPath)
                 .filter((p) => p.match(filter))
                 .filter((p) => p.indexOf(rootPath) === 0)
                 .map((p) => p.substr(rootPath.length + 1))
@@ -40,7 +40,7 @@ class EndpointBehaviors extends Object {
         return out;
     }
     lorem(params) {
-        return params === null ? libraries_1.loremIpsum() : libraries_1.loremIpsum(params);
+        return params === null ? lorem_ipsum_1.loremIpsum() : lorem_ipsum_1.loremIpsum(params);
     }
     randNumber(...args) {
         let max = 100;
@@ -58,18 +58,18 @@ class EndpointBehaviors extends Object {
             }
         }
         else if (typeof args[0] === 'object') {
-            if (typeof args[0].max !== 'undefined') {
+            if (args[0].max !== undefined) {
                 max = parseInt(args[0].max);
             }
-            if (typeof args[0].min !== 'undefined') {
+            if (args[0].min !== undefined) {
                 min = parseInt(args[0].min);
             }
         }
         else {
-            if (typeof args[0] !== 'undefined') {
+            if (args[0] !== undefined) {
                 max = parseInt(args[0]);
             }
-            if (typeof args[1] !== 'undefined') {
+            if (args[1] !== undefined) {
                 min = parseInt(args[1]);
             }
         }
@@ -81,10 +81,7 @@ class EndpointBehaviors extends Object {
         out = Math.floor(Math.random() * (max - min + 1)) + min;
         return out;
     }
-    randString(length = null) {
-        if (length === null) {
-            length = 10;
-        }
+    randString(length = 10) {
         let out = '';
         while (out.length < length) {
             out += Math.random().toString(36).substring(7);
@@ -96,7 +93,7 @@ class EndpointBehaviors extends Object {
     importBehaviors(behaviors) {
         if (behaviors && typeof behaviors === 'object' && !Array.isArray(behaviors)) {
             Object.keys(behaviors).forEach((key) => {
-                if (EndpointBehaviors._PrivateBehaviors.indexOf(key) < 0 && typeof behaviors[key] !== 'undefined') {
+                if (EndpointBehaviors._PrivateBehaviors.indexOf(key) < 0 && behaviors[key] !== undefined) {
                     this[key] = behaviors[key];
                 }
             });

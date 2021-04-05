@@ -2,24 +2,22 @@
  * @file express.ts
  * @author Alejandro D. Simi
  */
-
-import { express, fs, path } from '../../libraries';
-
 import { ConfigsConstants, ConfigsManager } from '../configs';
 import { DRCollector, DRCollectorEvents } from '../drcollector';
 import { IExpressConnectorOptions, ExpressResponseBuilder } from '.';
-
-declare const __dirname: string;
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import express from 'express';
 
 export class ExpressConnector {
     //
     // Private class properties.
-    private static _Instance: ExpressConnector = null;
+    private static _Instance: ExpressConnector | null = null;
     //
     // Protected properties.
     protected _attached: boolean = false;
     protected _expressApp: any = null;
-    protected _options: IExpressConnectorOptions = null;
+    protected _options: IExpressConnectorOptions = {};
     protected _uiAttached: boolean = false;
     //
     // Constructor.
@@ -72,8 +70,6 @@ export class ExpressConnector {
                             result = ExpressResponseBuilder.ConfigContents(req.query.manager, req.query.config);
                         } else if (req.query.configSpecs && req.query.manager) {
                             result = ExpressResponseBuilder.ConfigSpecsContents(req.query.manager, req.query.configSpecs);
-                        } else if (req.query.doc) {
-                            result = ExpressResponseBuilder.DocsContents(req.query.doc, req.query.baseUrl);
                         } else {
                             result = ExpressResponseBuilder.FullInfoResponse();
                         }

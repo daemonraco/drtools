@@ -1,14 +1,11 @@
 "use strict";
-/**
- * @file manager.ts
- * @author Alejandro D. Simi
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EndpointsManager = void 0;
-const libraries_1 = require("../../libraries");
+const tslib_1 = require("tslib");
 const drcollector_1 = require("../drcollector");
 const _1 = require(".");
 const includes_1 = require("../includes");
+const chalk_1 = tslib_1.__importDefault(require("chalk"));
 class EndpointsManager {
     //
     // Constructor.
@@ -16,10 +13,10 @@ class EndpointsManager {
         //
         // Protected properties.
         this._configs = null;
-        this._endpointsDirectory = null;
-        this._endpointsUri = null;
+        this._endpointsDirectory = '';
+        this._endpointsUri = '';
         this._lastError = null;
-        this._options = null;
+        this._options = { directory: '', uri: '' };
         this._provider = null;
         this._valid = false;
         this._configs = configs;
@@ -40,16 +37,16 @@ class EndpointsManager {
         return this.directory() === key;
     }
     options() {
-        return this._options.options;
+        return this._options.options || null;
     }
     paths() {
-        return this._provider.paths();
+        return this._provider ? this._provider.paths() : [];
     }
     provide() {
-        return this.valid() ? this._provider.expressMiddleware() : this.provideInvalidMiddleware();
+        return this.valid() && this._provider ? this._provider.expressMiddleware() : this.provideInvalidMiddleware();
     }
     provideForKoa() {
-        return this.valid() ? this._provider.koaMiddleware() : this.provideInvalidKoaMiddleware();
+        return this.valid() && this._provider ? this._provider.koaMiddleware() : this.provideInvalidKoaMiddleware();
     }
     valid() {
         return this._valid;
@@ -79,11 +76,11 @@ class EndpointsManager {
                 break;
             case includes_1.ToolsCheckPath.WrongType:
                 this._lastError = `'${this._options.directory}' is not a directory.`;
-                console.error(libraries_1.chalk.red(this._lastError));
+                console.error(chalk_1.default.red(this._lastError));
                 break;
             default:
                 this._lastError = `'${this._options.directory}' does not exist.`;
-                console.error(libraries_1.chalk.red(this._lastError));
+                console.error(chalk_1.default.red(this._lastError));
                 break;
         }
         //
@@ -97,15 +94,15 @@ class EndpointsManager {
     }
     /* istanbul ignore next */
     provideInvalidKoaMiddleware() {
-        return async (ctx, next) => {
-            console.error(libraries_1.chalk.red(`EndpointsManager Error: ${this._lastError}`));
-            await next();
-        };
+        return (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+            console.error(chalk_1.default.red(`EndpointsManager Error: ${this._lastError}`));
+            yield next();
+        });
     }
     /* istanbul ignore next */
     provideInvalidMiddleware() {
         return (req, res, next) => {
-            console.error(libraries_1.chalk.red(`EndpointsManager Error: ${this._lastError}`));
+            console.error(chalk_1.default.red(`EndpointsManager Error: ${this._lastError}`));
             next();
         };
     }

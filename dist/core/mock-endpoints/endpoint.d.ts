@@ -12,14 +12,14 @@ export declare class Endpoint {
         [path: string]: EndpointData;
     };
     protected _restPath: string;
-    protected _restPattern: RegExp;
+    protected _restPattern: RegExp | null;
     protected _options: IEndpointOptions;
     constructor(dirPath: string, restPath: string, options?: IEndpointOptions);
     paths(): IEndpointBrief[];
     directory(): string;
     expressMiddleware(): ExpressMiddleware;
     koaMiddleware(): KoaMiddleware;
-    responseFor(endpoint: string, method: string, simple?: boolean): {
+    responseFor(endpoint: string, method?: string, simple?: boolean): {
         [name: string]: any;
     };
     uri(): string;
