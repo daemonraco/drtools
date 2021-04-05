@@ -1,7 +1,7 @@
 'use strict';
 //
 // Dependencies.
-const assert = require('chai').assert;
+const { assert, expect } = require('chai');
 const fs = require('fs');
 const path = require('path');
 //
@@ -31,7 +31,9 @@ describe(`[002] drtools: Configs manager:`, () => {
         const dir = path.join(__dirname, 'tmp/configs');
         assert.isTrue(fs.existsSync(dir));
 
-        const manager = new ConfigsManager(dir, {});
+        const manager = new ConfigsManager(dir, {
+            key: 'test-valid-configs',
+        });
         assert.isTrue(manager.valid());
 
         const dbConf = manager.get('db');
@@ -45,6 +47,14 @@ describe(`[002] drtools: Configs manager:`, () => {
         assert.isObject(dbConf.$pathExports);
         assert.strictEqual(dbConf.$pathExports.exportedX, '$.x');
         assert.strictEqual(dbConf.$pathExports.exportedY, '$.y');
+
+        expect(manager.directories()).to.have.all.members([dir]);
+        assert.strictEqual(manager.environmentName(), 'default');
+        assert.strictEqual(manager.getSpecs('unknown'), null);
+        expect(manager.itemNames()).to.have.all.members(['db', 'plugin.with-config', 'sizes', 'strict']);
+        expect(Object.keys(manager.items())).to.have.all.members(['db', 'plugin.with-config', 'sizes', 'strict']);
+        assert.strictEqual(manager.key(), 'test-valid-configs');
+        assert(manager.matchesKey('test-valid-configs'));
     });
 
     it(`tries to load valid configs on a different environment (ENV_NAME)`, () => {

@@ -1,3 +1,4 @@
+<!-- version-check:0.15.2 -->
 <!-- version-warning -->
 <!-- /version-warning -->
 
@@ -203,5 +204,3 @@ When you create a new manager you may pass these options:
 | `specsSuffix`          | `string`            | `config-spec`    | Suffix to be expected on each configuration specification file to be loaded. |
 | `suffix`               | `string`            | `config`         | Suffix to be expected on each configuration file to be loaded.               |
 | `verbose`              | `boolean`           |  `true`          | Whether to display loading log information or not.                           |
-
-<!-- version-check:0.15.1 -->

@@ -1,3 +1,4 @@
+<!-- version-check:0.0.1 -->
 <!-- version-warning -->
 !>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
 0.0.1</span>__
@@ -88,5 +89,3 @@ argument:
 | Option    |    Type   | Default | Description                                        |
 |-----------|:---------:|:-------:|----------------------------------------------------|
 | `verbose` | `boolean` |  `true` | Whether to display loading log information or not. |
-
-<!-- version-check:0.0.1 -->

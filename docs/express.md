@@ -1,3 +1,4 @@
+<!-- version-check:0.4.0 -->
 <!-- version-warning -->
 !>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
 0.4.0</span>__
@@ -96,5 +97,3 @@ When you invoke `ExpressConnector.attach()` you may pass these options:
 | `endpoints`            | `EndpointsManagerOptions`, `EndpointsManagerOptions[]` |   `[]`  | Mock-up endpoints configuration                                                                                                                                    |
 | `verbose`              | `boolean`                                              |  `true` | Whether to display loading log information or not.                                                                                                                 |
 | `webUi`                | `boolean`                                              | `false` | Whether to load or not the DRTools information page at `/.drtools`.                                                                                                |
-
-<!-- version-check:0.4.0 -->

@@ -1,3 +1,4 @@
+<!-- version-check:0.0.1 -->
 <!-- version-warning -->
 !>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
 0.0.1</span>__
@@ -46,5 +47,3 @@ argument:
 
 ## Koa.js
 Yes there's support for [koa.js](https://koajs.com/) middlewares.
-
-<!-- version-check:0.0.1 -->

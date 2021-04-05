@@ -1,3 +1,4 @@
+<!-- version-check:0.0.1 -->
 <!-- version-warning -->
 !>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
 0.0.1</span>__
@@ -219,5 +220,3 @@ requests, you can create the directory `/path/to/mock-ups/_METHODS/get` and move
 If you want a different answer for `POST` requests, you can create the directory
 `/path/to/mock-ups/_METHODS/post` and put another file called `books.json` with
 different contents.
-
-<!-- version-check:0.0.1 -->

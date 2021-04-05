@@ -1,3 +1,4 @@
+<!-- version-check:0.0.1 -->
 <!-- version-warning -->
 !>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
 0.0.1</span>__
@@ -11,7 +12,7 @@ DRTools provides a simple tools that generates assets with some basic structure.
 ## Command options
 <!-- AUTO:generator-options -->
 ```
-DRTools Generator (v0.15.1):
+DRTools Generator (v0.15.2):
 Usage: drtools-generator [options] [command]
 
 Options:
@@ -31,7 +32,7 @@ Commands:
 ### Command options
 <!-- AUTO:generator-options:mock-routes -->
 ```
-DRTools Generator (v0.15.1):
+DRTools Generator (v0.15.2):
 Usage: cmd mock-routes|mr [options] <directory>
 
 generates a mock-up routes configuration based on the contents of a directory.
@@ -48,7 +49,7 @@ Options:
 ### Command options
 <!-- AUTO:generator-options:middlewares -->
 ```
-DRTools Generator (v0.15.1):
+DRTools Generator (v0.15.2):
 Usage: cmd middleware|m [options] <name> <directory>
 
 generates a middleware with an initial structure.
@@ -68,7 +69,7 @@ Options:
 ### Command options
 <!-- AUTO:generator-options:plugins -->
 ```
-DRTools Generator (v0.15.1):
+DRTools Generator (v0.15.2):
 Usage: cmd plugin|p [options] <name> <directory>
 
 generates a plugin directory with an initial structure.
@@ -87,7 +88,7 @@ Options:
 ### Command options
 <!-- AUTO:generator-options:routes -->
 ```
-DRTools Generator (v0.15.1):
+DRTools Generator (v0.15.2):
 Usage: cmd route|r [options] <name> <directory>
 
 generates a route with an initial structure.
@@ -107,7 +108,7 @@ Options:
 ### Command options
 <!-- AUTO:generator-options:tasks -->
 ```
-DRTools Generator (v0.15.1):
+DRTools Generator (v0.15.2):
 Usage: cmd task|t [options] <name> <directory>
 
 generates a task with an initial structure.
@@ -125,5 +126,3 @@ Options:
   -h, --help               display help for command
 ```
 <!-- /AUTO -->
-
-<!-- version-check:0.0.1 -->

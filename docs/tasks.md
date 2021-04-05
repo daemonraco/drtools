@@ -1,3 +1,4 @@
+<!-- version-check:0.5.0 -->
 <!-- version-warning -->
 !>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
 0.5.0</span>__
@@ -70,5 +71,3 @@ set to change behaviors:
 |--------------------|:---------:|:-------:|----------------------------------------------------|
 | `this._interval`   |  `number` |  `5000` | How many milliseconds between each run.            |
 | `this._runAtStart` | `boolean` | `false` | Whether to run or not once as soon as it's loaded. |
-
-<!-- version-check:0.5.0 -->

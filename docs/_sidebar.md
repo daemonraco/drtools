@@ -1,3 +1,4 @@
+<!-- version-check:0.15.2 -->
 <!-- version-warning -->
 <!-- /version-warning -->
 
@@ -15,5 +16,3 @@
 - Commands:
     - [Server](server.md)
     - [Generator](generator.md)
-
-<!-- version-check:0.15.1 -->

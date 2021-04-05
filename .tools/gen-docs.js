@@ -118,11 +118,10 @@ const versionWarnings = mdPath => {
         needsWarning = semver.diff(mdVersion, version) !== null;
     } else {
         mdLines = [
-            ...mdLines,
             `<!-- version-check:${version} -->`,
-            '',
+            ...mdLines,
         ];
-        needsWarning = true;
+        mdVersion = version;
     }
     if (needsWarning) {
         outdatedMds.push({
