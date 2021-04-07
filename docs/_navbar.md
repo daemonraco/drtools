@@ -17,6 +17,3 @@
 - Commands
     - [Server](server.md)
     - [Generator](generator.md)
-
-- Auto Generated
-    - [Documentation TODOs](todo.md)

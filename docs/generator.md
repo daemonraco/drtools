@@ -4,10 +4,8 @@
 0.0.1</span>__
 <!-- /version-warning -->
 
-# DRTools: Server
-
-## What is it?
-DRTools provides a simple tools that generates assets with some basic structure.
+# Generator
+__DRTools__ provides a simple tools that generates assets with some basic structure.
 
 ## Command options
 <!-- AUTO:generator-options -->

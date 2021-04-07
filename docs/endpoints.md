@@ -21,7 +21,7 @@ In it you have a file called `users.json` and a directory called `users`.
 Inside the directory `users` you have a file called `1.json`.
 
 The file `users.json` will have these contents:
-```js
+```javascript
 [
     {
         "id": 1,
@@ -48,7 +48,7 @@ And `1.json` these:
 ## Setting it up
 Here you have a simple express server where we set our directory
 `/path/to/mock-ups` to be provided on the URL `http://localhost:3000/api/v1.0`:
-```js
+```javascript
 'use strict';
 
 const port = process.env.PORT || 3000;
@@ -154,7 +154,7 @@ valid file inside your provided directory):
 ## Custom behaviors
 if you want, in the same place where `1.json` is, you can create a file called
 `1.js` with this:
-```js
+```javascript
 'use strict';
 
 module.exports = {
@@ -193,7 +193,7 @@ their names accordingly.
 `1.js` that requires and returns this one. And do the same wherever you need it.
 3. _The Good_: The suggested option is to rename `1.js` to `behaviors.js`, move it
 one directory up and create the endpoint following the next example:
-```js
+```javascript
 const { EndpointsManager } = require('drtools');
 const endpoint = new EndpointsManager({
     directory: `/path/to/mock-ups`,

@@ -27,7 +27,7 @@ information).
 to a ExpressJS server (visit [this](routes.md) for more information).
 
 Then you can invoke the connector in this way:
-```js
+```javascript
 'use strict';
 
 const port = process.env.PORT || 3000;

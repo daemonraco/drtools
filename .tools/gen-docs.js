@@ -8,6 +8,7 @@ const semver = require('semver');
 const shell = require('shelljs');
 const version = require('../package.json').version;
 
+let warnings = [];
 let outdatedMds = [];
 
 const cleanCmdHelp = text => {
@@ -53,6 +54,48 @@ const inject = ({ mdPath, section, data, isCode, codeType }) => {
     fs.writeFileSync(mdPath, newReadmeContents);
 };
 
+const fixmeTags = mdPath => {
+    let mdLines = fs.readFileSync(mdPath).toString().split('\n');
+    //
+    // Replacing.
+    const fixmeDocPattern = /^@(fixme|todo) doc$/;
+    let newMdLines = [];
+    for (const line of mdLines) {
+        const match = line.match(fixmeDocPattern);
+        if (match) {
+            newMdLines = [
+                ...newMdLines,
+                '!> @fixme this section requires documentation.',
+            ];
+        } else {
+            newMdLines.push(line);
+        }
+    }
+    //
+    // Loading warnings for further report.
+    const titlePattern = /^([#]+)(| )(.*)$/;
+    const warningPattern = /^(.*)@(fixme|todo) (.+)(|\.)$/;
+    let lastTitle = '';
+    for (const line of mdLines) {
+        const matchTitle = line.match(titlePattern);
+        if (matchTitle) {
+            lastTitle = matchTitle[3];
+        }
+
+        const warningMatch = line.match(warningPattern);
+        if (warningMatch) {
+            warnings.push({
+                path: mdPath,
+                title: lastTitle.trim(),
+                warning: `${warningMatch[3]}${warningMatch[4] === '.' ? '.' : '...'}`,
+            });
+        }
+    }
+    //
+    // Writing new contents.
+    fs.writeFileSync(mdPath, newMdLines.join('\n'));
+};
+
 const removeTrailingEmptyLines = mdPath => {
     const mdLines = fs.readFileSync(mdPath)
         .toString()
@@ -64,7 +107,7 @@ const removeTrailingEmptyLines = mdPath => {
     mdLines.push('');
 
     fs.writeFileSync(mdPath, mdLines.join('\n'));
-}
+};
 
 const versionWarnings = mdPath => {
     let mdLines = fs.readFileSync(mdPath)
@@ -159,7 +202,7 @@ const versionWarnings = mdPath => {
     //
     // Writing new contents.
     fs.writeFileSync(mdPath, newMdLines.join('\n'));
-}
+};
 
 (async () => {
     const pieces = {}
@@ -193,6 +236,7 @@ const versionWarnings = mdPath => {
     steps.push(mdPath => inject({ mdPath, section: 'generator-options:tasks', data: pieces['generator-options:tasks'], isCode: true }));
     steps.push(mdPath => removeTrailingEmptyLines(mdPath));
     steps.push(mdPath => versionWarnings(mdPath));
+    steps.push(mdPath => fixmeTags(mdPath));
 
     let mdPaths = glob.sync('docs/**/*.md');
     mdPaths.push('README.md');
@@ -211,13 +255,40 @@ const versionWarnings = mdPath => {
         }
     }
 
-    console.log('');
+    let todoMdLines = [];
     if (outdatedMds.length > 0) {
-        console.log(chalk.red(`These docs are out of date:`));
+        todoMdLines = [
+            ...todoMdLines,
+            ...['', '## Outdated Documents'],
+        ];
+
+        console.log(chalk.red(`\nThese docs are out of date:`));
         for (const entry of outdatedMds) {
             console.log(chalk.red(`\t'${entry.path}' since '${entry.since}'`));
+            todoMdLines.push(`* [${entry.path}](${path.basename(entry.path)}): since __${entry.since}__.`);
+        }
+        todoMdLines.push('');
+    }
+    if (warnings.length > 0) {
+        todoMdLines = [
+            ...todoMdLines,
+            ...['', '## Document Warnings'],
+        ];
+
+        console.log(chalk.red(`\nThese warnings were found:`));
+        for (const entry of warnings) {
+            console.log(chalk.red(`\tDocument '${entry.path}' has warning under '${entry.title}'`));
+            const id = entry.title.toLowerCase().replace(/ /g, '-');
+            todoMdLines.push(`* [${entry.title} (${entry.path})](${path.basename(entry.path)}??id=${id}): ${entry.warning}`);
         }
     }
+
+    if (todoMdLines.length < 1) {
+        todoMdLines = ['There seems to be nothing pending regarding documentation.'];
+    }
+
+    todoMdLines.unshift('# Documentation TODOs');
+    await fs.writeFile(path.join(__dirname, '../docs/todo.md'), todoMdLines.join('\n'));
 
     process.exit();
 })();

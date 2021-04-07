@@ -9,8 +9,8 @@ const chalk_1 = tslib_1.__importDefault(require("chalk"));
 class TasksManager extends includes_1.GenericManager {
     //
     // Constructor.
-    constructor(directory, options = null, configs = null) {
-        super(directory, options, configs);
+    constructor(directories, options = null, configs = null) {
+        super(directories, options, configs);
         //
         // Protected properties.
         this._consumingQueue = false;

@@ -14,7 +14,7 @@ documentation.
 ## How to invoke it
 Considering that you have a directory where you store all your scripts files
 that export a middleware function, you can do something like this:
-```js
+```javascript
 const express = require('express');
 const { MiddlewaresManager } = require('drtools');
 
@@ -27,7 +27,7 @@ const manager = new MiddlewaresManager(app, 'directory/with/middleware/files');
 
 ### How does it look
 If you wonder how a _middleware_ you can use looks like, this is a simple example:
-```js
+```javascript
 'use strict';
 
 module.exports = (req, res, next) => {

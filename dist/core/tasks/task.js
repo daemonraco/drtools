@@ -36,7 +36,6 @@ class Task {
     // Protected methods.
     /* istanbul ignore next */
     load() {
-        throw `Subclass responsibility`;
     }
 }
 exports.Task = Task;

@@ -4,13 +4,12 @@
 0.0.1</span>__
 <!-- /version-warning -->
 
-# DRTools: Server
-
-## What is it?
-DRTools provides a simple ExpressJS server that can be launched from command line.
+# Server
+__DRTools__ provides a simple [Express](https://www.npmjs.com/package/express)
+server that can be launched from command line.
 Such server can provide almost the same tools you could have writing your own
 server (visit [this link](express.md) for more information about creating your own
-ExpressJS server).
+_Express_ server).
 
 ## Command options
 <!-- AUTO:server-options -->

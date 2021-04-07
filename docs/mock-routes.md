@@ -23,7 +23,7 @@ Let's assume that directory is `/path/to/stuff` and has this assets:
 Where `config.json` is the configuration file.
 
 With this you can load these routes in this way:
-```js
+```javascript
 const express = require('express');
 const { MockRoutesManager } = require('drtools');
 
@@ -104,7 +104,7 @@ requesting `/simple-json`.
 To achieve this we need to create a guard first.
 First we add file called `my-guard.js` inside `/path/to/stuff` with these
 contents:
-```js
+```javascript
 'use strict';
 
 module.exports = (req, res, next) => {

@@ -9,7 +9,7 @@ files, either in `json` format or as a `js` file.
 ## How to invoke it
 Let's consider that you have a directory where you store all your configuration
 files, in that case you can do something like this:
-```js
+```javascript
 const { ConfigsManager } = require('drtools');
 const manager = new ConfigsManager('directory/with/configuration/files');
 ```
@@ -27,7 +27,7 @@ this stored in your configurations directory:
 ```
 
 Then, you can do something like this:
-```js
+```javascript
 const { ConfigsManager } = require('drtools');
 const manager = new ConfigsManager('directory/with/configuration/files');
 const myconf = manager.get('myconf');
@@ -38,7 +38,7 @@ console.log(`Minimum height: ${myconf.min.height}`); // --> Minimum height: 768
 
 ## JS instead of JSON
 If you instead have a file called `myconf.config.js` looking like this:
-```js
+```javascript
 'use strict';
 
 const min = {
@@ -55,7 +55,7 @@ module.exports = {
 ```
 
 You can do the same:
-```js
+```javascript
 const { ConfigsManager } = require('drtools');
 const manager = new ConfigsManager('directory/with/configuration/files');
 const myconf = manager.get('myconf');
@@ -84,7 +84,7 @@ export NODE_ENV="prod";
 
 Now this next code will work a bit different and display values specific for the
 environment `prod`:
-```js
+```javascript
 const { ConfigsManager } = require('drtools');
 const manager = new ConfigsManager('directory/with/configuration/files');
 const myconf = manager.get('myconf');
@@ -107,7 +107,7 @@ If none of these is used, then the value is assume to be `default`.
 ## Multiple directories
 If your application have configuration files organized in more than one directory,
 you can specify them when you create the manager with something like this:
-```js
+```javascript
 const { ConfigsManager } = require('drtools');
 const manager = new ConfigsManager([
     'directory/with/configuration/files',
@@ -125,7 +125,7 @@ This tools makes use of JSON-schema specifications (through the package
 [Ajv](https://www.npmjs.com/package/ajv)) to validate the structure:
 
 Continuing with the same example, you can create your manager like this:
-```js
+```javascript
 const { ConfigsManager } = require('drtools');
 const manager = new ConfigsManager([
     'directory/with/configuration/files',
@@ -170,7 +170,7 @@ something like this:
 ?> You can use the page [jsonschemavalidator.net](https://www.jsonschemavalidator.net/)
 to test your specifications.
 
-## Environment Variables
+## Environment variables injection
 There are some cases where certain values in a configuration shouldn't be in a
 configuration file but rather in an environment variable.
 For those cases, the configuration manager can help you combine that and use those
@@ -184,7 +184,7 @@ Let's you have a configuration file with something like this:
 ```
 
 Now you can create you manager like this:
-```js
+```javascript
 const { ConfigsManager } = require('drtools');
 const manager = new ConfigsManager('directory/with/configuration/files', {
     environmentVariables: true,

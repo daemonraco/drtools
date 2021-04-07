@@ -24,6 +24,4 @@ class ByTheSecondTask extends Task {
     }
 }
 
-const instance = new ByTheSecondTask();
-
-module.exports = instance;
+module.exports = new ByTheSecondTask();

@@ -11,7 +11,7 @@ export declare class TasksManager extends GenericManager<ITasksManagerOptions> {
     protected _items: TasksList | null;
     protected _queue: any[];
     protected _queueInterval: any;
-    constructor(directory: string, options?: ITasksManagerOptions | null, configs?: ConfigsManager | null);
+    constructor(directories: string[] | string, options?: ITasksManagerOptions | null, configs?: ConfigsManager | null);
     load(): Promise<boolean>;
     tasks(): ITasksManager_TasksResponse[];
     protected consumeQueue(): Promise<void>;

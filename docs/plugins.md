@@ -13,13 +13,13 @@ with a file called `index.js` that export functions.
 ## How to invoke it
 Considering that you have a directory where you store all your plugin directories,
 you can do something like this:
-```js
+```javascript
 const { PluginsManager } = require('drtools');
 const manager = new PluginsManager('directory/with/plugins');
 ```
 
 If you have a directory where you store your configurations you can also do this:
-```js
+```javascript
 const { ConfigsManager, PluginsManager } = require('drtools');
 const configs = new ConfigsManager('directory/with/config/files');
 const manager = new PluginsManager('directory/with/plugins', {}, configs);
@@ -28,7 +28,7 @@ const manager = new PluginsManager('directory/with/plugins', {}, configs);
 ## Simple plugin
 Let's suppose that inside your plugins directory you have another directory called
 `example` and inside it a file called `index.js` with this content:
-```js
+```javascript
 'use strict';
 
 module.exports = {
@@ -37,27 +37,27 @@ module.exports = {
 ```
 
 Then you can invoke it with something like this:
-```js
+```javascript
 const func = manager.get('example::now');
 console.log(`Current date: ${func()}`);
 ```
 
 ## Simpler plugin
 Let's suppose that your plugins is even simple and exports only one function:
-```js
+```javascript
 'use strict';
 
 module.exports = () => new Date();
 ```
 
 Then you can invoke it with something like this:
-```js
+```javascript
 const func = manager.get('example::default');
 console.log(`Current date: ${func()}`);
 ```
 
 Or like like this:
-```js
+```javascript
 const func = manager.get('example');
 console.log(`Current date: ${func()}`);
 ```
@@ -72,7 +72,7 @@ these contents:
 ```
 
 You can write something like this in your plugin called `example`:
-```js
+```javascript
 'use strict';
 
 const config = global['DRTOOLS_PLUGIN_CONFIG_POINTER'];

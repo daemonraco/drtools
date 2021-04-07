@@ -18,8 +18,8 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
     protected _queueInterval: any = null;
     //
     // Constructor.
-    constructor(directory: string, options: ITasksManagerOptions | null = null, configs: ConfigsManager | null = null) {
-        super(directory, options, configs);
+    constructor(directories: string[] | string, options: ITasksManagerOptions | null = null, configs: ConfigsManager | null = null) {
+        super(directories, options, configs);
         this._valid = !this._lastError;
 
         DRCollector.registerTasksManager(this);
