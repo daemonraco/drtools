@@ -41,6 +41,7 @@ loadingSteps.push(async () => {
         publishConfigs: true,
         key: 'main-configs',
         specs: path.join(__dirname, '../tmp/specs'),
+        environmentVariables: true,
     });
 
     KoaConnector.attach(app, { webUi: true });

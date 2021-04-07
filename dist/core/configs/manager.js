@@ -22,7 +22,7 @@ var PublishExportsTypes;
     PublishExportsTypes["Koa"] = "koa";
 })(PublishExportsTypes || (PublishExportsTypes = {}));
 ;
-const ENV_PATTERN = /^ENV:(.+)$/;
+const ENV_PATTERN = /^ENV:([^:]+)(:|)(.*)$/;
 class ConfigsManager {
     //
     // Constructor.
@@ -126,9 +126,20 @@ class ConfigsManager {
     expandEnvVariablesIn(data) {
         switch (typeof data) {
             case 'string':
+                //
+                // Does it require expanding?
                 const match = data.match(ENV_PATTERN);
                 if (match) {
-                    data = process.env[match[1]];
+                    console.log(`DEBUG: match`, JSON.stringify(match, null, 2));
+                    //
+                    // Is it a valid variable or should it use a default value?
+                    if (process.env[match[1]] !== undefined) {
+                        data = process.env[match[1]];
+                    }
+                    else {
+                        data = match[3];
+                    }
+                    console.log(`DEBUG: data`, JSON.stringify(data, null, 2));
                 }
                 break;
             case 'object':

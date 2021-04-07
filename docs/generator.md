@@ -10,7 +10,7 @@ __DRTools__ provides a simple tools that generates assets with some basic struct
 ## Command options
 <!-- AUTO:generator-options -->
 ```
-DRTools Generator (v0.15.2):
+DRTools Generator (v0.15.3):
 Usage: drtools-generator [options] [command]
 
 Options:
@@ -30,7 +30,7 @@ Commands:
 ### Command options
 <!-- AUTO:generator-options:mock-routes -->
 ```
-DRTools Generator (v0.15.2):
+DRTools Generator (v0.15.3):
 Usage: cmd mock-routes|mr [options] <directory>
 
 generates a mock-up routes configuration based on the contents of a directory.
@@ -47,7 +47,7 @@ Options:
 ### Command options
 <!-- AUTO:generator-options:middlewares -->
 ```
-DRTools Generator (v0.15.2):
+DRTools Generator (v0.15.3):
 Usage: cmd middleware|m [options] <name> <directory>
 
 generates a middleware with an initial structure.
@@ -67,7 +67,7 @@ Options:
 ### Command options
 <!-- AUTO:generator-options:plugins -->
 ```
-DRTools Generator (v0.15.2):
+DRTools Generator (v0.15.3):
 Usage: cmd plugin|p [options] <name> <directory>
 
 generates a plugin directory with an initial structure.
@@ -86,7 +86,7 @@ Options:
 ### Command options
 <!-- AUTO:generator-options:routes -->
 ```
-DRTools Generator (v0.15.2):
+DRTools Generator (v0.15.3):
 Usage: cmd route|r [options] <name> <directory>
 
 generates a route with an initial structure.
@@ -106,7 +106,7 @@ Options:
 ### Command options
 <!-- AUTO:generator-options:tasks -->
 ```
-DRTools Generator (v0.15.2):
+DRTools Generator (v0.15.3):
 Usage: cmd task|t [options] <name> <directory>
 
 generates a task with an initial structure.

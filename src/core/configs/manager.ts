@@ -21,7 +21,7 @@ enum PublishExportsTypes {
     Koa = 'koa',
 };
 
-const ENV_PATTERN: RegExp = /^ENV:(.+)$/;
+const ENV_PATTERN: RegExp = /^ENV:([^:]+)(:|)(.*)$/;
 
 export class ConfigsManager implements IManagerByKey {
     //
@@ -130,9 +130,17 @@ export class ConfigsManager implements IManagerByKey {
     protected expandEnvVariablesIn(data: any): any {
         switch (typeof data) {
             case 'string':
+                //
+                // Does it require expanding?
                 const match: RegExpMatchArray | null = data.match(ENV_PATTERN);
                 if (match) {
-                    data = process.env[match[1]];
+                    //
+                    // Is it a valid variable or should it use a default value?
+                    if (process.env[match[1]] !== undefined) {
+                        data = process.env[match[1]];
+                    } else {
+                        data = match[3];
+                    }
                 }
                 break;
             case 'object':

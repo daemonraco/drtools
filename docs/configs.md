@@ -1,4 +1,4 @@
-<!-- version-check:0.15.2 -->
+<!-- version-check:0.15.3 -->
 <!-- version-warning -->
 <!-- /version-warning -->
 
@@ -191,6 +191,17 @@ const manager = new ConfigsManager('directory/with/configuration/files', {
 });
 const myconf = manager.get('myconf');
 console.log(`Current environment: ${env}`); // --> Current environment: prod
+```
+
+In this example, the field `env` will end up having the value set to the
+environment variable `NODE_ENV` or being empty if the variables hasn't been set.
+
+You can also use default values for those cases where the variable may not set
+using something like this:
+```json
+{
+    "env": "ENV:NODE_ENV:development"
+}
 ```
 
 ## Options

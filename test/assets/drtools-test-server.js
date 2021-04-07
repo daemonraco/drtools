@@ -42,6 +42,7 @@ loadingSteps.push(async () => {
         publishConfigs: true,
         key: 'main-configs',
         specs: path.join(__dirname, '../tmp/specs'),
+        environmentVariables: true,
     });
 
     ExpressConnector.attach(app, { webUi: true });

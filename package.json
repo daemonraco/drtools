@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.15.2",
+    "version": "0.15.3",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",
@@ -18,12 +18,12 @@
         "build:serverui": "cd web-ui/ui-ng; npm run build",
         "mocha": "mocha",
         "pretest": "./test/assets/start.sh",
-        "test": "nyc --reporter=lcov --reporter=text --reporter=html mocha || true",
+        "test": "NODE_ENV=test nyc --reporter=lcov --reporter=text --reporter=html mocha || true",
         "posttest": "./test/assets/stop.sh",
         "live:coverage": "npx live-server --port=4201 --no-browser coverage",
         "live:docs": "npx live-server --port=4202 --no-browser docs",
-        "live:server:koa": "./test/assets/start-live.sh koa",
-        "live:server": "./test/assets/start-live.sh"
+        "live:server:koa": "NODE_ENV=test ./test/assets/start-live.sh koa",
+        "live:server": "NODE_ENV=test ./test/assets/start-live.sh"
     },
     "keywords": [
         "automatic loaders",
