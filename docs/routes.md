@@ -3,7 +3,7 @@
 <!-- /version-warning -->
 
 # Routes
-_DRTools_ provides a manager to handle and organize routes in your
+__DRTools__ provides a manager to handle and organize routes in your
 [Express](https://www.npmjs.com/package/express) or
 [Koa](https://www.npmjs.com/package/koa) application.
 

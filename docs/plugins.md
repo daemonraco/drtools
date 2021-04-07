@@ -7,7 +7,7 @@
 # DRTools: Plugins
 
 ## What is a plugin?
-A plugin is a collection of logics, in the case of _DRTools_ it's a directories
+A plugin is a collection of logics, in the case of __DRTools__ it's a directories
 with a file called `index.js` that export functions.
 
 ## How to invoke it

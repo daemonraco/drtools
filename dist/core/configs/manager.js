@@ -347,7 +347,10 @@ class ConfigsManager {
                     //
                     // Creating a validator.
                     try {
-                        const ajvObj = new ajv_1.default({ useDefaults: true });
+                        const ajvObj = new ajv_1.default({
+                            strict: false,
+                            useDefaults: true,
+                        });
                         this._specs[name].validator = ajvObj.compile(this._specs[name].specs);
                     }
                     catch (e) {
@@ -455,7 +458,8 @@ class ConfigsManager {
         if (this._specs[name] && this._specs[name].valid) {
             try {
                 if (!this._specs[name].validator(this._items[name].data)) {
-                    throw `'\$${this._specs[name].validator.errors[0].dataPath}' ${this._specs[name].validator.errors[0].message}`;
+                    const error = this._specs[name].validator.errors[0];
+                    throw `'${error.instancePath || '/'}': ${error.message}`;
                 }
                 else {
                     valid = true;

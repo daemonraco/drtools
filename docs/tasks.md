@@ -5,8 +5,8 @@
 # Tasks
 
 ## What is a task?
-Tasks are pieces of logic that has to be run periodically, __DRTools__
-provides a way to organize them and automatically execute them.
+Tasks are pieces of logic that has to be run periodically, __DRTools__ provides a
+way to organize them and automatically execute them.
 
 ## How to invoke it
 Considering that you have a directory where you store all your script files that

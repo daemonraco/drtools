@@ -361,7 +361,10 @@ export class ConfigsManager implements IManagerByKey {
                     //
                     // Creating a validator.
                     try {
-                        const ajvObj: any = new Ajv({ useDefaults: true });
+                        const ajvObj: any = new Ajv({
+                            strict: false,
+                            useDefaults: true,
+                        });
                         this._specs[name].validator = ajvObj.compile(this._specs[name].specs);
                     } catch (e) {
                         this._lastError = `Unable to compile '${this._specs[name].path}'. ${e}`;
@@ -477,7 +480,8 @@ export class ConfigsManager implements IManagerByKey {
         if (this._specs[name] && this._specs[name].valid) {
             try {
                 if (!this._specs[name].validator(this._items[name].data)) {
-                    throw `'\$${this._specs[name].validator.errors[0].dataPath}' ${this._specs[name].validator.errors[0].message}`;
+                    const error: any = this._specs[name].validator.errors[0];
+                    throw `'${error.instancePath || '/'}': ${error.message}`;
                 } else {
                     valid = true;
                 }
