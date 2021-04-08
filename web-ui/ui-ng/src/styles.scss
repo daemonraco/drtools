@@ -1,4 +1,6 @@
-@import "../node_modules/bootswatch/dist/united/bootstrap.min.css";
+@import "~bootswatch/dist/flatly/variables";
+@import "~bootstrap/scss/bootstrap";
+@import "~bootswatch/dist/flatly/bootswatch";
 
 .collapse {
     overflow-x: auto;
@@ -21,4 +23,22 @@ th.trim {
 
 .nowrap {
     white-space: nowrap;
+}
+
+app-quick {
+    .card {
+        border-radius: 10px;
+        margin: 5px 0px;
+
+        &:hover {
+            @extend .shadow;
+        }
+
+        .card-body {
+            text-align: center;
+            .logo {
+                font-size: 3rem;
+            }
+        }
+    }
 }

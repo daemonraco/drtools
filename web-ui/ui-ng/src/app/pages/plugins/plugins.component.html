@@ -1,0 +1,24 @@
+<div class="container-fluid pb-5">
+    <div class="row my-3">
+        <div class="col-10">
+            <app-section-plugins id="plugins" [plugins]="drtools.plugins"></app-section-plugins>
+        </div>
+
+        <div class="col small">
+            <div class="position-fixed">
+                <ul class="nav flex-column border-left">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" (click)="expandAll($event)">
+                            <i class="fa fa-expand"></i> Expand all
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" (click)="hideAll($event)">
+                            <i class="fa fa-compress"></i> Collapse all
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

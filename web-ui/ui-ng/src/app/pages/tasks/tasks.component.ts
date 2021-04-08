@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
-import { DRToolsService } from '../services';
+import { DRToolsService } from 'src/app/services';
 
 declare var $: any;
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
+    selector: 'app-tasks',
+    templateUrl: './tasks.component.html',
 })
-export class HomeComponent implements OnInit {
-    //
+export class TasksComponent implements OnInit {
     // Properties.
     public drtools: any = {};
     //
@@ -20,14 +19,15 @@ export class HomeComponent implements OnInit {
     // Public methods.
     public expandAll(event?: Event): void {
         event && event.preventDefault();
-        $('app-home .collapse').collapse('show');
+        $('app-tasks .collapse').collapse('show');
     }
     public hideAll(event?: Event): void {
         event && event.preventDefault();
-        $('app-home .collapse').collapse('hide');
+        $('app-tasks .collapse').collapse('hide');
     }
     public async ngOnInit(): Promise<void> {
         this.drtools = await this.drtSrv.info();
+        setTimeout(() => this.expandAll(), 0);
     }
     //
     // Protected methods.

@@ -5,20 +5,15 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { BasicsModule } from './basics';
+import { PagesModule } from './pages';
 import { PipesModule } from './pipes';
 import { SectionsModule } from './sections';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { NotFoundComponent } from './not-found/not-found.component';
-import { ConfigsComponent } from './configs/configs.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        HomeComponent,
-        NotFoundComponent,
-        ConfigsComponent,
     ],
     imports: [
         AppRoutingModule,
@@ -26,6 +21,7 @@ import { ConfigsComponent } from './configs/configs.component';
         BrowserModule,
         FontAwesomeModule,
         HttpClientModule,
+        PagesModule,
         PipesModule,
         SectionsModule,
     ],

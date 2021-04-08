@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class DRToolsService {
     //
     // Properties.
-
+    protected infoCache: any = null;
     //
     // Construction.
     constructor(protected http: HttpClient) {
@@ -23,8 +23,12 @@ export class DRToolsService {
     public doc(path: string): Promise<any> {
         return this.http.get(`/.drtools.json?doc=${path}`).toPromise();
     }
-    public info(): Promise<any> {
-        return this.http.get(`/.drtools.json`).toPromise();
+    public async info(): Promise<any> {
+        if (!this.infoCache) {
+            this.infoCache = await this.http.get(`/.drtools.json`).toPromise();
+        }
+
+        return this.infoCache;
     }
     public publicConfig(name: string): string {
         return `/public-configs/${name}`;

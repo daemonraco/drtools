@@ -1,0 +1,32 @@
+<div class="container pb-5">
+    <div class="row .my-3">
+        <div class="col">
+            <a routerLink="/full" class="btn btn-sm btn-link float-right">
+                Full Information
+            </a>
+        </div>
+    </div>
+
+    <div class="row .my-3">
+        <div *ngFor="let section of sections" class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <a [routerLink]="section.link">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col logo">
+                                <fa-icon [icon]="section.icon"></fa-icon>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <h4>{{section.title}}</h4>
+                                <p *ngIf="section.description">{{section.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

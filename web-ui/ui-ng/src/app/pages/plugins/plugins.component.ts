@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
-import { DRToolsService } from '../services';
+import { DRToolsService } from 'src/app/services';
 
 declare var $: any;
 
 @Component({
-    selector: 'app-configs',
-    templateUrl: './configs.component.html',
+    selector: 'app-plugins',
+    templateUrl: './plugins.component.html',
 })
-export class ConfigsComponent implements OnInit {
+export class PluginsComponent implements OnInit {
     // Properties.
     public drtools: any = {};
     //
@@ -19,14 +19,13 @@ export class ConfigsComponent implements OnInit {
     // Public methods.
     public expandAll(event?: Event): void {
         event && event.preventDefault();
-        $('app-configs .collapse').collapse('show');
+        $('app-plugins .collapse').collapse('show');
     }
     public hideAll(event?: Event): void {
         event && event.preventDefault();
-        $('app-configs .collapse').collapse('hide');
+        $('app-plugins .collapse').collapse('hide');
     }
     public async ngOnInit(): Promise<void> {
-        (<any>window).DEBUG = this;
         this.drtools = await this.drtSrv.info();
         setTimeout(() => this.expandAll(), 0);
     }
