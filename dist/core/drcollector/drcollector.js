@@ -9,6 +9,7 @@ const tslib_1 = require("tslib");
 const includes_1 = require("../includes");
 const constants_1 = require("./constants");
 const events_1 = require("events");
+const os = tslib_1.__importStar(require("os"));
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
 class DRCollectorClass {
     //
@@ -319,6 +320,11 @@ class DRCollectorClass {
     /* istanbul ignore next */
     infoReportSystem() {
         return {
+            arch: os.arch(),
+            osVersion: os.version(),
+            platform: os.platform(),
+            release: os.release(),
+            type: os.type(),
             version: includes_1.Tools.Version(),
         };
     }

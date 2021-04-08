@@ -14,6 +14,7 @@ import { MockRoutesManager } from '../mock-routes';
 import { PluginsManager, IPluginSpecsList } from '../plugins';
 import { RoutesManager } from '../routes';
 import { TasksManager } from '../tasks';
+import * as os from 'os';
 import chalk from 'chalk';
 
 class DRCollectorClass {
@@ -361,6 +362,11 @@ class DRCollectorClass {
     /* istanbul ignore next */
     protected infoReportSystem(): BasicDictionary {
         return {
+            arch: os.arch(),
+            osVersion: os.version(),
+            platform: os.platform(),
+            release: os.release(),
+            type: os.type(),
             version: Tools.Version(),
         };
     }

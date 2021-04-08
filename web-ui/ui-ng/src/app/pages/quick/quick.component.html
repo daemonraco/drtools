@@ -29,4 +29,33 @@
             </a>
         </div>
     </div>
+
+    <hr />
+
+    <div class="row .my-3">
+        <div class="col">
+            <table class="info-table">
+                <tr>
+                    <th>DRTools Version:</th>
+                    <td><code>{{drtools?.$system?.version}}</code></td>
+                </tr>
+                <tr>
+                    <th>Architecture:</th>
+                    <td><code>{{drtools?.$system?.arch}}</code></td>
+                </tr>
+                <tr>
+                    <th>Platform:</th>
+                    <td><code>{{drtools?.$system?.platform}}</code></td>
+                </tr>
+                <tr>
+                    <th>Release:</th>
+                    <td><code>{{drtools?.$system?.release}}</code></td>
+                </tr>
+                <tr>
+                    <th>OS:</th>
+                    <td><code>{{drtools?.$system?.type}} {{drtools?.$system?.osVersion}}</code></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>
