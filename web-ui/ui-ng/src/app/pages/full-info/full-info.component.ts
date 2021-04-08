@@ -29,6 +29,17 @@ export class FullInfoComponent implements OnInit {
     public async ngOnInit(): Promise<void> {
         this.drtools = await this.drtSrv.info();
     }
+    public scrollTo(selector: string, event: Event): void {
+        event.preventDefault();
+        const elem: HTMLElement | null = document.querySelector(selector);
+        if (elem) {
+            window.scrollTo({
+                top: elem.getBoundingClientRect().top - document.body.getBoundingClientRect().top - 10,
+                left: 0,
+                behavior: 'smooth',
+            });
+        }
+    }
     //
     // Protected methods.
 

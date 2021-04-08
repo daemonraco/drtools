@@ -21,6 +21,7 @@ export declare class MockRoutesManager implements IManagerByKey {
     guards(): IMockRoutesGuard[];
     lastError(): string | null;
     matchesKey(key: string): boolean;
+    options(): IMockRoutesOptions | null;
     routes(): IMockRoutesRoute[];
     valid(): boolean;
     protected attach(app: any): void;

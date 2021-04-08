@@ -29,6 +29,7 @@ export declare class PluginsManager implements IAsyncManager, IManagerByKey {
     loaded(): boolean;
     matchesKey(key: string): boolean;
     methodsOf(name: string): string[];
+    options(): IPluginsOptions | null;
     valid(): boolean;
     protected checkDirectories(): void;
     protected cleanOptions(): void;

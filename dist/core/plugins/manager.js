@@ -145,6 +145,9 @@ class PluginsManager {
     methodsOf(name) {
         return this._itemSpecs && this._itemSpecs[name] !== undefined ? Object.keys(this._itemSpecs[name].library) : [];
     }
+    options() {
+        return this._options;
+    }
     valid() {
         return this._valid;
     }

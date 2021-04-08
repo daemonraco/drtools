@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HighlightModule } from 'ngx-highlightjs';
 import { NgModule } from '@angular/core';
 
 import { BasicsModule } from '../basics';
@@ -39,6 +40,7 @@ import { TasksComponent } from './tasks/tasks.component';
         BasicsModule,
         CommonModule,
         FontAwesomeModule,
+        HighlightModule,
         PipesModule,
     ],
 })

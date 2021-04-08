@@ -58,5 +58,6 @@ export declare class Tools {
     static IsKoa(app: any): boolean;
     static IsNode(): boolean;
     static RandomKey(): string;
+    static Version(): string;
     protected static CheckPathByType(checker: string, filePath: string, relativeTo?: string | null): IToolsCheckPathResult;
 }

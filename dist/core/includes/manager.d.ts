@@ -9,20 +9,21 @@ export declare abstract class GenericManager<TOptions> implements IAsyncManager,
     protected _configs: ConfigsManager | null;
     protected _directories: string[];
     protected _itemSpecs: IItemSpec[];
+    protected _key: string;
     protected _lastError: string | null;
     protected _loaded: boolean;
     protected _options: TOptions | null;
     protected _valid: boolean;
     constructor(directories: string[] | string, options?: TOptions | null, configs?: ConfigsManager | null);
     directories(): string[];
-    /** @deprecated */
-    directory(): string;
     items(): IItemSpec[];
     itemNames(): string[];
+    key(): string;
     lastError(): string | null;
     abstract load(): Promise<boolean>;
     loaded(): boolean;
     matchesKey(key: string): boolean;
+    options(): TOptions | null;
     suffix(): string;
     valid(): boolean;
     protected checkDirectories(): void;

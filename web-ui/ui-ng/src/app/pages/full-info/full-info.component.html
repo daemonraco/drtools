@@ -17,42 +17,42 @@
             <div class="position-fixed">
                 <ul class="nav flex-column border-left">
                     <li *ngIf="drtools.configs" class="nav-item">
-                        <a class="nav-link" href="#configs">
+                        <a class="nav-link" href="#configs" (click)="scrollTo('#configs h4', $event)">
                             <i class="fa fa-cogs"></i> Configs
                         </a>
                     </li>
                     <li *ngIf="drtools.endpoints" class="nav-item">
-                        <a class="nav-link" href="#endpoints">
+                        <a class="nav-link" href="#endpoints" (click)="scrollTo('#endpoints h4', $event)">
                             <i class="fa fa-asterisk"></i> Endpoints
                         </a>
                     </li>
                     <li *ngIf="drtools.loaders" class="nav-item">
-                        <a class="nav-link" href="#loaders">
+                        <a class="nav-link" href="#loaders" (click)="scrollTo('#loaders h4', $event)">
                             <i class="fa fa-spinner"></i> Loaders
                         </a>
                     </li>
                     <li *ngIf="drtools.middlewares" class="nav-item">
-                        <a class="nav-link" href="#middlewares">
+                        <a class="nav-link" href="#middlewares" (click)="scrollTo('#middlewares h4', $event)">
                             <i class="fa fa-prescription-bottle"></i> Middlewares
                         </a>
                     </li>
                     <li *ngIf="drtools.routes" class="nav-item">
-                        <a class="nav-link" href="#routes">
+                        <a class="nav-link" href="#routes" (click)="scrollTo('#routes h4', $event)">
                             <i class="fa fa-map-signs"></i> Routes
                         </a>
                     </li>
                     <li *ngIf="drtools.mockRoutes" class="nav-item">
-                        <a class="nav-link" href="#mock-routes">
+                        <a class="nav-link" href="#mock-routes" (click)="scrollTo('#mock-routes h4', $event)">
                             <i class="fa fa-map-signs"></i> Mock-up Routes
                         </a>
                     </li>
                     <li *ngIf="drtools.tasks" class="nav-item">
-                        <a class="nav-link" href="#tasks">
+                        <a class="nav-link" href="#tasks" (click)="scrollTo(' #tasks h4', $event)">
                             <i class="fa fa-clock"></i> Tasks
                         </a>
                     </li>
                     <li *ngIf="drtools.plugins" class="nav-item">
-                        <a class="nav-link" href="#plugins">
+                        <a class="nav-link" href="#plugins" (click)="scrollTo('#plugins h4', $event)">
                             <i class="fa fa-plug"></i> Plugins
                         </a>
                     </li>

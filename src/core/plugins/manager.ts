@@ -158,6 +158,9 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     public methodsOf(name: string): string[] {
         return this._itemSpecs && this._itemSpecs[name] !== undefined ? Object.keys(this._itemSpecs[name].library) : [];
     }
+    public options(): IPluginsOptions | null {
+        return this._options;
+    }
     public valid(): boolean {
         return this._valid;
     }

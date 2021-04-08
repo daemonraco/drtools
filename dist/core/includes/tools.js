@@ -23,7 +23,8 @@ var ToolsCheckPath;
 class Tools {
     //
     // Constructor.
-    constructor() { }
+    constructor() {
+    }
     //
     // Public class methods.
     static BlockRetry(block, options = {}) {
@@ -135,6 +136,9 @@ class Tools {
     }
     static RandomKey() {
         return Math.random().toString(36).replace(/[^a-z]+/g, '');
+    }
+    static Version() {
+        return require('../../../package.json').version;
     }
     //
     // Protected class methods.

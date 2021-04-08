@@ -9,11 +9,11 @@
     </div>
 
     <div class="accordion">
-        <div *ngFor="let conf of plugins; let i = index" class="card">
+        <div *ngFor="let manager of plugins; let i = index" class="card">
             <div class="card-header" style="cursor:pointer;" data-toggle="collapse"
                 [attr.data-target]="'#plugins_collapse_' + i">
                 <fa-icon [icon]="icons.faPlug" class="text-info"></fa-icon>
-                {{conf.directory}}
+                {{manager.directory}}
             </div>
 
             <div [id]="'plugins_collapse_' + i" class="collapse">
@@ -21,20 +21,40 @@
 
                     <div class="row">
                         <div class="col">
-                            <table class="table table-sm table-borderless small">
+                            <table class="info-table">
                                 <tbody>
                                     <tr>
-                                        <th class="nowrap trim">Directory:</th>
-                                        <td><code>{{conf.directory}}</code></td>
+                                        <th class="nowrap trim">Directories:</th>
+                                        <td>
+                                            <ul class="m-0 py-0">
+                                                <li *ngFor="let directory of manager.directories">
+                                                    <code>{{directory}}</code>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="nowrap trim">Consider sub-directory 'dist':</th>
+                                        <td>
+                                            <app-boolean [value]="manager.options.dist"
+                                                [type]="BooleanComponentTypes.IconColor"></app-boolean>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="nowrap trim">Verbose:</th>
+                                        <td>
+                                            <app-boolean [value]="manager.options.verbose"
+                                                [type]="BooleanComponentTypes.IconColor"></app-boolean>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col">
-                            <table class="table table-striped table-bordered table-sm small">
+                            <table class="data-table">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th colspan="6" scope="col">Plugins:</th>
@@ -52,7 +72,7 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr *ngFor="let plugin of conf.plugins">
+                                    <tr *ngFor="let plugin of manager.plugins">
                                         <td class="text-center">
                                             <fa-icon [icon]="icons.faPlug" class="text-info"></fa-icon>
                                         </td>
@@ -109,7 +129,7 @@
                             <code>{{displayData.configName}}</code>
                         </li>
                     </ul>
-                    <pre class="border rounded text-info p-2"><code>{{displayData.contents}}</code></pre>
+                    <pre><code [highlight]="displayData.contents" [languages]="['json']"></code></pre>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">

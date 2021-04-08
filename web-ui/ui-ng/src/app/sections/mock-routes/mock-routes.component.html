@@ -9,11 +9,11 @@
     </div>
 
     <div class="accordion">
-        <div *ngFor="let conf of mockRoutes; let i = index" class="card">
+        <div *ngFor="let manager of mockRoutes; let i = index" class="card">
             <div class="card-header" style="cursor:pointer;" data-toggle="collapse"
                 [attr.data-target]="'#mockRoutes_collapse_' + i">
                 <fa-icon [icon]="icons.faMicrochip" class="text-info"></fa-icon>
-                {{conf.configPath}}
+                {{manager.configPath}}
             </div>
 
             <div [id]="'mockRoutes_collapse_' + i" class="collapse">
@@ -21,20 +21,27 @@
 
                     <div class="row">
                         <div class="col">
-                            <table class="table table-sm table-borderless small">
+                            <table class="info-table">
                                 <tbody>
                                     <tr>
                                         <th class="nowrap trim">Config Path:</th>
-                                        <td><code>{{conf.configPath}}</code></td>
+                                        <td><code>{{manager.configPath}}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="nowrap trim">Verbose:</th>
+                                        <td>
+                                            <app-boolean [value]="manager.options.verbose"
+                                                [type]="BooleanComponentTypes.IconColor"></app-boolean>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col">
-                            <table class="table table-striped table-bordered table-sm small">
+                            <table class="data-table">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th colspan="7" scope="col">Endpoints:</th>
@@ -47,13 +54,13 @@
                                         <th scope="col" class="text-center">Method</th>
                                         <th scope="col" class="text-center">Mime Type</th>
                                         <th scope="col">Path</th>
-                                        <th *ngIf="conf.hasGuards" scope="col" class="text-center">Guard</th>
+                                        <th *ngIf="manager.hasGuards" scope="col" class="text-center">Guard</th>
                                         <th scope="col" class="text-center">Valid</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    <tr *ngFor="let route of conf.routes">
+                                    <tr *ngFor="let route of manager.routes">
                                         <td class="text-center">
                                             <fa-icon [icon]="icons.faMapSigns" class="text-info"></fa-icon>
                                         </td>
@@ -74,7 +81,7 @@
                                         <td>
                                             <code>{{route.path}}</code>
                                         </td>
-                                        <td *ngIf="conf.hasGuards" [class.text-center]="route.guardName">
+                                        <td *ngIf="manager.hasGuards" [class.text-center]="route.guardName">
                                             <span *ngIf="route.guardName"
                                                 class="badge badge-secondary">{{route.guardName}}</span>
                                             <code *ngIf="route.guardPath">{{route.guardPath}}</code>
@@ -89,7 +96,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="conf.guards.length > 0" class="row">
+                    <div *ngIf="manager.guards.length > 0" class="row mt-2">
                         <div class="col">
                             <table class="table table-striped table-bordered table-sm small">
                                 <thead>
@@ -107,7 +114,7 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr *ngFor="let guard of conf.guards">
+                                    <tr *ngFor="let guard of manager.guards">
                                         <td class="text-center">
                                             <fa-icon [icon]="icons.faKey" class="text-info"></fa-icon>
                                         </td>

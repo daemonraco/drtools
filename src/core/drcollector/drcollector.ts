@@ -2,7 +2,7 @@
  * @file drcollector.ts
  * @author Alejandro D. Simi
  */
-import { BasicList, Tools } from '../includes';
+import { BasicDictionary, BasicList, Tools } from '../includes';
 import { ConfigsManager } from '../configs';
 import { DRCollectorConstants, DRCollectorManagers, DRCollectorEvents } from './constants';
 import { EndpointsManager } from '../mock-endpoints';
@@ -55,6 +55,7 @@ class DRCollectorClass {
     public infoReport(): any {
         if (!this._infoReport) {
             this._infoReport = {
+                $system: this.infoReportSystem(),
                 configs: this.infoReportConfigsManager(),
                 endpoints: this.infoReportEndpointsManager(),
                 loaders: this.infoReportLoadersManager(),
@@ -229,8 +230,8 @@ class DRCollectorClass {
         return manager;
     }
     /* istanbul ignore next */
-    protected infoReportConfigsManager(): BasicList<any> | null {
-        const results: BasicList<any> = [];
+    protected infoReportConfigsManager(): BasicList | null {
+        const results: BasicList = [];
 
         for (const manager of this._configsManagers) {
             results.push({
@@ -251,70 +252,74 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportEndpointsManager(): BasicList<any> | null {
-        const results: BasicList<any> = [];
+    protected infoReportEndpointsManager(): BasicList | null {
+        const results: BasicList = [];
 
         for (const manager of this._endpointsManager) {
             results.push({
                 uri: manager.uri(),
                 directory: manager.directory(),
                 mockups: manager.paths(),
-                options: manager.options()
+                options: manager.options(),
             });
         }
 
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportLoadersManager(): BasicList<any> | null {
-        const results: BasicList<any> = [];
+    protected infoReportLoadersManager(): BasicList | null {
+        const results: BasicList = [];
 
         for (const manager of this._loadersManagers) {
             results.push({
-                directory: manager.directory(),
+                directories: manager.directories(),
                 items: manager.items(),
-                suffix: manager.suffix()
+                suffix: manager.suffix(),
+                options: manager.options(),
             });
         }
 
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportMiddlewaresManager(): BasicList<any> | null {
-        const results: BasicList<any> = [];
+    protected infoReportMiddlewaresManager(): BasicList | null {
+        const results: BasicList = [];
 
         for (const manager of this._middlewaresManager) {
             results.push({
-                directory: manager.directory(),
+                directories: manager.directories(),
                 items: manager.items(),
-                suffix: manager.suffix()
+                suffix: manager.suffix(),
+                options: manager.options(),
             });
         }
 
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportMockRoutesManager(): BasicList<any> | null {
-        const results: BasicList<any> = [];
+    protected infoReportMockRoutesManager(): BasicList | null {
+        const results: BasicList = [];
 
         for (const manager of this._mockRoutesManager) {
             results.push({
                 configPath: manager.configPath(),
                 guards: manager.guards(),
-                routes: manager.routes()
+                routes: manager.routes(),
+                options: manager.options(),
             });
         }
 
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportPluginsManager(): BasicList<any> | null {
-        const results: BasicList<any> = [];
+    protected infoReportPluginsManager(): BasicList | null {
+        const results: BasicList = [];
 
         for (const manager of this._pluginsManager) {
             const pluginInfo: any = {
-                directory: manager.directory(),
-                plugins: []
+                directories: manager.directories(),
+                plugins: [],
+                options: manager.options(),
             };
             const items: IPluginSpecsList = manager.items();
             for (const name of Object.keys(items).sort()) {
@@ -323,7 +328,7 @@ class DRCollectorClass {
                     path: items[name].path,
                     methods: manager.methodsOf(name).sort(),
                     configName: manager.configNameOf(name),
-                    config: manager.configOf(name)
+                    config: manager.configOf(name),
                 };
 
                 if (Object.keys(aux.config).length < 1) {
@@ -339,28 +344,36 @@ class DRCollectorClass {
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportRoutesManager(): BasicList<any> | null {
-        const results: BasicList<any> = [];
+    protected infoReportRoutesManager(): BasicList | null {
+        const results: BasicList = [];
 
         for (const manager of this._routesManager) {
             results.push({
-                directory: manager.directory(),
+                directories: manager.directories(),
                 items: manager.routes(),
-                suffix: manager.suffix()
+                suffix: manager.suffix(),
+                options: manager.options(),
             });
         }
 
         return results.length > 0 ? results : null;
     }
     /* istanbul ignore next */
-    protected infoReportTasksManager(): BasicList<any> | null {
-        const results: BasicList<any> = [];
+    protected infoReportSystem(): BasicDictionary {
+        return {
+            version: Tools.Version(),
+        };
+    }
+    /* istanbul ignore next */
+    protected infoReportTasksManager(): BasicList | null {
+        const results: BasicList = [];
 
         for (const manager of this._tasksManager) {
             results.push({
-                directory: manager.directory(),
+                directories: manager.directories(),
                 items: manager.tasks(),
-                suffix: manager.suffix()
+                suffix: manager.suffix(),
+                options: manager.options(),
             });
         }
 

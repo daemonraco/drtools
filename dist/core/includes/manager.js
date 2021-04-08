@@ -6,6 +6,7 @@ const includes_1 = require("../includes");
 const path = tslib_1.__importStar(require("path"));
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
 const glob_1 = tslib_1.__importDefault(require("glob"));
+const md5_1 = tslib_1.__importDefault(require("md5"));
 class GenericManager {
     //
     // Constructor.
@@ -15,14 +16,16 @@ class GenericManager {
         this._configs = null;
         this._directories = [];
         this._itemSpecs = [];
+        this._key = '';
         this._lastError = null;
         this._loaded = false;
         this._options = null;
         this._valid = false;
         this._configs = configs;
         this._options = options;
-        this._directories = Array.isArray(directories) ? directories : [directories];
         this.cleanOptions();
+        this._directories = Array.isArray(directories) ? directories : [directories];
+        this._key = this._options.key ? this._options.key : md5_1.default(JSON.stringify(this._directories));
         this.checkDirectories();
         this.loadItemPaths();
     }
@@ -31,15 +34,14 @@ class GenericManager {
     directories() {
         return this._directories;
     }
-    /** @deprecated */
-    directory() {
-        return this._directories[0];
-    }
     items() {
         return includes_1.Tools.DeepCopy(this._itemSpecs);
     }
     itemNames() {
         return this._itemSpecs.map(i => i.name);
+    }
+    key() {
+        return this._key;
     }
     lastError() {
         return this._lastError;
@@ -48,7 +50,10 @@ class GenericManager {
         return this._loaded;
     }
     matchesKey(key) {
-        return this.directory() === key;
+        return this.key() === key;
+    }
+    options() {
+        return this._options;
     }
     suffix() {
         return this._options.suffix !== undefined ? this._options.suffix : '';

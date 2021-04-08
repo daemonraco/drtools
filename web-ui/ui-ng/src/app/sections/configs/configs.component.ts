@@ -33,7 +33,9 @@ export class ConfigsComponent implements OnChanges, OnInit {
 
         const data: any = await this.drtSrv.config(config.name, manager.key);
         this.displayData.contents = JSON.stringify(data.contents, null, 2);
-        this.displayData.public = data.public;
+        this.displayData.publicUri = data.public
+            ? `${manager.publicUri}/${config.name}`
+            : null;
         this.displayData.path = data.path;
 
         $('#ConfigModal').modal('show');
@@ -47,7 +49,7 @@ export class ConfigsComponent implements OnChanges, OnInit {
 
         const data: any = await this.drtSrv.configSpecs(config.name, manager.key);
         this.displayData.contents = JSON.stringify(data.contents, null, 2)
-        this.displayData.path = data.specsPath;
+        this.displayData.path = data.path;
 
         $('#ConfigModal').modal('show');
     }

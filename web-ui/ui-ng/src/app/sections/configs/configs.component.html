@@ -9,11 +9,11 @@
     </div>
 
     <div class="accordion">
-        <div *ngFor="let conf of configs; let i = index" class="card">
+        <div *ngFor="let manager of configs; let i = index" class="card">
             <div class="card-header" style="cursor:pointer;" data-toggle="collapse"
                 [attr.data-target]="'#configs_collapse_' + i">
                 <fa-icon [icon]="icons.faCogs" class="text-info"></fa-icon>
-                {{conf.key}}
+                {{manager.key}}
             </div>
 
             <div [id]="'configs_collapse_' + i" class="collapse">
@@ -21,17 +21,17 @@
 
                     <div class="row">
                         <div class="col">
-                            <table class="table table-sm table-borderless small">
+                            <table class="info-table">
                                 <tbody>
                                     <tr>
                                         <th class="nowrap trim">Environment:</th>
-                                        <td><code>{{conf.environment}}</code></td>
+                                        <td><code>{{manager.environment}}</code></td>
                                     </tr>
                                     <tr>
                                         <th class="nowrap trim">Directories:</th>
                                         <td>
                                             <ul class="m-0 py-0">
-                                                <li *ngFor="let directory of conf.directories">
+                                                <li *ngFor="let directory of manager.directories">
                                                     <code>{{directory}}</code>
                                                 </li>
                                             </ul>
@@ -39,17 +39,17 @@
                                     </tr>
                                     <tr>
                                         <th class="nowrap trim">Suffix:</th>
-                                        <td><code>.{{conf.suffix}}</code></td>
+                                        <td><code>.{{manager.suffix}}</code></td>
                                     </tr>
-                                    <tr *ngIf="conf.publicUri">
+                                    <tr *ngIf="manager.publicUri">
                                         <th class="nowrap trim">Public URI:</th>
-                                        <td><code>{{conf.publicUri}}</code></td>
+                                        <td><code>{{manager.publicUri}}</code></td>
                                     </tr>
-                                    <tr *ngIf="conf.specsDirectories">
+                                    <tr *ngIf="manager.specsDirectories">
                                         <th class="nowrap trim">Specs Directories:</th>
                                         <td>
                                             <ul class="m-0 py-0">
-                                                <li *ngFor="let directory of conf.specsDirectories">
+                                                <li *ngFor="let directory of manager.specsDirectories">
                                                     <code>{{directory}}</code>
                                                 </li>
                                             </ul>
@@ -57,16 +57,30 @@
                                     </tr>
                                     <tr>
                                         <th class="nowrap trim">Specs Suffix:</th>
-                                        <td><code>.{{conf.specsSuffix}}</code></td>
+                                        <td><code>.{{manager.specsSuffix}}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="nowrap trim">Environment Variables:</th>
+                                        <td>
+                                            <app-boolean [value]="manager.options.environmentVariables"
+                                                [type]="BooleanComponentTypes.IconColor"></app-boolean>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="nowrap trim">Verbose:</th>
+                                        <td>
+                                            <app-boolean [value]="manager.options.verbose"
+                                                [type]="BooleanComponentTypes.IconColor"></app-boolean>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col">
-                            <table class="table table-sm table-striped table-bordered small">
+                            <table class="data-table">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th colspan="6" scope="col">Configs:</th>
@@ -84,7 +98,7 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr *ngFor="let config of conf._items">
+                                    <tr *ngFor="let config of manager._items">
                                         <td class="text-center">
                                             <fa-icon [icon]="icons.faCogs" class="text-info"></fa-icon>
                                         </td>
@@ -93,9 +107,9 @@
                                             <code>{{config.path}}</code>
                                         </td>
                                         <td>
-                                            <a *ngIf="config.public" [href]="conf.publicUri + '/' + config.name"
+                                            <a *ngIf="config.public" [href]="manager.publicUri + '/' + config.name"
                                                 target="_blank">
-                                                <code>{{conf.publicUri}}/{{config.name}}</code>
+                                                <code>{{manager.publicUri}}/{{config.name}}</code>
                                             </a>
                                         </td>
                                         <td class="text-center" [title]="config.specific ? config.specific.path : ''">
@@ -105,7 +119,7 @@
                                         <td class="text-center trim">
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <button type="button" class="btn btn-outline-secondary"
-                                                    (click)="display(config, conf)" title="Display">
+                                                    (click)="display(config, manager)" title="Display">
                                                     <fa-icon [icon]="icons.faEye"></fa-icon>
                                                 </button>
                                             </div>
@@ -116,9 +130,9 @@
                         </div>
                     </div>
 
-                    <div *ngIf="conf._specs.length > 0" class="row">
+                    <div *ngIf="manager._specs.length > 0" class="row mt-2">
                         <div class="col">
-                            <table class="table table-sm table-striped table-bordered small">
+                            <table class="data-table">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th colspan="6" scope="col">Config Specs:</th>
@@ -134,7 +148,7 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr *ngFor="let config of conf._specs">
+                                    <tr *ngFor="let config of manager._specs">
                                         <td class="text-center">
                                             <fa-icon [icon]="icons.faCogs" class="text-warning"></fa-icon>
                                         </td>
@@ -145,7 +159,7 @@
                                         <td class="text-center trim">
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <button type="button" class="btn btn-outline-secondary"
-                                                    (click)="displaySpecs(config, conf)" title="Display Specs">
+                                                    (click)="displaySpecs(config, manager)" title="Display Specs">
                                                     <fa-icon [icon]="icons.faCode"></fa-icon>
                                                 </button>
                                             </div>
@@ -195,17 +209,17 @@
                             <strong>Path</strong>:
                             <code>{{displayData.path}}</code>
                         </li>
-                        <li *ngIf="configs.publicUri && displayData.name && displayData.public">
+                        <li *ngIf="displayData.publicUri">
                             <strong>Public URI</strong>:
-                            <a [href]="configs.publicUri + '/' + displayData.name" target="_blank">
-                                <code>{{configs.publicUri}}/{{displayData.name}}</code>
+                            <a [href]="displayData.publicUri" target="_blank">
+                                <code>{{displayData.publicUri}}</code>
                             </a>
                         </li>
                     </ul>
-                    <pre class="border rounded text-info p-2 small"><code>{{displayData.contents}}</code></pre>
+                    <pre><code [highlight]="displayData.contents" [languages]="['json']"></code></pre>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">
+                    <button type="button" class="btn btn-sm btn-outline-info" data-dismiss="modal">
                         <fa-icon [icon]="icons.faTimes"></fa-icon>
                         Close
                     </button>

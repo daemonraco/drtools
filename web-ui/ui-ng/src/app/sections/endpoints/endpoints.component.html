@@ -9,11 +9,11 @@
     </div>
 
     <div class="accordion">
-        <div *ngFor="let endpoint of endpoints; let i = index" class="card">
+        <div *ngFor="let manager of endpoints; let i = index" class="card">
             <div class="card-header" style="cursor:pointer;" data-toggle="collapse"
                 [attr.data-target]="'#endpoint_collapse_' + i">
                 <fa-icon [icon]="icons.faAsterisk" class="text-info"></fa-icon>
-                {{endpoint.uri}}
+                {{manager.uri}}
             </div>
 
             <div [id]="'endpoint_collapse_' + i" class="collapse">
@@ -21,21 +21,21 @@
 
                     <div class="row">
                         <div class="col">
-                            <table class="table table-sm table-borderless small">
+                            <table class="info-table">
                                 <tbody>
                                     <tr>
                                         <th class="nowrap trim">Directory:</th>
-                                        <td><code>{{endpoint.directory}}</code></td>
+                                        <td><code>{{manager.directory}}</code></td>
                                     </tr>
                                     <tr>
                                         <th class="nowrap trim">URI:</th>
-                                        <td><code>{{endpoint.uri}}</code></td>
+                                        <td><code>{{manager.uri}}</code></td>
                                     </tr>
-                                    <tr *ngIf="endpoint.options.globalBehaviors.length > 0">
+                                    <tr *ngIf="manager.options.globalBehaviors.length > 0">
                                         <th class="nowrap trim">Global Behaviors:</th>
                                         <td>
                                             <ul>
-                                                <li *ngFor="let behavior of endpoint.options.globalBehaviors">
+                                                <li *ngFor="let behavior of manager.options.globalBehaviors">
                                                     <code>{{behavior}}</code>
                                                 </li>
                                             </ul>
@@ -46,9 +46,9 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col">
-                            <table class="table table-striped table-bordered table-sm small">
+                            <table class="data-table">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th colspan="5" scope="col">Sub-paths:</th>
@@ -70,26 +70,26 @@
                                             <fa-icon [icon]="icons.faAsterisk" class="text-success"></fa-icon>
                                         </td>
                                         <td>
-                                            <a [href]="endpoint.uri" target="_blank">
-                                                <code>{{endpoint.uri}}</code>
+                                            <a [href]="manager.uri" target="_blank">
+                                                <code>{{manager.uri}}</code>
                                             </a>
                                         </td>
                                         <td class="text-center">
                                             <span class="badge badge-secondary">*</span>
                                         </td>
                                         <td>
-                                            <code>{{endpoint.directory}}</code>
+                                            <code>{{manager.directory}}</code>
                                         </td>
                                         <td class="text-center">
                                             <fa-icon [icon]="icons.faAsterisk" class="text-muted"></fa-icon>
                                         </td>
                                     </tr>
-                                    <tr *ngFor="let mockup of endpoint.mockups">
+                                    <tr *ngFor="let mockup of manager.mockups">
                                         <td class="text-center">
                                             <fa-icon [icon]="icons.faAsterisk" class="text-info"></fa-icon>
                                         </td>
                                         <td>
-                                            <a [href]="endpoint.uri + '/' + mockup.uri" target="_blank">
+                                            <a [href]="manager.uri + '/' + mockup.uri" target="_blank">
                                                 <code>{{mockup.uri}}</code>
                                             </a>
                                         </td>

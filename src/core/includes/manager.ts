@@ -9,6 +9,7 @@ import { Tools, ToolsCheckPath } from '../includes';
 import * as path from 'path';
 import chalk from 'chalk';
 import glob from 'glob';
+import md5 from 'md5';
 
 export abstract class GenericManager<TOptions> implements IAsyncManager, IManagerByKey {
     //
@@ -16,6 +17,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
     protected _configs: ConfigsManager | null = null;
     protected _directories: string[] = [];
     protected _itemSpecs: IItemSpec[] = [];
+    protected _key: string = '';
     protected _lastError: string | null = null;
     protected _loaded: boolean = false;
     protected _options: TOptions | null = null;
@@ -25,9 +27,11 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
     constructor(directories: string[] | string, options: TOptions | null = null, configs: ConfigsManager | null = null) {
         this._configs = configs;
         this._options = options;
-        this._directories = Array.isArray(directories) ? directories : [directories];
-
         this.cleanOptions();
+
+        this._directories = Array.isArray(directories) ? directories : [directories];
+        this._key = (<any>this._options).key ? (<any>this._options).key : md5(JSON.stringify(this._directories));
+
         this.checkDirectories();
         this.loadItemPaths();
     }
@@ -36,15 +40,14 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
     public directories(): string[] {
         return this._directories;
     }
-    /** @deprecated */
-    public directory(): string {
-        return this._directories[0];
-    }
     public items(): IItemSpec[] {
         return Tools.DeepCopy(this._itemSpecs);
     }
     public itemNames(): string[] {
         return this._itemSpecs.map(i => i.name);
+    }
+    public key(): string {
+        return this._key;
     }
     public lastError(): string | null {
         return this._lastError;
@@ -54,7 +57,10 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
         return this._loaded;
     }
     public matchesKey(key: string): boolean {
-        return this.directory() === key;
+        return this.key() === key;
+    }
+    public options(): TOptions | null {
+        return this._options;
     }
     public suffix(): string {
         return (<any>this._options).suffix !== undefined ? (<any>this._options).suffix : '';

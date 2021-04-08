@@ -130,7 +130,6 @@ class ConfigsManager {
                 // Does it require expanding?
                 const match = data.match(ENV_PATTERN);
                 if (match) {
-                    console.log(`DEBUG: match`, JSON.stringify(match, null, 2));
                     //
                     // Is it a valid variable or should it use a default value?
                     if (process.env[match[1]] !== undefined) {
@@ -139,7 +138,6 @@ class ConfigsManager {
                     else {
                         data = match[3];
                     }
-                    console.log(`DEBUG: data`, JSON.stringify(data, null, 2));
                 }
                 break;
             case 'object':

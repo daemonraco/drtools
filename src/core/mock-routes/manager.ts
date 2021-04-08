@@ -74,6 +74,9 @@ export class MockRoutesManager implements IManagerByKey {
     public matchesKey(key: string): boolean {
         return this.configPath() === key;
     }
+    public options(): IMockRoutesOptions | null {
+        return this._options;
+    }
     public routes(): IMockRoutesRoute[] {
         let out: IMockRoutesRoute[] = [];
 

@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 
+import { BooleanComponentTypes } from 'src/app/basics';
+
 declare var $: any;
 
 @Component({
@@ -12,6 +14,7 @@ export class PluginsComponent implements OnInit {
     // Properties.
     @Input() public plugins: any = null;
     public displayData: any = {};
+    public readonly BooleanComponentTypes = BooleanComponentTypes;
     public readonly icons = Icons;
     //
     // Construction.

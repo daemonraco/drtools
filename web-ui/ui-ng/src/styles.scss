@@ -1,14 +1,88 @@
 @import "~bootswatch/dist/flatly/variables";
 @import "~bootstrap/scss/bootstrap";
 @import "~bootswatch/dist/flatly/bootswatch";
+@import "~highlight.js/styles/github.css";
+
+app-root {
+    .container,
+    .container-fluid {
+        margin-bottom: 70px;
+        margin-top: 70px;
+    }
+}
 
 .collapse {
     overflow-x: auto;
 }
-table.table.table-sm.table-borderless.small {
+
+table tr {
+    td,
+    th {
+        vertical-align: top;
+    }
+}
+
+table.info-table {
+    @extend .small;
+    @extend .table-borderless;
+    @extend .table-sm;
+
     td,
     th {
         padding: 0.1rem 0.3rem;
+    }
+
+    td {
+        ul {
+            list-style-type: none;
+            margin: 0px;
+            padding: 0px;
+
+            li {
+                margin: 0px;
+                padding: 0px;
+
+                &::before {
+                    color: gray;
+                    content: "> ";
+                }
+            }
+        }
+    }
+}
+
+table.data-table {
+    @extend .small;
+    @extend .table-borderless;
+    @extend .table-sm;
+    @extend .table-striped;
+
+    min-width: 100%;
+
+    td {
+        ul {
+            list-style-type: none;
+            margin: 0px;
+            padding: 0px;
+
+            li {
+                margin: 0px;
+                padding: 0px;
+
+                &::before {
+                    color: gray;
+                    content: "> ";
+                }
+            }
+        }
+    }
+}
+
+.card-body {
+    & > .row,
+    & > .row > .col {
+        margin: 0px;
+        padding: 0px;
     }
 }
 

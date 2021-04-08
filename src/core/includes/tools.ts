@@ -33,7 +33,8 @@ export class Tools {
     private static _IsNode: Function = new Function("try {return this===global;}catch(e){return false;}");
     //
     // Constructor.
-    private constructor() { }
+    private constructor() {
+    }
     //
     // Public class methods.
     public static async BlockRetry(block: TBlockRetryFunction, options: IBlockRetryOptions = {}): Promise<void> {
@@ -149,6 +150,9 @@ export class Tools {
     }
     public static RandomKey(): string {
         return Math.random().toString(36).replace(/[^a-z]+/g, '');
+    }
+    public static Version(): string {
+        return require('../../../package.json').version;
     }
     //
     // Protected class methods.

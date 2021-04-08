@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -22,11 +23,17 @@ import { AppComponent } from './app.component';
         FontAwesomeModule,
         HttpClientModule,
         PagesModule,
+        HighlightModule,
         PipesModule,
         SectionsModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    providers: [],
+    providers: [{
+        provide: HIGHLIGHT_OPTIONS,
+        useValue: {
+            fullLibraryLoader: () => import('highlight.js'),
+        }
+    }],
     bootstrap: [AppComponent],
 })
 export class AppModule { }

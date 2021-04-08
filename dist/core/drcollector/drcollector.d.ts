@@ -3,7 +3,7 @@
  * @file drcollector.ts
  * @author Alejandro D. Simi
  */
-import { BasicList } from '../includes';
+import { BasicDictionary, BasicList } from '../includes';
 import { ConfigsManager } from '../configs';
 import { EndpointsManager } from '../mock-endpoints';
 import { EventEmitter } from 'events';
@@ -54,14 +54,15 @@ declare class DRCollectorClass {
     tasksManager(key: string): TasksManager;
     tasksManagers(): BasicList<TasksManager>;
     protected findManager(managers: BasicList<IManagerByKey>, key: string): IManagerByKey | null;
-    protected infoReportConfigsManager(): BasicList<any> | null;
-    protected infoReportEndpointsManager(): BasicList<any> | null;
-    protected infoReportLoadersManager(): BasicList<any> | null;
-    protected infoReportMiddlewaresManager(): BasicList<any> | null;
-    protected infoReportMockRoutesManager(): BasicList<any> | null;
-    protected infoReportPluginsManager(): BasicList<any> | null;
-    protected infoReportRoutesManager(): BasicList<any> | null;
-    protected infoReportTasksManager(): BasicList<any> | null;
+    protected infoReportConfigsManager(): BasicList | null;
+    protected infoReportEndpointsManager(): BasicList | null;
+    protected infoReportLoadersManager(): BasicList | null;
+    protected infoReportMiddlewaresManager(): BasicList | null;
+    protected infoReportMockRoutesManager(): BasicList | null;
+    protected infoReportPluginsManager(): BasicList | null;
+    protected infoReportRoutesManager(): BasicList | null;
+    protected infoReportSystem(): BasicDictionary;
+    protected infoReportTasksManager(): BasicList | null;
     protected monitorAsyncManagerLoading(type: string, manager: IAsyncManager): void;
     static Instance(): DRCollectorClass;
 }
