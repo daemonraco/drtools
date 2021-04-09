@@ -29,19 +29,20 @@ _Short answer?_ No.
 _Long answer?_ Well, if you want, you can give it a try, but it's up to you.
 
 ## Provided tools
-* Main Tools
-    * [Organized Configuration Files](docs/configs.md)
-    * [Organized Tasks](docs/tasks.md)
-    * [Organized Routes](docs/routes.md)
-    * [Organized Plugins](docs/plugins.md)
-    * [Organized Initializers](docs/loaders.md)
-    * [Organized Middlewares](docs/middlewares.md)
-    * [Mock-up Routes](docs/mock-routes.md)
-    * [Endpoint Mock-ups](docs/endpoints.md)
-    * [ExpressJS Tools Attacher](docs/express.md)
-* Commands
-    * [Server](docs/server.md)
-    * [Generator](docs/generator.md)
+- Main Tools
+    - [Home](docs/README.md)
+    - [Configs](docs/configs.md)
+    - [Tasks](docs/tasks.md)
+    - [Routes](docs/routes.md)
+    - [Middlewares](docs/middlewares.md)
+    - [Mock-up Routes](docs/mock-routes.md)
+    - [Mock-up Endpoints](docs/endpoints.md)
+    - [Loaders](docs/loaders.md)
+    - [Plugins](docs/plugins.md)
+    - [Connector](docs/connector.md)
+- Commands
+    - [Server](docs/server.md)
+    - [Generator](docs/generator.md)
 
 ## Licence
 [MIT](https://opensource.org/licenses/MIT) &copy;2018-2021

@@ -7,12 +7,12 @@
     - [Configs](configs.md)
     - [Tasks](tasks.md)
     - [Routes](routes.md)
-    - [Plugins](plugins.md)
-    - [Loaders](loaders.md)
     - [Middlewares](middlewares.md)
-    - [Mock-routes](mock-routes.md)
-    - [Endpoints](endpoints.md)
-    - [Express](express.md)
+    - [Mock-up Routes](mock-routes.md)
+    - [Mock-up Endpoints](endpoints.md)
+    - [Loaders](loaders.md)
+    - [Plugins](plugins.md)
+    - [Connector](connector.md)
 
 - Commands
     - [Server](server.md)

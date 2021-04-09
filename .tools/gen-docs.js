@@ -74,7 +74,7 @@ const fixmeTags = mdPath => {
     //
     // Loading warnings for further report.
     const titlePattern = /^([#]+)(| )(.*)$/;
-    const warningPattern = /^(.*)@(fixme|todo) (.+)(|\.)$/;
+    const warningPattern = /^(.*)@(fixme|todo) (.+)$/;
     let lastTitle = '';
     for (const line of mdLines) {
         const matchTitle = line.match(titlePattern);
@@ -87,7 +87,7 @@ const fixmeTags = mdPath => {
             warnings.push({
                 path: mdPath,
                 title: lastTitle.trim(),
-                warning: `${warningMatch[3]}${warningMatch[4] === '.' ? '.' : '...'}`,
+                warning: `${warningMatch[3]}${warningMatch[3][warningMatch[3].length - 1] === '.' ? '' : '...'}`,
             });
         }
     }
@@ -279,7 +279,7 @@ const versionWarnings = mdPath => {
         for (const entry of warnings) {
             console.log(chalk.red(`\tDocument '${entry.path}' has warning under '${entry.title}'`));
             const id = entry.title.toLowerCase().replace(/ /g, '-');
-            todoMdLines.push(`* [${entry.title} (${entry.path})](${path.basename(entry.path)}??id=${id}): ${entry.warning}`);
+            todoMdLines.push(`* [${entry.title} (${entry.path})](${path.basename(entry.path)}?id=${id}): ${entry.warning}`);
         }
     }
 
