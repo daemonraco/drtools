@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 import { ExpressMiddleware } from '../express';
-import { IEndpointBrief, IEndpointBrievesByMethod, EndpointData, IEndpointOptions, EndpointPathPattern } from '.';
+import { IEndpointBrief, IEndpointBriefByMethod, EndpointData, IEndpointOptions, EndpointPathPattern } from '.';
 import { KoaMiddleware } from '../koa';
 import { StatusCodes } from 'http-status-codes';
 import { Tools, ToolsCheckPath } from '../includes';
@@ -22,9 +22,11 @@ export class Endpoint {
     //
     // Constructor.
     public constructor(dirPath: string, restPath: string, options: IEndpointOptions = {}) {
+        this._options = options;
+        this.cleanOptions();
+
         this._dirPath = dirPath;
         this._restPath = restPath;
-        this._options = options;
 
         this.fixConstructorParams();
         this.load();
@@ -36,7 +38,7 @@ export class Endpoint {
 
         this.loadAllEndpoints();
         Object.keys(this._loadedEndpoints).sort().forEach((path: string) => {
-            const brieves: IEndpointBrievesByMethod = this._loadedEndpoints[path].brievesByMethod();
+            const brieves: IEndpointBriefByMethod = this._loadedEndpoints[path].briefByMethod();
             Object.keys(brieves).forEach((method: string) => {
                 out.push(brieves[method]);
             });
@@ -109,9 +111,19 @@ export class Endpoint {
     //
     // Protected methods.
     /* istanbul ignore next */
+    protected cleanOptions(): void {
+        //
+        // Fixing options.
+        if (typeof this._options.globalBehaviors === 'string') {
+            this._options.globalBehaviors = [this._options.globalBehaviors];
+        } else if (!Array.isArray(this._options.globalBehaviors)) {
+            this._options.globalBehaviors = [];
+        }
+    }
+    /* istanbul ignore next */
     protected fixConstructorParams(): void {
         //
-        // Cleaning URI @{
+        // Cleaning URI.
         this._restPath = `/${this._restPath}/`;
         [
             ['//', '/']
@@ -122,16 +134,8 @@ export class Endpoint {
         });
         this._restPath = this._restPath.substr(0, this._restPath.length - 1);
         const uriForPattern = this._restPath.replace(/\//g, '\\/').replace(/\./g, '\\.');
-        // @}
 
         this._restPattern = new RegExp(`^${uriForPattern}([\\/]?)(.*)$`);
-        //
-        // Fixing options.
-        if (typeof this._options.globalBehaviors === 'string') {
-            this._options.globalBehaviors = [this._options.globalBehaviors];
-        } else if (!Array.isArray(this._options.globalBehaviors)) {
-            this._options.globalBehaviors = [];
-        }
     }
     /* istanbul ignore next */
     protected load(): void {

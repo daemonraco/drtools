@@ -19,9 +19,10 @@ class Endpoint {
         this._restPath = '';
         this._restPattern = null;
         this._options = {};
+        this._options = options;
+        this.cleanOptions();
         this._dirPath = dirPath;
         this._restPath = restPath;
-        this._options = options;
         this.fixConstructorParams();
         this.load();
     }
@@ -31,7 +32,7 @@ class Endpoint {
         const out = [];
         this.loadAllEndpoints();
         Object.keys(this._loadedEndpoints).sort().forEach((path) => {
-            const brieves = this._loadedEndpoints[path].brievesByMethod();
+            const brieves = this._loadedEndpoints[path].briefByMethod();
             Object.keys(brieves).forEach((method) => {
                 out.push(brieves[method]);
             });
@@ -101,9 +102,20 @@ class Endpoint {
     //
     // Protected methods.
     /* istanbul ignore next */
+    cleanOptions() {
+        //
+        // Fixing options.
+        if (typeof this._options.globalBehaviors === 'string') {
+            this._options.globalBehaviors = [this._options.globalBehaviors];
+        }
+        else if (!Array.isArray(this._options.globalBehaviors)) {
+            this._options.globalBehaviors = [];
+        }
+    }
+    /* istanbul ignore next */
     fixConstructorParams() {
         //
-        // Cleaning URI @{
+        // Cleaning URI.
         this._restPath = `/${this._restPath}/`;
         [
             ['//', '/']
@@ -114,16 +126,7 @@ class Endpoint {
         });
         this._restPath = this._restPath.substr(0, this._restPath.length - 1);
         const uriForPattern = this._restPath.replace(/\//g, '\\/').replace(/\./g, '\\.');
-        // @}
         this._restPattern = new RegExp(`^${uriForPattern}([\\/]?)(.*)$`);
-        //
-        // Fixing options.
-        if (typeof this._options.globalBehaviors === 'string') {
-            this._options.globalBehaviors = [this._options.globalBehaviors];
-        }
-        else if (!Array.isArray(this._options.globalBehaviors)) {
-            this._options.globalBehaviors = [];
-        }
     }
     /* istanbul ignore next */
     load() {

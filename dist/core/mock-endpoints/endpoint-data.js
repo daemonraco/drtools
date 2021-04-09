@@ -22,7 +22,7 @@ class EndpointData {
         //
         // Protected properties.
         this._behaviors = null;
-        this._brievesByMethod = {};
+        this._briefByMethod = {};
         this._endpoint = null;
         this._exists = false;
         this._options = {};
@@ -39,8 +39,8 @@ class EndpointData {
     }
     //
     // Public methods.
-    brievesByMethod() {
-        return this._brievesByMethod;
+    briefByMethod() {
+        return this._briefByMethod;
     }
     data(method) {
         let out = {
@@ -124,7 +124,7 @@ class EndpointData {
             try {
                 const extraBehaviors = require(behaviorsPath);
                 this._behaviors.importBehaviors(extraBehaviors);
-                Object.keys(this._brievesByMethod).forEach((method) => this._brievesByMethod[method].behaviors = true);
+                Object.keys(this._briefByMethod).forEach((method) => this._briefByMethod[method].behaviors = true);
             }
             catch (e) { }
         }
@@ -150,7 +150,7 @@ class EndpointData {
             byMethodPaths.forEach((p) => {
                 const matches = p.match(_2.EndpointPathPattern);
                 if (matches) {
-                    this._brievesByMethod[matches[3]] = {
+                    this._briefByMethod[matches[3]] = {
                         behaviors: false,
                         method: matches[3],
                         path: p,
@@ -161,7 +161,7 @@ class EndpointData {
         }
         else if (fs.existsSync(basicPath)) {
             this._exists = true;
-            this._brievesByMethod['*'] = {
+            this._briefByMethod['*'] = {
                 behaviors: false,
                 path: basicPath,
                 uri: this._uri
@@ -170,13 +170,13 @@ class EndpointData {
     }
     /* istanbul ignore next */
     loadRaw() {
-        Object.keys(this._brievesByMethod).forEach((method) => {
-            this._raw[method] = fs.readFileSync(this._brievesByMethod[method].path).toString();
+        for (const method of Object.keys(this._briefByMethod)) {
+            this._raw[method] = fs.readFileSync(this._briefByMethod[method].path).toString();
             try {
                 this._raw[method] = JSON.parse(this._raw[method]);
             }
             catch (e) { }
-        });
+        }
     }
 }
 exports.EndpointData = EndpointData;

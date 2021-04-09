@@ -14,7 +14,7 @@ _Express_ server).
 ## Command options
 <!-- AUTO:server-options -->
 ```
-DRTools Server (v0.15.3):
+DRTools Server (v0.15.4):
 Usage: drtools-generator [options]
 
 Options:

@@ -67,7 +67,7 @@ export class EndpointsManager implements IManagerByKey {
         let defaultOptions: IEndpointsManagerOptions = {
             directory: '',
             uri: '',
-            options: {}
+            options: {},
         };
 
         this._options = Tools.DeepMergeObjects(defaultOptions, this._options);

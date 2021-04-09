@@ -12,7 +12,7 @@ export interface IEndpointBrief {
     path: string;
     uri: string;
 }
-export interface IEndpointBrievesByMethod {
+export interface IEndpointBriefByMethod {
     [method: string]: IEndpointBrief;
 }
 export interface IEndpointOptions {

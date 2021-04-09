@@ -14,7 +14,7 @@ export interface IEndpointBrief {
     uri: string;
 }
 
-export interface IEndpointBrievesByMethod {
+export interface IEndpointBriefByMethod {
     [method: string]: IEndpointBrief;
 }
 

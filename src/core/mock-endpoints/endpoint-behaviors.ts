@@ -4,6 +4,7 @@
  */
 import { Endpoint } from '.';
 import { loremIpsum } from 'lorem-ipsum';
+import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import glob from 'glob';
@@ -103,6 +104,9 @@ export class EndpointBehaviors extends Object {
         }
 
         return out.substr(0, length);
+    }
+    public uuid(): any {
+        return uuidv4();
     }
     //
     // Public methods.

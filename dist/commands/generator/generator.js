@@ -202,9 +202,9 @@ class DRToolsGenerator {
                 };
             });
             console.log(`\tLoaded routes:`);
-            routes.forEach((r) => {
+            for (const r of routes) {
                 console.log(`\t\t- '${chalk_1.default.green(r.uri)}' (file: '${chalk_1.default.magenta(r.path)}')`);
-            });
+            }
         }
         if (!error) {
             console.log(`Generating configuration file...`);

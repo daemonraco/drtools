@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EndpointBehaviors = void 0;
 const tslib_1 = require("tslib");
 const lorem_ipsum_1 = require("lorem-ipsum");
+const uuid_1 = require("uuid");
 const fs = tslib_1.__importStar(require("fs-extra"));
 const path = tslib_1.__importStar(require("path"));
 const glob_1 = tslib_1.__importDefault(require("glob"));
@@ -87,6 +88,9 @@ class EndpointBehaviors extends Object {
             out += Math.random().toString(36).substring(7);
         }
         return out.substr(0, length);
+    }
+    uuid() {
+        return uuid_1.v4();
     }
     //
     // Public methods.

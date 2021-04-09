@@ -12,5 +12,6 @@ export declare class EndpointBehaviors extends Object {
     lorem(params: any): any;
     randNumber(...args: any[]): number;
     randString(length?: number): string;
+    uuid(): any;
     importBehaviors(behaviors: any): void;
 }

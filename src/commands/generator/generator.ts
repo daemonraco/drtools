@@ -211,9 +211,9 @@ export class DRToolsGenerator {
                 });
 
             console.log(`\tLoaded routes:`);
-            routes.forEach((r: any) => {
+            for (const r of routes) {
                 console.log(`\t\t- '${chalk.green(r.uri)}' (file: '${chalk.magenta(r.path)}')`);
-            });
+            }
         }
 
         if (!error) {

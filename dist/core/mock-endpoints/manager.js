@@ -61,7 +61,7 @@ class EndpointsManager {
         let defaultOptions = {
             directory: '',
             uri: '',
-            options: {}
+            options: {},
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options);
     }

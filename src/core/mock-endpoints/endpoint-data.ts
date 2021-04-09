@@ -2,7 +2,7 @@
  * @file endpoint-data.ts
  * @author Alejandro D. Simi
  */
-import { Endpoint, EndpointBehaviors, IEndpointBrievesByMethod } from '.';
+import { Endpoint, EndpointBehaviors, IEndpointBriefByMethod } from '.';
 import { IEndpointOptions, EndpointPathPattern, EndpointRawByMethod } from '.';
 import { Tools } from '../includes';
 import * as fs from 'fs-extra';
@@ -16,7 +16,7 @@ export class EndpointData {
     //
     // Protected properties.
     protected _behaviors: EndpointBehaviors | null = null;
-    protected _brievesByMethod: IEndpointBrievesByMethod = {};
+    protected _briefByMethod: IEndpointBriefByMethod = {};
     protected _endpoint: Endpoint | null = null;
     protected _exists: boolean = false;
     protected _options: IEndpointOptions = {};
@@ -38,8 +38,8 @@ export class EndpointData {
     }
     //
     // Public methods.
-    public brievesByMethod(): IEndpointBrievesByMethod {
-        return this._brievesByMethod;
+    public briefByMethod(): IEndpointBriefByMethod {
+        return this._briefByMethod;
     }
     public data(method?: string): any {
         let out: any = {
@@ -123,7 +123,7 @@ export class EndpointData {
                 const extraBehaviors = require(behaviorsPath);
                 (<EndpointBehaviors>this._behaviors).importBehaviors(extraBehaviors);
 
-                Object.keys(this._brievesByMethod).forEach((method: string) => this._brievesByMethod[method].behaviors = true);
+                Object.keys(this._briefByMethod).forEach((method: string) => this._briefByMethod[method].behaviors = true);
             } catch (e) { }
         }
 
@@ -150,7 +150,7 @@ export class EndpointData {
             byMethodPaths.forEach((p: string) => {
                 const matches: RegExpMatchArray | null = p.match(EndpointPathPattern);
                 if (matches) {
-                    this._brievesByMethod[matches[3]] = {
+                    this._briefByMethod[matches[3]] = {
                         behaviors: false,
                         method: matches[3],
                         path: p,
@@ -161,7 +161,7 @@ export class EndpointData {
         } else if (fs.existsSync(basicPath)) {
             this._exists = true;
 
-            this._brievesByMethod['*'] = {
+            this._briefByMethod['*'] = {
                 behaviors: false,
                 path: basicPath,
                 uri: this._uri
@@ -170,12 +170,12 @@ export class EndpointData {
     }
     /* istanbul ignore next */
     protected loadRaw(): void {
-        Object.keys(this._brievesByMethod).forEach((method: string) => {
-            this._raw[method] = fs.readFileSync(this._brievesByMethod[method].path).toString();
+        for (const method of Object.keys(this._briefByMethod)) {
+            this._raw[method] = fs.readFileSync(this._briefByMethod[method].path).toString();
 
             try {
                 this._raw[method] = JSON.parse(this._raw[method]);
             } catch (e) { }
-        });
+        }
     }
 }

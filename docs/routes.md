@@ -1,4 +1,4 @@
-<!-- version-check:0.15.3 -->
+<!-- version-check:0.15.4 -->
 <!-- version-warning -->
 <!-- /version-warning -->
 

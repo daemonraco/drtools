@@ -23,6 +23,7 @@ export declare class Endpoint {
         [name: string]: any;
     };
     uri(): string;
+    protected cleanOptions(): void;
     protected fixConstructorParams(): void;
     protected load(): void;
     protected loadAllEndpoints(): void;

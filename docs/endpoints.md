@@ -1,27 +1,25 @@
-<!-- version-check:0.0.1 -->
+<!-- version-check:0.15.4 -->
 <!-- version-warning -->
-!>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
-0.0.1</span>__
 <!-- /version-warning -->
 
-# DRTools: Endpoints
+# Endpoints
 
 ## The idea
-This idea of this tools is to start developing something that makes use of an API
+The idea of this tools is to start developing something that makes use of an API
 endpoint before such endpoint is actually built.
 
-In a simple way, take a bunch of JSON files with the information you expect from
+In other words, to take a bunch of JSON files with the information you expect from
 an API, put them inside a directory and provide that directory as an endpoint
-using ExpressJS.
+using [Express](https://www.npmjs.com/package/express).
 
 ## Example structure
 As an example, let's say you have a directory in your server at
 `/path/to/mock-ups`.
-In it you have a file called `users.json` and a directory called `users`.
-Inside the directory `users` you have a file called `1.json`.
+In it, you have a file called `users.json` and a directory called `users`.
+And inside the directory `users` you have a file called `1.json`.
 
 The file `users.json` will have these contents:
-```javascript
+```json
 [
     {
         "id": 1,
@@ -46,7 +44,7 @@ And `1.json` these:
 ```
 
 ## Setting it up
-Here you have a simple express server where we set our directory
+Here you have a simple _Express_ server where we set our directory
 `/path/to/mock-ups` to be provided on the URL `http://localhost:3000/api/v1.0`:
 ```javascript
 'use strict';
@@ -55,13 +53,11 @@ const port = process.env.PORT || 3000;
 
 const bodyParser = require('body-parser');
 const express = require('express');
-const http = require('http');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 //
 // Setting up endpoint. @{
 const { EndpointsManager } = require('drtools');
@@ -78,7 +74,7 @@ app.all('*', (req, res) => {
     });
 });
 
-http.createServer(app).listen(port, () => {
+app.listen(port, () => {
     console.log(`listening on port ${port}`);
 });
 ```
@@ -87,7 +83,7 @@ At this point you'll have these possible URLs:
 * `http://localhost:3000/api/v1.0/users`
 * `http://localhost:3000/api/v1.0/users/1`
 
-These URL will return the contents we showed before.
+These URLs will return the contents we showed before.
 
 ## Behaviors
 _Behaviors_ are small functions that auto-complete fields in your mock data files.
@@ -140,6 +136,15 @@ It provides a random _integer_ and it can be used in this way:
 }
 ```
 
+### UUID
+It provides a random [RFC4122](http://www.ietf.org/rfc/rfc4122.txt) ID using the
+package [UUID](https://www.npmjs.com/package/uuid) and it can be used in this way:
+```json
+{
+    "id": "@@uuid"
+}
+```
+
 ### endpoint
 If one of your mock-up has to incorporate another route as a field, you can
 automatically do so with something like this (assuming that `sub/route.json` is a
@@ -186,7 +191,7 @@ like this:
 ```
 
 ## Global custom behaviors
-If you want use the behavior `data` in all your JSON files you have 3 ways:
+If you want use you custom behavior in all your JSON files you have 3 ways:
 1. _The Bad_: Duplicate your file `1.js` in every place you need it and change
 their names accordingly.
 2. _The Ugly_: Rename it as, for example, `behaviors.js` and there create a new
@@ -210,7 +215,7 @@ path at once giving you the ability to better organize your codes.
 
 ## By method
 If you want to have a different response for certain path depending on the request
-method, you can do something this.
+method, you can do something like this.
 
 Let's say your endpoint directory is at `/path/to/mock-ups` and you have a JSON
 file at `/path/to/mock-ups/books.json` that you want it to be used only on `GET`
