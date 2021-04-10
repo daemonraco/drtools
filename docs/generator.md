@@ -1,7 +1,7 @@
-<!-- version-check:0.0.1 -->
+<!-- version-check:0.0.0 -->
 <!-- version-warning -->
 !>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
-0.0.1</span>__
+0.0.0</span>__
 <!-- /version-warning -->
 
 # Generator

@@ -1,5 +1,6 @@
 export declare class DRToolsGenerator {
     protected _options: any;
+    protected _program: import("commander").Command;
     constructor();
     protected generatorOptions: any;
     protected error: string | null;

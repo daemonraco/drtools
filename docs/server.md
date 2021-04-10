@@ -1,21 +1,25 @@
-<!-- version-check:0.0.1 -->
+<!-- version-check:0.15.4 -->
 <!-- version-warning -->
-!>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
-0.0.1</span>__
 <!-- /version-warning -->
 
 # Server
 __DRTools__ provides a simple [Express](https://www.npmjs.com/package/express)
 server that can be launched from command line.
-Such server can provide almost the same tools you could have writing your own
-server (visit [this link](express.md) for more information about creating your own
-_Express_ server).
+Such server can provide almost the same tools you can use writing your own
+server, but it's a quick easy way.
+
+## How to run it
+To run it you just simple run something like this:
+```bash
+npm install -f drtools
+drtools-server --configs /directory/with/route/files
+```
 
 ## Command options
 <!-- AUTO:server-options -->
 ```
 DRTools Server (v0.15.4):
-Usage: drtools-generator [options]
+Usage: drtools-server [options]
 
 Options:
   -v, --version                    output the version number

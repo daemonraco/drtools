@@ -11,6 +11,8 @@
     "scripts": {
         "start": "npm run build:live",
         "start:ui": "cd web-ui/ui-ng; npm run start",
+        "cmd:generator": "./dist/commands/generator/cmd.js",
+        "cmd:server": "./dist/commands/server/cmd.js",
         "prebuild": "rm -fr dist/*",
         "build": "tsc",
         "postbuild": "chmod -v +x dist/commands/*/cmd.js && npm run build:docs",

@@ -11,9 +11,10 @@ const version = require('../package.json').version;
 let warnings = [];
 let outdatedMds = [];
 
-const cleanCmdHelp = text => {
+const cleanCmdHelp = (text, isServer) => {
     let lines = text
-        .replace(/(Usage: )([^ ]+)( \[options\])/, '$1drtools-generator$3')
+        .replace(/(Usage: )([^ ]+)( \[options\])/,
+            `$1drtools-${isServer ? 'server' : 'generator'}$3`)
         .split('\n');
 
     while (lines.length > 0 && !lines[lines.length - 1].trim()) {
@@ -219,9 +220,9 @@ const versionWarnings = mdPath => {
     ].forEach(([name, cmdStr]) => {
         piecesSteps.push({
             name,
-            function: name => {
+            run: name => {
                 const cmd = shell.exec(cmdStr, { silent: true });
-                pieces[name] = cleanCmdHelp(cmd.stdout);
+                pieces[name] = cleanCmdHelp(cmd.stdout, !!name.match(/^server-.+$/));
             }
         });
     });
@@ -244,7 +245,7 @@ const versionWarnings = mdPath => {
 
     for (const piece of piecesSteps) {
         console.log(`Loading piece '${chalk.green(piece.name)}'`);
-        await piece.function(piece.name);
+        await piece.run(piece.name);
     }
 
     console.log('');

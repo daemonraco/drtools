@@ -2,7 +2,7 @@
  * @file generator.ts
  * @author Alejandro D. Simi
  */
-const commander = require('commander');
+import { Command } from 'commander';
 import { MiddlewaresConstants, PluginsConstants, RoutesConstants, TasksConstants } from '../../core/drtools';
 import { Tools } from '../includes/tools';
 import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath } from '../../core/includes/tools';
@@ -16,6 +16,7 @@ export class DRToolsGenerator {
     //
     // Protected properties.
     protected _options: any = {};
+    protected _program = new Command();
     //
     // Constructor
     constructor() {
@@ -30,10 +31,10 @@ export class DRToolsGenerator {
     // Public methods.
     public run(): void {
         this.setCommands();
-        commander.parse(process.argv);
+        this._program.parse(process.argv);
 
-        if (commander.args < 1) {
-            commander.help();
+        if (Object.keys(this._program.opts()).length < 1) {
+            this._program.help();
         }
     }
     //
@@ -440,10 +441,10 @@ export class DRToolsGenerator {
         }
     }
     protected setCommands(): void {
-        commander
+        this._program
             .version(Tools.Instance().version(), `-v, --version`)
 
-        commander
+        this._program
             .command(`mock-routes <directory>`)
             .alias(`mr`)
             .description(`generates a mock-up routes configuration based on the contents of a directory.`)
@@ -455,7 +456,7 @@ export class DRToolsGenerator {
                 this.generateMockUpRoutes(directory, options);
             });
 
-        commander
+        this._program
             .command(`middleware <name> <directory>`)
             .alias(`m`)
             .description(`generates a middleware with an initial structure.`)
@@ -471,7 +472,7 @@ export class DRToolsGenerator {
                 this.generateMiddleware(name, directory, options);
             });
 
-        commander
+        this._program
             .command(`plugin <name> <directory>`)
             .alias(`p`)
             .description(`generates a plugin directory with an initial structure.`)
@@ -485,7 +486,7 @@ export class DRToolsGenerator {
                 this.generatePlugin(name, directory, options);
             });
 
-        commander
+        this._program
             .command(`route <name> <directory>`)
             .alias(`r`)
             .description(`generates a route with an initial structure.`)
@@ -501,7 +502,7 @@ export class DRToolsGenerator {
                 this.generateRoute(name, directory, options);
             });
 
-        commander
+        this._program
             .command(`task <name> <directory>`)
             .alias(`t`)
             .description(`generates a task with an initial structure.`)
@@ -519,12 +520,12 @@ export class DRToolsGenerator {
                 this.generateTask(name, directory, options);
             });
 
-        commander
+        this._program
             .action((cmd: any, options: any) => {
                 console.error(chalk.red(`\nNo valid command specified.`));
-                commander.help();
+                this._program.help();
             });
-        commander.outputHelp((text: string) => {
+        this._program.outputHelp((text: string) => {
             this.promptHeader();
             return ``;
         });

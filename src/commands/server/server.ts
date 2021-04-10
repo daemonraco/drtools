@@ -2,25 +2,13 @@
  * @file server.ts
  * @author Alejandro D. Simi
  */
-const commander = require('commander');
+import { Command, OptionValues } from 'commander';
+import { ConfigsConstants, ConfigsManager, EndpointsManager, ExpressConnector, IEndpointOptions, LoadersManager, MiddlewaresManager, MockRoutesManager, RoutesManager, TasksManager } from '../../core/drtools';
 import { Tools } from '../includes/tools';
 import * as http from 'http';
 import bodyParser from 'body-parser';
 import chalk from 'chalk';
 import express from 'express';
-
-import {
-    ConfigsConstants,
-    ConfigsManager,
-    IEndpointOptions,
-    EndpointsManager,
-    ExpressConnector,
-    LoadersManager,
-    MiddlewaresManager,
-    MockRoutesManager,
-    RoutesManager,
-    TasksManager
-} from '../../core/drtools';
 
 export class DRToolsServer {
     //
@@ -38,14 +26,15 @@ export class DRToolsServer {
     };
     protected error: string | null = null;
     protected port: boolean = false;
+    protected program = new Command();
     protected webUI: boolean = true;
     //
     // Public methods.
-    public run(): void {
+    public async run(): Promise<void> {
         this.setAndLoadArguments();
         this.parseArguments();
         if (!this.error) {
-            this.startServer();
+            await this.startServer();
         } else {
             console.error(chalk.red(this.error));
         }
@@ -56,104 +45,112 @@ export class DRToolsServer {
         console.log(`DRTools Server (v${Tools.Instance().version()}):`);
     }
     protected parseArguments(): void {
-        this.port = commander.port || 3005;
-
-        if (commander.configs) {
-            this.connectorOptions.configsDirectory = Tools.CompletePath(commander.configs);
+        const options: OptionValues = this.program.opts();
+        this.port = options.port || 3005;
+        //
+        // Analyzing parameters for the Configs manager.
+        if (options.configs) {
+            this.connectorOptions.configsDirectory = Tools.CompletePath(options.configs);
             this.connectorOptions.configsOptions = {};
 
             this.availableUrls.push(ConfigsConstants.PublishUri);
             this.connectorOptions.configsOptions.publishConfigs = ConfigsConstants.PublishUri;
 
-            if (commander.configsSuffix) {
-                this.connectorOptions.configsOptions.suffix = commander.configsSuffix;
+            if (options.configsSuffix) {
+                this.connectorOptions.configsOptions.suffix = options.configsSuffix;
             }
-        } else if (commander.configsSuffix) {
+        } else if (options.configsSuffix) {
             this.error = `Parameter '--configs-suffix' should be used along with option '--configs'.`;
         }
+        //
+        // Analyzing parameters for the Loaders manager.
+        if (options.loaders) {
+            this.connectorOptions.loadersDirectory = Tools.CompletePath(options.loaders);
 
-        if (commander.loaders) {
-            this.connectorOptions.loadersDirectory = Tools.CompletePath(commander.loaders);
-
-            if (commander.loadersSuffix) {
-                this.connectorOptions.loadersOptions = { suffix: commander.loadersSuffix };
+            if (options.loadersSuffix) {
+                this.connectorOptions.loadersOptions = { suffix: options.loadersSuffix };
             }
-        } else if (commander.loadersSuffix) {
+        } else if (options.loadersSuffix) {
             this.error = `Parameter '--loaders-suffix' should be used along with option '--loaders'.`;
         }
+        //
+        // Analyzing parameters for the Middlewares manager.
+        if (options.middlewares) {
+            this.connectorOptions.middlewaresDirectory = Tools.CompletePath(options.middlewares);
 
-        if (commander.middlewares) {
-            this.connectorOptions.middlewaresDirectory = Tools.CompletePath(commander.middlewares);
-
-            if (commander.middlewaresSuffix) {
-                this.connectorOptions.middlewaresOptions = { suffix: commander.middlewaresSuffix };
+            if (options.middlewaresSuffix) {
+                this.connectorOptions.middlewaresOptions = { suffix: options.middlewaresSuffix };
             }
-        } else if (commander.middlewaresSuffix) {
+        } else if (options.middlewaresSuffix) {
             this.error = `Parameter '--middlewares-suffix' should be used along with option '--middlewares'.`;
         }
+        //
+        // Analyzing parameters for the Routes manager.
+        if (options.routes) {
+            this.connectorOptions.routesDirectory = Tools.CompletePath(options.routes);
 
-        if (commander.routes) {
-            this.connectorOptions.routesDirectory = Tools.CompletePath(commander.routes);
-
-            if (commander.routesSuffix) {
-                this.connectorOptions.routesOptions = { suffix: commander.routesSuffix };
+            if (options.routesSuffix) {
+                this.connectorOptions.routesOptions = { suffix: options.routesSuffix };
             }
-        } else if (commander.routesSuffix) {
+        } else if (options.routesSuffix) {
             this.error = `Parameter '--routes-suffix' should be used along with option '--routes'.`;
         }
+        //
+        // Analyzing parameters for the Tasks manager.
+        if (options.tasks) {
+            this.connectorOptions.tasksDirectory = Tools.CompletePath(options.tasks);
 
-        if (commander.tasks) {
-            this.connectorOptions.tasksDirectory = Tools.CompletePath(commander.tasks);
-
-            if (commander.tasksSuffix) {
-                this.connectorOptions.tasksOptions = { suffix: commander.tasksSuffix };
+            if (options.tasksSuffix) {
+                this.connectorOptions.tasksOptions = { suffix: options.tasksSuffix };
             }
-        } else if (commander.tasksSuffix) {
+        } else if (options.tasksSuffix) {
             this.error = `Parameter '--tasks-suffix' should be used along with option '--tasks'.`;
         }
-
-        if (commander.mockRoutes) {
-            this.connectorOptions.mockRoutesConfig = Tools.CompletePath(commander.mockRoutes);
+        //
+        // Analyzing parameters for the Mockup Routes manager.
+        if (options.mockRoutes) {
+            this.connectorOptions.mockRoutesConfig = Tools.CompletePath(options.mockRoutes);
         }
-
-        if (commander.endpoint && commander.endpointDirectory) {
-            const uri = commander.endpoint[0] === '/' ? commander.endpoint : `/${commander.endpoint}`;
+        //
+        // Analyzing parameters for the Mock-up Endpoints manager.
+        if (options.endpoint && options.endpointDirectory) {
+            const uri = options.endpoint[0] === '/' ? options.endpoint : `/${options.endpoint}`;
             this.connectorOptions.endpoints = {
                 uri,
-                directory: Tools.CompletePath(commander.endpointDirectory),
+                directory: Tools.CompletePath(options.endpointDirectory),
                 options: {
                     globalBehaviors: []
                 }
             };
 
-            if (commander.endpointBehaviors) {
-                commander.endpointBehaviors.split(',')
+            if (options.endpointBehaviors) {
+                options.endpointBehaviors.split(',')
                     .forEach((b: string) => {
                         this.connectorOptions.endpoints.options.globalBehaviors.push(Tools.CompletePath(b));
                     });
             }
 
             this.availableUrls.push(uri);
-        } else if (commander.endpoint) {
+        } else if (options.endpoint) {
             this.error = `Parameter '--endpoint' should be used along with option '--endpoint-directory'.`;
-        } else if (commander.endpointDirectory) {
+        } else if (options.endpointDirectory) {
             this.error = `Parameter '--endpoint-directory' should be used along with option '--endpoint'.`;
-        } else if (commander.endpointBehaviors && !commander.endpoint) {
+        } else if (options.endpointBehaviors && !options.endpoint) {
             this.error = `Parameter '--endpoint-behaviors' should be used along with option '--endpoint'.`;
         }
-
-        this.connectorOptions.webUi = this.webUI = commander.ui;
+        //
+        // Analyzing parameters for web-ui activation.
+        this.connectorOptions.webUi = this.webUI = options.ui;
         if (this.webUI) {
             this.availableUrls.push('/.drtools');
         }
-        // @}
 
         if (!this.error && Object.keys(this.connectorOptions).length === 2) {
             this.error = `There's nothing to serve.`;
         }
     }
     protected setAndLoadArguments(): void {
-        commander
+        this.program
             .version(Tools.Instance().version(), '-v, --version')
             .option('-c, --configs [path]',
                 'directory where configuration files are stored.')
@@ -194,25 +191,9 @@ export class DRToolsServer {
                 return '';
             });
 
-        commander.parse(process.argv);
+        this.program.parse(process.argv);
     }
-    protected startServer(): void {
-        const app = express();
-
-        app.use(bodyParser.json());
-        app.use(bodyParser.urlencoded({ extended: false }));
-
-        app.use((req: any, res: any, next: () => void) => {
-            if (this.chalkForMethods[req.method] !== undefined) {
-                console.log(`${this.chalkForMethods[req.method](`[${req.method}]`)}: ${chalk.cyan(req.originalUrl)}`);
-            } else {
-                console.log(`[${chalk.cyan(req.method)}]: ${chalk.cyan(req.originalUrl)}`);
-            }
-            next();
-        });
-
-        ExpressConnector.attach(app, { webUi: this.webUI });
-
+    protected async startServer(): Promise<void> {
         let configs: ConfigsManager | null = null;
         let loaders: LoadersManager | null = null;
         let middlewares: MiddlewaresManager | null = null;
@@ -221,47 +202,6 @@ export class DRToolsServer {
         let mockRoutes: MockRoutesManager | null = null;
         let endpoints: EndpointsManager | null = null;
 
-        const loadManagers = async () => {
-            if (this.connectorOptions.configsDirectory) {
-                configs = new ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
-            }
-
-            if (this.connectorOptions.loadersDirectory) {
-                loaders = new LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
-                await loaders.load();
-            }
-
-            if (this.connectorOptions.middlewaresDirectory) {
-                middlewares = new MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
-                await middlewares.load();
-            }
-
-            if (configs && this.connectorOptions.routesDirectory) {
-                routes = new RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
-                await routes.load();
-            }
-            if (routes) {
-                routes.itemNames().forEach((r: string) => this.availableUrls.push(`/${r}`));
-            }
-
-            if (configs && this.connectorOptions.tasksDirectory) {
-                tasks = new TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
-                await tasks.load();
-            }
-
-            if (this.connectorOptions.mockRoutesConfig) {
-                mockRoutes = new MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
-            }
-
-            if (this.connectorOptions.endpoints) {
-                endpoints = new EndpointsManager({
-                    directory: this.connectorOptions.endpoints.directory,
-                    uri: this.connectorOptions.endpoints.uri,
-                    options: this.connectorOptions.endpoints.options
-                }, configs);
-                app.use(endpoints.provide());
-            }
-        }
         const exitHandler = (options: any, err: any) => {
             process.exit();
         }
@@ -323,7 +263,66 @@ export class DRToolsServer {
             console.log();
         };
 
-        loadManagers().then(() => {
+        try {
+            const app = express();
+
+            app.use(bodyParser.json());
+            app.use(bodyParser.urlencoded({ extended: false }));
+
+            app.use((req: any, res: any, next: () => void) => {
+                if (this.chalkForMethods[req.method] !== undefined) {
+                    console.log(`${this.chalkForMethods[req.method](`[${req.method}]`)}: ${chalk.cyan(req.originalUrl)}`);
+                } else {
+                    console.log(`[${chalk.cyan(req.method)}]: ${chalk.cyan(req.originalUrl)}`);
+                }
+                next();
+            });
+
+            ExpressConnector.attach(app, { webUi: this.webUI });
+
+            if (this.connectorOptions.configsDirectory) {
+                configs = new ConfigsManager(this.connectorOptions.configsDirectory, this.connectorOptions.configsOptions);
+            }
+
+            if (this.connectorOptions.loadersDirectory) {
+                loaders = new LoadersManager(this.connectorOptions.loadersDirectory, this.connectorOptions.loadersOptions, configs);
+                await loaders.load();
+            }
+
+            if (this.connectorOptions.middlewaresDirectory) {
+                middlewares = new MiddlewaresManager(app, this.connectorOptions.middlewaresDirectory, this.connectorOptions.middlewaresOptions, configs);
+                await middlewares.load();
+            }
+
+            if (configs && this.connectorOptions.routesDirectory) {
+                routes = new RoutesManager(app, this.connectorOptions.routesDirectory, this.connectorOptions.routesOptions, configs);
+                await routes.load();
+            }
+            if (routes) {
+                for (const r of routes.itemNames()) {
+                    this.availableUrls.push(`/${r}`);
+                }
+            }
+
+            if (configs && this.connectorOptions.tasksDirectory) {
+                tasks = new TasksManager(this.connectorOptions.tasksDirectory, this.connectorOptions.tasksOptions, configs);
+                await tasks.load();
+            }
+
+            if (this.connectorOptions.mockRoutesConfig) {
+                mockRoutes = new MockRoutesManager(app, this.connectorOptions.mockRoutesConfig, {}, configs);
+            }
+
+            if (this.connectorOptions.endpoints) {
+                endpoints = new EndpointsManager({
+                    directory: this.connectorOptions.endpoints.directory,
+                    uri: this.connectorOptions.endpoints.uri,
+                    options: this.connectorOptions.endpoints.options
+                }, configs);
+                app.use(endpoints.provide());
+            }
+
+
             app.all('*', (req: any, res: any) => {
                 const result: any = {
                     message: `Path '${req.url}' was not found.`
@@ -336,14 +335,14 @@ export class DRToolsServer {
                 res.status(404).json(result);
             });
 
-            if (commander.testRun) {
+            if (this.program.opts().testRun) {
                 listingInfo();
             } else {
                 http.createServer(app).listen(this.port, listingInfo);
             }
-        }).catch(err => {
+        } catch (err) {
             console.error(chalk.red(`There was an error loading managers.`), err);
-        });
+        }
         //
         // Do something when app is closing.
         process.on('exit', exitHandler.bind(null, { cleanup: true }));
