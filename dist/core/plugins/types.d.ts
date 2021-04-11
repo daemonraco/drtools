@@ -3,7 +3,9 @@
  * @author Alejandro D. Simi
  */
 export interface IPluginsOptions {
+    configsPrefix?: string;
     dist?: boolean;
+    distPath?: string;
     verbose?: boolean;
 }
 export interface IPluginSpecs {

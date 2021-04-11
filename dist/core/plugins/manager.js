@@ -34,7 +34,8 @@ class PluginsManager {
     //
     // Public methods.
     configNameOf(name) {
-        return `${_1.PluginsConstants.ConfigsPrefix}${name}`;
+        var _a;
+        return `${((_a = this._options) === null || _a === void 0 ? void 0 : _a.configsPrefix) || _1.PluginsConstants.ConfigsPrefix}${name}`;
     }
     configOf(name) {
         let results = {};
@@ -77,7 +78,7 @@ class PluginsManager {
         return this._lastError;
     }
     load() {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             if (!this._loaded) {
                 this._loaded = true;
@@ -94,7 +95,7 @@ class PluginsManager {
                             //
                             // Should it consider a distribution folder?
                             if ((_c = this._options) === null || _c === void 0 ? void 0 : _c.dist) {
-                                const distPath = path.join(dir.path, 'dist');
+                                const distPath = path.join(dir.path, ((_d = this._options) === null || _d === void 0 ? void 0 : _d.distPath) || 'dist');
                                 let stat = null;
                                 try {
                                     stat = yield fs.stat(distPath);
@@ -180,7 +181,9 @@ class PluginsManager {
     /* istanbul ignore next */
     cleanOptions() {
         let defaultOptions = {
+            configsPrefix: _1.PluginsConstants.ConfigsPrefix,
             dist: false,
+            distPath: 'dist',
             verbose: true,
         };
         this._options = includes_1.Tools.DeepMergeObjects(defaultOptions, this._options !== null ? this._options : {});

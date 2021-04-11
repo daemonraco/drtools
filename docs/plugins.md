@@ -1,14 +1,13 @@
-<!-- version-check:0.0.0 -->
+<!-- version-check:0.15.4 -->
 <!-- version-warning -->
-!>__<span style="color:red">WARNING: THIS DOCUMENT IS OUT OF DATE SINCE VERSION
-0.0.0</span>__
 <!-- /version-warning -->
 
-# DRTools: Plugins
+# Plugins
 
 ## What is a plugin?
-A plugin is a collection of logics, in the case of __DRTools__ it's a directories
-with a file called `index.js` that export functions.
+A plugin is a collection of logics you can attach to your application, in the case
+of __DRTools__ it simply is a directories with a file called `index.js` that
+exports functions.
 
 ## How to invoke it
 Considering that you have a directory where you store all your plugin directories,
@@ -16,13 +15,16 @@ you can do something like this:
 ```javascript
 const { PluginsManager } = require('drtools');
 const manager = new PluginsManager('directory/with/plugins');
+await manager.load();
 ```
 
-If you have a directory where you store your configurations you can also do this:
+If you're also making use of the [configs manager](configs.md), you can also do
+this to make those configuration easily available inside your plugins:
 ```javascript
 const { ConfigsManager, PluginsManager } = require('drtools');
 const configs = new ConfigsManager('directory/with/config/files');
 const manager = new PluginsManager('directory/with/plugins', {}, configs);
+await manager.load();
 ```
 
 ## Simple plugin
@@ -32,18 +34,18 @@ Let's suppose that inside your plugins directory you have another directory call
 'use strict';
 
 module.exports = {
-    now: () => new Date()
+    now: () => new Date(),
 };
 ```
 
-Then you can invoke it with something like this:
+Then you can access it though the plugins manager with something like this:
 ```javascript
 const func = manager.get('example::now');
 console.log(`Current date: ${func()}`);
 ```
 
 ## Simpler plugin
-Let's suppose that your plugins is even simple and exports only one function:
+Let's suppose that your plugins is even simpler and exports only one function:
 ```javascript
 'use strict';
 
@@ -82,10 +84,38 @@ module.exports = {
 };
 ```
 
+The prefix `plugin` in your configuration files tell __DRTools__ that they have to
+be automatically attached to a plugin when loaded.
+
+## TypeScript
+Yes, this manager supports the use of _TypeScript_ and if you use `index.ts`
+instead of a _JavaScript_ file, it will try to load it.
+
+## Complex Structures
+There are cases where you plugins may not be a simple folder with at least
+`index.js` file.
+For example, if you're writing your plugin in _TypeScript_ and transpiling it
+_JavaScript_ you might end up with file at `dist/index.js` which is not what we
+said at the beginning.
+
+For these cases, __DRTools__ can looks inside your plugin directory for
+`dist/index`, and if it's not found it looks for `index`.
+
+To activate this behavior, you need to set the option `dist` as `true` when
+creating you manager:
+```javascript
+const { PluginsManager } = require('drtools');
+const manager = new PluginsManager('directory/with/plugins', { dist: true });
+await manager.load();
+```
+
 ## Options
 When you create a new manager you may pass these options in an object as a second
 argument:
 
-| Option    |    Type   | Default | Description                                        |
-|-----------|:---------:|:-------:|----------------------------------------------------|
-| `verbose` | `boolean` |  `true` | Whether to display loading log information or not. |
+| Option          | Type      | Default  | Description                                                            |
+|:----------------|:---------:|:--------:|:-----------------------------------------------------------------------|
+| `configsPrefix` | `string`  | `plugin` | Configuration file's prefix used to consider them as part of a plugin. |
+| `dist`          | `boolean` | `false`  | Whether to consider complex structures on plugins.                     |
+| `distPath`      | `string`  | `dist`   | Sub-directory to check first on complex plugin structures.             |
+| `verbose`       | `boolean` | `true`   | Whether to display loading log information or not.                     |

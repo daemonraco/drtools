@@ -4,7 +4,9 @@
  */
 
 export interface IPluginsOptions {
+    configsPrefix?: string;
     dist?: boolean;
+    distPath?: string;
     verbose?: boolean;
 }
 

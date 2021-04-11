@@ -39,7 +39,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     //
     // Public methods.
     public configNameOf(name: string): string {
-        return `${PluginsConstants.ConfigsPrefix}${name}`;
+        return `${this._options?.configsPrefix || PluginsConstants.ConfigsPrefix}${name}`;
     }
     public configOf(name: string): any {
         let results: any = {};
@@ -106,7 +106,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
                         //
                         // Should it consider a distribution folder?
                         if (this._options?.dist) {
-                            const distPath: string = path.join(dir.path, 'dist');
+                            const distPath: string = path.join(dir.path, this._options?.distPath || 'dist');
                             let stat: fs.Stats | null = null;
                             try { stat = await fs.stat(distPath); } catch (e) { }
                             if (stat && stat.isDirectory()) {
@@ -194,7 +194,9 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
     /* istanbul ignore next */
     protected cleanOptions(): void {
         let defaultOptions: IPluginsOptions = {
+            configsPrefix: PluginsConstants.ConfigsPrefix,
             dist: false,
+            distPath: 'dist',
             verbose: true,
         };
 
