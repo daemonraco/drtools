@@ -1,4 +1,2 @@
 # Documentation TODOs
-
-## Outdated Documents
-* [docs/generator.md](generator.md): since __0.0.0__.
+There seems to be nothing pending regarding documentation.

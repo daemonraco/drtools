@@ -9,7 +9,7 @@ Such server can provide almost the same tools you can use writing your own
 server, but it's a quick easy way.
 
 ## How to run it
-To run it you just simple run something like this:
+To run it you just simple do something like this:
 ```bash
 npm install -f drtools
 drtools-server --configs /directory/with/route/files

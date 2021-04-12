@@ -7,7 +7,6 @@ export declare class DRToolsServer {
     protected program: import("commander").Command;
     protected webUI: boolean;
     run(): Promise<void>;
-    protected promptHeader(): void;
     protected parseArguments(): void;
     protected setAndLoadArguments(): void;
     protected startServer(): Promise<void>;

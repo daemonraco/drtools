@@ -49,9 +49,6 @@ class DRToolsServer {
     }
     //
     // Protected methods.
-    promptHeader() {
-        console.log(`DRTools Server (v${tools_1.Tools.Instance().version()}):`);
-    }
     parseArguments() {
         const options = this.program.opts();
         this.port = options.port || 3005;
@@ -175,11 +172,8 @@ class DRToolsServer {
             .option('--no-ui', 'do not load internal WebUI.')
             .option('--routes-suffix [suffix]', 'expected extension on route files.')
             .option('--tasks-suffix [suffix]', 'expected extension on task files.')
-            .option('--test-run', 'does almost everything except start the server and listen its port.')
-            .outputHelp((text) => {
-            this.promptHeader();
-            return '';
-        });
+            .option('--test-run', 'does almost everything except start the server and listen its port.');
+        this.program.addHelpText('beforeAll', `DRTools Server (v${tools_1.Tools.Instance().version()}):`);
         this.program.parse(process.argv);
     }
     startServer() {

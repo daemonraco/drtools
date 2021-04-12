@@ -1,15 +1,9 @@
 export declare class DRToolsGenerator {
-    protected _options: any;
-    protected _program: import("commander").Command;
+    protected options: any;
+    protected program: import("commander").Command;
     constructor();
     protected generatorOptions: any;
     protected error: string | null;
     run(): void;
-    protected promptHeader(): void;
-    protected generateMiddleware(name: string, directory: string, options: any): void;
-    protected generateRoute(name: string, directory: string, options: any): void;
-    protected generateMockUpRoutes(directory: string, options: any): void;
-    protected generatePlugin(name: string, directory: string, options: any): void;
-    protected generateTask(name: string, directory: string, options: any): void;
     protected setCommands(): void;
 }

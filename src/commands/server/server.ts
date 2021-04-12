@@ -41,9 +41,6 @@ export class DRToolsServer {
     }
     //
     // Protected methods.
-    protected promptHeader(): void {
-        console.log(`DRTools Server (v${Tools.Instance().version()}):`);
-    }
     protected parseArguments(): void {
         const options: OptionValues = this.program.opts();
         this.port = options.port || 3005;
@@ -185,11 +182,9 @@ export class DRToolsServer {
             .option('--tasks-suffix [suffix]',
                 'expected extension on task files.')
             .option('--test-run',
-                'does almost everything except start the server and listen its port.')
-            .outputHelp((text: string) => {
-                this.promptHeader();
-                return '';
-            });
+                'does almost everything except start the server and listen its port.');
+
+        this.program.addHelpText('beforeAll', `DRTools Server (v${Tools.Instance().version()}):`);
 
         this.program.parse(process.argv);
     }

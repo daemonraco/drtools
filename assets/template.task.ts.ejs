@@ -1,25 +1,23 @@
-'use strict';
-
-const { Task } = require('drtools');
+import { Task } from 'drtools';
 
 class <%= properClassName %>Task extends Task {
     //
     // Public methods.
-    description() {
+    public description(): string {
         return '@TODO no description provided yet';
     }
-    name() {
+    public name(): string {
         return '<%= properName %>';
     }
-    run() {
+    public async run(): Promise<void> {
         console.log(`Running '<%= properClassName %>Task': ${new Date()}`);
     }
     //
     // Protected methods.
-    load() {
+    protected load(): void {
         this._interval = <%= interval %>;
         this._runAtStart = <%= runOnStart %>;
     }
 }
 
-module.exports = new <%= properClassName %>Task();
+export = new <%= properClassName %>Task();

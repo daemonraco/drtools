@@ -8,13 +8,13 @@ const semver = require('semver');
 const shell = require('shelljs');
 const version = require('../package.json').version;
 
-let warnings = [];
 let outdatedMds = [];
+let warnings = [];
 
 const cleanCmdHelp = (text, isServer) => {
     let lines = text
-        .replace(/(Usage: )([^ ]+)( \[options\])/,
-            `$1drtools-${isServer ? 'server' : 'generator'}$3`)
+        .replace(/(Usage: )([^ ]+)( [^ ]+|)( \[options\])/,
+            `$1drtools-${isServer ? 'server' : 'generator'}$3$4`)
         .split('\n');
 
     while (lines.length > 0 && !lines[lines.length - 1].trim()) {
@@ -286,10 +286,24 @@ const versionWarnings = mdPath => {
 
     if (todoMdLines.length < 1) {
         todoMdLines = ['There seems to be nothing pending regarding documentation.'];
+        pieces['todo-menu'] = '';
+    } else {
+        pieces['todo-menu'] = [
+            '- Auto Generated',
+            '    - [Documentation TODOs](todo.md)',
+        ].join('\n');
     }
 
     todoMdLines.unshift('# Documentation TODOs');
     await fs.writeFile(path.join(__dirname, '../docs/todo.md'), todoMdLines.join('\n'));
+
+    inject({
+        mdPath: path.join(__dirname, '../docs/_sidebar.md'),
+        section: 'todo-menu',
+        data: pieces['todo-menu'],
+        isCode: false,
+    });
+    removeTrailingEmptyLines(path.join(__dirname, '../docs/_sidebar.md'));
 
     process.exit();
 })();
