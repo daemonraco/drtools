@@ -1,6 +1,6 @@
 {
     "name": "drtools",
-    "version": "0.15.5",
+    "version": "0.15.6",
     "description": "Set of useful tools",
     "main": "dist/core/drtools",
     "types": "dist/core/drtools",

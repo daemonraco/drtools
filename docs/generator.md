@@ -17,7 +17,7 @@ drtools-generator task my-task directory/with/tasks/files
 These are the main options of `drtools-generator`:
 <!-- AUTO:generator-options -->
 ```
-DRTools Generator (v0.15.5):
+DRTools Generator (v0.15.6):
 Usage: drtools-generator [options] [command]
 
 Options:
@@ -40,7 +40,7 @@ This section relates to [Tasks](tasks.md).
 ### Command options
 <!-- AUTO:generator-options:tasks -->
 ```
-DRTools Generator (v0.15.5):
+DRTools Generator (v0.15.6):
 Usage: drtools-generator task|t [options] <name> <directory>
 
 generates a task with an initial structure.
@@ -66,7 +66,7 @@ This section relates to [Routes](routes.md).
 ### Command options
 <!-- AUTO:generator-options:routes -->
 ```
-DRTools Generator (v0.15.5):
+DRTools Generator (v0.15.6):
 Usage: drtools-generator route|r [options] <name> <directory>
 
 generates a route with an initial structure.
@@ -89,7 +89,7 @@ This section relates to [Middlewares](middlewares.md).
 ### Command options
 <!-- AUTO:generator-options:middlewares -->
 ```
-DRTools Generator (v0.15.5):
+DRTools Generator (v0.15.6):
 Usage: drtools-generator middleware|m [options] <name> <directory>
 
 generates a middleware with an initial structure.
@@ -112,7 +112,7 @@ This section relates to [Mock-up Routes](mock-routes.md).
 ### Command options
 <!-- AUTO:generator-options:mock-routes -->
 ```
-DRTools Generator (v0.15.5):
+DRTools Generator (v0.15.6):
 Usage: drtools-generator mock-routes|mr [options] <directory>
 
 generates a mock-up routes configuration based on the contents of a directory.
@@ -131,7 +131,7 @@ This section relates to [Plugins](plugins.md).
 ### Command options
 <!-- AUTO:generator-options:plugins -->
 ```
-DRTools Generator (v0.15.5):
+DRTools Generator (v0.15.6):
 Usage: drtools-generator plugin|p [options] <name> <directory>
 
 generates a plugin directory with an initial structure.

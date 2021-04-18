@@ -52,9 +52,9 @@ class MiddlewaresManager extends includes_1.GenericManager {
                     if ((_b = this._options) === null || _b === void 0 ? void 0 : _b.verbose) {
                         console.log(`\t- '${chalk_1.default.green(item.name)}'`);
                     }
-                    global.configs = this._configs;
+                    global[_1.MiddlewaresConstants.GlobalConfigPointer] = this._configs;
                     this._app.use(require(item.path));
-                    delete global.configs;
+                    delete global[_1.MiddlewaresConstants.GlobalConfigPointer];
                 }
                 catch (err) {
                     console.error(chalk_1.default.red(`Unable to load middleware '${item.name}'.`), err);
