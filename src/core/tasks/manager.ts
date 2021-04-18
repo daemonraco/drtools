@@ -53,7 +53,7 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
 
             this._valid = !this._lastError;
 
-            this.runAtStart();
+            await this.runAtStart();
             this.setIntervals();
         }
 
@@ -110,21 +110,19 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
         };
     }
     /* istanbul ignore next */
-    protected runAtStart(): void {
+    protected async runAtStart(): Promise<void> {
         if (this.valid()) {
-            Object.keys(<TasksList>this._items).forEach((key: string) => {
-                const task: Task = (<TasksList>this._items)[key];
+            for (const [, task] of Object.entries(<TasksList>this._items)) {
                 if (task.runAtStart()) {
-                    task.run();
+                    await task.run();
                 }
-            });
+            }
         }
     }
     /* istanbul ignore next */
     protected setIntervals(): void {
         if (this.valid()) {
-            for (const key of Object.keys(<TasksList>this._items)) {
-                const task: Task = (<TasksList>this._items)[key];
+            for (const [, task] of Object.entries(<TasksList>this._items)) {
                 //
                 // Are tasks being run when their time comes up?, or when their
                 // time comes up are they being queued for the next queue available tick?

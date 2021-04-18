@@ -1,6 +1,7 @@
 'use strict';
 
 const chalk = require('chalk');
+const conf = require('./gen-docs.json');
 const fs = require('fs-extra');
 const glob = require('glob');
 const path = require('path');
@@ -23,7 +24,6 @@ const cleanCmdHelp = (text, isServer) => {
 
     return lines.join('\n');
 };
-
 const inject = ({ mdPath, section, data, isCode, codeType }) => {
     const openPattern = new RegExp(`<!-- AUTO:${section}.* -->`);
     const closePattern = new RegExp(`<!-- /AUTO -->`);
@@ -54,7 +54,6 @@ const inject = ({ mdPath, section, data, isCode, codeType }) => {
 
     fs.writeFileSync(mdPath, newReadmeContents);
 };
-
 const fixmeTags = mdPath => {
     let mdLines = fs.readFileSync(mdPath).toString().split('\n');
     //
@@ -96,7 +95,6 @@ const fixmeTags = mdPath => {
     // Writing new contents.
     fs.writeFileSync(mdPath, newMdLines.join('\n'));
 };
-
 const removeTrailingEmptyLines = mdPath => {
     const mdLines = fs.readFileSync(mdPath)
         .toString()
@@ -109,7 +107,6 @@ const removeTrailingEmptyLines = mdPath => {
 
     fs.writeFileSync(mdPath, mdLines.join('\n'));
 };
-
 const versionWarnings = mdPath => {
     let mdLines = fs.readFileSync(mdPath)
         .toString()
@@ -167,6 +164,13 @@ const versionWarnings = mdPath => {
         ];
         mdVersion = version;
     }
+    //
+    // Does it really need a warning
+    if (needsWarning && conf.sameDocVersions[mdVersion].includes(version)) {
+        needsWarning = false;
+    }
+    //
+    // Setting info for the report.
     if (needsWarning) {
         outdatedMds.push({
             path: mdPath,

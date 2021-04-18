@@ -16,6 +16,6 @@ export declare class TasksManager extends GenericManager<ITasksManagerOptions> {
     tasks(): ITasksManager_TasksResponse[];
     protected consumeQueue(): Promise<void>;
     protected cleanOptions(): void;
-    protected runAtStart(): void;
+    protected runAtStart(): Promise<void>;
     protected setIntervals(): void;
 }
