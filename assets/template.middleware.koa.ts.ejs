@@ -1,0 +1,8 @@
+import { Context, Next } from 'koa';
+
+const config: any = (<any>global)['<%= globalConstant %>'];
+
+export = async (ctx: Context, next: Next): Promise<void> => {
+    console.log(`Running middleware '<%= name %>'. Current URL: ${ctx.originalUrl}`);
+    await next();
+};

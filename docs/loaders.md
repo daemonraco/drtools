@@ -54,6 +54,9 @@ module.exports = async () => {
 }
 ```
 
+## Config files
+!> @fixme this section requires documentation.
+
 ## Options
 When you create a new manager you may pass these options in an object as a second
 argument:

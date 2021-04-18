@@ -22,6 +22,8 @@ class RouteGeneratorClass extends SubGenerator {
                 `suffix to use when generating a file (default: '${RoutesConstants.Suffix}').`)
             .option(`--test-run`,
                 `does almost everything except actually generate files.`)
+            .option(`-ts, --typescript`,
+                `generates a typescript compatible task.`)
             .action((name: any, directory: any, options: any) => {
                 this.generate(name, directory, options);
                 process.exit();
@@ -37,7 +39,7 @@ class RouteGeneratorClass extends SubGenerator {
             suffix: options.suffix ? options.suffix : RoutesConstants.Suffix,
             testRun: options.testRun == true
         };
-        cleanOptions.fullName = `${name}.${cleanOptions.suffix}.js`;
+        cleanOptions.fullName = `${name}.${cleanOptions.suffix}.${options.typescript ? 't' : 'j'}s`;
 
         console.log(`Generating route`);
         console.log(`\tWorking directory:  '${chalk.green(directory)}'`);
@@ -68,10 +70,12 @@ class RouteGeneratorClass extends SubGenerator {
                 const exists: boolean = fs.existsSync(cleanOptions.fullPath);
                 if (cleanOptions.force || !exists) {
                     try {
-                        const templatePath: string = options.koa
-                            ? path.join(__dirname, '../../../../assets/template.route.koa.ejs')
-                            : path.join(__dirname, '../../../../assets/template.route.ejs');
-                        const template: string = fs.readFileSync(templatePath).toString();
+                        const templatePath: string = 'template.route'
+                            + (options.koa ? '.koa' : '')
+                            + (options.typescript ? '.ts' : '')
+                            + '.ejs';
+
+                        const template: string = fs.readFileSync(path.join(__dirname, '../../../../assets', templatePath)).toString();
                         fs.writeFileSync(cleanOptions.fullPath, ejs.render(template, {
                             name,
                             globalConstant: RoutesConstants.GlobalConfigPointer

@@ -19,6 +19,7 @@ class RouteGeneratorClass extends sub_generator_1.SubGenerator {
             .option(`-k, --koa`, `creates a template for configurations using KoaJS.`)
             .option(`-s, --suffix [suffix]`, `suffix to use when generating a file (default: '${routes_1.RoutesConstants.Suffix}').`)
             .option(`--test-run`, `does almost everything except actually generate files.`)
+            .option(`-ts, --typescript`, `generates a typescript compatible task.`)
             .action((name, directory, options) => {
             this.generate(name, directory, options);
             process.exit();
@@ -33,7 +34,7 @@ class RouteGeneratorClass extends sub_generator_1.SubGenerator {
             suffix: options.suffix ? options.suffix : routes_1.RoutesConstants.Suffix,
             testRun: options.testRun == true
         };
-        cleanOptions.fullName = `${name}.${cleanOptions.suffix}.js`;
+        cleanOptions.fullName = `${name}.${cleanOptions.suffix}.${options.typescript ? 't' : 'j'}s`;
         console.log(`Generating route`);
         console.log(`\tWorking directory:  '${chalk_1.default.green(directory)}'`);
         if (!error) {
@@ -60,10 +61,11 @@ class RouteGeneratorClass extends sub_generator_1.SubGenerator {
                 const exists = fs.existsSync(cleanOptions.fullPath);
                 if (cleanOptions.force || !exists) {
                     try {
-                        const templatePath = options.koa
-                            ? path.join(__dirname, '../../../../assets/template.route.koa.ejs')
-                            : path.join(__dirname, '../../../../assets/template.route.ejs');
-                        const template = fs.readFileSync(templatePath).toString();
+                        const templatePath = 'template.route'
+                            + (options.koa ? '.koa' : '')
+                            + (options.typescript ? '.ts' : '')
+                            + '.ejs';
+                        const template = fs.readFileSync(path.join(__dirname, '../../../../assets', templatePath)).toString();
                         fs.writeFileSync(cleanOptions.fullPath, ejs_1.default.render(template, {
                             name,
                             globalConstant: routes_1.RoutesConstants.GlobalConfigPointer

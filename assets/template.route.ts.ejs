@@ -1,0 +1,18 @@
+import { Request, Response, Router } from 'express';
+
+const config: any = (<any>global)['<%= globalConstant %>'];
+const router = Router();
+
+router.get('/', (req: Request, res: Response): void => {
+    res.json({
+        message: 'it works!',
+    });
+});
+
+router.all('*', (req: Request, res: Response): void => {
+    res.status(404).json({
+        message: `Path '${req.originalUrl}' is not available.`,
+    });
+});
+
+export = router;

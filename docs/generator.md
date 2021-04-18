@@ -78,6 +78,7 @@ Options:
   -s, --suffix [suffix]  suffix to use when generating a file (default:
                          'route').
   --test-run             does almost everything except actually generate files.
+  -ts, --typescript      generates a typescript compatible task.
   -h, --help             display help for command
 ```
 <!-- /AUTO -->
@@ -100,6 +101,7 @@ Options:
   -s, --suffix [suffix]  suffix to use when generating a file (default:
                          'middleware').
   --test-run             does almost everything except actually generate files.
+  -ts, --typescript      generates a typescript compatible task.
   -h, --help             display help for command
 ```
 <!-- /AUTO -->

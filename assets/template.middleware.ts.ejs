@@ -1,0 +1,8 @@
+import { Request, Response } from 'express';
+
+const config: any = (<any>global)['<%= globalConstant %>'];
+
+export = (req: Request, res: Response, next: Function): void => {
+    console.log(`Running middleware '<%= name %>'. Current URL: ${req.originalUrl}`);
+    next();
+};

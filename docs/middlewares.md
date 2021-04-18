@@ -37,6 +37,9 @@ module.exports = (req, res, next) => {
 };
 ```
 
+## Config files
+!> @fixme this section requires documentation.
+
 ## Koa middleware
 If you use [Koa](https://www.npmjs.com/package/koa) instead of
 [Express](https://www.npmjs.com/package/express), you can write something like

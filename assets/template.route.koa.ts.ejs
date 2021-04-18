@@ -1,0 +1,19 @@
+import { Context } from 'koa';
+import Router from 'koa-router';
+
+const config = global['<%= globalConstant %>'];
+const router = new Router();
+
+router.get('/', async (ctx: Context): Promise<void> => {
+    ctx.body = {
+        message: 'it works!',
+    };
+});
+
+router.all('*', async (ctx: Context): Promise<void> => {
+    ctx.throw(404, {
+        message: `Path '${ctx.originalUrl}' is not available.`,
+    });
+});
+
+module.exports = router;
