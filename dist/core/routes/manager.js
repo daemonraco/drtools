@@ -58,7 +58,7 @@ class RoutesManager extends includes_1.GenericManager {
             for (let i in this._itemSpecs) {
                 try {
                     if ((_d = this._options) === null || _d === void 0 ? void 0 : _d.verbose) {
-                        console.log(`\t- '${chalk_1.default.green(this._itemSpecs[i].name)}'`);
+                        console.log(`${includes_1.TAB}- '${chalk_1.default.green(this._itemSpecs[i].name)}'`);
                     }
                     global[_1.RoutesConstants.GlobalConfigPointer] = this._configs;
                     const router = require(this._itemSpecs[i].path);

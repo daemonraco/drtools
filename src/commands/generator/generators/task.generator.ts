@@ -1,4 +1,5 @@
 import { SubGenerator } from "../sub-generator";
+import { TAB } from "../../../core/includes";
 import { TasksConstants } from '../../../core/tasks';
 import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath } from '../../../core/includes/tools';
 import * as fs from 'fs-extra';
@@ -46,7 +47,7 @@ class TaskGeneratorClass extends SubGenerator {
         cleanOptions.fullName = `${name}.${cleanOptions.suffix}.${options.typescript ? 't' : 'j'}s`;
 
         console.log(`Generating task`);
-        console.log(`\tWorking directory:  '${chalk.green(directory)}'`);
+        console.log(`${TAB}Working directory:  '${chalk.green(directory)}'`);
 
         if (!error) {
             const check = CoreTools.CheckDirectory(directory, process.cwd());
@@ -65,7 +66,7 @@ class TaskGeneratorClass extends SubGenerator {
 
         if (!error) {
             cleanOptions.fullPath = path.join(directory, cleanOptions.fullName);
-            console.log(`\tTask file: '${chalk.green(cleanOptions.fullPath)}'`);
+            console.log(`${TAB}Task file: '${chalk.green(cleanOptions.fullPath)}'`);
         }
 
         if (!error) {

@@ -2,6 +2,7 @@
 const tslib_1 = require("tslib");
 const plugins_1 = require("../../../core/plugins");
 const sub_generator_1 = require("../sub-generator");
+const includes_1 = require("../../../core/includes");
 const tools_1 = require("../../../core/includes/tools");
 const fs = tslib_1.__importStar(require("fs-extra"));
 const path = tslib_1.__importStar(require("path"));
@@ -33,7 +34,7 @@ class PluginGeneratorClass extends sub_generator_1.SubGenerator {
             testRun: options.testRun == true
         };
         console.log(`Generating plugin`);
-        console.log(`\tName:              '${chalk_1.default.green(name)}'`);
+        console.log(`${includes_1.TAB}Name:              '${chalk_1.default.green(name)}'`);
         //
         // Checking plugins directory.
         if (!error) {
@@ -52,8 +53,8 @@ class PluginGeneratorClass extends sub_generator_1.SubGenerator {
         }
         cleanOptions.pluginDirectory = path.join(directory, name);
         cleanOptions.pluginIndex = path.join(cleanOptions.pluginDirectory, 'index.js');
-        console.log(`\tWorking directory: '${chalk_1.default.green(directory)}'`);
-        console.log(`\tPlugin directory:  '${chalk_1.default.green(cleanOptions.pluginDirectory)}'`);
+        console.log(`${includes_1.TAB}Working directory: '${chalk_1.default.green(directory)}'`);
+        console.log(`${includes_1.TAB}Plugin directory:  '${chalk_1.default.green(cleanOptions.pluginDirectory)}'`);
         //
         // Checking configurations directory.
         if (!error && cleanOptions.configs) {
@@ -72,8 +73,8 @@ class PluginGeneratorClass extends sub_generator_1.SubGenerator {
         }
         if (!error && cleanOptions.configs) {
             cleanOptions.configFile = path.join(cleanOptions.configs, `${plugins_1.PluginsConstants.ConfigsPrefix}${name}.json`);
-            console.log(`\tConfigs directory: '${chalk_1.default.green(cleanOptions.configs)}'`);
-            console.log(`\tConfig file:       '${chalk_1.default.green(cleanOptions.configFile)}'`);
+            console.log(`${includes_1.TAB}Configs directory: '${chalk_1.default.green(cleanOptions.configs)}'`);
+            console.log(`${includes_1.TAB}Config file:       '${chalk_1.default.green(cleanOptions.configFile)}'`);
         }
         if (!error) {
             console.log();

@@ -1,6 +1,7 @@
 "use strict";
 const tslib_1 = require("tslib");
 const sub_generator_1 = require("../sub-generator");
+const includes_1 = require("../../../core/includes");
 const tasks_1 = require("../../../core/tasks");
 const tools_1 = require("../../../core/includes/tools");
 const fs = tslib_1.__importStar(require("fs-extra"));
@@ -39,7 +40,7 @@ class TaskGeneratorClass extends sub_generator_1.SubGenerator {
         };
         cleanOptions.fullName = `${name}.${cleanOptions.suffix}.${options.typescript ? 't' : 'j'}s`;
         console.log(`Generating task`);
-        console.log(`\tWorking directory:  '${chalk_1.default.green(directory)}'`);
+        console.log(`${includes_1.TAB}Working directory:  '${chalk_1.default.green(directory)}'`);
         if (!error) {
             const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
             switch (check.status) {
@@ -56,7 +57,7 @@ class TaskGeneratorClass extends sub_generator_1.SubGenerator {
         }
         if (!error) {
             cleanOptions.fullPath = path.join(directory, cleanOptions.fullName);
-            console.log(`\tTask file: '${chalk_1.default.green(cleanOptions.fullPath)}'`);
+            console.log(`${includes_1.TAB}Task file: '${chalk_1.default.green(cleanOptions.fullPath)}'`);
         }
         if (!error) {
             console.log(`Generating task file...`);

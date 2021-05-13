@@ -341,7 +341,7 @@ class ConfigsManager {
                 this._specs[name].valid = true;
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk_1.default.green(name)}'`);
+                        console.log(`${includes_1.TAB}- '${chalk_1.default.green(name)}'`);
                     }
                     //
                     // Loading basic configuration.
@@ -381,7 +381,7 @@ class ConfigsManager {
                 let name = this._items[itemKey].name;
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk_1.default.green(name)}'${this._items[itemKey].specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`${includes_1.TAB}- '${chalk_1.default.green(name)}'${this._items[itemKey].specific ? ` (has specific configuration)` : ''}`);
                     }
                     //
                     // Loading basic configuration.
@@ -475,7 +475,7 @@ class ConfigsManager {
                 }
             }
             catch (e) {
-                console.error(chalk_1.default.red(`Config '${name}' is not valid.\n\t${e}`));
+                console.error(chalk_1.default.red(`Config '${name}' is not valid.\n${includes_1.TAB}${e}`));
             }
         }
         else {

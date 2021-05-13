@@ -1,4 +1,5 @@
 import { SubGenerator } from "../sub-generator";
+import { TAB, TAB2 } from "../../../core/includes";
 import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath } from '../../../core/includes/tools';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -35,7 +36,7 @@ class MockRoutesGeneratorClass extends SubGenerator {
         cleanOptions.configName += cleanOptions.configName.match(/\.json$/) ? '' : '.json';
 
         console.log(`Generating a mock-up routes`);
-        console.log(`\tWorking directory:  '${chalk.green(directory)}'`);
+        console.log(`${TAB}Working directory:  '${chalk.green(directory)}'`);
 
         if (!error) {
             const check = CoreTools.CheckDirectory(directory, process.cwd());
@@ -54,7 +55,7 @@ class MockRoutesGeneratorClass extends SubGenerator {
 
         if (!error) {
             cleanOptions.configPath = path.join(directory, cleanOptions.configName);
-            console.log(`\tConfiguration file: '${chalk.green(cleanOptions.configPath)}'`);
+            console.log(`${TAB}Configuration file: '${chalk.green(cleanOptions.configPath)}'`);
         }
 
         let routes: { uri: string; path: string; }[] = [];
@@ -75,9 +76,9 @@ class MockRoutesGeneratorClass extends SubGenerator {
                     };
                 });
 
-            console.log(`\tLoaded routes:`);
+            console.log(`${TAB}Loaded routes:`);
             for (const r of routes) {
-                console.log(`\t\t- '${chalk.green(r.uri)}' (file: '${chalk.magenta(r.path)}')`);
+                console.log(`${TAB2}- '${chalk.green(r.uri)}' (file: '${chalk.magenta(r.path)}')`);
             }
         }
 

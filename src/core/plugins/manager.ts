@@ -4,7 +4,7 @@
  */
 import { ConfigsManager } from '../configs';
 import { DRCollector, IAsyncManager, IManagerByKey } from '../drcollector';
-import { IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
+import { IToolsCheckPathResult, TAB, Tools, ToolsCheckPath } from '../includes';
 import { PluginsConstants, IPluginsOptions, IPluginSpecs, IPluginSpecsList } from '.';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -101,7 +101,7 @@ export class PluginsManager implements IAsyncManager, IManagerByKey {
                 for (const dir of this._paths) {
                     try {
                         if (this._options?.verbose) {
-                            console.log(`\t- '${chalk.green(dir.name)}'`);
+                            console.log(`${TAB}- '${chalk.green(dir.name)}'`);
                         }
                         //
                         // Should it consider a distribution folder?

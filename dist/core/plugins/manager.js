@@ -90,7 +90,7 @@ class PluginsManager {
                     for (const dir of this._paths) {
                         try {
                             if ((_b = this._options) === null || _b === void 0 ? void 0 : _b.verbose) {
-                                console.log(`\t- '${chalk_1.default.green(dir.name)}'`);
+                                console.log(`${includes_1.TAB}- '${chalk_1.default.green(dir.name)}'`);
                             }
                             //
                             // Should it consider a distribution folder?

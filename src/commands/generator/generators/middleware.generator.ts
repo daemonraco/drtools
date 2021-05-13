@@ -1,5 +1,6 @@
 import { MiddlewaresConstants } from '../../../core/middlewares';
 import { SubGenerator } from "../sub-generator";
+import { TAB } from '../../../core/includes';
 import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath } from '../../../core/includes/tools';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -42,7 +43,7 @@ class MiddlewareGeneratorClass extends SubGenerator {
         cleanOptions.fullName = `${name}.${cleanOptions.suffix}.${options.typescript ? 't' : 'j'}s`;
 
         console.log(`Generating middleware`);
-        console.log(`\tWorking directory:  '${chalk.green(directory)}'`);
+        console.log(`${TAB}Working directory:  '${chalk.green(directory)}'`);
 
         if (!error) {
             const check = CoreTools.CheckDirectory(directory, process.cwd());
@@ -61,7 +62,7 @@ class MiddlewareGeneratorClass extends SubGenerator {
 
         if (!error) {
             cleanOptions.fullPath = path.join(directory, cleanOptions.fullName);
-            console.log(`\tMiddleware file: '${chalk.green(cleanOptions.fullPath)}'`);
+            console.log(`${TAB}Middleware file: '${chalk.green(cleanOptions.fullPath)}'`);
         }
 
         if (!error) {

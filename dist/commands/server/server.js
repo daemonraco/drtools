@@ -193,41 +193,41 @@ class DRToolsServer {
                 if (configs && this.connectorOptions.configsDirectory) {
                     const error = configs.valid() ? '' : chalk_1.default.yellow(` (Error: ${configs.lastError()})`);
                     const suffix = this.connectorOptions.configsOptions && this.connectorOptions.configsOptions.suffix ? ` (suffix: '.${this.connectorOptions.configsOptions.suffix}')` : '';
-                    console.log(`\t- Configuration files at '${chalk_1.default.green(this.connectorOptions.configsDirectory)}'${suffix}${error}`);
+                    console.log(`${drtools_1.TAB}- Configuration files at '${chalk_1.default.green(this.connectorOptions.configsDirectory)}'${suffix}${error}`);
                 }
                 if (loaders && this.connectorOptions.loadersDirectory) {
                     const error = loaders.valid() ? '' : chalk_1.default.yellow(` (Error: ${loaders.lastError()})`);
                     const suffix = this.connectorOptions.loadersOptions && this.connectorOptions.loadersOptions.suffix ? ` (suffix: '.${this.connectorOptions.loadersOptions.suffix}')` : '';
-                    console.log(`\t- Initialization files at '${chalk_1.default.green(this.connectorOptions.loadersDirectory)}'${suffix}${error}`);
+                    console.log(`${drtools_1.TAB}- Initialization files at '${chalk_1.default.green(this.connectorOptions.loadersDirectory)}'${suffix}${error}`);
                 }
                 if (middlewares && this.connectorOptions.middlewaresDirectory) {
                     const error = middlewares.valid() ? '' : chalk_1.default.yellow(` (Error: ${middlewares.lastError()})`);
                     const suffix = this.connectorOptions.middlewaresOptions && this.connectorOptions.middlewaresOptions.suffix ? ` (suffix: '.${this.connectorOptions.middlewaresOptions.suffix}')` : '';
-                    console.log(`\t- Middleware files at '${chalk_1.default.green(this.connectorOptions.middlewaresDirectory)}'${suffix}${error}`);
+                    console.log(`${drtools_1.TAB}- Middleware files at '${chalk_1.default.green(this.connectorOptions.middlewaresDirectory)}'${suffix}${error}`);
                 }
                 if (routes && this.connectorOptions.routesDirectory) {
                     const error = routes.valid() ? '' : chalk_1.default.yellow(` (Error: ${routes.lastError()})`);
                     const suffix = this.connectorOptions.routesOptions && this.connectorOptions.routesOptions.suffix ? ` (suffix: '.${this.connectorOptions.routesOptions.suffix}')` : '';
-                    console.log(`\t- Route files at '${chalk_1.default.green(this.connectorOptions.routesDirectory)}'${suffix}${error}`);
+                    console.log(`${drtools_1.TAB}- Route files at '${chalk_1.default.green(this.connectorOptions.routesDirectory)}'${suffix}${error}`);
                 }
                 if (tasks && this.connectorOptions.tasksDirectory) {
                     const error = tasks.valid() ? '' : chalk_1.default.yellow(` (Error: ${tasks.lastError()})`);
                     const suffix = this.connectorOptions.tasksOptions && this.connectorOptions.tasksOptions.suffix ? ` (suffix: '.${this.connectorOptions.tasksOptions.suffix}')` : '';
-                    console.log(`\t- Task files at '${chalk_1.default.green(this.connectorOptions.tasksDirectory)}'${suffix}${error}`);
+                    console.log(`${drtools_1.TAB}- Task files at '${chalk_1.default.green(this.connectorOptions.tasksDirectory)}'${suffix}${error}`);
                 }
                 if (mockRoutes && mockRoutes) {
                     const error = mockRoutes.valid() ? '' : chalk_1.default.yellow(` (Error: ${mockRoutes.lastError()})`);
-                    console.log(`\t- Mock-up routes configuration '${chalk_1.default.green(mockRoutes.configPath())}'${error}`);
+                    console.log(`${drtools_1.TAB}- Mock-up routes configuration '${chalk_1.default.green(mockRoutes.configPath())}'${error}`);
                 }
                 if (endpoints && this.connectorOptions.endpoints) {
                     const error = endpoints.valid() ? '' : chalk_1.default.yellow(` (Error: ${endpoints.lastError()})`);
-                    console.log(`\t- Mock-up Endpoint${error}`);
-                    console.log(`\t\tURI:       '${chalk_1.default.green(endpoints.uri())}'`);
-                    console.log(`\t\tDirectory: '${chalk_1.default.green(endpoints.directory())}'`);
+                    console.log(`${drtools_1.TAB}- Mock-up Endpoint${error}`);
+                    console.log(`${drtools_1.TAB2}URI:       '${chalk_1.default.green(endpoints.uri())}'`);
+                    console.log(`${drtools_1.TAB2}Directory: '${chalk_1.default.green(endpoints.directory())}'`);
                     const options = endpoints.options();
                     if (options && options.globalBehaviors && options.globalBehaviors.length > 0) {
-                        console.log(`\t\tBehaviors:`);
-                        options.globalBehaviors.forEach((b) => console.log(`\t\t\t'${chalk_1.default.green(b)}'`));
+                        console.log(`${drtools_1.TAB2}Behaviors:`);
+                        options.globalBehaviors.forEach((b) => console.log(`${drtools_1.TAB3}'${chalk_1.default.green(b)}'`));
                     }
                 }
                 if (this.webUI) {

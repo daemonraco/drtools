@@ -1,5 +1,6 @@
 import { PluginsConstants } from '../../../core/plugins';
 import { SubGenerator } from "../sub-generator";
+import { TAB } from '../../../core/includes';
 import { Tools as CoreTools, ToolsCheckPath as CoreToolsCheckPath } from '../../../core/includes/tools';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -37,7 +38,7 @@ class PluginGeneratorClass extends SubGenerator {
         };
 
         console.log(`Generating plugin`);
-        console.log(`\tName:              '${chalk.green(name)}'`);
+        console.log(`${TAB}Name:              '${chalk.green(name)}'`);
         //
         // Checking plugins directory.
         if (!error) {
@@ -56,8 +57,8 @@ class PluginGeneratorClass extends SubGenerator {
         }
         cleanOptions.pluginDirectory = path.join(directory, name);
         cleanOptions.pluginIndex = path.join(cleanOptions.pluginDirectory, 'index.js');
-        console.log(`\tWorking directory: '${chalk.green(directory)}'`);
-        console.log(`\tPlugin directory:  '${chalk.green(cleanOptions.pluginDirectory)}'`);
+        console.log(`${TAB}Working directory: '${chalk.green(directory)}'`);
+        console.log(`${TAB}Plugin directory:  '${chalk.green(cleanOptions.pluginDirectory)}'`);
         //
         // Checking configurations directory.
         if (!error && cleanOptions.configs) {
@@ -77,8 +78,8 @@ class PluginGeneratorClass extends SubGenerator {
         if (!error && cleanOptions.configs) {
             cleanOptions.configFile = path.join(cleanOptions.configs, `${PluginsConstants.ConfigsPrefix}${name}.json`);
 
-            console.log(`\tConfigs directory: '${chalk.green(cleanOptions.configs)}'`);
-            console.log(`\tConfig file:       '${chalk.green(cleanOptions.configFile)}'`);
+            console.log(`${TAB}Configs directory: '${chalk.green(cleanOptions.configs)}'`);
+            console.log(`${TAB}Config file:       '${chalk.green(cleanOptions.configFile)}'`);
         }
 
         if (!error) {

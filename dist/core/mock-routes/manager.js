@@ -158,7 +158,7 @@ class MockRoutesManager {
             }
             if ((_a = this._options) === null || _a === void 0 ? void 0 : _a.verbose) {
                 console.log(`Loading mock-up routes:`);
-                console.log(`\tConfig file: '${chalk_1.default.green(this.configPath())}'`);
+                console.log(`${includes_1.TAB}Config file: '${chalk_1.default.green(this.configPath())}'`);
             }
             //
             // Loading configuration.
@@ -283,11 +283,11 @@ class MockRoutesManager {
             if ((_a = this._options) === null || _a === void 0 ? void 0 : _a.verbose) {
                 const keys = Object.keys(this._routes);
                 if (keys.length) {
-                    console.log(`\tRoutes:`);
+                    console.log(`${includes_1.TAB}Routes:`);
                     keys.sort().forEach((key) => {
                         const method = chalk_1.default.magenta(`[${this._routes[key].method.toUpperCase()}]`);
                         const file = chalk_1.default.magenta(this._routes[key].originalPath);
-                        console.log(`\t\t- '${chalk_1.default.green(this._routes[key].uri)}' ${method} (file: '${file}')`);
+                        console.log(`${includes_1.TAB2}- '${chalk_1.default.green(this._routes[key].uri)}' ${method} (file: '${file}')`);
                     });
                 }
             }

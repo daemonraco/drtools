@@ -4,7 +4,7 @@
  */
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
-import { GenericManager, IItemSpec } from '../includes';
+import { GenericManager, IItemSpec, TAB } from '../includes';
 import { ITasksManagerOptions, ITasksManager_TasksResponse, Task, TasksConstants, TasksList } from '.';
 import chalk from 'chalk';
 
@@ -39,7 +39,7 @@ export class TasksManager extends GenericManager<ITasksManagerOptions> {
                 for (let item of this._itemSpecs) {
                     try {
                         if (this._options?.verbose) {
-                            console.log(`\t- '${chalk.green(item.name)}'`);
+                            console.log(`${TAB}- '${chalk.green(item.name)}'`);
                         }
 
                         const task: Task = require(item.path);

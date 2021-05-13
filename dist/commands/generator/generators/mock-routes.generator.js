@@ -1,6 +1,7 @@
 "use strict";
 const tslib_1 = require("tslib");
 const sub_generator_1 = require("../sub-generator");
+const includes_1 = require("../../../core/includes");
 const tools_1 = require("../../../core/includes/tools");
 const fs = tslib_1.__importStar(require("fs-extra"));
 const path = tslib_1.__importStar(require("path"));
@@ -32,7 +33,7 @@ class MockRoutesGeneratorClass extends sub_generator_1.SubGenerator {
         };
         cleanOptions.configName += cleanOptions.configName.match(/\.json$/) ? '' : '.json';
         console.log(`Generating a mock-up routes`);
-        console.log(`\tWorking directory:  '${chalk_1.default.green(directory)}'`);
+        console.log(`${includes_1.TAB}Working directory:  '${chalk_1.default.green(directory)}'`);
         if (!error) {
             const check = tools_1.Tools.CheckDirectory(directory, process.cwd());
             switch (check.status) {
@@ -49,7 +50,7 @@ class MockRoutesGeneratorClass extends sub_generator_1.SubGenerator {
         }
         if (!error) {
             cleanOptions.configPath = path.join(directory, cleanOptions.configName);
-            console.log(`\tConfiguration file: '${chalk_1.default.green(cleanOptions.configPath)}'`);
+            console.log(`${includes_1.TAB}Configuration file: '${chalk_1.default.green(cleanOptions.configPath)}'`);
         }
         let routes = [];
         if (!error) {
@@ -71,9 +72,9 @@ class MockRoutesGeneratorClass extends sub_generator_1.SubGenerator {
                     path: `.${p}`
                 };
             });
-            console.log(`\tLoaded routes:`);
+            console.log(`${includes_1.TAB}Loaded routes:`);
             for (const r of routes) {
-                console.log(`\t\t- '${chalk_1.default.green(r.uri)}' (file: '${chalk_1.default.magenta(r.path)}')`);
+                console.log(`${includes_1.TAB2}- '${chalk_1.default.green(r.uri)}' (file: '${chalk_1.default.magenta(r.path)}')`);
             }
         }
         if (!error) {

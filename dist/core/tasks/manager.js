@@ -36,7 +36,7 @@ class TasksManager extends includes_1.GenericManager {
                     for (let item of this._itemSpecs) {
                         try {
                             if ((_b = this._options) === null || _b === void 0 ? void 0 : _b.verbose) {
-                                console.log(`\t- '${chalk_1.default.green(item.name)}'`);
+                                console.log(`${includes_1.TAB}- '${chalk_1.default.green(item.name)}'`);
                             }
                             const task = require(item.path);
                             task.setConfigs(this._configs);

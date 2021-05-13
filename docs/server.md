@@ -18,7 +18,7 @@ drtools-server --configs /directory/with/route/files
 ## Command options
 <!-- AUTO:server-options -->
 ```
-DRTools Server (v0.15.6):
+DRTools Server (v0.15.7):
 Usage: drtools-server [options]
 
 Options:

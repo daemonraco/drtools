@@ -4,7 +4,7 @@
  */
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
-import { GenericManager, Tools } from '../includes';
+import { GenericManager, TAB, Tools } from '../includes';
 import { IMiddlewareOptions, MiddlewaresConstants } from '.';
 import chalk from 'chalk';
 
@@ -54,7 +54,7 @@ export class MiddlewaresManager extends GenericManager<IMiddlewareOptions> {
             for (let item of this._itemSpecs) {
                 try {
                     if (this._options?.verbose) {
-                        console.log(`\t- '${chalk.green(item.name)}'`);
+                        console.log(`${TAB}- '${chalk.green(item.name)}'`);
                     }
 
                     (<any>global)[MiddlewaresConstants.GlobalConfigPointer] = this._configs;

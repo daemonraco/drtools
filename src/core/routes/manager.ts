@@ -4,7 +4,7 @@
  */
 import { ConfigsManager } from '../configs';
 import { DRCollector } from '../drcollector';
-import { GenericManager, Tools } from '../includes';
+import { GenericManager, TAB, Tools } from '../includes';
 import { RoutesConstants, IRouteOptions } from '.';
 import chalk from 'chalk';
 
@@ -62,7 +62,7 @@ export class RoutesManager extends GenericManager<IRouteOptions> {
             for (let i in this._itemSpecs) {
                 try {
                     if (this._options?.verbose) {
-                        console.log(`\t- '${chalk.green(this._itemSpecs[i].name)}'`);
+                        console.log(`${TAB}- '${chalk.green(this._itemSpecs[i].name)}'`);
                     }
 
                     (<any>global)[RoutesConstants.GlobalConfigPointer] = this._configs;

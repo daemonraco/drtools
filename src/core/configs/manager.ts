@@ -2,7 +2,7 @@
  * @file manager.ts
  * @author Alejandro D. Simi
  */
-import { BasicDictionary, IItemSpec, IToolsCheckPathResult, Tools, ToolsCheckPath } from '../includes';
+import { BasicDictionary, IItemSpec, IToolsCheckPathResult, TAB, Tools, ToolsCheckPath } from '../includes';
 import { ConfigsConstants, IConfigItem, IConfigOptions } from '.';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
@@ -355,7 +355,7 @@ export class ConfigsManager implements IManagerByKey {
 
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(name)}'`);
+                        console.log(`${TAB}- '${chalk.green(name)}'`);
                     }
                     //
                     // Loading basic configuration.
@@ -393,7 +393,7 @@ export class ConfigsManager implements IManagerByKey {
 
                 try {
                     if (this._options.verbose) {
-                        console.log(`\t- '${chalk.green(name)}'${this._items[itemKey].specific ? ` (has specific configuration)` : ''}`);
+                        console.log(`${TAB}- '${chalk.green(name)}'${this._items[itemKey].specific ? ` (has specific configuration)` : ''}`);
                     }
                     //
                     // Loading basic configuration.
@@ -494,7 +494,7 @@ export class ConfigsManager implements IManagerByKey {
                     valid = true;
                 }
             } catch (e) {
-                console.error(chalk.red(`Config '${name}' is not valid.\n\t${e}`));
+                console.error(chalk.red(`Config '${name}' is not valid.\n${TAB}${e}`));
             }
         } else {
             valid = true;

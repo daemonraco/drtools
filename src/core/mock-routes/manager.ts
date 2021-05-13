@@ -7,7 +7,7 @@ import { ConfigsManager } from '../configs';
 import { DRCollector, IManagerByKey } from '../drcollector';
 import { ExpressMiddleware } from '../express';
 import { IMockRoutesGuard, IMockRoutesOptions, IMockRoutesRoute, MockRoutesConstants } from '.';
-import { Tools } from '../includes';
+import { TAB, TAB2, Tools } from '../includes';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as url from 'url';
@@ -169,7 +169,7 @@ export class MockRoutesManager implements IManagerByKey {
 
             if (this._options?.verbose) {
                 console.log(`Loading mock-up routes:`);
-                console.log(`\tConfig file: '${chalk.green(this.configPath())}'`);
+                console.log(`${TAB}Config file: '${chalk.green(this.configPath())}'`);
             }
             //
             // Loading configuration.
@@ -301,11 +301,11 @@ export class MockRoutesManager implements IManagerByKey {
                 const keys: string[] = Object.keys(this._routes);
 
                 if (keys.length) {
-                    console.log(`\tRoutes:`);
+                    console.log(`${TAB}Routes:`);
                     keys.sort().forEach((key: string) => {
                         const method: string = chalk.magenta(`[${this._routes[key].method.toUpperCase()}]`);
                         const file: string = chalk.magenta(this._routes[key].originalPath);
-                        console.log(`\t\t- '${chalk.green(this._routes[key].uri)}' ${method} (file: '${file}')`);
+                        console.log(`${TAB2}- '${chalk.green(this._routes[key].uri)}' ${method} (file: '${file}')`);
                     });
                 }
             }

@@ -3,7 +3,7 @@
  * @author Alejandro D. Simi
  */
 import { Command, OptionValues } from 'commander';
-import { ConfigsConstants, ConfigsManager, EndpointsManager, ExpressConnector, IEndpointOptions, LoadersManager, MiddlewaresManager, MockRoutesManager, RoutesManager, TasksManager } from '../../core/drtools';
+import { ConfigsConstants, ConfigsManager, EndpointsManager, ExpressConnector, IEndpointOptions, LoadersManager, MiddlewaresManager, MockRoutesManager, RoutesManager, TAB, TAB2, TAB3, TasksManager } from '../../core/drtools';
 import { Tools } from '../includes/tools';
 import * as http from 'http';
 import bodyParser from 'body-parser';
@@ -206,48 +206,48 @@ export class DRToolsServer {
             if (configs && this.connectorOptions.configsDirectory) {
                 const error = configs.valid() ? '' : chalk.yellow(` (Error: ${configs.lastError()})`);
                 const suffix = this.connectorOptions.configsOptions && this.connectorOptions.configsOptions.suffix ? ` (suffix: '.${this.connectorOptions.configsOptions.suffix}')` : '';
-                console.log(`\t- Configuration files at '${chalk.green(this.connectorOptions.configsDirectory)}'${suffix}${error}`);
+                console.log(`${TAB}- Configuration files at '${chalk.green(this.connectorOptions.configsDirectory)}'${suffix}${error}`);
             }
 
             if (loaders && this.connectorOptions.loadersDirectory) {
                 const error = loaders.valid() ? '' : chalk.yellow(` (Error: ${loaders.lastError()})`);
                 const suffix = this.connectorOptions.loadersOptions && this.connectorOptions.loadersOptions.suffix ? ` (suffix: '.${this.connectorOptions.loadersOptions.suffix}')` : '';
-                console.log(`\t- Initialization files at '${chalk.green(this.connectorOptions.loadersDirectory)}'${suffix}${error}`);
+                console.log(`${TAB}- Initialization files at '${chalk.green(this.connectorOptions.loadersDirectory)}'${suffix}${error}`);
             }
 
             if (middlewares && this.connectorOptions.middlewaresDirectory) {
                 const error = middlewares.valid() ? '' : chalk.yellow(` (Error: ${middlewares.lastError()})`);
                 const suffix = this.connectorOptions.middlewaresOptions && this.connectorOptions.middlewaresOptions.suffix ? ` (suffix: '.${this.connectorOptions.middlewaresOptions.suffix}')` : '';
-                console.log(`\t- Middleware files at '${chalk.green(this.connectorOptions.middlewaresDirectory)}'${suffix}${error}`);
+                console.log(`${TAB}- Middleware files at '${chalk.green(this.connectorOptions.middlewaresDirectory)}'${suffix}${error}`);
             }
 
             if (routes && this.connectorOptions.routesDirectory) {
                 const error = routes.valid() ? '' : chalk.yellow(` (Error: ${routes.lastError()})`);
                 const suffix = this.connectorOptions.routesOptions && this.connectorOptions.routesOptions.suffix ? ` (suffix: '.${this.connectorOptions.routesOptions.suffix}')` : '';
-                console.log(`\t- Route files at '${chalk.green(this.connectorOptions.routesDirectory)}'${suffix}${error}`);
+                console.log(`${TAB}- Route files at '${chalk.green(this.connectorOptions.routesDirectory)}'${suffix}${error}`);
             }
 
             if (tasks && this.connectorOptions.tasksDirectory) {
                 const error = tasks.valid() ? '' : chalk.yellow(` (Error: ${tasks.lastError()})`);
                 const suffix = this.connectorOptions.tasksOptions && this.connectorOptions.tasksOptions.suffix ? ` (suffix: '.${this.connectorOptions.tasksOptions.suffix}')` : '';
-                console.log(`\t- Task files at '${chalk.green(this.connectorOptions.tasksDirectory)}'${suffix}${error}`);
+                console.log(`${TAB}- Task files at '${chalk.green(this.connectorOptions.tasksDirectory)}'${suffix}${error}`);
             }
 
             if (mockRoutes && mockRoutes) {
                 const error = mockRoutes.valid() ? '' : chalk.yellow(` (Error: ${mockRoutes.lastError()})`);
-                console.log(`\t- Mock-up routes configuration '${chalk.green(mockRoutes.configPath())}'${error}`);
+                console.log(`${TAB}- Mock-up routes configuration '${chalk.green(mockRoutes.configPath())}'${error}`);
             }
 
             if (endpoints && this.connectorOptions.endpoints) {
                 const error = endpoints.valid() ? '' : chalk.yellow(` (Error: ${endpoints.lastError()})`);
 
-                console.log(`\t- Mock-up Endpoint${error}`);
-                console.log(`\t\tURI:       '${chalk.green(endpoints.uri())}'`);
-                console.log(`\t\tDirectory: '${chalk.green(endpoints.directory())}'`);
+                console.log(`${TAB}- Mock-up Endpoint${error}`);
+                console.log(`${TAB2}URI:       '${chalk.green(endpoints.uri())}'`);
+                console.log(`${TAB2}Directory: '${chalk.green(endpoints.directory())}'`);
                 const options: IEndpointOptions | null = endpoints.options();
                 if (options && options.globalBehaviors && options.globalBehaviors.length > 0) {
-                    console.log(`\t\tBehaviors:`);
-                    (<string[]>options.globalBehaviors).forEach((b: string) => console.log(`\t\t\t'${chalk.green(b)}'`));
+                    console.log(`${TAB2}Behaviors:`);
+                    (<string[]>options.globalBehaviors).forEach((b: string) => console.log(`${TAB3}'${chalk.green(b)}'`));
                 }
             }
 
