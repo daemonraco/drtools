@@ -108,7 +108,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
             // Basic patterns.
             let suffix: string = this.suffix();
             suffix = suffix ? `\\.${suffix}` : '';
-            const itemsPattern: RegExp = new RegExp(`^(.*)/(.*)${suffix}\.(json|js|ts)$`);
+            const itemsPattern: RegExp = new RegExp(`^(.*)${suffix}\.(json|js|ts)$`);
 
             for (const directory of this._directories) {
                 let paths: string[] = glob.sync(path.join(directory, `*${suffix}.*`), { absolute: true });
@@ -116,9 +116,9 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
                 this._itemSpecs = [
                     ...this._itemSpecs,
                     ...paths
-                        .filter((x: string) => x.match(itemsPattern))
+                        .filter((x: string) => path.basename(x).match(itemsPattern))
                         .map((x: string) => ({
-                            name: x.replace(itemsPattern, '$2'),
+                            name: path.basename(x).replace(itemsPattern, '$1'),
                             path: x,
                         })),
                 ];

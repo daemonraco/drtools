@@ -98,15 +98,15 @@ class GenericManager {
             // Basic patterns.
             let suffix = this.suffix();
             suffix = suffix ? `\\.${suffix}` : '';
-            const itemsPattern = new RegExp(`^(.*)/(.*)${suffix}\.(json|js|ts)$`);
+            const itemsPattern = new RegExp(`^(.*)${suffix}\.(json|js|ts)$`);
             for (const directory of this._directories) {
                 let paths = glob_1.default.sync(path.join(directory, `*${suffix}.*`), { absolute: true });
                 this._itemSpecs = [
                     ...this._itemSpecs,
                     ...paths
-                        .filter((x) => x.match(itemsPattern))
+                        .filter((x) => path.basename(x).match(itemsPattern))
                         .map((x) => ({
-                        name: x.replace(itemsPattern, '$2'),
+                        name: path.basename(x).replace(itemsPattern, '$1'),
                         path: x,
                     })),
                 ];
