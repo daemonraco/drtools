@@ -107,7 +107,7 @@ export abstract class GenericManager<TOptions> implements IAsyncManager, IManage
             //
             // Basic patterns.
             let suffix: string = this.suffix();
-            suffix = suffix ? `\\.${suffix}` : '';
+            suffix = suffix ? `.${suffix}` : '';
             const itemsPattern: RegExp = new RegExp(`^(.*)${suffix}\.(json|js|ts)$`);
 
             for (const directory of this._directories) {

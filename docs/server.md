@@ -1,4 +1,4 @@
-<!-- version-check:0.15.8 -->
+<!-- version-check:0.15.4 -->
 <!-- version-warning -->
 <!-- /version-warning -->
 
@@ -18,7 +18,7 @@ drtools-server --configs /directory/with/route/files
 ## Command options
 <!-- AUTO:server-options -->
 ```
-DRTools Server (v0.15.8):
+DRTools Server (v0.15.9):
 Usage: drtools-server [options]
 
 Options:
