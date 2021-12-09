@@ -1,3 +1,6 @@
+> <h1 style="color:#ff0000">WARNING: This project has been moved to <a href="https://gitlab.com/daemonraco-dev/drtools">GitLab</a>.</h1>
+> <h4 style="color:#ff0000">This project won't receive changes in through repository.</h4>
+
 <!-- version-check:0.15.4 -->
 <!-- version-warning -->
 <!-- /version-warning -->
